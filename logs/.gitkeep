@@ -1,0 +1,58 @@
+# API Log Directory
+
+Dieses Verzeichnis enthält API-Logs.
+
+## Log-Datei
+
+- `api.log` - Alle API-Anfragen werden hier protokolliert
+
+## Format
+
+```
+[YYYY-MM-DD HH:MM:SS] IP METHOD ENDPOINT - STATUS MESSAGE
+```
+
+## Beispiel
+
+```
+[2025-10-10 12:00:00] 192.168.1.1 GET /api/groups.php - SUCCESS
+[2025-10-10 12:01:00] 192.168.1.2 POST /api/groups.php - SUCCESS Created group: Test
+[2025-10-10 12:02:00] 192.168.1.3 GET /api/groups.php - UNAUTHORIZED
+```
+
+## Log-Rotation
+
+Für Produktion sollte Log-Rotation konfiguriert werden:
+
+```bash
+# /etc/logrotate.d/wichtel-api
+/pfad/zu/wichtel/logs/api.log {
+    daily
+    rotate 30
+    compress
+    delaycompress
+    notifempty
+    create 0640 www-data www-data
+    sharedscripts
+}
+```
+
+## Logs analysieren
+
+```bash
+# Letzte 100 Zeilen
+tail -n 100 api.log
+
+# Fehler anzeigen
+grep "ERROR\|UNAUTHORIZED" api.log
+
+# Anfragen pro IP zählen
+awk '{print $2}' api.log | sort | uniq -c | sort -rn
+
+# Erfolgreiche Anfragen
+grep "SUCCESS" api.log | wc -l
+```
+
+## Sicherheit
+
+**Wichtig:** Log-Dateien enthalten keine sensiblen Daten (Passwörter, Tokens), aber IP-Adressen werden gespeichert. DSGVO beachten!

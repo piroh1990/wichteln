@@ -37,6 +37,13 @@ Eine moderne, benutzerfreundliche Web-Anwendung für die Organisation von Wichte
 - 🛡️ **SQL-Injection-Schutz** - Prepared Statements für alle Datenbankzugriffe
 - ✅ **Input-Validierung** - Umfassende Validierung aller Benutzereingaben
 
+### API für Mobile Apps
+- 🔌 **REST API** - Vollständige REST API für Android/iOS-Apps
+- 📱 **JSON-Responses** - Strukturierte JSON-Antworten
+- 🔒 **Token-Auth** - Sichere API-Authentifizierung
+- 📊 **Rate Limiting** - Schutz vor Missbrauch
+- 📝 **API-Dokumentation** - Umfassende Dokumentation unter `/api/README.md`
+
 ## 🚀 Installation
 
 ### Voraussetzungen

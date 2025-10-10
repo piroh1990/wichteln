@@ -1,0 +1,314 @@
+{
+  "info": {
+    "name": "Wichtlä.ch API",
+    "description": "REST API für die Wichtlä.ch Android-App",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "wichtel"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{API_TOKEN}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "https://wichtlä.ch/api",
+      "type": "string"
+    },
+    {
+      "key": "API_TOKEN",
+      "value": "your_api_token_here",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Groups",
+      "item": [
+        {
+          "name": "Get All Groups",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/groups.php?page=1&per_page=20",
+              "host": ["{{BASE_URL}}"],
+              "path": ["groups.php"],
+              "query": [
+                {"key": "page", "value": "1"},
+                {"key": "per_page", "value": "20"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Group by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/groups.php?id=1",
+              "host": ["{{BASE_URL}}"],
+              "path": ["groups.php"],
+              "query": [{"key": "id", "value": "1"}]
+            }
+          }
+        },
+        {
+          "name": "Get Group by Admin Token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/groups.php?admin_token={{ADMIN_TOKEN}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["groups.php"],
+              "query": [{"key": "admin_token", "value": "{{ADMIN_TOKEN}}"}]
+            }
+          }
+        },
+        {
+          "name": "Create Group",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Weihnachten 2025\",\n  \"admin_email\": \"admin@example.com\",\n  \"budget\": 25.00,\n  \"description\": \"Firmen-Wichteln\",\n  \"gift_exchange_date\": \"2025-12-24\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/groups.php",
+              "host": ["{{BASE_URL}}"],
+              "path": ["groups.php"]
+            }
+          }
+        },
+        {
+          "name": "Update Group",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"budget\": 30.00,\n  \"description\": \"Aktualisierte Beschreibung\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/groups.php?id=1",
+              "host": ["{{BASE_URL}}"],
+              "path": ["groups.php"],
+              "query": [{"key": "id", "value": "1"}]
+            }
+          }
+        },
+        {
+          "name": "Delete Group",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/groups.php?id=1",
+              "host": ["{{BASE_URL}}"],
+              "path": ["groups.php"],
+              "query": [{"key": "id", "value": "1"}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Participants",
+      "item": [
+        {
+          "name": "Get Participants by Group",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/participants.php?group_id=1",
+              "host": ["{{BASE_URL}}"],
+              "path": ["participants.php"],
+              "query": [{"key": "group_id", "value": "1"}]
+            }
+          }
+        },
+        {
+          "name": "Get Participant by Token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/participants.php?token={{PARTICIPANT_TOKEN}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["participants.php"],
+              "query": [{"key": "token", "value": "{{PARTICIPANT_TOKEN}}"}]
+            }
+          }
+        },
+        {
+          "name": "Create Participant",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"group_id\": 1,\n  \"name\": \"Max Mustermann\",\n  \"email\": \"max@example.com\",\n  \"wishlist\": \"Bücher, Schokolade\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/participants.php",
+              "host": ["{{BASE_URL}}"],
+              "path": ["participants.php"]
+            }
+          }
+        },
+        {
+          "name": "Update Participant",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"wishlist\": \"Neue Wunschliste\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/participants.php?id=1",
+              "host": ["{{BASE_URL}}"],
+              "path": ["participants.php"],
+              "query": [{"key": "id", "value": "1"}]
+            }
+          }
+        },
+        {
+          "name": "Delete Participant",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/participants.php?id=1",
+              "host": ["{{BASE_URL}}"],
+              "path": ["participants.php"],
+              "query": [{"key": "id", "value": "1"}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Draw",
+      "item": [
+        {
+          "name": "Perform Draw",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"group_id\": 1,\n  \"send_emails\": true\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/draw.php",
+              "host": ["{{BASE_URL}}"],
+              "path": ["draw.php"]
+            }
+          }
+        },
+        {
+          "name": "Reset Draw",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"group_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/draw.php?action=reset",
+              "host": ["{{BASE_URL}}"],
+              "path": ["draw.php"],
+              "query": [{"key": "action", "value": "reset"}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Exclusions",
+      "item": [
+        {
+          "name": "Get Exclusions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/exclusions.php?group_id=1",
+              "host": ["{{BASE_URL}}"],
+              "path": ["exclusions.php"],
+              "query": [{"key": "group_id", "value": "1"}]
+            }
+          }
+        },
+        {
+          "name": "Create Exclusion",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"group_id\": 1,\n  \"participant_id\": 1,\n  \"excluded_participant_id\": 2\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/exclusions.php",
+              "host": ["{{BASE_URL}}"],
+              "path": ["exclusions.php"]
+            }
+          }
+        },
+        {
+          "name": "Delete Exclusion",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/exclusions.php?id=1",
+              "host": ["{{BASE_URL}}"],
+              "path": ["exclusions.php"],
+              "query": [{"key": "id", "value": "1"}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "API Info",
+      "request": {
+        "auth": {"type": "noauth"},
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/",
+          "host": ["{{BASE_URL}}"],
+          "path": [""]
+        }
+      }
+    }
+  ]
+}

@@ -1,5 +1,11 @@
 # Configuration files with sensitive data
 config.php
+api/config.php
+
+# Logs
+logs/*.log
+logs/api.log
+*.log
 
 # Database backups and dumps
 database/backups/

@@ -1,0 +1,980 @@
+openapi: 3.0.3
+info:
+  title: Wichtlä.ch API
+  description: |
+    REST API für die Wichtlä.ch Plattform - Secret Santa / Wichteln Online-Tool
+    
+    ## Authentifizierung
+    Alle Endpoints (außer `/`) benötigen einen API-Token:
+    - **Bearer Token**: `Authorization: Bearer YOUR_TOKEN`
+    - **X-API-Token Header**: `X-API-Token: YOUR_TOKEN`
+    - **Query Parameter**: `?api_token=YOUR_TOKEN` (nur für Entwicklung)
+    
+    ## Rate Limiting
+    - 60 Anfragen pro Minute pro IP-Adresse
+    - Bei Überschreitung: HTTP 429 Response
+    
+    ## CORS
+    - Cross-Origin Requests werden unterstützt
+    - Preflight (OPTIONS) Requests werden automatisch behandelt
+  version: 1.0.0
+  contact:
+    name: GitHub Repository
+    url: https://github.com/piroh1990/wichteln
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://wichtlä.ch/api
+    description: Production Server
+  - url: http://localhost/wichtel/api
+    description: Local Development
+
+tags:
+  - name: groups
+    description: Verwaltung von Wichtel-Gruppen
+  - name: participants
+    description: Verwaltung von Teilnehmern
+  - name: draw
+    description: Auslosung durchführen und zurücksetzen
+  - name: exclusions
+    description: Verwaltung von Ausschlüssen
+  - name: info
+    description: API Informationen
+
+security:
+  - BearerAuth: []
+  - ApiKeyHeader: []
+  - ApiKeyQuery: []
+
+paths:
+  /:
+    get:
+      tags:
+        - info
+      summary: API Informationen
+      description: Gibt Informationen über verfügbare Endpoints zurück (kein Token nötig)
+      security: []
+      responses:
+        '200':
+          description: API Informationen erfolgreich abgerufen
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiInfo'
+
+  /groups.php:
+    get:
+      tags:
+        - groups
+      summary: Gruppen abrufen
+      description: Liste aller Gruppen oder eine einzelne Gruppe nach ID/Token
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: integer
+          description: Gruppe nach ID abrufen
+        - name: admin_token
+          in: query
+          schema:
+            type: string
+          description: Gruppe nach Admin-Token abrufen
+        - name: invite_token
+          in: query
+          schema:
+            type: string
+          description: Gruppe nach Einladungs-Token abrufen
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+          description: Seitennummer für Pagination
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+          description: Einträge pro Seite
+      responses:
+        '200':
+          description: Erfolgreich
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/GroupListResponse'
+                  - $ref: '#/components/schemas/GroupDetailResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
+
+    post:
+      tags:
+        - groups
+      summary: Gruppe erstellen
+      description: Erstellt eine neue Wichtel-Gruppe
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGroupRequest'
+      responses:
+        '201':
+          description: Gruppe erfolgreich erstellt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateGroupResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
+
+    put:
+      tags:
+        - groups
+      summary: Gruppe aktualisieren
+      description: Aktualisiert Budget, Beschreibung oder Datum einer Gruppe
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: ID der zu aktualisierenden Gruppe
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateGroupRequest'
+      responses:
+        '200':
+          description: Gruppe erfolgreich aktualisiert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags:
+        - groups
+      summary: Gruppe löschen
+      description: Löscht eine Gruppe und alle zugehörigen Teilnehmer und Ausschlüsse
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: ID der zu löschenden Gruppe
+      responses:
+        '200':
+          description: Gruppe erfolgreich gelöscht
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteGroupResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /participants.php:
+    get:
+      tags:
+        - participants
+      summary: Teilnehmer abrufen
+      description: Liste aller Teilnehmer oder einen einzelnen Teilnehmer
+      parameters:
+        - name: group_id
+          in: query
+          schema:
+            type: integer
+          description: Alle Teilnehmer einer Gruppe
+        - name: id
+          in: query
+          schema:
+            type: integer
+          description: Teilnehmer nach ID
+        - name: token
+          in: query
+          schema:
+            type: string
+          description: Teilnehmer nach Token
+      responses:
+        '200':
+          description: Erfolgreich
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ParticipantListResponse'
+                  - $ref: '#/components/schemas/ParticipantDetailResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    post:
+      tags:
+        - participants
+      summary: Teilnehmer erstellen
+      description: Registriert einen neuen Teilnehmer in einer Gruppe
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateParticipantRequest'
+      responses:
+        '201':
+          description: Teilnehmer erfolgreich erstellt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateParticipantResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    put:
+      tags:
+        - participants
+      summary: Teilnehmer aktualisieren
+      description: Aktualisiert Teilnehmerdaten (nach Auslosung nur Wunschliste)
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: integer
+          description: Teilnehmer ID
+        - name: token
+          in: query
+          schema:
+            type: string
+          description: Teilnehmer Token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateParticipantRequest'
+      responses:
+        '200':
+          description: Teilnehmer erfolgreich aktualisiert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParticipantResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags:
+        - participants
+      summary: Teilnehmer löschen
+      description: Löscht einen Teilnehmer (nur vor der Auslosung)
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: ID des zu löschenden Teilnehmers
+      responses:
+        '200':
+          description: Teilnehmer erfolgreich gelöscht
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /draw.php:
+    post:
+      tags:
+        - draw
+      summary: Auslosung durchführen oder zurücksetzen
+      description: |
+        Führt die Wichtel-Auslosung durch oder setzt sie zurück
+        - Standard: Auslosung durchführen
+        - Mit `?action=reset`: Auslosung zurücksetzen
+      parameters:
+        - name: action
+          in: query
+          schema:
+            type: string
+            enum: [reset]
+          description: "Aktion: 'reset' zum Zurücksetzen"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/DrawRequest'
+                - $ref: '#/components/schemas/ResetDrawRequest'
+      responses:
+        '200':
+          description: Erfolgreich
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/DrawResponse'
+                  - $ref: '#/components/schemas/ResetDrawResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /exclusions.php:
+    get:
+      tags:
+        - exclusions
+      summary: Ausschlüsse abrufen
+      description: Liste aller Ausschlüsse einer Gruppe
+      parameters:
+        - name: group_id
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: ID der Gruppe
+      responses:
+        '200':
+          description: Erfolgreich
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExclusionListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    post:
+      tags:
+        - exclusions
+      summary: Ausschluss erstellen
+      description: Erstellt einen neuen Ausschluss (nur vor der Auslosung)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateExclusionRequest'
+      responses:
+        '201':
+          description: Ausschluss erfolgreich erstellt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExclusionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    delete:
+      tags:
+        - exclusions
+      summary: Ausschluss löschen
+      description: Löscht einen Ausschluss (nur vor der Auslosung)
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: ID des zu löschenden Ausschlusses
+      responses:
+        '200':
+          description: Ausschluss erfolgreich gelöscht
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Bearer Token im Authorization Header
+    ApiKeyHeader:
+      type: apiKey
+      in: header
+      name: X-API-Token
+      description: API Token im X-API-Token Header
+    ApiKeyQuery:
+      type: apiKey
+      in: query
+      name: api_token
+      description: API Token als Query Parameter (nur für Entwicklung)
+
+  schemas:
+    Group:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Wichtelgruppe 2025"
+        admin_token:
+          type: string
+          example: "abc123def456..."
+        invite_token:
+          type: string
+          example: "xyz789uvw012..."
+        admin_email:
+          type: string
+          format: email
+          example: "admin@example.com"
+        budget:
+          type: string
+          example: "25.00"
+        description:
+          type: string
+          nullable: true
+          example: "Firmen-Wichteln"
+        gift_exchange_date:
+          type: string
+          format: date
+          example: "2025-12-24"
+        is_drawn:
+          type: integer
+          enum: [0, 1]
+          example: 0
+        created_at:
+          type: string
+          format: date-time
+          example: "2025-10-10 12:00:00"
+
+    Participant:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        group_id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Max Mustermann"
+        email:
+          type: string
+          format: email
+          example: "max@example.com"
+        token:
+          type: string
+          example: "part123token456..."
+        assigned_to:
+          type: integer
+          nullable: true
+          example: 2
+        wishlist:
+          type: string
+          nullable: true
+          example: "Bücher, Schokolade"
+        created_at:
+          type: string
+          format: date-time
+          example: "2025-10-10 12:00:00"
+
+    Exclusion:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        participant_id:
+          type: integer
+          example: 1
+        excluded_participant_id:
+          type: integer
+          example: 2
+        participant_name:
+          type: string
+          example: "Max Mustermann"
+        excluded_name:
+          type: string
+          example: "Anna Beispiel"
+        created_at:
+          type: string
+          format: date-time
+          example: "2025-10-10 12:00:00"
+
+    CreateGroupRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: "Wichtelgruppe 2025"
+        admin_email:
+          type: string
+          format: email
+          example: "admin@example.com"
+        budget:
+          type: number
+          format: float
+          example: 25.00
+        description:
+          type: string
+          example: "Firmen-Wichteln"
+        gift_exchange_date:
+          type: string
+          format: date
+          example: "2025-12-24"
+
+    UpdateGroupRequest:
+      type: object
+      properties:
+        budget:
+          type: number
+          format: float
+          example: 30.00
+        description:
+          type: string
+          example: "Neuer Text"
+        gift_exchange_date:
+          type: string
+          format: date
+          example: "2025-12-25"
+
+    CreateParticipantRequest:
+      type: object
+      required:
+        - group_id
+        - name
+        - email
+      properties:
+        group_id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Max Mustermann"
+        email:
+          type: string
+          format: email
+          example: "max@example.com"
+        wishlist:
+          type: string
+          example: "Bücher, Schokolade"
+
+    UpdateParticipantRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Max Mustermann"
+        email:
+          type: string
+          format: email
+          example: "max@example.com"
+        wishlist:
+          type: string
+          example: "Neue Wunschliste"
+
+    CreateExclusionRequest:
+      type: object
+      required:
+        - group_id
+        - participant_id
+        - excluded_participant_id
+      properties:
+        group_id:
+          type: integer
+          example: 1
+        participant_id:
+          type: integer
+          example: 1
+        excluded_participant_id:
+          type: integer
+          example: 2
+
+    DrawRequest:
+      type: object
+      required:
+        - group_id
+      properties:
+        group_id:
+          type: integer
+          example: 1
+        send_emails:
+          type: boolean
+          default: true
+          example: true
+
+    ResetDrawRequest:
+      type: object
+      required:
+        - group_id
+      properties:
+        group_id:
+          type: integer
+          example: 1
+
+    ApiResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Erfolgreich"
+        data:
+          type: object
+          nullable: true
+        meta:
+          $ref: '#/components/schemas/Meta'
+
+    Meta:
+      type: object
+      properties:
+        timestamp:
+          type: integer
+          example: 1696939200
+        version:
+          type: string
+          example: "v1"
+        current_page:
+          type: integer
+          example: 1
+        per_page:
+          type: integer
+          example: 20
+        total:
+          type: integer
+          example: 5
+        total_pages:
+          type: integer
+          example: 1
+        has_more:
+          type: boolean
+          example: false
+
+    ApiInfo:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                version:
+                  type: string
+                  example: "v1"
+                status:
+                  type: string
+                  example: "online"
+                base_url:
+                  type: string
+                  example: "https://wichtlä.ch/api/"
+                endpoints:
+                  type: array
+                  items:
+                    type: object
+
+    GroupListResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/Group'
+
+    GroupDetailResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            data:
+              allOf:
+                - $ref: '#/components/schemas/Group'
+                - type: object
+                  properties:
+                    participants:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Participant'
+                    exclusions:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Exclusion'
+
+    GroupResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/Group'
+
+    CreateGroupResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                admin_token:
+                  type: string
+                invite_token:
+                  type: string
+                admin_link:
+                  type: string
+                invite_link:
+                  type: string
+
+    DeleteGroupResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                deleted_group_id:
+                  type: integer
+                deleted_participants:
+                  type: integer
+                deleted_exclusions:
+                  type: integer
+
+    ParticipantListResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/Participant'
+
+    ParticipantDetailResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            data:
+              allOf:
+                - $ref: '#/components/schemas/Participant'
+                - type: object
+                  properties:
+                    assigned_partner:
+                      type: object
+                      nullable: true
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        wishlist:
+                          type: string
+                    group:
+                      $ref: '#/components/schemas/Group'
+
+    ParticipantResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/Participant'
+
+    CreateParticipantResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+                token:
+                  type: string
+                participant_link:
+                  type: string
+
+    ExclusionListResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/Exclusion'
+
+    ExclusionResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/Exclusion'
+
+    DrawResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                group_id:
+                  type: integer
+                is_drawn:
+                  type: boolean
+                participants_count:
+                  type: integer
+                attempts_needed:
+                  type: integer
+                emails_sent:
+                  type: integer
+                assignments:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      giver_id:
+                        type: integer
+                      receiver_id:
+                        type: integer
+
+    ResetDrawResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                group_id:
+                  type: integer
+                is_drawn:
+                  type: boolean
+                reset_participants:
+                  type: integer
+
+    DeleteResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: "Fehler beim Verarbeiten der Anfrage"
+        data:
+          type: object
+          nullable: true
+        meta:
+          $ref: '#/components/schemas/Meta'
+
+  responses:
+    BadRequest:
+      description: Ungültige Anfrage
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            message: "Fehlende erforderliche Felder"
+            data: null
+
+    Unauthorized:
+      description: Ungültiges oder fehlendes API-Token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            message: "Ungültiges oder fehlendes API-Token"
+            data: null
+
+    NotFound:
+      description: Ressource nicht gefunden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            message: "Ressource nicht gefunden"
+            data: null
+
+    RateLimitExceeded:
+      description: Rate Limit überschritten
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            message: "Rate Limit überschritten. Bitte warten Sie eine Minute."
+            data: null
