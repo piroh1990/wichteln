@@ -51,8 +51,8 @@
                         <span>Namen ziehen per E-Mail</span>
                     </div>
                     <div class="hero-feature">
-                        <span class="feature-icon-small">🚫</span>
-                        <span>Ausschlüsse für Paare</span>
+                        <span class="feature-icon-small">⚖️</span>
+                        <span>Auschlüsse möglich</span>
                     </div>
                     <div class="hero-feature">
                         <span class="feature-icon-small">💰</span>
