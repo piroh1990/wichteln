@@ -65,6 +65,10 @@
                         <span>Jetzt Gruppe erstellen</span>
                         <span class="cta-arrow">→</span>
                     </a>
+                    <a href="participant.php" class="cta-button cta-button-secondary">
+                        <span>Zum Teilnehmerbereich</span>
+                        <span class="cta-arrow">→</span>
+                    </a>
                     <p class="cta-subtext">Keine Registrierung erforderlich • Sofort loslegen</p>
                 </div>
             </div>

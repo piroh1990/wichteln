@@ -1018,6 +1018,27 @@ a.button:disabled {
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+    margin: 0.5rem;
+}
+
+.cta-button-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-light));
+    box-shadow: 0 8px 24px rgba(230, 57, 70, 0.4);
+}
+
+.cta-button-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(230, 57, 70, 0.5);
+}
+
+.cta-button-secondary {
+    background: linear-gradient(135deg, var(--secondary-color), var(--secondary-dark));
+    box-shadow: 0 8px 24px rgba(42, 157, 143, 0.4);
+}
+
+.cta-button-secondary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(42, 157, 143, 0.5);
 }
 
 .cta-button::before {
@@ -1314,6 +1335,12 @@ a.button:disabled {
     .cta-button {
         padding: 1rem 2rem;
         font-size: 1.1rem;
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .hero-cta {
+        width: 100%;
     }
     
     .faq-question {
@@ -1552,4 +1579,70 @@ a.button:disabled {
         margin-top: 0.5rem;
     }
 }
+
+/* Error Page Styles */
+.error-page {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.error-content {
+    max-width: 600px;
+    padding: 2rem;
+}
+
+.error-icon {
+    font-size: 6rem;
+    margin-bottom: 1.5rem;
+    animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+.error-title {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.error-message {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.error-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.error-help {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    border-left: 4px solid var(--secondary-color);
+    text-align: left;
+}
+
+.error-help h3 {
+    margin-top: 0;
+    color: var(--secondary-color);
+    font-size: 1.2rem;
+}
+
+.error-help ul {
+    margin: 0;
+}
+
+/* ...existing code... */
 

@@ -132,8 +132,51 @@ if (!empty($participant_token)) {
     $saved_tokens = get_tokens_from_cookie();
     
     if (empty($saved_tokens)) {
-        // Keine gespeicherten Tokens
-        die('Kein gültiger Token gefunden. Bitte verwende deinen Teilnehmer-Link.');
+        // Keine gespeicherten Tokens - zeige schöne Fehlerseite
+        ?>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Keine Gruppe gefunden - Wichteln</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <img src="images/logo.png" alt="Wichtel Logo">
+    </header>
+    <div class="container">
+        <div class="error-page">
+            <div class="error-content">
+                <div class="error-icon">🎄</div>
+                <h1 class="error-title">Keine Gruppe gefunden</h1>
+                <p class="error-message">
+                    Du hast noch keine Wichtel-Gruppe besucht oder dein Link ist nicht mehr gültig.
+                    Um auf deinen Teilnehmerbereich zuzugreifen, benötigst du einen persönlichen Teilnehmer-Link.
+                </p>
+                
+                <div class="error-actions">
+                    <a href="index.php" class="button primary">🏠 Zur Startseite</a>
+                    <a href="create_group.php" class="button secondary">➕ Neue Gruppe erstellen</a>
+                </div>
+                
+                <div class="error-help">
+                    <h3>💡 So kommst du zu deinem Teilnehmerbereich:</h3>
+                    <ul>
+                        <li><strong>Einladungslink erhalten?</strong> Benutze den Link, den dir der Gruppenadmin geschickt hat</li>
+                        <li><strong>Bereits angemeldet?</strong> Verwende deinen persönlichen Teilnehmer-Link aus der Bestätigungs-E-Mail</li>
+                        <li><strong>Link verloren?</strong> Kontaktiere den Gruppenadmin für einen neuen Link</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+        <?php
+        exit;
     }
     
     // Teilnehmer für alle gespeicherten Tokens laden
