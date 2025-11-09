@@ -256,90 +256,6 @@ if ($show_group_selector) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Roboto&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
-    <style>
-        .group-selector {
-            max-width: 700px;
-            margin: 0 auto;
-        }
-        
-        .group-card {
-            background: var(--surface);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            border: 2px solid var(--border-color);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-        }
-        
-        .group-card:hover {
-            border-color: var(--secondary-color);
-            box-shadow: var(--shadow-md);
-            transform: translateY(-2px);
-        }
-        
-        .group-card input[type="radio"] {
-            position: absolute;
-            opacity: 0;
-            cursor: pointer;
-        }
-        
-        .group-card input[type="radio"]:checked + .group-card-content {
-            border-left: 4px solid var(--secondary-color);
-            padding-left: 1.5rem;
-        }
-        
-        .group-card-content {
-            padding-left: 1rem;
-            transition: all 0.3s ease;
-        }
-        
-        .group-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 0.75rem;
-        }
-        
-        .group-name {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin: 0;
-        }
-        
-        .group-participant {
-            font-size: 1.1rem;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
-        
-        .group-status {
-            display: inline-block;
-            padding: 0.4rem 0.875rem;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-        }
-        
-        .status-drawn {
-            background: linear-gradient(135deg, var(--success), #05b186);
-            color: white;
-        }
-        
-        .status-pending {
-            background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
-            color: white;
-        }
-        
-        .submit-container {
-            text-align: center;
-            margin-top: 2rem;
-        }
-    </style>
 </head>
 <body>
     <header>
@@ -369,7 +285,7 @@ if ($show_group_selector) {
                 <?php endforeach; ?>
                 
                 <div class="submit-container">
-                    <button type="submit" name="select_group" class="button primary">Gruppe öffnen</button>
+                    <button type="submit" name="select_group" class="group-submit-button" id="submit-button" disabled>Gruppe öffnen</button>
                 </div>
             </form>
         </div>
@@ -381,16 +297,20 @@ if ($show_group_selector) {
             card.addEventListener('click', function() {
                 const radio = this.querySelector('input[type="radio"]');
                 radio.checked = true;
+                
+                // Button aktivieren
+                const submitButton = document.getElementById('submit-button');
+                submitButton.disabled = false;
+                submitButton.classList.add('enabled');
             });
         });
         
-        // Auto-submit bei Auswahl (optional)
+        // Button aktivieren wenn Radio-Button geändert wird
         document.querySelectorAll('input[type="radio"]').forEach(radio => {
             radio.addEventListener('change', function() {
-                // Kurze Verzögerung für visuelle Rückmeldung
-                setTimeout(() => {
-                    document.getElementById('group-selector-form').submit();
-                }, 300);
+                const submitButton = document.getElementById('submit-button');
+                submitButton.disabled = false;
+                submitButton.classList.add('enabled');
             });
         });
     </script>

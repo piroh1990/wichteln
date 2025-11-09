@@ -1481,25 +1481,7 @@ a.button:disabled {
 
 .group-card input[type="radio"]:checked + .group-card-content {
     border-left: 4px solid var(--secondary-color);
-    padding-left: 1.5rem;
-}
-
-.group-card input[type="radio"]:checked + .group-card-content::before {
-    content: '✓';
-    position: absolute;
-    left: -2rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 32px;
-    height: 32px;
-    background: var(--secondary-color);
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 1.2rem;
+    padding-left: calc(1rem + 4px);
 }
 
 .group-card-content {
@@ -1555,6 +1537,58 @@ a.button:disabled {
 .submit-container {
     text-align: center;
     margin-top: 2rem;
+}
+
+/* Group Selection Submit Button - Disabled State */
+.group-submit-button {
+    background: linear-gradient(135deg, #e0e0e0, #b0b0b0);
+    color: #666666;
+    padding: 0.875rem 2rem;
+    border: none;
+    border-radius: 8px;
+    cursor: not-allowed;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Group Selection Submit Button - Enabled State */
+.group-submit-button.enabled {
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-light));
+    color: #FFFFFF;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(230, 57, 70, 0.3);
+}
+
+.group-submit-button.enabled:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+    box-shadow: 0 6px 16px rgba(230, 57, 70, 0.4);
+    transform: translateY(-2px);
+}
+
+.group-submit-button.enabled::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.group-submit-button.enabled:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.group-submit-button.enabled:active {
+    transform: scale(0.98);
 }
 
 /* Group Selector Responsive */
