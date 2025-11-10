@@ -274,10 +274,8 @@
             </p>
             
             <div class="privacy-highlight" style="background: white; border: 2px solid var(--border-color); padding: 2rem;">
-                <iframe
-                    style="border: 0; width: 100%; min-height: 200px;"
-                    src="https://stats.wichtlä.ch/index.php?module=CoreAdminHome&action=optOut&language=de&backgroundColor=ffffff&fontColor=2b2d42&fontSize=16px&fontFamily=Roboto"
-                ></iframe>
+                <div id="matomo-opt-out"></div>
+                <script src="https://analytics.patrick-raths.ch/index.php?module=CoreAdminHome&action=optOutJS&divId=matomo-opt-out&language=auto&backgroundColor=FFFFFF&fontColor=000000&fontSize=12px&fontFamily=Arial&showIntro=1"></script>
             </div>
             
             <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-secondary);">
