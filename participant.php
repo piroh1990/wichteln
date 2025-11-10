@@ -159,6 +159,23 @@ if (!empty($participant_token)) {
     <meta name="msapplication-TileImage" content="/images/favicon/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="css/styles.css">
+    <!-- Matomo -->
+    <?php if (file_exists('config.php')) { require_once 'config.php'; } ?>
+    <?php if (defined('MATOMO_URL') && defined('MATOMO_SITE_ID')): ?>
+    <script>
+      var _paq = window._paq = window._paq || [];
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
+      (function() {
+        var u="<?php echo MATOMO_URL; ?>";
+        _paq.push(['setTrackerUrl', u+'matomo.php']);
+        _paq.push(['setSiteId', '<?php echo MATOMO_SITE_ID; ?>']);
+        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+        g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+      })();
+    </script>
+    <?php endif; ?>
+    <!-- End Matomo Code -->
 </head>
 <body>
     <header>
@@ -293,6 +310,23 @@ if ($show_group_selector) {
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="/images/favicon/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
+    <!-- Matomo -->
+    <?php if (file_exists('config.php')) { require_once 'config.php'; } ?>
+    <?php if (defined('MATOMO_URL') && defined('MATOMO_SITE_ID')): ?>
+    <script>
+      var _paq = window._paq = window._paq || [];
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
+      (function() {
+        var u="<?php echo MATOMO_URL; ?>";
+        _paq.push(['setTrackerUrl', u+'matomo.php']);
+        _paq.push(['setSiteId', '<?php echo MATOMO_SITE_ID; ?>']);
+        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+        g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+      })();
+    </script>
+    <?php endif; ?>
+    <!-- End Matomo Code -->
 </head>
 <body>
     <header>
@@ -404,6 +438,23 @@ if ($show_group_selector) {
             alert("Link kopiert: " + copyText);
         }
     </script>
+    <!-- Matomo -->
+    <?php if (file_exists('config.php')) { require_once 'config.php'; } ?>
+    <?php if (defined('MATOMO_URL') && defined('MATOMO_SITE_ID')): ?>
+    <script>
+      var _paq = window._paq = window._paq || [];
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
+      (function() {
+        var u="<?php echo MATOMO_URL; ?>";
+        _paq.push(['setTrackerUrl', u+'matomo.php']);
+        _paq.push(['setSiteId', '<?php echo MATOMO_SITE_ID; ?>']);
+        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+        g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+      })();
+    </script>
+    <?php endif; ?>
+    <!-- End Matomo Code -->
 </head>
 <body>
     <header>

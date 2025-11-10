@@ -14,6 +14,10 @@ define('COOKIE_NAME', 'wichteln_tokens'); // Name des Cookies
 define('COOKIE_LIFETIME', 60 * 60 * 24 * 90); // Cookie-Lebensdauer in Sekunden (90 Tage)
 define('COOKIE_MAX_TOKENS', 10); // Maximale Anzahl gespeicherter Tokens pro Cookie
 
+// Matomo Analytics Einstellungen
+define('MATOMO_URL', '//analytics.site.ch/'); // URL deiner Matomo Installation
+define('MATOMO_SITE_ID', '1'); // Deine Matomo Site ID
+
 // Master Admin Token (Generiere ein sicheres, zufälliges Token)
 define('MASTER_ADMIN_TOKEN', 'generate_a_secure_random_token_here');
 

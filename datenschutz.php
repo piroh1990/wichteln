@@ -25,6 +25,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Roboto&display=swap" rel="stylesheet">
     <!-- CSS Stylesheet -->
     <link rel="stylesheet" href="css/styles.css">
+    <!-- Matomo -->
+    <?php if (file_exists('config.php')) { require_once 'config.php'; } ?>
+    <?php if (defined('MATOMO_URL') && defined('MATOMO_SITE_ID')): ?>
+    <script>
+      var _paq = window._paq = window._paq || [];
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
+      (function() {
+        var u="<?php echo MATOMO_URL; ?>";
+        _paq.push(['setTrackerUrl', u+'matomo.php']);
+        _paq.push(['setSiteId', '<?php echo MATOMO_SITE_ID; ?>']);
+        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+        g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+      })();
+    </script>
+    <?php endif; ?>
+    <!-- End Matomo Code -->
 </head>
 <body>
     <header>
@@ -217,8 +234,60 @@
             
             <h2>10. Analyse-Tools und Tracking</h2>
             
+            <h3>Matomo</h3>
+            <p>
+                Diese Website verwendet Matomo, eine Open-Source-Software zur statistischen Auswertung der Besucherzugriffe. Matomo wird auf unserem eigenen Server betrieben, sodass alle Analysedaten bei uns verbleiben und nicht an Dritte weitergegeben werden.
+            </p>
+            
+            <h4>Zweck der Datenerhebung</h4>
+            <p>
+                Wir nutzen Matomo, um die Nutzung unserer Website zu analysieren und kontinuierlich zu verbessern. Die Statistiken helfen uns zu verstehen, wie Besucher unsere Website nutzen und wo wir Verbesserungen vornehmen können.
+            </p>
+            
+            <h4>Erhobene Daten</h4>
+            <p>
+                Matomo erfasst folgende Informationen:
+            </p>
+            <ul>
+                <li>Anonymisierte IP-Adresse (die letzten 2 Bytes werden entfernt)</li>
+                <li>Besuchte Seiten und Verweildauer</li>
+                <li>Browsertyp und -version</li>
+                <li>Betriebssystem</li>
+                <li>Bildschirmauflösung</li>
+                <li>Herkunftswebsite (Referrer)</li>
+                <li>Datum und Uhrzeit des Zugriffs</li>
+            </ul>
+            
+            <h4>IP-Anonymisierung</h4>
+            <p>
+                Ihre IP-Adresse wird vor der Speicherung anonymisiert, sodass keine Rückschlüsse auf einzelne Personen möglich sind. Die Daten werden ausschliesslich in anonymisierter Form verarbeitet.
+            </p>
+            
+            <h4>Cookies von Matomo</h4>
+            <p>
+                Matomo verwendet ein Cookie namens <code>_pk_id</code>, das 13 Monate gespeichert wird, um wiederkehrende Besucher zu erkennen. Dieses Cookie enthält keine personenbezogenen Daten.
+            </p>
+            
+            <h4>Widerspruchsrecht (Opt-Out)</h4>
+            <p>
+                Sie haben jederzeit das Recht, der Analyse durch Matomo zu widersprechen. Nutzen Sie dazu das folgende Opt-Out-Tool:
+            </p>
+            
+            <div class="privacy-highlight" style="background: white; border: 2px solid var(--border-color); padding: 2rem;">
+                <iframe
+                    style="border: 0; width: 100%; min-height: 200px;"
+                    src="https://stats.wichtlä.ch/index.php?module=CoreAdminHome&action=optOut&language=de&backgroundColor=ffffff&fontColor=2b2d42&fontSize=16px&fontFamily=Roboto"
+                ></iframe>
+            </div>
+            
+            <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-secondary);">
+                <strong>Hinweis:</strong> Wenn Sie Cookies in Ihrem Browser löschen, wird auch das Opt-Out-Cookie gelöscht und Sie müssen es erneut setzen.
+            </p>
+            
+            <h4>Datenschutzfreundliche Alternative</h4>
             <div class="privacy-highlight">
-                <p><strong>Keine Tracking-Tools:</strong> Wir verwenden keine Analyse-Tools oder Tracking-Software wie Google Analytics, Facebook Pixel oder ähnliche Dienste. Ihre Aktivitäten auf dieser Website werden nicht verfolgt oder analysiert.</p>
+                <span class="privacy-icon">✅</span>
+                <p><strong>Kein Tracking durch Dritte:</strong> Im Gegensatz zu Tools wie Google Analytics oder Facebook Pixel werden Ihre Daten ausschliesslich auf unserem Server gespeichert und niemals an Drittanbieter weitergegeben.</p>
             </div>
             
             <h2>11. Server-Log-Dateien</h2>
