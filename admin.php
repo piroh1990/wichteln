@@ -533,6 +533,14 @@ if (isset($_POST['draw'])) {
             </a>
         </div>
         
+        <div class="admin-info-box">
+            <div class="admin-info-icon">💡</div>
+            <div class="admin-info-content">
+                <h3 class="admin-info-title">Hinweis für dich als Administrator</h3>
+                <p class="admin-info-text">Wenn du selbst beim Wichteln mitmachen möchtest, musst du dich ebenfalls über den obigen Einladungslink als Teilnehmer registrieren. Der Admin-Link dient nur zur Verwaltung der Gruppe.</p>
+            </div>
+        </div>
+        
         <!-- Admin-Link anzeigen -->
         <h2>Admin-Link</h2>
         <p>Dieser Link ermöglicht den direkten Zugriff auf den Admin-Bereich:</p>
