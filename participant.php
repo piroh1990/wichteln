@@ -716,5 +716,8 @@ if ($show_group_selector) {
         <?php endif; ?>
 
     </div>
+    <!-- Cookie Banner -->
+    <?php include 'cookie-banner.php'; ?>
+
 </body>
 </html>

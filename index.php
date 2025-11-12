@@ -324,5 +324,8 @@
             observer.observe(el);
         });
     </script>
+    
+    <!-- Cookie Banner -->
+    <?php include 'cookie-banner.php'; ?>
 </body>
 </html>

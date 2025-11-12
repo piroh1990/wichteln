@@ -173,5 +173,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             img.src = 'captcha.php?' + new Date().getTime();
         }
     </script>
+        <!-- Cookie Banner -->
+    <?php include 'cookie-banner.php'; ?>
+
 </body>
 </html>

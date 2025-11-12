@@ -108,5 +108,8 @@
             <a href="datenschutz.php" style="color: white; text-decoration: underline;">Datenschutz</a>
         </p>
     </footer>
+    
+    <!-- Cookie Banner -->
+    <?php include 'cookie-banner.php'; ?>
 </body>
 </html>

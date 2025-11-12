@@ -140,5 +140,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <button type="submit" class="button primary">Registrieren</button>
         </form>
     </div>
+    <!-- Cookie Banner -->
+    <?php include 'cookie-banner.php'; ?>
+
 </body>
 </html>
