@@ -4,9 +4,9 @@ require_once __DIR__ . '/config.php';
 // Setze den korrekten Sendmail-Pfad
 ini_set('sendmail_path', '/usr/sbin/sendmail -t -i'); // Passe den Pfad an
 
-// Fehleranzeige (für Entwicklungszwecke, bitte entfernen in der Produktion)
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+// Fehleranzeige (in Produktion deaktiviert)
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
 error_reporting(E_ALL);
 
 // Datenbankverbindung herstellen
