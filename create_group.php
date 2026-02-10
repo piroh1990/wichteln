@@ -58,13 +58,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $gift_exchange_date_formatted
         );
         
-        send_email($admin_email, $subject, $html_message, true);
+        $email_sent = send_email($admin_email, $subject, $html_message, true);
+
+        if (!$email_sent) {
+            error_log("E-Mail mit Admin-Link konnte nicht an $admin_email gesendet werden.");
+        }
 
         // Captcha zurücksetzen
         unset($_SESSION['captcha_code']);
 
         // Weiterleitung zum Adminbereich
-        header("Location: admin.php?token=" . urlencode($admin_token));
+        $redirect_url = "admin.php?token=" . urlencode($admin_token);
+        if (!$email_sent) {
+            $redirect_url .= "&email_error=1";
+        }
+
+        header("Location: " . $redirect_url);
         exit();
     }
 }
