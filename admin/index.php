@@ -1,8 +1,7 @@
 <?php
 // /admin/index.php
 
-require_once '../functions.php';
-require_once '../config.php';
+require_once __DIR__ . '/../functions.php';
 
 // Überprüfen, ob das master_token korrekt ist
 $master_token = $_GET['master_token'] ?? '';

@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php';
+require_once __DIR__ . '/config.php';
 
 // Setze den korrekten Sendmail-Pfad
 ini_set('sendmail_path', '/usr/sbin/sendmail -t -i'); // Passe den Pfad an
