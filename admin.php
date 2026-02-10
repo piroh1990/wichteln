@@ -164,8 +164,11 @@ if (isset($_POST['resend_email'])) {
 // Teilnehmer löschen
 if (isset($_GET['delete'])) {
     $participant_id = intval($_GET['delete']);
-    $stmt = $pdo->prepare("DELETE FROM `participants` WHERE `id` = ?");
-    $stmt->execute([$participant_id]);
+    // Sicherstellen, dass die Gruppe noch nicht ausgelost wurde und der Teilnehmer zur Gruppe gehört
+    if (!$group['is_drawn']) {
+        $stmt = $pdo->prepare("DELETE FROM `participants` WHERE `id` = ? AND `group_id` = ?");
+        $stmt->execute([$participant_id, $group['id']]);
+    }
     header("Location: admin.php?token=" . urlencode($admin_token));
     exit();
 }
@@ -195,8 +198,11 @@ if (isset($_POST['add_exclusion'])) {
 // Ausschluss löschen
 if (isset($_GET['delete_exclusion'])) {
     $exclusion_id = intval($_GET['delete_exclusion']);
-    $stmt = $pdo->prepare("DELETE FROM `exclusions` WHERE `id` = ? AND `group_id` = ?");
-    $stmt->execute([$exclusion_id, $group['id']]);
+    // Sicherstellen, dass die Gruppe noch nicht ausgelost wurde
+    if (!$group['is_drawn']) {
+        $stmt = $pdo->prepare("DELETE FROM `exclusions` WHERE `id` = ? AND `group_id` = ?");
+        $stmt->execute([$exclusion_id, $group['id']]);
+    }
     header("Location: admin.php?token=" . urlencode($admin_token));
     exit();
 }
