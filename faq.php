@@ -25,21 +25,7 @@ if (file_exists('config.php')) {
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
     
-    <!-- Matomo -->
-    <?php if (defined('MATOMO_URL') && defined('MATOMO_SITE_ID')): ?>
-    <script>
-      var _paq = window._paq = window._paq || [];
-      _paq.push(['trackPageView']);
-      _paq.push(['enableLinkTracking']);
-      (function() {
-        var u="<?php echo MATOMO_URL; ?>";
-        _paq.push(['setTrackerUrl', u+'matomo.php']);
-        _paq.push(['setSiteId', '<?php echo MATOMO_SITE_ID; ?>']);
-        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-        g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
-      })();
-    </script>
-    <?php endif; ?>
+    <?php include 'includes/matomo_tracking.php'; ?>
     
 </head>
 <body>
