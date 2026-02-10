@@ -15,6 +15,11 @@ if (!$group) {
     die('Ungültiger Token.');
 }
 
+// Check for email error from creation
+if (isset($_GET['email_error'])) {
+    $email_error = "Die E-Mail mit dem Admin-Link konnte nicht gesendet werden. Bitte speichere diese Seite als Lesezeichen, da du den Link sonst verlierst!";
+}
+
 // Teilnehmer abrufen
 $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `group_id` = ?");
 $stmt->execute([$group['id']]);
