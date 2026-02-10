@@ -309,14 +309,16 @@ if (isset($_POST['draw'])) {
             $stmt->execute([$group['id']]);
             $participants = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+            // Pre-load participants for O(1) lookup to avoid N+1 query problem
+            $participants_by_id = array_column($participants, null, 'id');
+
             // E-Mails versenden
             foreach ($participants as $participant) {
                 if (!empty($participant['email'])) {
                     // Zugewiesenen Teilnehmer abrufen
                     if (!empty($participant['assigned_to'])) {
-                        $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `id` = ?");
-                        $stmt->execute([$participant['assigned_to']]);
-                        $assigned = $stmt->fetch(PDO::FETCH_ASSOC);
+                        // Use pre-loaded array instead of database query
+                        $assigned = $participants_by_id[$participant['assigned_to']] ?? null;
 
                         if ($assigned) {
                             // Gruppendetails abrufen
