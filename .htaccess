@@ -2,3 +2,37 @@
 
 # UTF-8 als Standard
 AddDefaultCharset UTF-8
+
+# Security Headers
+<IfModule mod_headers.c>
+    # Prevents MIME based attacks
+    Header set X-Content-Type-Options "nosniff"
+
+    # Prevents Clickjacking
+    Header set X-Frame-Options "SAMEORIGIN"
+
+    # Enable XSS Protection (Legacy)
+    Header set X-XSS-Protection "1; mode=block"
+
+    # Control Referrer Information
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # HSTS (HTTP Strict Transport Security) - Only sent over HTTPS
+    # Enforces HTTPS for 1 year, including subdomains
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains" "expr=%{HTTPS} == 'on'"
+</IfModule>
+
+# Protect sensitive files
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# Protect config and dependency files
+<FilesMatch "^(config\.php|composer\.json|composer\.lock|package\.json|package-lock\.json|yarn\.lock)$">
+    Require all denied
+</FilesMatch>
+
+# Protect log, sql, and backup files
+<FilesMatch "\.(log|sql|sh|bak|swp)$">
+    Require all denied
+</FilesMatch>
