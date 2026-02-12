@@ -2740,6 +2740,51 @@ a.button:disabled {
     letter-spacing: 0.5px;
 }
 
+/* Admin Info Box */
+.admin-info-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    border-radius: 12px;
+    border-left: 4px solid var(--secondary-color);
+    background: rgba(42, 157, 143, 0.05);
+    margin-bottom: 1.5rem;
+}
+
+.admin-info-box.warning {
+    background: rgba(239, 71, 111, 0.06);
+    border-left-color: var(--error);
+}
+
+.admin-info-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.admin-info-content {
+    flex: 1;
+}
+
+.admin-info-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.admin-info-box.warning .admin-info-title {
+    color: var(--error);
+}
+
+.admin-info-text {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 0;
+}
+
 .ad-test-placeholder {
     background: #e3f2fd;
     border: 3px dashed #2196F3;

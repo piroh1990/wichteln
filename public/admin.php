@@ -521,10 +521,10 @@ if (isset($_POST['draw'])) {
         <?php endif; ?>
 
         <!-- Auto-Lösch Hinweis -->
-        <div class="admin-info-box" style="background: rgba(230, 57, 70, 0.05); border-left-color: #e63946;">
-            <div class="admin-info-icon" style="color: #e63946;">ℹ️</div>
+        <div class="admin-info-box warning">
+            <div class="admin-info-icon">ℹ️</div>
             <div class="admin-info-content">
-                <h3 class="admin-info-title" style="color: #e63946;">Wichtiger Hinweis zum Datenschutz</h3>
+                <h3 class="admin-info-title">Wichtiger Hinweis zum Datenschutz</h3>
                 <p class="admin-info-text">
                     Diese Gruppe und alle personenbezogenen Daten werden automatisch am <strong><?php echo $deletion_date; ?></strong> gelöscht (3 Monate nach dem Event).
                     Anonymisierte Statistiken bleiben erhalten.
