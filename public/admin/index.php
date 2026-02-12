@@ -78,6 +78,11 @@ $stmt = $pdo->prepare("
 $stmt->execute();
 $groups = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Archivierte Statistiken abrufen
+$stmt = $pdo->prepare("SELECT * FROM `group_statistics` ORDER BY `archived_at` DESC");
+$stmt->execute();
+$archived_stats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 // Gesamtstatistiken berechnen
 $total_groups = count($groups);
 $total_participants = 0;
@@ -92,6 +97,10 @@ foreach ($groups as $group) {
         $total_not_drawn++;
     }
 }
+
+// Archiv-Statistiken
+$total_archived_groups = count($archived_stats);
+$total_archived_participants = array_sum(array_column($archived_stats, 'participant_count'));
 ?>
 <!DOCTYPE html>
 <html lang="de">
@@ -148,9 +157,9 @@ foreach ($groups as $group) {
                     <div class="stat-card-icon primary">🎁</div>
                     <span class="stat-card-label">Gesamt Gruppen</span>
                 </div>
-                <div class="stat-card-value"><?php echo $total_groups; ?></div>
+                <div class="stat-card-value"><?php echo $total_groups + $total_archived_groups; ?></div>
                 <div class="stat-card-footer">
-                    Aktive Wichtel-Gruppen
+                    <?php echo $total_groups; ?> Aktiv / <?php echo $total_archived_groups; ?> Archiviert
                 </div>
             </div>
 
@@ -159,9 +168,9 @@ foreach ($groups as $group) {
                     <div class="stat-card-icon success">👥</div>
                     <span class="stat-card-label">Teilnehmer</span>
                 </div>
-                <div class="stat-card-value"><?php echo $total_participants; ?></div>
+                <div class="stat-card-value"><?php echo $total_participants + $total_archived_participants; ?></div>
                 <div class="stat-card-footer">
-                    Registrierte Personen
+                    <?php echo $total_participants; ?> Aktiv / <?php echo $total_archived_participants; ?> Archiviert
                 </div>
             </div>
 
@@ -287,6 +296,59 @@ foreach ($groups as $group) {
                     <div class="empty-state-icon">🎁</div>
                     <h3 class="empty-state-title">Keine Gruppen vorhanden</h3>
                     <p class="empty-state-text">Es wurden noch keine Wichtel-Gruppen erstellt.</p>
+                </div>
+            <?php endif; ?>
+        </div>
+
+        <!-- Archived Groups Section -->
+        <div class="groups-section" style="margin-top: 3rem;">
+            <div class="section-header">
+                <h2 class="section-title">Archivierte Gruppen (Statistik)</h2>
+            </div>
+
+            <?php if ($archived_stats): ?>
+                <div style="overflow-x: auto; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                    <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
+                        <thead>
+                            <tr style="background: #f8f9fa; text-align: left; border-bottom: 2px solid #e9ecef;">
+                                <th style="padding: 12px 20px; color: #495057; font-weight: 600;">Event Datum</th>
+                                <th style="padding: 12px 20px; color: #495057; font-weight: 600;">Teilnehmer</th>
+                                <th style="padding: 12px 20px; color: #495057; font-weight: 600;">Budget</th>
+                                <th style="padding: 12px 20px; color: #495057; font-weight: 600;">Status</th>
+                                <th style="padding: 12px 20px; color: #495057; font-weight: 600;">Archiviert am</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($archived_stats as $stat): ?>
+                                <tr style="border-bottom: 1px solid #e9ecef;">
+                                    <td style="padding: 12px 20px;">
+                                        <?php echo $stat['gift_exchange_date'] ? date('d.m.Y', strtotime($stat['gift_exchange_date'])) : '<span style="color: #adb5bd;">Unbekannt</span>'; ?>
+                                    </td>
+                                    <td style="padding: 12px 20px;">
+                                        <?php echo $stat['participant_count']; ?>
+                                        <span style="color: #adb5bd; font-size: 0.85em;">(<?php echo $stat['participant_with_email_count']; ?> mit Mail)</span>
+                                    </td>
+                                    <td style="padding: 12px 20px;">
+                                        <?php echo $stat['budget'] ? number_format($stat['budget'], 2) . ' CHF' : '-'; ?>
+                                    </td>
+                                    <td style="padding: 12px 20px;">
+                                        <?php if ($stat['is_drawn']): ?>
+                                            <span style="background: #d4edda; color: #155724; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; font-weight: 500;">Ausgelost</span>
+                                        <?php else: ?>
+                                            <span style="background: #e2e3e5; color: #383d41; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; font-weight: 500;">Nicht beendet</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td style="padding: 12px 20px; color: #6c757d; font-size: 0.9em;">
+                                        <?php echo date('d.m.Y H:i', strtotime($stat['archived_at'])); ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php else: ?>
+                <div class="empty-state" style="padding: 2rem; background: #f8f9fa; border-radius: 8px; text-align: center;">
+                    <p style="color: #6c757d; margin: 0;">Keine archivierten Daten vorhanden.</p>
                 </div>
             <?php endif; ?>
         </div>
