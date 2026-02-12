@@ -2,21 +2,21 @@ openapi: 3.0.3
 info:
   title: Wichtlä.ch API
   description: |
-    REST API für die Wichtlä.ch Plattform - Secret Santa / Wichteln Online-Tool
+    REST API for the Wichtlä.ch Platform - Secret Santa / Wichteln Online Tool
     
-    ## Authentifizierung
-    Alle Endpoints (außer `/`) benötigen einen API-Token:
+    ## Authentication
+    All endpoints (except `/`) require an API token:
     - **Bearer Token**: `Authorization: Bearer YOUR_TOKEN`
     - **X-API-Token Header**: `X-API-Token: YOUR_TOKEN`
-    - **Query Parameter**: `?api_token=YOUR_TOKEN` (nur für Entwicklung)
+    - **Query Parameter**: `?api_token=YOUR_TOKEN` (development only)
     
     ## Rate Limiting
-    - 60 Anfragen pro Minute pro IP-Adresse
-    - Bei Überschreitung: HTTP 429 Response
+    - 60 requests per minute per IP address
+    - On exceed: HTTP 429 Response
     
     ## CORS
-    - Cross-Origin Requests werden unterstützt
-    - Preflight (OPTIONS) Requests werden automatisch behandelt
+    - Cross-Origin Requests are supported
+    - Preflight (OPTIONS) Requests are handled automatically
   version: 1.0.0
   contact:
     name: GitHub Repository
@@ -33,15 +33,15 @@ servers:
 
 tags:
   - name: groups
-    description: Verwaltung von Wichtel-Gruppen
+    description: Management of Secret Santa groups
   - name: participants
-    description: Verwaltung von Teilnehmern
+    description: Management of participants
   - name: draw
-    description: Auslosung durchführen und zurücksetzen
+    description: Perform and reset the draw
   - name: exclusions
-    description: Verwaltung von Ausschlüssen
+    description: Management of exclusions
   - name: info
-    description: API Informationen
+    description: API Information
 
 security:
   - BearerAuth: []
@@ -53,12 +53,12 @@ paths:
     get:
       tags:
         - info
-      summary: API Informationen
-      description: Gibt Informationen über verfügbare Endpoints zurück (kein Token nötig)
+      summary: API Information
+      description: Returns information about available endpoints (no token required)
       security: []
       responses:
         '200':
-          description: API Informationen erfolgreich abgerufen
+          description: API Information successfully retrieved
           content:
             application/json:
               schema:
@@ -68,40 +68,40 @@ paths:
     get:
       tags:
         - groups
-      summary: Gruppen abrufen
-      description: Liste aller Gruppen oder eine einzelne Gruppe nach ID/Token
+      summary: Retrieve Groups
+      description: List of all groups or a single group by ID/Token
       parameters:
         - name: id
           in: query
           schema:
             type: integer
-          description: Gruppe nach ID abrufen
+          description: Retrieve group by ID
         - name: admin_token
           in: query
           schema:
             type: string
-          description: Gruppe nach Admin-Token abrufen
+          description: Retrieve group by Admin Token
         - name: invite_token
           in: query
           schema:
             type: string
-          description: Gruppe nach Einladungs-Token abrufen
+          description: Retrieve group by Invite Token
         - name: page
           in: query
           schema:
             type: integer
             default: 1
-          description: Seitennummer für Pagination
+          description: Page number for pagination
         - name: per_page
           in: query
           schema:
             type: integer
             default: 20
             maximum: 100
-          description: Einträge pro Seite
+          description: Items per page
       responses:
         '200':
-          description: Erfolgreich
+          description: Success
           content:
             application/json:
               schema:
@@ -118,8 +118,8 @@ paths:
     post:
       tags:
         - groups
-      summary: Gruppe erstellen
-      description: Erstellt eine neue Wichtel-Gruppe
+      summary: Create Group
+      description: Creates a new Secret Santa group
       requestBody:
         required: true
         content:
@@ -128,7 +128,7 @@ paths:
               $ref: '#/components/schemas/CreateGroupRequest'
       responses:
         '201':
-          description: Gruppe erfolgreich erstellt
+          description: Group successfully created
           content:
             application/json:
               schema:
@@ -143,15 +143,15 @@ paths:
     put:
       tags:
         - groups
-      summary: Gruppe aktualisieren
-      description: Aktualisiert Budget, Beschreibung oder Datum einer Gruppe
+      summary: Update Group
+      description: Updates budget, description, or date of a group
       parameters:
         - name: id
           in: query
           required: true
           schema:
             type: integer
-          description: ID der zu aktualisierenden Gruppe
+          description: ID of the group to update
       requestBody:
         required: true
         content:
@@ -160,7 +160,7 @@ paths:
               $ref: '#/components/schemas/UpdateGroupRequest'
       responses:
         '200':
-          description: Gruppe erfolgreich aktualisiert
+          description: Group successfully updated
           content:
             application/json:
               schema:
@@ -175,18 +175,18 @@ paths:
     delete:
       tags:
         - groups
-      summary: Gruppe löschen
-      description: Löscht eine Gruppe und alle zugehörigen Teilnehmer und Ausschlüsse
+      summary: Delete Group
+      description: Deletes a group and all associated participants and exclusions
       parameters:
         - name: id
           in: query
           required: true
           schema:
             type: integer
-          description: ID der zu löschenden Gruppe
+          description: ID of the group to delete
       responses:
         '200':
-          description: Gruppe erfolgreich gelöscht
+          description: Group successfully deleted
           content:
             application/json:
               schema:
@@ -200,27 +200,27 @@ paths:
     get:
       tags:
         - participants
-      summary: Teilnehmer abrufen
-      description: Liste aller Teilnehmer oder einen einzelnen Teilnehmer
+      summary: Retrieve Participants
+      description: List of all participants or a single participant
       parameters:
         - name: group_id
           in: query
           schema:
             type: integer
-          description: Alle Teilnehmer einer Gruppe
+          description: All participants of a group
         - name: id
           in: query
           schema:
             type: integer
-          description: Teilnehmer nach ID
+          description: Participant by ID
         - name: token
           in: query
           schema:
             type: string
-          description: Teilnehmer nach Token
+          description: Participant by Token
       responses:
         '200':
-          description: Erfolgreich
+          description: Success
           content:
             application/json:
               schema:
@@ -235,8 +235,8 @@ paths:
     post:
       tags:
         - participants
-      summary: Teilnehmer erstellen
-      description: Registriert einen neuen Teilnehmer in einer Gruppe
+      summary: Create Participant
+      description: Registers a new participant in a group
       requestBody:
         required: true
         content:
@@ -245,7 +245,7 @@ paths:
               $ref: '#/components/schemas/CreateParticipantRequest'
       responses:
         '201':
-          description: Teilnehmer erfolgreich erstellt
+          description: Participant successfully created
           content:
             application/json:
               schema:
@@ -258,19 +258,19 @@ paths:
     put:
       tags:
         - participants
-      summary: Teilnehmer aktualisieren
-      description: Aktualisiert Teilnehmerdaten (nach Auslosung nur Wunschliste)
+      summary: Update Participant
+      description: Updates participant data (only wishlist after draw)
       parameters:
         - name: id
           in: query
           schema:
             type: integer
-          description: Teilnehmer ID
+          description: Participant ID
         - name: token
           in: query
           schema:
             type: string
-          description: Teilnehmer Token
+          description: Participant Token
       requestBody:
         required: true
         content:
@@ -279,7 +279,7 @@ paths:
               $ref: '#/components/schemas/UpdateParticipantRequest'
       responses:
         '200':
-          description: Teilnehmer erfolgreich aktualisiert
+          description: Participant successfully updated
           content:
             application/json:
               schema:
@@ -294,18 +294,18 @@ paths:
     delete:
       tags:
         - participants
-      summary: Teilnehmer löschen
-      description: Löscht einen Teilnehmer (nur vor der Auslosung)
+      summary: Delete Participant
+      description: Deletes a participant (only before the draw)
       parameters:
         - name: id
           in: query
           required: true
           schema:
             type: integer
-          description: ID des zu löschenden Teilnehmers
+          description: ID of the participant to delete
       responses:
         '200':
-          description: Teilnehmer erfolgreich gelöscht
+          description: Participant successfully deleted
           content:
             application/json:
               schema:
@@ -321,18 +321,18 @@ paths:
     post:
       tags:
         - draw
-      summary: Auslosung durchführen oder zurücksetzen
+      summary: Perform or Reset Draw
       description: |
-        Führt die Wichtel-Auslosung durch oder setzt sie zurück
-        - Standard: Auslosung durchführen
-        - Mit `?action=reset`: Auslosung zurücksetzen
+        Performs the Secret Santa draw or resets it
+        - Default: Perform draw
+        - With `?action=reset`: Reset draw
       parameters:
         - name: action
           in: query
           schema:
             type: string
             enum: [reset]
-          description: "Aktion: 'reset' zum Zurücksetzen"
+          description: "Action: 'reset' to reset the draw"
       requestBody:
         required: true
         content:
@@ -343,7 +343,7 @@ paths:
                 - $ref: '#/components/schemas/ResetDrawRequest'
       responses:
         '200':
-          description: Erfolgreich
+          description: Success
           content:
             application/json:
               schema:
@@ -361,18 +361,18 @@ paths:
     get:
       tags:
         - exclusions
-      summary: Ausschlüsse abrufen
-      description: Liste aller Ausschlüsse einer Gruppe
+      summary: Retrieve Exclusions
+      description: List of all exclusions for a group
       parameters:
         - name: group_id
           in: query
           required: true
           schema:
             type: integer
-          description: ID der Gruppe
+          description: ID of the group
       responses:
         '200':
-          description: Erfolgreich
+          description: Success
           content:
             application/json:
               schema:
@@ -385,8 +385,8 @@ paths:
     post:
       tags:
         - exclusions
-      summary: Ausschluss erstellen
-      description: Erstellt einen neuen Ausschluss (nur vor der Auslosung)
+      summary: Create Exclusion
+      description: Creates a new exclusion (only before the draw)
       requestBody:
         required: true
         content:
@@ -395,7 +395,7 @@ paths:
               $ref: '#/components/schemas/CreateExclusionRequest'
       responses:
         '201':
-          description: Ausschluss erfolgreich erstellt
+          description: Exclusion successfully created
           content:
             application/json:
               schema:
@@ -408,18 +408,18 @@ paths:
     delete:
       tags:
         - exclusions
-      summary: Ausschluss löschen
-      description: Löscht einen Ausschluss (nur vor der Auslosung)
+      summary: Delete Exclusion
+      description: Deletes an exclusion (only before the draw)
       parameters:
         - name: id
           in: query
           required: true
           schema:
             type: integer
-          description: ID des zu löschenden Ausschlusses
+          description: ID of the exclusion to delete
       responses:
         '200':
-          description: Ausschluss erfolgreich gelöscht
+          description: Exclusion successfully deleted
           content:
             application/json:
               schema:
@@ -437,17 +437,17 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      description: Bearer Token im Authorization Header
+      description: Bearer Token in Authorization Header
     ApiKeyHeader:
       type: apiKey
       in: header
       name: X-API-Token
-      description: API Token im X-API-Token Header
+      description: API Token in X-API-Token Header
     ApiKeyQuery:
       type: apiKey
       in: query
       name: api_token
-      description: API Token als Query Parameter (nur für Entwicklung)
+      description: API Token as Query Parameter (development only)
 
   schemas:
     Group:
@@ -458,7 +458,7 @@ components:
           example: 1
         name:
           type: string
-          example: "Wichtelgruppe 2025"
+          example: "Secret Santa 2025"
         admin_token:
           type: string
           example: "abc123def456..."
@@ -475,7 +475,7 @@ components:
         description:
           type: string
           nullable: true
-          example: "Firmen-Wichteln"
+          example: "Office Party"
         gift_exchange_date:
           type: string
           format: date
@@ -500,11 +500,11 @@ components:
           example: 1
         name:
           type: string
-          example: "Max Mustermann"
+          example: "John Doe"
         email:
           type: string
           format: email
-          example: "max@example.com"
+          example: "john@example.com"
         token:
           type: string
           example: "part123token456..."
@@ -515,7 +515,7 @@ components:
         wishlist:
           type: string
           nullable: true
-          example: "Bücher, Schokolade"
+          example: "Books, Chocolate"
         created_at:
           type: string
           format: date-time
@@ -535,10 +535,10 @@ components:
           example: 2
         participant_name:
           type: string
-          example: "Max Mustermann"
+          example: "John Doe"
         excluded_name:
           type: string
-          example: "Anna Beispiel"
+          example: "Jane Example"
         created_at:
           type: string
           format: date-time
@@ -551,7 +551,7 @@ components:
       properties:
         name:
           type: string
-          example: "Wichtelgruppe 2025"
+          example: "Secret Santa 2025"
         admin_email:
           type: string
           format: email
@@ -562,7 +562,7 @@ components:
           example: 25.00
         description:
           type: string
-          example: "Firmen-Wichteln"
+          example: "Office Party"
         gift_exchange_date:
           type: string
           format: date
@@ -577,7 +577,7 @@ components:
           example: 30.00
         description:
           type: string
-          example: "Neuer Text"
+          example: "New text"
         gift_exchange_date:
           type: string
           format: date
@@ -595,28 +595,28 @@ components:
           example: 1
         name:
           type: string
-          example: "Max Mustermann"
+          example: "John Doe"
         email:
           type: string
           format: email
-          example: "max@example.com"
+          example: "john@example.com"
         wishlist:
           type: string
-          example: "Bücher, Schokolade"
+          example: "Books, Chocolate"
 
     UpdateParticipantRequest:
       type: object
       properties:
         name:
           type: string
-          example: "Max Mustermann"
+          example: "John Doe"
         email:
           type: string
           format: email
-          example: "max@example.com"
+          example: "john@example.com"
         wishlist:
           type: string
-          example: "Neue Wunschliste"
+          example: "New Wishlist"
 
     CreateExclusionRequest:
       type: object
@@ -665,7 +665,7 @@ components:
           example: true
         message:
           type: string
-          example: "Erfolgreich"
+          example: "Success"
         data:
           type: object
           nullable: true
@@ -927,7 +927,7 @@ components:
           example: false
         message:
           type: string
-          example: "Fehler beim Verarbeiten der Anfrage"
+          example: "Error processing the request"
         data:
           type: object
           nullable: true
@@ -936,45 +936,45 @@ components:
 
   responses:
     BadRequest:
-      description: Ungültige Anfrage
+      description: Invalid request
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
           example:
             success: false
-            message: "Fehlende erforderliche Felder"
+            message: "Missing required fields"
             data: null
 
     Unauthorized:
-      description: Ungültiges oder fehlendes API-Token
+      description: Invalid or missing API Token
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
           example:
             success: false
-            message: "Ungültiges oder fehlendes API-Token"
+            message: "Invalid or missing API Token"
             data: null
 
     NotFound:
-      description: Ressource nicht gefunden
+      description: Resource not found
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
           example:
             success: false
-            message: "Ressource nicht gefunden"
+            message: "Resource not found"
             data: null
 
     RateLimitExceeded:
-      description: Rate Limit überschritten
+      description: Rate Limit exceeded
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
           example:
             success: false
-            message: "Rate Limit überschritten. Bitte warten Sie eine Minute."
+            message: "Rate Limit exceeded. Please wait a minute."
             data: null
