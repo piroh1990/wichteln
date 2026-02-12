@@ -1,6 +1,6 @@
 <?php
-if (file_exists('config.php')) {
-    require_once 'config.php';
+if (file_exists(__DIR__ . '/../includes/config.php')) {
+    require_once __DIR__ . '/../includes/config.php';
 }
 ?>
 <!DOCTYPE html>
@@ -25,11 +25,11 @@ if (file_exists('config.php')) {
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
     
-    <?php include 'includes/matomo_tracking.php'; ?>
+    <?php include __DIR__ . '/../includes/templates/matomo_tracking.php'; ?>
     
 </head>
 <body>
-    <?php include 'includes/navigation.php'; ?>
+    <?php include __DIR__ . '/../includes/templates/navigation.php'; ?>
     
     <div class="content-page">
         <div class="breadcrumb">
@@ -283,6 +283,6 @@ if (file_exists('config.php')) {
         </p>
     </footer>
     
-    <?php include 'cookie-banner.php'; ?>
+    <?php include __DIR__ . '/cookie-banner.php'; ?>
 </body>
 </html>

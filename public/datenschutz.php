@@ -25,10 +25,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Roboto&display=swap" rel="stylesheet">
     <!-- CSS Stylesheet -->
     <link rel="stylesheet" href="css/styles.css">
-    <?php include 'includes/matomo_tracking.php'; ?>
+    <?php include __DIR__ . '/../includes/templates/matomo_tracking.php'; ?>
 </head>
 <body>
-    <?php include 'includes/navigation.php'; ?>
+    <?php include __DIR__ . '/../includes/templates/navigation.php'; ?>
     
     <header>
         <a href="index.php">
@@ -402,6 +402,6 @@
     </footer>
     
     <!-- Cookie Banner -->
-    <?php include 'cookie-banner.php'; ?>
+    <?php include __DIR__ . '/cookie-banner.php'; ?>
 </body>
 </html>

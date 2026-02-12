@@ -1,6 +1,6 @@
 <?php
-if (file_exists('config.php')) {
-    require_once 'config.php';
+if (file_exists(__DIR__ . '/../includes/config.php')) {
+    require_once __DIR__ . '/../includes/config.php';
 }
 ?>
 <!DOCTYPE html>
@@ -28,11 +28,11 @@ if (file_exists('config.php')) {
     
 
     
-    <?php include 'includes/matomo_tracking.php'; ?>
+    <?php include __DIR__ . '/../includes/templates/matomo_tracking.php'; ?>
     
 </head>
 <body>
-    <?php include 'includes/navigation.php'; ?>
+    <?php include __DIR__ . '/../includes/templates/navigation.php'; ?>
     
     <div class="content-page">
         <div class="breadcrumb">
@@ -171,6 +171,6 @@ if (file_exists('config.php')) {
         </p>
     </footer>
     
-    <?php include 'cookie-banner.php'; ?>
+    <?php include __DIR__ . '/cookie-banner.php'; ?>
 </body>
 </html>

@@ -1,7 +1,7 @@
 <?php
 // admin.php
 
-require_once 'functions.php';
+require_once __DIR__ . '/../includes/functions.php';
 
 $admin_token = $_GET['token'] ?? '';
 $pdo = db_connect();
@@ -435,7 +435,7 @@ if (isset($_POST['draw'])) {
             document.body.removeChild(tempInput);
         }
     </script>
-    <?php include 'includes/matomo_tracking.php'; ?>
+    <?php include __DIR__ . '/../includes/templates/matomo_tracking.php'; ?>
 </head>
 <body>
     <header>
@@ -756,6 +756,6 @@ if (isset($_POST['draw'])) {
     </div>
     
     <!-- Footer -->
-    <?php include 'includes/footer.php'; ?>
+    <?php include __DIR__ . '/../includes/templates/footer.php'; ?>
 </body>
 </html>
