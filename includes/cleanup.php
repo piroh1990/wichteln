@@ -87,10 +87,21 @@ function cleanup_old_groups($pdo) {
                     $group['created_at']
                 ]);
 
-                // 3. Delete Group (Cascades to participants and exclusions)
+                // 3. Delete Group (Manual cleanup to ensure FK constraints are respected)
+
+                // First delete exclusions (referencing participants and group)
+                $stmt = $pdo->prepare("DELETE FROM `exclusions` WHERE `group_id` = ?");
+                $stmt->execute([$group_id]);
+
+                // Unset assignments to break self-referencing loops in participants
                 $stmt = $pdo->prepare("UPDATE `participants` SET `assigned_to` = NULL WHERE `group_id` = ?");
                 $stmt->execute([$group_id]);
 
+                // Delete participants (referencing group)
+                $stmt = $pdo->prepare("DELETE FROM `participants` WHERE `group_id` = ?");
+                $stmt->execute([$group_id]);
+
+                // Finally delete the group
                 $stmt = $pdo->prepare("DELETE FROM `groups` WHERE `id` = ?");
                 $stmt->execute([$group_id]);
 
