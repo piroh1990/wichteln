@@ -192,6 +192,22 @@ ini_set('sendmail_path', '/usr/sbin/sendmail -t -i');
 3. Registriere Teilnehmer
 4. Teste die Auslosung
 
+### Schritt 7: Automatische Bereinigung einrichten (Cronjob)
+
+Um alte Gruppen (älter als 3 Monate) automatisch zu löschen und Statistiken zu archivieren, richte einen täglichen Cronjob ein:
+
+1. Cron-Tabelle bearbeiten:
+```bash
+crontab -e
+```
+
+2. Zeile hinzufügen (läuft täglich um 03:00 Uhr):
+```
+0 3 * * * /usr/bin/php /path/to/wichtel-app/scripts/cleanup_groups.php >> /path/to/wichtel-app/logs/cleanup.log 2>&1
+```
+
+*Hinweis: Passe die Pfade entsprechend deiner Installation an.*
+
 ## 📁 Projektstruktur
 
 ```
