@@ -1,14 +1,14 @@
 # Wichtlä.ch API Documentation
 
-REST API für die Wichtlä.ch Android-App und andere Clients.
+REST API for the Wichtlä.ch Android App and other clients.
 
-## 🔐 Authentifizierung
+## 🔐 Authentication
 
-Die API verwendet Token-basierte Authentifizierung. Jeder Request muss einen gültigen API-Token enthalten.
+The API uses token-based authentication. Every request must include a valid API token.
 
-### Token-Übergabe
+### Passing the Token
 
-**Option 1: Authorization Header (empfohlen)**
+**Option 1: Authorization Header (Recommended)**
 ```http
 Authorization: Bearer YOUR_API_TOKEN
 ```
@@ -18,21 +18,21 @@ Authorization: Bearer YOUR_API_TOKEN
 X-API-Token: YOUR_API_TOKEN
 ```
 
-**Option 3: Query/Body Parameter (nur für Entwicklung)**
+**Option 3: Query/Body Parameter (Development only)**
 ```http
 ?api_token=YOUR_API_TOKEN
 ```
 
-### Token konfigurieren
+### Configure Token
 
-1. Generiere einen sicheren Token:
+1. Generate a secure token:
 ```bash
 php -r "echo bin2hex(random_bytes(32));"
 ```
 
-2. Setze in `includes/api_config.php`:
+2. Set in `includes/api_config.php`:
 ```php
-define('API_TOKEN', 'dein_generierter_token');
+define('API_TOKEN', 'your_generated_token');
 ```
 
 ## 📋 Base URL
@@ -43,28 +43,28 @@ https://wichtlä.ch/api/
 
 ## 🎯 Endpoints
 
-### Groups (Gruppen)
+### Groups
 
-#### Liste aller Gruppen
+#### List all groups
 ```http
 GET /api/groups.php
 ```
 
 **Query Parameters:**
-- `page` (optional): Seitennummer (default: 1)
-- `per_page` (optional): Einträge pro Seite (default: 20, max: 100)
+- `page` (optional): Page number (default: 1)
+- `per_page` (optional): Items per page (default: 20, max: 100)
 
 **Response:**
 ```json
 {
   "success": true,
-  "message": "Gruppen erfolgreich abgerufen",
+  "message": "Groups successfully retrieved",
   "data": [
     {
       "id": 1,
-      "name": "Wichtelgruppe 2025",
+      "name": "Secret Santa 2025",
       "budget": "25.00",
-      "description": "Firmen-Wichteln",
+      "description": "Office Party",
       "gift_exchange_date": "2025-12-24",
       "is_drawn": 0,
       "created_at": "2025-10-10 12:00:00"
@@ -82,7 +82,7 @@ GET /api/groups.php
 }
 ```
 
-#### Einzelne Gruppe abrufen
+#### Get single group
 ```http
 GET /api/groups.php?id=1
 GET /api/groups.php?admin_token=xxx
@@ -93,15 +93,15 @@ GET /api/groups.php?invite_token=xxx
 ```json
 {
   "success": true,
-  "message": "Gruppe erfolgreich abgerufen",
+  "message": "Group successfully retrieved",
   "data": {
     "id": 1,
-    "name": "Wichtelgruppe 2025",
+    "name": "Secret Santa 2025",
     "admin_token": "...",
     "invite_token": "...",
     "admin_email": "admin@example.com",
     "budget": "25.00",
-    "description": "Firmen-Wichteln",
+    "description": "Office Party",
     "gift_exchange_date": "2025-12-24",
     "is_drawn": 0,
     "created_at": "2025-10-10 12:00:00",
@@ -111,16 +111,16 @@ GET /api/groups.php?invite_token=xxx
 }
 ```
 
-#### Neue Gruppe erstellen
+#### Create new group
 ```http
 POST /api/groups.php
 Content-Type: application/json
 
 {
-  "name": "Wichtelgruppe 2025",
+  "name": "Secret Santa 2025",
   "admin_email": "admin@example.com",
   "budget": 25.00,
-  "description": "Firmen-Wichteln",
+  "description": "Office Party",
   "gift_exchange_date": "2025-12-24"
 }
 ```
@@ -129,10 +129,10 @@ Content-Type: application/json
 ```json
 {
   "success": true,
-  "message": "Gruppe erfolgreich erstellt",
+  "message": "Group successfully created",
   "data": {
     "id": 1,
-    "name": "Wichtelgruppe 2025",
+    "name": "Secret Santa 2025",
     "admin_token": "...",
     "invite_token": "...",
     "admin_link": "https://wichtlä.ch/admin.php?token=...",
@@ -141,33 +141,33 @@ Content-Type: application/json
 }
 ```
 
-#### Gruppe aktualisieren
+#### Update group
 ```http
 PUT /api/groups.php?id=1
 Content-Type: application/json
 
 {
   "budget": 30.00,
-  "description": "Neuer Text",
+  "description": "New text",
   "gift_exchange_date": "2025-12-25"
 }
 ```
 
-**Erlaubte Felder:**
-- `budget` (optional): Neues Budget (numerisch)
-- `description` (optional): Neue Beschreibung
-- `gift_exchange_date` (optional): Neues Datum (Format: YYYY-MM-DD)
+**Allowed Fields:**
+- `budget` (optional): New budget (numeric)
+- `description` (optional): New description
+- `gift_exchange_date` (optional): New date (Format: YYYY-MM-DD)
 
 **Response:**
 ```json
 {
   "success": true,
-  "message": "Gruppe erfolgreich aktualisiert",
+  "message": "Group successfully updated",
   "data": {
     "id": 1,
-    "name": "Wichtelgruppe 2025",
+    "name": "Secret Santa 2025",
     "budget": "30.00",
-    "description": "Neuer Text",
+    "description": "New text",
     "gift_exchange_date": "2025-12-25",
     "is_drawn": 0,
     "created_at": "2025-10-10 12:00:00"
@@ -179,12 +179,12 @@ Content-Type: application/json
 ```json
 {
   "success": false,
-  "message": "Gruppe nicht gefunden",
+  "message": "Group not found",
   "data": null
 }
 ```
 
-#### Gruppe löschen
+#### Delete group
 ```http
 DELETE /api/groups.php?id=1
 ```
@@ -193,7 +193,7 @@ DELETE /api/groups.php?id=1
 ```json
 {
   "success": true,
-  "message": "Gruppe und alle zugehörigen Daten wurden gelöscht",
+  "message": "Group and all associated data deleted",
   "data": {
     "deleted_group_id": 1,
     "deleted_participants": 5,
@@ -202,19 +202,19 @@ DELETE /api/groups.php?id=1
 }
 ```
 
-**Hinweis:** Löscht auch alle Teilnehmer und Ausschlüsse der Gruppe (CASCADE DELETE).
+**Note:** Deletes all participants and exclusions of the group as well (CASCADE DELETE).
 
 ---
 
-### Participants (Teilnehmer)
+### Participants
 
-#### Liste aller Teilnehmer
+#### List all participants
 ```http
 GET /api/participants.php
 GET /api/participants.php?group_id=1
 ```
 
-#### Einzelnen Teilnehmer abrufen
+#### Get single participant
 ```http
 GET /api/participants.php?id=1
 GET /api/participants.php?token=xxx
@@ -224,23 +224,23 @@ GET /api/participants.php?token=xxx
 ```json
 {
   "success": true,
-  "message": "Teilnehmer erfolgreich abgerufen",
+  "message": "Participant successfully retrieved",
   "data": {
     "id": 1,
     "group_id": 1,
-    "name": "Max Mustermann",
-    "email": "max@example.com",
+    "name": "John Doe",
+    "email": "john@example.com",
     "token": "...",
     "assigned_to": 2,
-    "wishlist": "Bücher, Schokolade",
+    "wishlist": "Books, Chocolate",
     "created_at": "2025-10-10 12:00:00",
     "assigned_partner": {
       "id": 2,
-      "name": "Anna Beispiel",
-      "wishlist": "Tee, Kerzen"
+      "name": "Jane Example",
+      "wishlist": "Tea, Candles"
     },
     "group": {
-      "name": "Wichtelgruppe 2025",
+      "name": "Secret Santa 2025",
       "budget": "25.00",
       "description": "...",
       "gift_exchange_date": "2025-12-24",
@@ -250,16 +250,16 @@ GET /api/participants.php?token=xxx
 }
 ```
 
-#### Neuen Teilnehmer erstellen
+#### Create new participant
 ```http
 POST /api/participants.php
 Content-Type: application/json
 
 {
   "group_id": 1,
-  "name": "Max Mustermann",
-  "email": "max@example.com",
-  "wishlist": "Bücher, Schokolade"
+  "name": "John Doe",
+  "email": "john@example.com",
+  "wishlist": "Books, Chocolate"
 }
 ```
 
@@ -267,45 +267,45 @@ Content-Type: application/json
 ```json
 {
   "success": true,
-  "message": "Teilnehmer erfolgreich erstellt",
+  "message": "Participant successfully created",
   "data": {
     "id": 1,
-    "name": "Max Mustermann",
+    "name": "John Doe",
     "token": "...",
     "participant_link": "https://wichtlä.ch/participant.php?token=..."
   }
 }
 ```
 
-#### Teilnehmer aktualisieren
+#### Update participant
 ```http
 PUT /api/participants.php?id=1
 PUT /api/participants.php?token=xxx
 Content-Type: application/json
 
 {
-  "wishlist": "Neue Wunschliste"
+  "wishlist": "New Wishlist"
 }
 ```
 
-**Erlaubte Felder (VOR der Auslosung):**
-- `name` (optional): Neuer Name
-- `email` (optional): Neue E-Mail
-- `wishlist` (optional): Neue Wunschliste
+**Allowed Fields (BEFORE draw):**
+- `name` (optional): New name
+- `email` (optional): New email
+- `wishlist` (optional): New wishlist
 
-**Erlaubte Felder (NACH der Auslosung):**
-- `wishlist` (optional): Nur noch Wunschliste änderbar
+**Allowed Fields (AFTER draw):**
+- `wishlist` (optional): Only wishlist can be changed
 
 **Response:**
 ```json
 {
   "success": true,
-  "message": "Teilnehmer erfolgreich aktualisiert",
+  "message": "Participant successfully updated",
   "data": {
     "id": 1,
-    "name": "Max Mustermann",
-    "email": "max@example.com",
-    "wishlist": "Neue Wunschliste",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "wishlist": "New Wishlist",
     "token": "..."
   }
 }
@@ -315,12 +315,12 @@ Content-Type: application/json
 ```json
 {
   "success": false,
-  "message": "Nach der Auslosung kann nur noch die Wunschliste geändert werden",
+  "message": "Only wishlist can be changed after the draw",
   "data": null
 }
 ```
 
-#### Teilnehmer löschen
+#### Delete participant
 ```http
 DELETE /api/participants.php?id=1
 ```
@@ -329,7 +329,7 @@ DELETE /api/participants.php?id=1
 ```json
 {
   "success": true,
-  "message": "Teilnehmer erfolgreich gelöscht",
+  "message": "Participant successfully deleted",
   "data": {
     "deleted_participant_id": 1
   }
@@ -340,18 +340,18 @@ DELETE /api/participants.php?id=1
 ```json
 {
   "success": false,
-  "message": "Teilnehmer kann nach der Auslosung nicht gelöscht werden",
+  "message": "Participant cannot be deleted after the draw",
   "data": null
 }
 ```
 
-**Hinweis:** Löscht auch alle Ausschlüsse, die diesen Teilnehmer betreffen.
+**Note:** Also deletes all exclusions involving this participant.
 
 ---
 
-### Draw (Auslosung)
+### Draw
 
-#### Auslosung durchführen
+#### Perform Draw
 ```http
 POST /api/draw.php
 Content-Type: application/json
@@ -366,7 +366,7 @@ Content-Type: application/json
 ```json
 {
   "success": true,
-  "message": "Auslosung erfolgreich durchgeführt",
+  "message": "Draw successfully completed",
   "data": {
     "group_id": 1,
     "is_drawn": true,
@@ -383,7 +383,7 @@ Content-Type: application/json
 }
 ```
 
-#### Auslosung zurücksetzen
+#### Reset Draw
 ```http
 POST /api/draw.php?action=reset
 Content-Type: application/json
@@ -397,7 +397,7 @@ Content-Type: application/json
 ```json
 {
   "success": true,
-  "message": "Auslosung erfolgreich zurückgesetzt",
+  "message": "Draw successfully reset",
   "data": {
     "group_id": 1,
     "is_drawn": false,
@@ -406,22 +406,22 @@ Content-Type: application/json
 }
 ```
 
-**Hinweis:** Setzt `assigned_to` für alle Teilnehmer auf NULL und `is_drawn` der Gruppe auf 0.
+**Note:** Sets `assigned_to` to NULL for all participants and `is_drawn` of the group to 0.
 
 **Error Responses:**
 ```json
 {
   "success": false,
-  "message": "Für diese Gruppe wurde noch keine Auslosung durchgeführt",
+  "message": "No draw has been performed for this group yet",
   "data": null
 }
 ```
 
 ---
 
-### Exclusions (Ausschlüsse)
+### Exclusions
 
-#### Alle Ausschlüsse einer Gruppe
+#### All exclusions for a group
 ```http
 GET /api/exclusions.php?group_id=1
 ```
@@ -430,21 +430,21 @@ GET /api/exclusions.php?group_id=1
 ```json
 {
   "success": true,
-  "message": "Ausschlüsse erfolgreich abgerufen",
+  "message": "Exclusions successfully retrieved",
   "data": [
     {
       "id": 1,
       "participant_id": 1,
       "excluded_participant_id": 2,
-      "participant_name": "Max Mustermann",
-      "excluded_name": "Anna Beispiel",
+      "participant_name": "John Doe",
+      "excluded_name": "Jane Example",
       "created_at": "2025-10-10 12:00:00"
     }
   ]
 }
 ```
 
-#### Neuen Ausschluss erstellen
+#### Create new exclusion
 ```http
 POST /api/exclusions.php
 Content-Type: application/json
@@ -456,22 +456,22 @@ Content-Type: application/json
 }
 ```
 
-**Validierungen:**
-- Beide Teilnehmer müssen in der gleichen Gruppe sein
-- Keine Selbst-Ausschlüsse (participant_id ≠ excluded_participant_id)
-- Nur vor der Auslosung möglich
+**Validations:**
+- Both participants must be in the same group
+- No self-exclusions (participant_id ≠ excluded_participant_id)
+- Only possible before the draw
 
 **Response:**
 ```json
 {
   "success": true,
-  "message": "Ausschluss erfolgreich erstellt",
+  "message": "Exclusion successfully created",
   "data": {
     "id": 1,
     "participant_id": 1,
     "excluded_participant_id": 2,
-    "participant_name": "Max Mustermann",
-    "excluded_name": "Anna Beispiel",
+    "participant_name": "John Doe",
+    "excluded_name": "Jane Example",
     "created_at": "2025-10-10 12:00:00"
   }
 }
@@ -481,7 +481,7 @@ Content-Type: application/json
 ```json
 {
   "success": false,
-  "message": "Ausschlüsse können nach der Auslosung nicht mehr erstellt werden",
+  "message": "Exclusions cannot be created after the draw",
   "data": null
 }
 ```
@@ -489,12 +489,12 @@ Content-Type: application/json
 ```json
 {
   "success": false,
-  "message": "Ein Teilnehmer kann sich nicht selbst ausschließen",
+  "message": "A participant cannot exclude themselves",
   "data": null
 }
 ```
 
-#### Ausschluss löschen
+#### Delete exclusion
 ```http
 DELETE /api/exclusions.php?id=1
 ```
@@ -503,7 +503,7 @@ DELETE /api/exclusions.php?id=1
 ```json
 {
   "success": true,
-  "message": "Ausschluss erfolgreich gelöscht",
+  "message": "Exclusion successfully deleted",
   "data": {
     "deleted_exclusion_id": 1
   }
@@ -514,23 +514,23 @@ DELETE /api/exclusions.php?id=1
 ```json
 {
   "success": false,
-  "message": "Ausschlüsse können nach der Auslosung nicht gelöscht werden",
+  "message": "Exclusions cannot be deleted after the draw",
   "data": null
 }
 ```
 
-**Hinweis:** Nur vor der Auslosung möglich.
+**Note:** Only possible before the draw.
 
 ---
 
 ## 📊 Response Format
 
-Alle Responses folgen diesem Format:
+All responses follow this format:
 
 ```json
 {
   "success": true|false,
-  "message": "Beschreibung",
+  "message": "Description",
   "data": {...}|[...]|null,
   "meta": {
     "timestamp": 1696939200,
@@ -542,35 +542,35 @@ Alle Responses folgen diesem Format:
 
 ## ⚠️ HTTP Status Codes
 
-- `200 OK` - Erfolgreiche Anfrage
-- `201 Created` - Ressource erfolgreich erstellt
-- `400 Bad Request` - Ungültige Anfrage
-- `401 Unauthorized` - Ungültiges oder fehlendes Token
-- `404 Not Found` - Ressource nicht gefunden
-- `405 Method Not Allowed` - HTTP-Methode nicht erlaubt
-- `429 Too Many Requests` - Rate Limit überschritten
-- `500 Internal Server Error` - Server-Fehler
-- `503 Service Unavailable` - API deaktiviert
+- `200 OK` - Successful request
+- `201 Created` - Resource successfully created
+- `400 Bad Request` - Invalid request
+- `401 Unauthorized` - Invalid or missing token
+- `404 Not Found` - Resource not found
+- `405 Method Not Allowed` - HTTP method not allowed
+- `429 Too Many Requests` - Rate limit exceeded
+- `500 Internal Server Error` - Server error
+- `503 Service Unavailable` - API disabled
 
 ## 🚦 Rate Limiting
 
-- **Limit:** 60 Anfragen pro Minute pro IP
-- **Header bei Überschreitung:** `429 Too Many Requests`
+- **Limit:** 60 requests per minute per IP
+- **Header on exceeded:** `429 Too Many Requests`
 
 ## 🔧 CORS (Cross-Origin Resource Sharing)
 
-Die API unterstützt CORS für Cross-Domain-Anfragen.
+The API supports CORS for cross-domain requests.
 
-**Konfiguration in `includes/api_config.php`:**
+**Configuration in `includes/api_config.php`:**
 ```php
-define('API_ALLOW_ORIGIN', '*'); // Oder spezifische Domain
+define('API_ALLOW_ORIGIN', '*'); // Or specific domain
 define('API_ALLOW_METHODS', 'GET, POST, PUT, DELETE, OPTIONS');
 define('API_ALLOW_HEADERS', 'Content-Type, Authorization, X-API-Token');
 ```
 
 ## 📝 Logging
 
-Alle API-Anfragen werden in `logs/api.log` protokolliert:
+All API requests are logged in `logs/api.log`:
 
 ```
 [2025-10-10 12:00:00] 192.168.1.1 GET /api/groups.php - SUCCESS
@@ -578,21 +578,21 @@ Alle API-Anfragen werden in `logs/api.log` protokolliert:
 [2025-10-10 12:02:00] 192.168.1.2 GET /api/groups.php - UNAUTHORIZED
 ```
 
-## 🐛 Debug-Modus
+## 🐛 Debug Mode
 
-Für Entwicklung aktiviere Debug-Modus in `includes/api_config.php`:
+Enable debug mode in `includes/api_config.php` for development:
 
 ```php
 define('API_DEBUG', true);
 ```
 
-Dann kannst du zusätzliche Debug-Infos abrufen:
+Then you can request additional debug info:
 
 ```http
 GET /api/groups.php?debug=1
 ```
 
-**Response mit Debug-Info:**
+**Response with Debug Info:**
 ```json
 {
   "success": true,
@@ -608,17 +608,17 @@ GET /api/groups.php?debug=1
 }
 ```
 
-## 🔒 Sicherheit
+## 🔒 Security
 
 ### Best Practices:
 
-1. **Immer HTTPS verwenden** in Produktion
-2. **Token sicher speichern** - Niemals im Client-Code
-3. **Rate Limiting beachten**
-4. **Input validieren** - API validiert bereits, aber zusätzliche Client-Validierung empfohlen
-5. **Fehler-Handling** - Alle API-Calls mit try-catch umgeben
+1. **Always use HTTPS** in production
+2. **Store tokens securely** - Never in client code
+3. **Respect Rate Limiting**
+4. **Validate Input** - API validates already, but additional client validation is recommended
+5. **Error Handling** - Wrap all API calls in try-catch blocks
 
-### Beispiel (Android/Kotlin):
+### Example (Android/Kotlin):
 
 ```kotlin
 val client = OkHttpClient()
@@ -632,16 +632,16 @@ try {
     val response = client.newCall(request).execute()
     if (response.isSuccessful) {
         val json = response.body?.string()
-        // JSON parsen
+        // Parse JSON
     } else {
-        // Fehler-Handling
+        // Error Handling
     }
 } catch (e: Exception) {
-    // Netzwerk-Fehler
+    // Network Error
 }
 ```
 
-### Beispiel (JavaScript):
+### Example (JavaScript):
 
 ```javascript
 const response = await fetch('https://wichtlä.ch/api/groups.php', {
@@ -660,15 +660,15 @@ if (data.success) {
 }
 ```
 
-## 📱 Android-Integration
+## 📱 Android Integration
 
-### Empfohlene Bibliotheken:
+### Recommended Libraries:
 
-- **Networking:** Retrofit 2 oder OkHttp
-- **JSON:** Gson oder Moshi
-- **Coroutines:** Kotlin Coroutines für asynchrone Calls
+- **Networking:** Retrofit 2 or OkHttp
+- **JSON:** Gson or Moshi
+- **Coroutines:** Kotlin Coroutines for asynchronous calls
 
-### Beispiel mit Retrofit:
+### Example with Retrofit:
 
 ```kotlin
 interface WichtelApi {
@@ -688,54 +688,54 @@ interface WichtelApi {
 
 ## 🧪 Testing
 
-### Im Browser testen
+### Test in Browser
 
-Die API kann direkt im Browser getestet werden, indem das Token als Query-Parameter übergeben wird:
+The API can be tested directly in the browser by passing the token as a query parameter:
 
-#### 1. API Info abrufen (kein Token nötig)
+#### 1. Get API Info (no token needed)
 ```
 https://wichtlä.ch/api/
 ```
-Zeigt alle verfügbaren Endpoints und Informationen zur API.
+Shows all available endpoints and API information.
 
-#### 2. Gruppen abrufen (GET)
+#### 2. Get Groups (GET)
 ```
 https://wichtlä.ch/api/groups.php?api_token=YOUR_TOKEN
 ```
 
-#### 3. Einzelne Gruppe mit Details
+#### 3. Single Group with Details
 ```
 https://wichtlä.ch/api/groups.php?id=1&api_token=YOUR_TOKEN
 https://wichtlä.ch/api/groups.php?admin_token=ADMIN_TOKEN&api_token=YOUR_TOKEN
 ```
 
-#### 4. Teilnehmer einer Gruppe
+#### 4. Participants of a Group
 ```
 https://wichtlä.ch/api/participants.php?group_id=1&api_token=YOUR_TOKEN
 ```
 
-#### 5. Einzelnen Teilnehmer mit Details
+#### 5. Single Participant with Details
 ```
 https://wichtlä.ch/api/participants.php?id=1&api_token=YOUR_TOKEN
 https://wichtlä.ch/api/participants.php?token=PARTICIPANT_TOKEN&api_token=YOUR_TOKEN
 ```
 
-#### 6. Ausschlüsse einer Gruppe
+#### 6. Exclusions of a Group
 ```
 https://wichtlä.ch/api/exclusions.php?group_id=1&api_token=YOUR_TOKEN
 ```
 
-**Hinweis:** POST/PUT/DELETE Requests können im Browser nicht direkt getestet werden. Dafür empfehlen wir:
-- Postman (siehe `Wichtel_API.postman_collection.json`)
-- Browser DevTools Console (siehe JavaScript-Beispiele unten)
-- REST Client Extensions (z.B. für VS Code)
+**Note:** POST/PUT/DELETE requests cannot be tested directly in the browser. We recommend:
+- Postman (see `Wichtel_API.postman_collection.json`)
+- Browser DevTools Console (see JavaScript examples below)
+- REST Client Extensions (e.g., for VS Code)
 
 ### Browser Console (JavaScript)
 
-Öffne die Browser DevTools (F12) und teste POST-Requests:
+Open Browser DevTools (F12) and test POST requests:
 
 ```javascript
-// Gruppe erstellen
+// Create Group
 fetch('https://wichtlä.ch/api/groups.php', {
   method: 'POST',
   headers: {
@@ -743,7 +743,7 @@ fetch('https://wichtlä.ch/api/groups.php', {
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
-    name: 'Test Gruppe',
+    name: 'Test Group',
     admin_email: 'admin@example.com',
     budget: 25.00
   })
@@ -751,7 +751,7 @@ fetch('https://wichtlä.ch/api/groups.php', {
 .then(res => res.json())
 .then(data => console.log(data));
 
-// Teilnehmer erstellen
+// Create Participant
 fetch('https://wichtlä.ch/api/participants.php', {
   method: 'POST',
   headers: {
@@ -760,15 +760,15 @@ fetch('https://wichtlä.ch/api/participants.php', {
   },
   body: JSON.stringify({
     group_id: 1,
-    name: 'Max Mustermann',
-    email: 'max@example.com',
-    wishlist: 'Bücher, Schokolade'
+    name: 'John Doe',
+    email: 'john@example.com',
+    wishlist: 'Books, Chocolate'
   })
 })
 .then(res => res.json())
 .then(data => console.log(data));
 
-// Auslosung durchführen
+// Perform Draw
 fetch('https://wichtlä.ch/api/draw.php', {
   method: 'POST',
   headers: {
@@ -784,21 +784,21 @@ fetch('https://wichtlä.ch/api/draw.php', {
 .then(data => console.log(data));
 ```
 
-### cURL-Beispiele:
+### cURL Examples:
 
 ```bash
-# Gruppe abrufen
+# Get Group
 curl -H "Authorization: Bearer YOUR_TOKEN" \
      https://wichtlä.ch/api/groups.php?id=1
 
-# Gruppe erstellen
+# Create Group
 curl -X POST \
      -H "Authorization: Bearer YOUR_TOKEN" \
      -H "Content-Type: application/json" \
-     -d '{"name":"Test Gruppe","admin_email":"test@example.com"}' \
+     -d '{"name":"Test Group","admin_email":"test@example.com"}' \
      https://wichtlä.ch/api/groups.php
 
-# Auslosung durchführen
+# Perform Draw
 curl -X POST \
      -H "Authorization: Bearer YOUR_TOKEN" \
      -H "Content-Type: application/json" \
@@ -808,46 +808,46 @@ curl -X POST \
 
 ### Postman Collection
 
-Importiere die `Wichtel_API.postman_collection.json` in Postman für einfaches Testen aller Endpoints:
+Import `Wichtel_API.postman_collection.json` into Postman for easy testing of all endpoints:
 
-1. Öffne Postman
-2. Import → File → Wähle `api/Wichtel_API.postman_collection.json`
-3. Setze die Variable `API_TOKEN` auf deinen generierten Token
-4. Teste alle Endpoints mit einem Klick
+1. Open Postman
+2. Import → File → Select `api/Wichtel_API.postman_collection.json`
+3. Set the variable `API_TOKEN` to your generated token
+4. Test all endpoints with one click
 
-## 📚 Weitere Ressourcen
+## 📚 Further Resources
 
 - **Postman Collection:** `api/Wichtel_API.postman_collection.json`
-- **OpenAPI/Swagger Spec:** `api/openapi.yaml` - Importiere in Swagger UI oder Postman
+- **OpenAPI/Swagger Spec:** `api/openapi.yaml` - Import into Swagger UI or Postman
 - **Quick Start Guide:** `API_QUICK_START.md`
 - **GitHub Repository:** https://github.com/piroh1990/wichteln
 
-### OpenAPI Spec verwenden
+### Using OpenAPI Spec
 
-Die `openapi.yaml` Datei kann in verschiedenen Tools verwendet werden:
+The `openapi.yaml` file can be used in various tools:
 
 **Swagger UI (Online):**
-1. Gehe zu https://editor.swagger.io/
+1. Go to https://editor.swagger.io/
 2. Import → `api/openapi.yaml`
-3. Teste die API direkt im Browser
+3. Test the API directly in the browser
 
 **Postman:**
 1. Import → OpenAPI 3.0 → `api/openapi.yaml`
-2. Automatisch generierte Collection mit allen Endpoints
+2. Automatically generated collection with all endpoints
 
 **VS Code:**
-1. Extension installieren: "Swagger Viewer"
-2. Öffne `openapi.yaml` und drücke `Shift+Alt+P`
-3. Preview anzeigen
+1. Install extension: "Swagger Viewer"
+2. Open `openapi.yaml` and press `Shift+Alt+P`
+3. View Preview
 
 ---
 
-## 📖 Erweiterte Beispiele
+## 📖 Extended Examples
 
-### Kompletter Workflow: Gruppe erstellen bis Auslosung
+### Complete Workflow: Create Group to Draw
 
 ```javascript
-// 1. Gruppe erstellen
+// 1. Create Group
 const createGroupResponse = await fetch('https://wichtlä.ch/api/groups.php', {
   method: 'POST',
   headers: {
@@ -855,24 +855,24 @@ const createGroupResponse = await fetch('https://wichtlä.ch/api/groups.php', {
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
-    name: 'Firmen Wichteln 2025',
-    admin_email: 'admin@firma.ch',
+    name: 'Company Secret Santa 2025',
+    admin_email: 'admin@company.com',
     budget: 30.00,
-    description: 'Weihnachts-Wichteln der IT-Abteilung',
+    description: 'IT Department Christmas Secret Santa',
     gift_exchange_date: '2025-12-20'
   })
 });
 
 const group = await createGroupResponse.json();
-console.log('Gruppe erstellt:', group.data);
+console.log('Group created:', group.data);
 // group.data.id = 1
 // group.data.invite_link = "https://wichtlä.ch/register.php?token=xxx"
 
-// 2. Teilnehmer hinzufügen (mehrere)
+// 2. Add Participants (multiple)
 const participants = [
-  { name: 'Anna Müller', email: 'anna@firma.ch', wishlist: 'Bücher, Tee' },
-  { name: 'Max Meier', email: 'max@firma.ch', wishlist: 'Schokolade, Kaffee' },
-  { name: 'Lisa Schmidt', email: 'lisa@firma.ch', wishlist: 'Pflanzen, Kerzen' }
+  { name: 'Anna Miller', email: 'anna@company.com', wishlist: 'Books, Tea' },
+  { name: 'Max Meyer', email: 'max@company.com', wishlist: 'Chocolate, Coffee' },
+  { name: 'Lisa Smith', email: 'lisa@company.com', wishlist: 'Plants, Candles' }
 ];
 
 for (const participant of participants) {
@@ -889,7 +889,7 @@ for (const participant of participants) {
   });
 }
 
-// 3. Ausschlüsse erstellen (Anna und Max sollen sich nicht beschenken)
+// 3. Create Exclusions (Anna and Max should not gift each other)
 await fetch('https://wichtlä.ch/api/exclusions.php', {
   method: 'POST',
   headers: {
@@ -903,7 +903,7 @@ await fetch('https://wichtlä.ch/api/exclusions.php', {
   })
 });
 
-// 4. Auslosung durchführen
+// 4. Perform Draw
 const drawResponse = await fetch('https://wichtlä.ch/api/draw.php', {
   method: 'POST',
   headers: {
@@ -917,10 +917,10 @@ const drawResponse = await fetch('https://wichtlä.ch/api/draw.php', {
 });
 
 const drawResult = await drawResponse.json();
-console.log('Auslosung erfolgreich:', drawResult.data);
+console.log('Draw successful:', drawResult.data);
 ```
 
-### Android Retrofit Komplettbeispiel
+### Android Retrofit Complete Example
 
 ```kotlin
 // 1. Dependencies in build.gradle
@@ -1175,7 +1175,7 @@ class WichtelRepository {
     }
 }
 
-// 6. ViewModel Verwendung
+// 6. ViewModel Usage
 class GroupViewModel : ViewModel() {
     private val repository = WichtelRepository()
     
@@ -1214,7 +1214,7 @@ class GroupViewModel : ViewModel() {
 ### Error Handling Best Practices
 
 ```kotlin
-// Custom Exception Klassen
+// Custom Exception Classes
 sealed class ApiException(message: String) : Exception(message) {
     class Unauthorized(message: String = "Invalid API token") : ApiException(message)
     class RateLimitExceeded(message: String = "Too many requests") : ApiException(message)
@@ -1230,8 +1230,8 @@ suspend fun <T> safeApiCall(apiCall: suspend () -> ApiResponse<T>): Result<T> = 
         response.success && response.data != null -> Result.success(response.data)
         !response.success -> {
             val exception = when (response.message) {
-                "Ungültiges oder fehlendes API-Token" -> ApiException.Unauthorized()
-                "Rate Limit überschritten" -> ApiException.RateLimitExceeded()
+                "Invalid or missing API token" -> ApiException.Unauthorized()
+                "Rate Limit exceeded" -> ApiException.RateLimitExceeded()
                 else -> ApiException.ValidationError(response.message)
             }
             Result.failure(exception)
@@ -1248,10 +1248,10 @@ suspend fun getGroupSafely(groupId: Int): Result<Group> = safeApiCall {
 }
 ```
 
-### Offline-First mit Room Database
+### Offline-First with Room Database
 
 ```kotlin
-// Kombiniere API mit lokaler Datenbank
+// Combine API with local database
 @Database(entities = [GroupEntity::class], version = 1)
 abstract class WichtelDatabase : RoomDatabase() {
     abstract fun groupDao(): GroupDao
@@ -1274,22 +1274,22 @@ class OfflineFirstRepository(
     private val dao: GroupDao
 ) {
     suspend fun getGroups(forceRefresh: Boolean = false): Flow<List<Group>> = flow {
-        // Erst lokale Daten emittieren
+        // Emit local data first
         val localGroups = dao.getAllGroups()
         emit(localGroups.map { it.toGroup() })
         
-        // Dann von API aktualisieren
+        // Then update from API
         if (forceRefresh || shouldRefresh()) {
             try {
                 val response = api.getGroups(authToken)
                 if (response.success && response.data != null) {
-                    // Lokal speichern
+                    // Save locally
                     dao.insertAll(response.data.map { it.toEntity() })
-                    // Aktualisierte Daten emittieren
+                    // Emit updated data
                     emit(response.data)
                 }
             } catch (e: Exception) {
-                // Bei Fehler behalten wir die lokalen Daten
+                // On error, keep local data
             }
         }
     }
@@ -1298,4 +1298,4 @@ class OfflineFirstRepository(
 
 ---
 
-**Support:** Bei Fragen: [Issues auf GitHub](https://github.com/piroh1990/wichteln/issues)
+**Support:** If you have questions: [Issues on GitHub](https://github.com/piroh1990/wichteln/issues)
