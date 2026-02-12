@@ -7,7 +7,7 @@ if (session_status() == PHP_SESSION_NONE) {
 // buffer output
 ob_start();
 // Use relative path to include captcha.php from tests directory
-include __DIR__ . '/../captcha.php';
+include __DIR__ . '/../public/captcha.php';
 $output = ob_get_clean();
 
 // Check session

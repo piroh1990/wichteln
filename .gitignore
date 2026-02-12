@@ -1,6 +1,6 @@
 # Configuration files with sensitive data
-config.php
-api/config.php
+includes/config.php
+includes/api_config.php
 
 # Logs
 logs/*.log

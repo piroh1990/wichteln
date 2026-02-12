@@ -24,7 +24,7 @@
  * - HttpOnly-Flag gegen XSS-Angriffe
  */
 
-require_once 'functions.php';
+require_once __DIR__ . '/../includes/functions.php';
 
 session_start();
 
@@ -159,7 +159,7 @@ if (!empty($participant_token)) {
     <meta name="msapplication-TileImage" content="/images/favicon/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="css/styles.css">
-    <?php include 'includes/matomo_tracking.php'; ?>
+    <?php include __DIR__ . '/../includes/templates/matomo_tracking.php'; ?>
 </head>
 <body>
     <header>
@@ -294,7 +294,7 @@ if ($show_group_selector) {
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="/images/favicon/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
-    <?php include 'includes/matomo_tracking.php'; ?>
+    <?php include __DIR__ . '/../includes/templates/matomo_tracking.php'; ?>
 </head>
 <body>
     <header>
@@ -432,11 +432,11 @@ if ($show_group_selector) {
             document.body.removeChild(tempInput);
         }
     </script>
-    <?php include 'includes/matomo_tracking.php'; ?>
+    <?php include __DIR__ . '/../includes/templates/matomo_tracking.php'; ?>
 </head>
 <body>
     <!-- Navigation -->
-    <?php include 'includes/navigation.php'; ?>
+    <?php include __DIR__ . '/../includes/templates/navigation.php'; ?>
     
     <div class="container" style="margin-top: 2rem;">
         <!-- Welcome Card -->
@@ -671,9 +671,9 @@ if ($show_group_selector) {
     </div>
     
     <!-- Cookie Banner -->
-    <?php include 'cookie-banner.php'; ?>
+    <?php include __DIR__ . '/cookie-banner.php'; ?>
     
     <!-- Footer -->
-    <?php include 'includes/footer.php'; ?>
+    <?php include __DIR__ . '/../includes/templates/footer.php'; ?>
 </body>
 </html>

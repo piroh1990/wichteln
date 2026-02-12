@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../api/helpers.php';
+require_once __DIR__ . '/../public/api/helpers.php';
 
 // Test simple string
 run_test("sanitize_for_api: simple string", function() {

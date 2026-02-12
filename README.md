@@ -135,10 +135,10 @@ CREATE INDEX idx_group_participants ON `participants`(`group_id`);
 1. **Kopiere die Beispiel-Konfiguration:**
 
 ```bash
-cp config.example.php config.php
+cp includes/config.example.php includes/config.php
 ```
 
-2. **Bearbeite `config.php` mit deinen Daten:**
+2. **Bearbeite `includes/config.php` mit deinen Daten:**
 
 ```php
 <?php
@@ -196,23 +196,26 @@ ini_set('sendmail_path', '/usr/sbin/sendmail -t -i');
 
 ```
 wichtel-app/
-├── admin.php              # Admin-Bereich für Gruppenverwaltung
-├── captcha.php            # Captcha-Generierung
-├── config.php             # Konfigurationsdatei (nicht im Repository)
-├── config.example.php     # Beispiel-Konfiguration
-├── create_group.php       # Gruppenerstellung
-├── functions.php          # Hilfsfunktionen und E-Mail-Templates
-├── index.php              # Landing Page
-├── participant.php        # Teilnehmer-Bereich
-├── register.php           # Teilnehmer-Registrierung
-├── css/
-│   └── styles.css        # Haupt-Stylesheet
-├── images/
-│   ├── icon-admin.svg    # Admin-Icon
-│   ├── icon-delete.svg   # Löschen-Icon
-│   ├── icon-reset.svg    # Reset-Icon
-│   └── logo.png          # Logo
-└── README.md             # Diese Datei
+├── public/                 # Öffentliches Verzeichnis (Document Root)
+│   ├── admin/              # Master-Admin Bereich
+│   ├── api/                # REST API
+│   ├── css/                # Stylesheets
+│   ├── images/             # Bilder und Icons
+│   ├── index.php           # Landing Page
+│   ├── admin.php           # Admin-Bereich für Gruppen
+│   ├── create_group.php    # Gruppenerstellung
+│   ├── participant.php     # Teilnehmer-Bereich
+│   ├── register.php        # Registrierung
+│   └── ...                 # Weitere Seiten
+├── includes/               # Interne Logik und Konfiguration
+│   ├── config.php          # Konfiguration (nicht im Repo)
+│   ├── api_config.php      # API Konfiguration (nicht im Repo)
+│   ├── functions.php       # Kern-Funktionen
+│   └── templates/          # Partials (Footer, Nav, etc.)
+├── database/               # SQL Skripte
+├── logs/                   # Logdateien
+├── tests/                  # Tests
+└── README.md               # Diese Datei
 ```
 
 ## 🎨 Anpassungen
@@ -245,11 +248,11 @@ E-Mail-Templates befinden sich in `functions.php`:
 
 ## 🔒 Sicherheitshinweise
 
-1. **config.php niemals committen** - Bereits in `.gitignore` enthalten
+1. **includes/config.php niemals committen** - Bereits in `.gitignore` enthalten
 2. **Starke Passwörter verwenden** - Für Datenbank und Admin-Token
 3. **HTTPS verwenden** - In Produktion immer SSL/TLS aktivieren
 4. **Regelmäßige Updates** - PHP und MySQL aktuell halten
-5. **Error-Reporting deaktivieren** - In Produktion in `functions.php`:
+5. **Error-Reporting deaktivieren** - In Produktion in `includes/functions.php`:
 
 ```php
 // In Produktion auskommentieren:
@@ -266,7 +269,7 @@ E-Mail-Templates befinden sich in `functions.php`:
 php -r "mail('test@example.com', 'Test', 'Test');"
 ```
 
-2. Prüfe Sendmail-Pfad in `functions.php`
+2. Prüfe Sendmail-Pfad in `includes/functions.php`
 3. Prüfe Server-Logs für Fehler
 
 ### Captcha funktioniert nicht

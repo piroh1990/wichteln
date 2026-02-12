@@ -1,7 +1,7 @@
 <?php
 // register.php
 
-require_once 'functions.php';
+require_once __DIR__ . '/../includes/functions.php';
 
 $invite_token = $_GET['token'] ?? '';
 $pdo = db_connect();
@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Roboto&display=swap" rel="stylesheet">
     <!-- CSS Stylesheet -->
     <link rel="stylesheet" href="css/styles.css">
-    <?php include 'includes/matomo_tracking.php'; ?>
+    <?php include __DIR__ . '/../includes/templates/matomo_tracking.php'; ?>
 </head>
 <body>
     <header>
@@ -125,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </form>
     </div>
     <!-- Cookie Banner -->
-    <?php include 'cookie-banner.php'; ?>
+    <?php include __DIR__ . '/cookie-banner.php'; ?>
 
 </body>
 </html>

@@ -30,7 +30,7 @@ X-API-Token: YOUR_API_TOKEN
 php -r "echo bin2hex(random_bytes(32));"
 ```
 
-2. Setze in `config.php`:
+2. Setze in `includes/api_config.php`:
 ```php
 define('API_TOKEN', 'dein_generierter_token');
 ```
@@ -561,7 +561,7 @@ Alle Responses folgen diesem Format:
 
 Die API unterstützt CORS für Cross-Domain-Anfragen.
 
-**Konfiguration in `api/config.php`:**
+**Konfiguration in `includes/api_config.php`:**
 ```php
 define('API_ALLOW_ORIGIN', '*'); // Oder spezifische Domain
 define('API_ALLOW_METHODS', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -580,7 +580,7 @@ Alle API-Anfragen werden in `logs/api.log` protokolliert:
 
 ## 🐛 Debug-Modus
 
-Für Entwicklung aktiviere Debug-Modus in `api/config.php`:
+Für Entwicklung aktiviere Debug-Modus in `includes/api_config.php`:
 
 ```php
 define('API_DEBUG', true);
