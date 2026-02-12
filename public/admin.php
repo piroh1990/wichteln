@@ -226,6 +226,10 @@ $stmt = $pdo->prepare("
 $stmt->execute([$group['id']]);
 $exclusions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// Löschdatum berechnen (3 Monate nach Event oder Erstellung)
+$base_date = $group['gift_exchange_date'] ? $group['gift_exchange_date'] : date('Y-m-d', strtotime($group['created_at']));
+$deletion_date = date('d.m.Y', strtotime($base_date . ' + 3 months'));
+
 // Gruppe bearbeiten
 if (isset($_POST['update_group'])) {
     $new_budget = trim($_POST['budget']) ?: null;
@@ -515,6 +519,18 @@ if (isset($_POST['draw'])) {
                 <?php echo htmlspecialchars($email_error); ?>
             </div>
         <?php endif; ?>
+
+        <!-- Auto-Lösch Hinweis -->
+        <div class="admin-info-box" style="background: rgba(230, 57, 70, 0.05); border-left-color: #e63946;">
+            <div class="admin-info-icon" style="color: #e63946;">ℹ️</div>
+            <div class="admin-info-content">
+                <h3 class="admin-info-title" style="color: #e63946;">Wichtiger Hinweis zum Datenschutz</h3>
+                <p class="admin-info-text">
+                    Diese Gruppe und alle personenbezogenen Daten werden automatisch am <strong><?php echo $deletion_date; ?></strong> gelöscht (3 Monate nach dem Event).
+                    Anonymisierte Statistiken bleiben erhalten.
+                </p>
+            </div>
+        </div>
 
         <!-- Gruppendetails bearbeiten -->
         <h2>Gruppendetails</h2>
