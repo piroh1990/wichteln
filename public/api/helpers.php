@@ -169,7 +169,7 @@ function validate_input($field, $value, $rules) {
                 break;
         }
     }
-    return true;
+    return null;
 }
 
 /**
