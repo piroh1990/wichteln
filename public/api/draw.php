@@ -170,21 +170,18 @@ if ($action === 'reset') {
         $emails_sent = 0;
         
         if ($send_emails) {
+            // Teilnehmer und Zuweisungen für schnelleren Zugriff indexieren
+            $participants_by_id = array_column($participants, null, 'id');
+            $assignments_lookup = array_column($assignments, 'receiver_id', 'giver_id');
+
             foreach ($participants as $participant) {
                 if (!empty($participant['email'])) {
                     // Zugewiesenen Partner finden
-                    $assigned_to = null;
-                    foreach ($assignments as $assignment) {
-                        if ($assignment['giver_id'] == $participant['id']) {
-                            $assigned_to = $assignment['receiver_id'];
-                            break;
-                        }
-                    }
+                    $assigned_to = $assignments_lookup[$participant['id']] ?? null;
                     
                     if ($assigned_to) {
-                        $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `id` = ?");
-                        $stmt->execute([$assigned_to]);
-                        $assigned = $stmt->fetch(PDO::FETCH_ASSOC);
+                        // Teilnehmer-Daten aus dem Speicher laden statt N+1 Query
+                        $assigned = $participants_by_id[$assigned_to] ?? null;
                         
                         if ($assigned) {
                             $group_budget = $group['budget'] !== null ? number_format($group['budget'], 2) . " CHF" : "Nicht festgelegt";
