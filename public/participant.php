@@ -162,12 +162,8 @@ if (!empty($participant_token)) {
     <?php include __DIR__ . '/../includes/templates/matomo_tracking.php'; ?>
 </head>
 <body>
-    <header>
-        <a href="index.php" title="Zur Startseite">
-            <img src="images/logo.png" alt="Wichtel Logo">
-        </a>
-
-    </header>
+    <!-- Navigation -->
+    <?php include __DIR__ . '/../includes/templates/navigation.php'; ?>
     <div class="container">
         <div class="error-page">
             <div class="error-content">
@@ -297,11 +293,8 @@ if ($show_group_selector) {
     <?php include __DIR__ . '/../includes/templates/matomo_tracking.php'; ?>
 </head>
 <body>
-    <header>
-        <a href="index.php" title="Zur Startseite">
-            <img src="images/logo.png" alt="Wichtel Logo">
-        </a>
-    </header>
+    <!-- Navigation -->
+    <?php include __DIR__ . '/../includes/templates/navigation.php'; ?>
     <div class="container">
         <div class="group-selector">
             <h1>Willkommen zurück! 🎄</h1>

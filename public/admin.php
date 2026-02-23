@@ -461,9 +461,7 @@ if (isset($_POST['draw'])) {
     <?php include __DIR__ . '/../includes/templates/matomo_tracking.php'; ?>
 </head>
 <body>
-    <header>
-        <img src="images/logo.png" alt="Wichtel Logo">
-    </header>
+    <?php include __DIR__ . '/../includes/templates/navigation.php'; ?>
     <div class="container">
         <h1>Admin Bereich - <?php echo htmlspecialchars($group['name']); ?></h1>
         
