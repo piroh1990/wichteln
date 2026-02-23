@@ -404,6 +404,25 @@ if (isset($_POST['draw'])) {
     
     <!-- JavaScript für Kopieren-Button -->
     <script>
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `notification ${type}`;
+            // Accessibility attributes
+            toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+            toast.setAttribute('aria-live', type === 'error' ? 'assertive' : 'polite');
+
+            toast.style.cssText = 'position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.15); min-width: 300px; justify-content: center;';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            // Fade out and remove
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.5s ease';
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+
         function copyToClipboard(elementId) {
             var element = document.getElementById(elementId);
             var copyText = element.getAttribute('data-url') || element.innerText || element.textContent;
@@ -411,7 +430,7 @@ if (isset($_POST['draw'])) {
             // Moderne Clipboard API (bevorzugt)
             if (navigator.clipboard && window.isSecureContext) {
                 navigator.clipboard.writeText(copyText).then(function() {
-                    alert("Link kopiert: " + copyText);
+                    showToast("Link erfolgreich kopiert! 📋");
                 }).catch(function(err) {
                     // Fallback bei Fehler
                     fallbackCopy(copyText);
@@ -432,9 +451,9 @@ if (isset($_POST['draw'])) {
             tempInput.setSelectionRange(0, 99999); // Für mobile Geräte
             try {
                 document.execCommand("copy");
-                alert("Link kopiert: " + text);
+                showToast("Link erfolgreich kopiert! 📋");
             } catch (err) {
-                alert("Fehler beim Kopieren. Bitte manuell kopieren.");
+                showToast("Fehler beim Kopieren. Bitte manuell kopieren.", "error");
             }
             document.body.removeChild(tempInput);
         }
