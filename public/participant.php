@@ -131,8 +131,28 @@ if (!empty($participant_token)) {
     // Kein Token in URL - versuche aus Cookie zu laden
     $saved_tokens = get_tokens_from_cookie();
     
-    if (empty($saved_tokens)) {
-        // Keine gespeicherten Tokens - zeige schöne Fehlerseite
+    $participants = [];
+
+    if (!empty($saved_tokens)) {
+        $participants = load_participants_from_tokens($pdo, $saved_tokens);
+
+        // Wenn gespeicherte Tokens keine gültigen Teilnehmer liefern (z.B. gelöschte Gruppen)
+        if (empty($participants)) {
+            // Cookie löschen
+            $cookie_options = [
+                'expires' => time() - 3600,
+                'path' => '/',
+                'domain' => '',
+                'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
+                'httponly' => true,
+                'samesite' => 'Lax'
+            ];
+            setcookie(COOKIE_NAME, '', $cookie_options);
+        }
+    }
+
+    if (empty($participants)) {
+        // Keine gültigen Teilnahmen gefunden - zeige schöne Fehlerseite
         ?>
 <!DOCTYPE html>
 <html lang="de">
@@ -194,13 +214,6 @@ if (!empty($participant_token)) {
 </html>
         <?php
         exit;
-    }
-    
-    // Teilnehmer für alle gespeicherten Tokens laden
-    $participants = load_participants_from_tokens($pdo, $saved_tokens);
-    
-    if (empty($participants)) {
-        die('Keine gültigen Teilnahmen gefunden.');
     }
     
     // Wenn Gruppenauswahl per POST gesendet wurde
