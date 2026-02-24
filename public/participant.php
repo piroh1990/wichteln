@@ -199,8 +199,12 @@ if (!empty($participant_token)) {
             <div class="waiting-icon">🏠</div>
             <h2>Was möchtest du tun?</h2>
             <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem; flex-wrap: wrap;">
-                <a href="index.php" class="button primary">Zur Startseite</a>
-                <a href="create_group.php" class="button secondary">Neue Gruppe erstellen</a>
+                <a href="index.php" class="cta-button cta-button-secondary">
+                    <span>Zur Startseite</span>
+                </a>
+                <a href="create_group.php" class="cta-button cta-button-primary">
+                    <span>Neue Gruppe erstellen</span>
+                </a>
             </div>
         </div>
 
