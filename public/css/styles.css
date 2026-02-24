@@ -3081,3 +3081,31 @@ a.button:disabled {
 }
 
 
+
+/* Captcha Styling */
+.captcha-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.captcha-image {
+    border-radius: 8px;
+    border: 2px solid var(--border-color);
+    background: #fff;
+    padding: 2px;
+    height: 48px; /* Match typical input height */
+    width: auto;
+    object-fit: contain;
+}
+
+.refresh-captcha {
+    padding: 0;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
