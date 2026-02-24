@@ -123,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <?php echo htmlspecialchars($error); ?>
             </div>
         <?php endif; ?>
-        <form method="POST">
+        <form method="POST" id="create-group-form">
             <div class="form-group">
                 <label for="group_name">Gruppenname:</label>
                 <input type="text" id="group_name" name="group_name" required>
@@ -149,8 +149,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <label for="captcha_answer">Sicherheitscode:</label>
                 <div class="captcha-container">
                     <img src="captcha.php" alt="Captcha" id="captcha-image" class="captcha-image">
-                    <button type="button" onclick="refreshCaptcha()" class="button secondary small refresh-captcha" title="Neues Bild laden">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <button type="button" onclick="refreshCaptcha()" class="button secondary small refresh-captcha" title="Neues Bild laden" aria-label="Neues Captcha laden">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
                         </svg>
                     </button>
@@ -167,6 +167,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             var img = document.getElementById('captcha-image');
             img.src = 'captcha.php?' + new Date().getTime();
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var form = document.getElementById('create-group-form');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    var submitBtn = form.querySelector('button[type="submit"]');
+                    if (submitBtn) {
+                        // Mindestbreite setzen, um "Springen" zu verhindern
+                        submitBtn.style.minWidth = submitBtn.offsetWidth + 'px';
+                        submitBtn.style.whiteSpace = 'nowrap';
+                        submitBtn.innerHTML = '<span class="loading" aria-hidden="true"></span> Wird erstellt...';
+                        submitBtn.disabled = true;
+                        submitBtn.style.cursor = 'wait';
+                    }
+                });
+            }
+        });
     </script>
         <!-- Cookie Banner -->
     <?php include __DIR__ . '/cookie-banner.php'; ?>
