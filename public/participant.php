@@ -184,32 +184,44 @@ if (!empty($participant_token)) {
 <body>
     <!-- Navigation -->
     <?php include __DIR__ . '/../includes/templates/navigation.php'; ?>
-    <div class="container">
-        <div class="error-page">
-            <div class="error-content">
-                <div class="error-icon">🎄</div>
-                <h1 class="error-title">Keine Gruppe gefunden</h1>
-                <p class="error-message">
+
+    <div class="container" style="margin-top: 2rem;">
+        <div class="participant-info-card">
+            <div class="participant-welcome">
+                <h1 class="participant-greeting">Keine Gruppe gefunden 🎄</h1>
+                <p class="participant-group-name">
                     Du hast noch keine Wichtel-Gruppe besucht oder dein Link ist nicht mehr gültig.
-                    Um auf deinen Teilnehmerbereich zuzugreifen, benötigst du einen persönlichen Teilnehmer-Link.
                 </p>
-                
-                <div class="error-actions">
-                    <a href="index.php" class="button primary">🏠 Zur Startseite</a>
-                    <a href="create_group.php" class="button secondary">➕ Neue Gruppe erstellen</a>
-                </div>
-                
-                <div class="error-help">
-                    <h3>💡 So kommst du zu deinem Teilnehmerbereich:</h3>
-                    <ul>
-                        <li><strong>Einladungslink erhalten?</strong> Benutze den Link, den dir der Gruppenadmin geschickt hat</li>
-                        <li><strong>Bereits angemeldet?</strong> Verwende deinen persönlichen Teilnehmer-Link aus der Bestätigungs-E-Mail</li>
-                        <li><strong>Link verloren?</strong> Kontaktiere den Gruppenadmin für einen neuen Link</li>
-                    </ul>
-                </div>
             </div>
         </div>
+
+        <div class="section-card waiting-card">
+            <div class="waiting-icon">🏠</div>
+            <h2>Was möchtest du tun?</h2>
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem; flex-wrap: wrap;">
+                <a href="index.php" class="button primary">Zur Startseite</a>
+                <a href="create_group.php" class="button secondary">Neue Gruppe erstellen</a>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-card-header">
+                <span class="section-icon">💡</span>
+                <h2>So kommst du zu deinem Teilnehmerbereich</h2>
+            </div>
+            <ul>
+                <li><strong>Einladungslink erhalten?</strong> Benutze den Link, den dir der Gruppenadmin geschickt hat</li>
+                <li><strong>Bereits angemeldet?</strong> Verwende deinen persönlichen Teilnehmer-Link aus der Bestätigungs-E-Mail</li>
+                <li><strong>Link verloren?</strong> Kontaktiere den Gruppenadmin für einen neuen Link</li>
+            </ul>
+        </div>
     </div>
+
+    <!-- Cookie Banner -->
+    <?php include __DIR__ . '/cookie-banner.php'; ?>
+
+    <!-- Footer -->
+    <?php include __DIR__ . '/../includes/templates/footer.php'; ?>
 </body>
 </html>
         <?php
