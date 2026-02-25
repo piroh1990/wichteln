@@ -1211,7 +1211,6 @@ a.button:disabled {
     border: 2px solid var(--border-color);
     overflow: hidden;
     transition: all 0.3s ease;
-    cursor: pointer;
 }
 
 .faq-item:hover {
@@ -1225,13 +1224,31 @@ a.button:disabled {
     align-items: center;
     padding: 1.5rem;
     user-select: none;
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+}
+
+.faq-question:focus-visible {
+    outline: 3px solid var(--secondary-color);
+    outline-offset: -3px;
+    background-color: rgba(42, 157, 143, 0.05);
 }
 
 .faq-item h3 {
+    margin: 0;
+    padding: 0;
+}
+
+.faq-title {
     color: var(--secondary-dark);
     font-size: 1.2rem;
-    margin: 0;
+    font-weight: 700;
     flex: 1;
+    margin: 0;
 }
 
 .faq-toggle {
