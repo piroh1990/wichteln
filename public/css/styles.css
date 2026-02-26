@@ -1998,6 +1998,7 @@ a.button:disabled {
 }
 
 .faq-question {
+    width: 100%;
     padding: 1.5rem;
     cursor: pointer;
     display: flex;
@@ -2011,6 +2012,31 @@ a.button:disabled {
 
 .faq-question:hover {
     color: #e63946;
+}
+
+button.faq-question {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    text-align: left;
+    font-family: inherit;
+    margin: 0;
+}
+
+button.faq-question:hover {
+    background: transparent;
+    box-shadow: none;
+}
+
+button.faq-question::before {
+    display: none;
+}
+
+button.faq-question:focus-visible {
+    outline: 3px solid var(--secondary-color);
+    outline-offset: -3px;
+    background-color: rgba(42, 157, 143, 0.05);
 }
 
 .faq-icon {
