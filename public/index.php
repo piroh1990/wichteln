@@ -177,62 +177,74 @@
             <h2 class="section-title">Häufig gestellte Fragen</h2>
             
             <div class="faq-list">
-                <div class="faq-item" onclick="toggleFAQ(this)">
-                    <div class="faq-question">
-                        <h3>Wie funktioniert die Auslosung?</h3>
-                        <span class="faq-toggle">+</span>
-                    </div>
-                    <div class="faq-answer">
+                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-1" id="faq-question-1" onclick="toggleFAQ(this)">
+                            <span class="faq-title">Wie funktioniert die Auslosung?</span>
+                            <span class="faq-toggle" aria-hidden="true">+</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-1" class="faq-answer" role="region" aria-labelledby="faq-question-1">
                         <p>Nach dem Klick auf "Auslosen" werden die Namen automatisch und zufällig zugeordnet. Dabei wird sichergestellt, dass niemand sich selbst zieht und alle Ausschlüsse berücksichtigt werden. Jeder Teilnehmer erhält dann eine E-Mail mit seinem Wichtelpartner.</p>
                     </div>
                 </div>
                 
-                <div class="faq-item" onclick="toggleFAQ(this)">
-                    <div class="faq-question">
-                        <h3>Kann ich Ausschlüsse einstellen?</h3>
-                        <span class="faq-toggle">+</span>
-                    </div>
-                    <div class="faq-answer">
+                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-2" id="faq-question-2" onclick="toggleFAQ(this)">
+                            <span class="faq-title">Kann ich Ausschlüsse einstellen?</span>
+                            <span class="faq-toggle" aria-hidden="true">+</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-2" class="faq-answer" role="region" aria-labelledby="faq-question-2">
                         <p>Ja! Als Admin kannst du vor der Auslosung festlegen, welche Personen sich nicht gegenseitig ziehen sollen. Dies ist besonders praktisch für Paare oder Geschwister. Du kannst beliebig viele Ausschlüsse definieren.</p>
                     </div>
                 </div>
                 
-                <div class="faq-item" onclick="toggleFAQ(this)">
-                    <div class="faq-question">
-                        <h3>Was passiert nach der Auslosung?</h3>
-                        <span class="faq-toggle">+</span>
-                    </div>
-                    <div class="faq-answer">
+                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-3" id="faq-question-3" onclick="toggleFAQ(this)">
+                            <span class="faq-title">Was passiert nach der Auslosung?</span>
+                            <span class="faq-toggle" aria-hidden="true">+</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-3" class="faq-answer" role="region" aria-labelledby="faq-question-3">
                         <p>Alle Teilnehmer mit E-Mail-Adresse erhalten automatisch eine Nachricht mit dem Namen ihres Wichtelpartners. Außerdem können sie jederzeit über ihren persönlichen Link nachschauen, wen sie beschenken.</p>
                     </div>
                 </div>
                 
-                <div class="faq-item" onclick="toggleFAQ(this)">
-                    <div class="faq-question">
-                        <h3>Ist eine Registrierung notwendig?</h3>
-                        <span class="faq-toggle">+</span>
-                    </div>
-                    <div class="faq-answer">
+                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-4" id="faq-question-4" onclick="toggleFAQ(this)">
+                            <span class="faq-title">Ist eine Registrierung notwendig?</span>
+                            <span class="faq-toggle" aria-hidden="true">+</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-4" class="faq-answer" role="region" aria-labelledby="faq-question-4">
                         <p>Nein! Du kannst sofort ohne Registrierung loslegen. Nach dem Erstellen einer Gruppe erhältst du einen Admin-Link, den du dir speichern solltest. Teilnehmer benötigen ebenfalls keine Registrierung.</p>
                     </div>
                 </div>
                 
-                <div class="faq-item" onclick="toggleFAQ(this)">
-                    <div class="faq-question">
-                        <h3>Kann ich die Auslosung zurücksetzen?</h3>
-                        <span class="faq-toggle">+</span>
-                    </div>
-                    <div class="faq-answer">
+                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-5" id="faq-question-5" onclick="toggleFAQ(this)">
+                            <span class="faq-title">Kann ich die Auslosung zurücksetzen?</span>
+                            <span class="faq-toggle" aria-hidden="true">+</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-5" class="faq-answer" role="region" aria-labelledby="faq-question-5">
                         <p>Ja, als Admin kannst du die Auslosung jederzeit zurücksetzen. Dabei werden alle Zuordnungen gelöscht und du kannst erneut auslosen - zum Beispiel wenn neue Teilnehmer hinzugekommen sind.</p>
                     </div>
                 </div>
                 
-                <div class="faq-item" onclick="toggleFAQ(this)">
-                    <div class="faq-question">
-                        <h3>Wie viele Teilnehmer sind möglich?</h3>
-                        <span class="faq-toggle">+</span>
-                    </div>
-                    <div class="faq-answer">
+                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-6" id="faq-question-6" onclick="toggleFAQ(this)">
+                            <span class="faq-title">Wie viele Teilnehmer sind möglich?</span>
+                            <span class="faq-toggle" aria-hidden="true">+</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-6" class="faq-answer" role="region" aria-labelledby="faq-question-6">
                         <p>Theoretisch unbegrenzt! Die Auslosung funktioniert ab 2 Teilnehmern und kann problemlos auch mit größeren Gruppen von 20, 30 oder mehr Personen durchgeführt werden.</p>
                     </div>
                 </div>
@@ -259,17 +271,26 @@
     </footer>
 
     <script>
-        function toggleFAQ(element) {
-            const isActive = element.classList.contains('active');
+        function toggleFAQ(button) {
+            const item = button.closest('.faq-item');
+            const isActive = item.classList.contains('active');
             
             // Schließe alle anderen FAQs
-            document.querySelectorAll('.faq-item').forEach(item => {
-                item.classList.remove('active');
+            document.querySelectorAll('.faq-item').forEach(otherItem => {
+                if (otherItem !== item) {
+                    otherItem.classList.remove('active');
+                    const otherBtn = otherItem.querySelector('.faq-question');
+                    if (otherBtn) otherBtn.setAttribute('aria-expanded', 'false');
+                }
             });
             
             // Öffne/Schließe die geklickte FAQ
-            if (!isActive) {
-                element.classList.add('active');
+            if (isActive) {
+                item.classList.remove('active');
+                button.setAttribute('aria-expanded', 'false');
+            } else {
+                item.classList.add('active');
+                button.setAttribute('aria-expanded', 'true');
             }
         }
 
