@@ -12,10 +12,14 @@ if ($master_token !== MASTER_ADMIN_TOKEN) {
 
 $pdo = db_connect();
 
-// Aktionen: Reset oder Löschen einer Gruppe über GET-Parameter
-if (isset($_GET['action']) && isset($_GET['group_id'])) {
-    $action = $_GET['action'];
-    $group_id = intval($_GET['group_id']);
+// Aktionen: Reset oder Löschen einer Gruppe über POST
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && isset($_POST['group_id'])) {
+    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+        die('CSRF-Token ungültig.');
+    }
+
+    $action = $_POST['action'];
+    $group_id = intval($_POST['group_id']);
 
     if ($action === 'reset') {
         // Gruppe zurücksetzen: is_drawn auf 0 setzen und assigned_to in Teilnehmern leeren
@@ -274,19 +278,25 @@ $total_archived_participants = array_sum(array_column($archived_stats, 'particip
                                     Verwalten
                                 </a>
 
-                                <a href="index.php?master_token=<?php echo urlencode($master_token); ?>&action=reset&group_id=<?php echo urlencode($group['id']); ?>" 
-                                   class="btn btn-secondary" 
-                                   onclick="return confirm('Möchtest du die Gruppe \"<?php echo htmlspecialchars($group['name']); ?>\" wirklich zurücksetzen?');">
-                                    <img src="https://xn--wichtl-gua.ch/images/icon-reset.svg" alt="Reset" width="16" height="16">
-                                    Reset
-                                </a>
+                                <form action="index.php?master_token=<?php echo urlencode($master_token); ?>" method="POST" style="display:inline;">
+                                    <input type="hidden" name="action" value="reset">
+                                    <input type="hidden" name="group_id" value="<?php echo htmlspecialchars($group['id']); ?>">
+                                    <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
+                                    <button type="submit" class="btn btn-secondary" onclick="return confirm('Möchtest du die Gruppe \"<?php echo htmlspecialchars($group['name']); ?>\" wirklich zurücksetzen?');">
+                                        <img src="https://xn--wichtl-gua.ch/images/icon-reset.svg" alt="Reset" width="16" height="16">
+                                        Reset
+                                    </button>
+                                </form>
 
-                                <a href="index.php?master_token=<?php echo urlencode($master_token); ?>&action=delete&group_id=<?php echo urlencode($group['id']); ?>" 
-                                   class="btn btn-danger" 
-                                   onclick="return confirm('⚠️ WARNUNG: Möchtest du die Gruppe \"<?php echo htmlspecialchars($group['name']); ?>\" wirklich PERMANENT löschen?\n\nDiese Aktion kann NICHT rückgängig gemacht werden!');">
-                                    <img src="https://xn--wichtl-gua.ch/images/icon-delete.svg" alt="Delete" width="16" height="16">
-                                    Löschen
-                                </a>
+                                <form action="index.php?master_token=<?php echo urlencode($master_token); ?>" method="POST" style="display:inline;">
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="group_id" value="<?php echo htmlspecialchars($group['id']); ?>">
+                                    <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
+                                    <button type="submit" class="btn btn-danger" onclick="return confirm('⚠️ WARNUNG: Möchtest du die Gruppe \"<?php echo htmlspecialchars($group['name']); ?>\" wirklich PERMANENT löschen?\n\nDiese Aktion kann NICHT rückgängig gemacht werden!');">
+                                        <img src="https://xn--wichtl-gua.ch/images/icon-delete.svg" alt="Delete" width="16" height="16">
+                                        Löschen
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     <?php endforeach; ?>

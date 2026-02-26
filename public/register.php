@@ -21,6 +21,9 @@ if ($group['is_drawn']) {
 
 // Teilnehmer registrieren
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+        die('CSRF-Token ungültig.');
+    }
     $name = trim($_POST['name']);
     $email = trim($_POST['email']) ?: null;
 
@@ -113,6 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
         <?php endif; ?>
         <form method="POST">
+            <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
             <div class="form-group">
                 <label for="name">Name:</label>
                 <input type="text" id="name" name="name" required>

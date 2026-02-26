@@ -7,6 +7,9 @@ require_once __DIR__ . '/../includes/functions.php';
 session_start();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+        die('CSRF-Token ungültig.');
+    }
     $group_name = trim($_POST['group_name']);
     $admin_email = trim($_POST['admin_email']);
     $budget = trim($_POST['budget']) ?: null;
@@ -124,6 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
         <?php endif; ?>
         <form method="POST" id="create-group-form">
+            <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
             <div class="form-group">
                 <label for="group_name">Gruppenname:</label>
                 <input type="text" id="group_name" name="group_name" required>
