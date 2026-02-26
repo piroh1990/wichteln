@@ -218,6 +218,10 @@ if (!empty($participant_token)) {
     
     // Wenn Gruppenauswahl per POST gesendet wurde
     if (isset($_POST['select_group']) && isset($_POST['selected_token'])) {
+        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+            die('CSRF-Token ungültig.');
+        }
+
         $selected_token = $_POST['selected_token'];
         
         // Token validieren
@@ -261,6 +265,10 @@ if ($participant) {
     
     // Wunschliste aktualisieren (nur wenn noch nicht ausgelost)
     if (isset($_POST['update_wishlist']) && !$group['is_drawn']) {
+        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+            die('CSRF-Token ungültig.');
+        }
+
         $wishlist = trim($_POST['wishlist']);
         
         $stmt = $pdo->prepare("UPDATE `participants` SET `wishlist` = ? WHERE `id` = ?");
@@ -314,6 +322,7 @@ if ($show_group_selector) {
             <p>Du nimmst an mehreren Wichtel-Gruppen teil. Bitte wähle die Gruppe aus, die du ansehen möchtest:</p>
             
             <form method="POST" id="group-selector-form">
+                <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
                 <?php foreach ($participants as $p): ?>
                 <label class="group-card">
                     <input type="radio" name="selected_token" value="<?php echo htmlspecialchars($p['participant_token']); ?>" required>
@@ -543,6 +552,7 @@ if ($show_group_selector) {
             <?php if (!$group['is_drawn']): ?>
                 <p class="section-description">Trage hier deine Wünsche ein. Dein Wichtelpartner wird diese nach der Auslosung sehen können.</p>
                 <form method="POST" class="wishlist-form">
+                    <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
                     <div class="form-group">
                         <label for="wishlist" class="form-label">
                             <span>Deine Wünsche</span>
