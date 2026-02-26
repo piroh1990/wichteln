@@ -149,8 +149,8 @@ if ($action === 'reset') {
     try {
         // Zuordnungen speichern
         $assignments = [];
+        $stmt = $pdo->prepare("UPDATE `participants` SET `assigned_to` = ? WHERE `id` = ?");
         for ($i = 0; $i < count($participant_ids); $i++) {
-            $stmt = $pdo->prepare("UPDATE `participants` SET `assigned_to` = ? WHERE `id` = ?");
             $stmt->execute([$assigned_ids[$i], $participant_ids[$i]]);
             
             $assignments[] = [
