@@ -11,6 +11,18 @@ error_reporting(E_ALL);
 
 // Datenbankverbindung herstellen
 function db_connect() {
+    // For testing with SQLite
+    if (defined('DB_TYPE') && DB_TYPE === 'sqlite') {
+        try {
+            $pdo = new PDO('sqlite:' . DB_PATH);
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            return $pdo;
+        } catch (PDOException $e) {
+            die('Datenbankverbindung fehlgeschlagen: ' . $e->getMessage());
+        }
+    }
+
+    // Default MySQL connection
     $dsn = 'mysql:host='.DB_HOST.';dbname='.DB_NAME.';charset=utf8mb4';
     try {
         $pdo = new PDO($dsn, DB_USER, DB_PASS);
