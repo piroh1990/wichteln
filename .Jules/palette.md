@@ -1,0 +1,3 @@
+## 2024-05-24 - Add Loading States to Procedural PHP Forms
+**Learning:** In procedural PHP apps where form submissions take significant time (like triggering multiple emails upon drawing names), users often double-click submit buttons causing duplicate actions (like duplicate emails or draws). Adding a lightweight JS event listener to disable the button and show a `.loading` spinner provides critical immediate visual feedback.
+**Action:** When working on procedural PHP templates that trigger slow backend actions, always look for the corresponding submit button and add a client-side loading state to prevent double submissions.

@@ -760,7 +760,7 @@ if (isset($_POST['draw'])) {
             <hr>
             <h2>Auslosung durchführen</h2>
             <p>Wenn alle Teilnehmer registriert sind und alle Ausschlüsse definiert wurden, kannst du die Auslosung durchführen.</p>
-            <form method="POST" style="margin-top: 1rem;">
+            <form method="POST" style="margin-top: 1rem;" id="draw-form">
                 <button type="submit" name="draw" class="button primary">Jetzt auslosen</button>
             </form>
         <?php else: ?>
@@ -790,5 +790,23 @@ if (isset($_POST['draw'])) {
     
     <!-- Footer -->
     <?php include __DIR__ . '/../includes/templates/footer.php'; ?>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var drawForm = document.getElementById('draw-form');
+            if (drawForm) {
+                drawForm.addEventListener('submit', function(e) {
+                    var submitBtn = drawForm.querySelector('button[type="submit"]');
+                    if (submitBtn) {
+                        submitBtn.style.minWidth = submitBtn.offsetWidth + 'px';
+                        submitBtn.style.whiteSpace = 'nowrap';
+                        submitBtn.innerHTML = '<span class="loading" aria-hidden="true"></span> Wird ausgelost...';
+                        submitBtn.disabled = true;
+                        submitBtn.style.cursor = 'wait';
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
