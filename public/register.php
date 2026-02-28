@@ -114,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <?php echo htmlspecialchars($email_error); ?>
             </div>
         <?php endif; ?>
-        <form method="POST">
+        <form method="POST" id="register-form">
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(get_csrf_token()); ?>">
             <div class="form-group">
                 <label for="name">Name:</label>
@@ -130,5 +130,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <!-- Cookie Banner -->
     <?php include __DIR__ . '/cookie-banner.php'; ?>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var registerForm = document.getElementById('register-form');
+            if (registerForm) {
+                registerForm.addEventListener('submit', function(e) {
+                    var submitBtn = registerForm.querySelector('button[type="submit"]');
+                    if (submitBtn) {
+                        submitBtn.style.minWidth = submitBtn.offsetWidth + 'px';
+                        submitBtn.style.whiteSpace = 'nowrap';
+                        submitBtn.innerHTML = '<span class="loading" aria-hidden="true"></span> Wird registriert...';
+                        submitBtn.disabled = true;
+                        submitBtn.style.cursor = 'wait';
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
