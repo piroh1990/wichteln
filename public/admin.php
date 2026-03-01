@@ -625,7 +625,7 @@ if (isset($_POST['draw'])) {
                                         class="action-btn copy-btn" 
                                         onclick="copyToClipboard('participant-link-<?php echo $p['id']; ?>')"
                                         title="Teilnehmer-Link kopieren">
-                                    <span class="btn-icon">📋</span>
+                                    <span class="btn-icon" aria-hidden="true">📋</span>
                                     <span class="btn-text">Link kopieren</span>
                                 </button>
                                 <span id="participant-link-<?php echo $p['id']; ?>" 
@@ -644,7 +644,7 @@ if (isset($_POST['draw'])) {
                                         title="<?php echo $can_send_email ? 'E-Mail erneut senden' : 'E-Mail kann nicht gesendet werden (keine E-Mail-Adresse oder Auslosung nicht durchgeführt)'; ?>"
                                         <?php echo !$can_send_email ? 'disabled' : ''; ?>
                                         <?php echo $can_send_email ? 'onclick="return confirm(\'E-Mail mit Wichtelpartner-Info an ' . htmlspecialchars($p['name']) . ' senden?\');"' : ''; ?>>
-                                    <span class="btn-icon">📧</span>
+                                    <span class="btn-icon" aria-hidden="true">📧</span>
                                     <span class="btn-text">E-Mail senden</span>
                                 </button>
                             </form>
@@ -653,7 +653,7 @@ if (isset($_POST['draw'])) {
                                 <a href="admin.php?token=<?php echo urlencode($admin_token); ?>&delete=<?php echo urlencode($p['id']); ?>" 
                                    class="action-btn delete-btn"
                                    onclick="return confirm('Möchtest du <?php echo htmlspecialchars($p['name']); ?> wirklich löschen?');">
-                                    <span class="btn-icon">🗑️</span>
+                                    <span class="btn-icon" aria-hidden="true">🗑️</span>
                                     <span class="btn-text">Löschen</span>
                                 </a>
                             <?php endif; ?>
@@ -672,7 +672,7 @@ if (isset($_POST['draw'])) {
                                             name="update_participant_email" 
                                             class="email-edit-btn"
                                             title="E-Mail speichern">
-                                        💾 Speichern
+                                        <span aria-hidden="true">💾</span> Speichern
                                     </button>
                                 </div>
                             </form>
@@ -761,7 +761,8 @@ if (isset($_POST['draw'])) {
             <h2>Auslosung durchführen</h2>
             <p>Wenn alle Teilnehmer registriert sind und alle Ausschlüsse definiert wurden, kannst du die Auslosung durchführen.</p>
             <form method="POST" style="margin-top: 1rem;" id="draw-form">
-                <button type="submit" name="draw" class="button primary">Jetzt auslosen</button>
+                <input type="hidden" name="draw" value="1">
+                <button type="submit" class="button primary">Jetzt auslosen</button>
             </form>
         <?php else: ?>
             <hr>
@@ -783,7 +784,7 @@ if (isset($_POST['draw'])) {
         <p class="text-muted">Das Löschen der Gruppe kann nicht rückgängig gemacht werden. Alle Teilnehmer, Ausschlüsse und die Auslosung werden permanent gelöscht.</p>
         <form method="POST" style="margin-top: 1rem;" onsubmit="return confirm('⚠️ ACHTUNG: Möchtest du die Gruppe \"<?php echo htmlspecialchars($group['name']); ?>\" wirklich PERMANENT löschen?\n\nAlle Teilnehmer, Ausschlüsse und die Auslosung werden unwiderruflich gelöscht!\n\nDiese Aktion kann NICHT rückgängig gemacht werden.');">
             <button type="submit" name="delete_group" class="button error" style="background: linear-gradient(135deg, #dc3545, #c82333);">
-                🗑️ Gruppe permanent löschen
+                <span aria-hidden="true">🗑️</span> Gruppe permanent löschen
             </button>
         </form>
     </div>

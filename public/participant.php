@@ -509,7 +509,7 @@ if ($show_group_selector) {
                         </div>
                     <?php else: ?>
                         <div class="empty-wishlist">
-                            <span class="empty-wishlist-icon">📋</span>
+                            <span class="empty-wishlist-icon" aria-hidden="true">📋</span>
                             <p><?php echo htmlspecialchars($assigned['name']); ?> hat noch keine Wunschliste hinterlegt.</p>
                         </div>
                     <?php endif; ?>
@@ -580,8 +580,9 @@ if ($show_group_selector) {
                                   class="form-textarea"
                                   placeholder="- Bücher über...&#10;- Schokolade&#10;- Etwas Selbstgemachtes&#10;- Überraschung!"><?php echo htmlspecialchars($participant['wishlist'] ?? ''); ?></textarea>
                     </div>
-                    <button type="submit" name="update_wishlist" class="button primary">
-                        <span>💾</span>
+                    <input type="hidden" name="update_wishlist" value="1">
+                    <button type="submit" class="button primary">
+                        <span aria-hidden="true">💾</span>
                         Wunschliste speichern
                     </button>
                 </form>
@@ -596,7 +597,7 @@ if ($show_group_selector) {
                     </div>
                 <?php else: ?>
                     <div class="empty-wishlist">
-                        <span class="empty-wishlist-icon">📋</span>
+                        <span class="empty-wishlist-icon" aria-hidden="true">📋</span>
                         <p>Du hast keine Wunschliste hinterlegt.</p>
                     </div>
                 <?php endif; ?>
@@ -648,7 +649,7 @@ if ($show_group_selector) {
             <div class="link-display-container">
                 <pre id="participant-link" class="link-display" data-url="<?php echo htmlspecialchars(get_display_url('/participant.php?token=' . urlencode($participant_token))); ?>"><?php echo htmlspecialchars(get_display_url('/participant.php?token=' . urlencode($participant_token))); ?></pre>
                 <button class="button secondary copy-btn" onclick="copyToClipboard('participant-link')">
-                    <span>📋</span>
+                    <span aria-hidden="true">📋</span>
                     Link kopieren
                 </button>
             </div>
@@ -662,11 +663,11 @@ if ($show_group_selector) {
         <!-- Multi-Group Navigation -->
         <div class="multi-group-nav">
             <p class="multi-group-text">
-                <span class="multi-group-icon">🎁</span>
+                <span class="multi-group-icon" aria-hidden="true">🎁</span>
                 Du nimmst an mehreren Wichtel-Gruppen teil
             </p>
             <a href="participant.php" class="button secondary">
-                🔄 Gruppe wechseln
+                <span aria-hidden="true">🔄</span> Gruppe wechseln
             </a>
         </div>
         <?php endif; ?>
@@ -707,5 +708,23 @@ if ($show_group_selector) {
     
     <!-- Footer -->
     <?php include __DIR__ . '/../includes/templates/footer.php'; ?>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var wishlistForm = document.querySelector('.wishlist-form');
+            if (wishlistForm) {
+                wishlistForm.addEventListener('submit', function(e) {
+                    var submitBtn = wishlistForm.querySelector('button[type="submit"]');
+                    if (submitBtn) {
+                        submitBtn.style.minWidth = submitBtn.offsetWidth + 'px';
+                        submitBtn.style.whiteSpace = 'nowrap';
+                        submitBtn.innerHTML = '<span class="loading" aria-hidden="true"></span> Wird gespeichert...';
+                        submitBtn.disabled = true;
+                        submitBtn.style.cursor = 'wait';
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
