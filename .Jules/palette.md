@@ -1,3 +1,3 @@
-## 2024-05-24 - Add Loading States to Procedural PHP Forms
-**Learning:** In procedural PHP apps where form submissions take significant time (like triggering multiple emails upon drawing names), users often double-click submit buttons causing duplicate actions (like duplicate emails or draws). Adding a lightweight JS event listener to disable the button and show a `.loading` spinner provides critical immediate visual feedback.
-**Action:** When working on procedural PHP templates that trigger slow backend actions, always look for the corresponding submit button and add a client-side loading state to prevent double submissions.
+## 2024-05-18 - Added individual ARIA labels to inputs in custom lists
+**Learning:** When using `<input>` elements inside custom dynamic lists or cards (like the email edit input in `admin.php` for each participant, or the radio buttons for group selection in `participant.php`), failing to attach an explicitly linked `<label>` degrades the experience for screen reader users. The screen reader will just announce "Edit text" or "Radio button" without context.
+**Action:** Always add an `aria-label` attribute using the contextual data (e.g. `aria-label="E-Mail-Adresse für <?php echo htmlspecialchars($p['name']); ?>"`) to inputs that lack a traditional `<label>` element.
