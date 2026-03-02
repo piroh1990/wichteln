@@ -667,7 +667,8 @@ if (isset($_POST['draw'])) {
                                            name="participant_email" 
                                            value="<?php echo htmlspecialchars($p['email'] ?? ''); ?>" 
                                            placeholder="E-Mail hinzufügen..."
-                                           class="email-edit-input">
+                                           class="email-edit-input"
+                                           aria-label="E-Mail-Adresse für <?php echo htmlspecialchars($p['name']); ?>">
                                     <button type="submit" 
                                             name="update_participant_email" 
                                             class="email-edit-btn"

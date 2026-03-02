@@ -341,7 +341,7 @@ if ($show_group_selector) {
                 <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
                 <?php foreach ($participants as $p): ?>
                 <label class="group-card">
-                    <input type="radio" name="selected_token" value="<?php echo htmlspecialchars($p['participant_token']); ?>" required>
+                    <input type="radio" name="selected_token" value="<?php echo htmlspecialchars($p['participant_token']); ?>" required aria-label="Gruppe: <?php echo htmlspecialchars($p['group_name']); ?> (als <?php echo htmlspecialchars($p['name']); ?>)">
                     <div class="group-card-content">
                         <div class="group-card-header">
                             <div>
