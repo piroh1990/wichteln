@@ -573,7 +573,7 @@ if (isset($_POST['draw'])) {
         <h2>Einladungslink für Teilnehmer</h2>
         <pre id="participant-link"><?php echo htmlspecialchars(get_display_url('/register.php?token=' . urlencode($group['invite_token']))); ?></pre>
         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem;">
-            <button class="button secondary small copy-button" onclick="copyToClipboard('participant-link')">Link kopieren</button>
+            <button class="button secondary small copy-button" onclick="copyToClipboard('participant-link')" aria-label="Einladungslink kopieren">Link kopieren</button>
             <a href="https://api.whatsapp.com/send?text=<?php echo urlencode('Hallo! Du bist eingeladen, beim Wichteln mitzumachen. 🎁') . '%0A%0A' . urlencode('Gruppe: ' . $group['name']) . '%0A%0A' . urlencode('Melde dich hier an: ' . get_display_url('/register.php?token=' . urlencode($group['invite_token']))); ?>" 
                target="_blank" 
                class="button secondary small">
@@ -596,7 +596,7 @@ if (isset($_POST['draw'])) {
         <h2>Admin-Link</h2>
         <p>Dieser Link ermöglicht den direkten Zugriff auf den Admin-Bereich:</p>
         <pre id="admin-link"><?php echo htmlspecialchars(get_display_url('/admin.php?token=' . urlencode($admin_token))); ?></pre>
-        <button class="button secondary small copy-button" onclick="copyToClipboard('admin-link')">Link kopieren</button>
+        <button class="button secondary small copy-button" onclick="copyToClipboard('admin-link')" aria-label="Admin-Link kopieren">Link kopieren</button>
         
         <hr>
         
@@ -624,7 +624,8 @@ if (isset($_POST['draw'])) {
                                 <button type="button"
                                         class="action-btn copy-btn" 
                                         onclick="copyToClipboard('participant-link-<?php echo $p['id']; ?>')"
-                                        title="Teilnehmer-Link kopieren">
+                                        title="Teilnehmer-Link kopieren"
+                                        aria-label="Teilnehmer-Link kopieren für <?php echo htmlspecialchars($p['name']); ?>">
                                     <span class="btn-icon" aria-hidden="true">📋</span>
                                     <span class="btn-text">Link kopieren</span>
                                 </button>
@@ -642,6 +643,7 @@ if (isset($_POST['draw'])) {
                                         name="resend_email" 
                                         class="action-btn email-btn <?php echo !$can_send_email ? 'disabled' : ''; ?>"
                                         title="<?php echo $can_send_email ? 'E-Mail erneut senden' : 'E-Mail kann nicht gesendet werden (keine E-Mail-Adresse oder Auslosung nicht durchgeführt)'; ?>"
+                                        aria-label="E-Mail senden an <?php echo htmlspecialchars($p['name']); ?>"
                                         <?php echo !$can_send_email ? 'disabled' : ''; ?>
                                         <?php echo $can_send_email ? 'onclick="return confirm(\'E-Mail mit Wichtelpartner-Info an ' . htmlspecialchars($p['name']) . ' senden?\');"' : ''; ?>>
                                     <span class="btn-icon" aria-hidden="true">📧</span>
@@ -652,6 +654,7 @@ if (isset($_POST['draw'])) {
                             <?php if (!$group['is_drawn']): ?>
                                 <a href="admin.php?token=<?php echo urlencode($admin_token); ?>&delete=<?php echo urlencode($p['id']); ?>" 
                                    class="action-btn delete-btn"
+                                   aria-label="<?php echo htmlspecialchars($p['name']); ?> löschen"
                                    onclick="return confirm('Möchtest du <?php echo htmlspecialchars($p['name']); ?> wirklich löschen?');">
                                     <span class="btn-icon" aria-hidden="true">🗑️</span>
                                     <span class="btn-text">Löschen</span>
@@ -672,7 +675,8 @@ if (isset($_POST['draw'])) {
                                     <button type="submit" 
                                             name="update_participant_email" 
                                             class="email-edit-btn"
-                                            title="E-Mail speichern">
+                                            title="E-Mail speichern"
+                                            aria-label="E-Mail für <?php echo htmlspecialchars($p['name']); ?> speichern">
                                         <span aria-hidden="true">💾</span> Speichern
                                     </button>
                                 </div>
