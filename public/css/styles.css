@@ -752,6 +752,12 @@ td:last-child {
     outline-offset: 2px;
 }
 
+/* Required Indicator */
+.required-indicator {
+    color: var(--error);
+    margin-left: 0.25rem;
+}
+
 /* Improved Button Hover States */
 button:disabled,
 a.button:disabled {
