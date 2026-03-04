@@ -117,12 +117,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <form method="POST" id="register-form">
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(get_csrf_token()); ?>">
             <div class="form-group">
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name" required>
+                <label for="name">Name:<span class="required-indicator" aria-hidden="true" title="Erforderlich">*</span></label>
+                <input type="text" id="name" name="name" required placeholder="Dein Name">
             </div>
             <div class="form-group">
                 <label for="email">E-Mail (optional):</label>
-                <input type="email" id="email" name="email">
+                <input type="email" id="email" name="email" placeholder="deine@email.ch">
             </div>
             <button type="submit" class="button primary">Registrieren</button>
         </form>

@@ -703,7 +703,7 @@ if (isset($_POST['draw'])) {
             <form method="POST" class="exclusion-form">
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="participant_id">Person:</label>
+                        <label for="participant_id">Person:<span class="required-indicator" aria-hidden="true" title="Erforderlich">*</span></label>
                         <select id="participant_id" name="participant_id" required>
                             <option value="">-- Person auswählen --</option>
                             <?php foreach ($participants as $p): ?>
@@ -713,7 +713,7 @@ if (isset($_POST['draw'])) {
                     </div>
                     
                     <div class="form-group">
-                        <label for="excluded_participant_id">kann nicht wichteln:</label>
+                        <label for="excluded_participant_id">kann nicht wichteln:<span class="required-indicator" aria-hidden="true" title="Erforderlich">*</span></label>
                         <select id="excluded_participant_id" name="excluded_participant_id" required>
                             <option value="">-- Person auswählen --</option>
                             <?php foreach ($participants as $p): ?>

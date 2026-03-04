@@ -125,11 +125,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <?php endif; ?>
         <form method="POST" id="create-group-form">
             <div class="form-group">
-                <label for="group_name">Gruppenname:</label>
-                <input type="text" id="group_name" name="group_name" required>
+                <label for="group_name">Gruppenname:<span class="required-indicator" aria-hidden="true" title="Erforderlich">*</span></label>
+                <input type="text" id="group_name" name="group_name" required placeholder="z.B. Familie Müller">
             </div>
             <div class="form-group">
-                <label for="admin_email">Deine E-Mail-Adresse (Admin):</label>
+                <label for="admin_email">Deine E-Mail-Adresse (Admin):<span class="required-indicator" aria-hidden="true" title="Erforderlich">*</span></label>
                 <input type="email" id="admin_email" name="admin_email" required placeholder="admin@beispiel.ch">
                 <small style="color: #5f6368; font-size: 13px; display: block; margin-top: 5px;">Du erhältst den Admin-Link per E-Mail</small>
             </div>
@@ -146,7 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <input type="date" id="gift_exchange_date" name="gift_exchange_date">
             </div>
             <div class="form-group captcha-group">
-                <label for="captcha_answer">Sicherheitscode:</label>
+                <label for="captcha_answer">Sicherheitscode:<span class="required-indicator" aria-hidden="true" title="Erforderlich">*</span></label>
                 <div class="captcha-container">
                     <img src="captcha.php" alt="Captcha" id="captcha-image" class="captcha-image">
                     <button type="button" onclick="refreshCaptcha()" class="button secondary small refresh-captcha" title="Neues Bild laden" aria-label="Neues Captcha laden">
