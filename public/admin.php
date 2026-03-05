@@ -543,7 +543,7 @@ if (isset($_POST['draw'])) {
             <div class="admin-info-content">
                 <h3 class="admin-info-title">Wichtiger Hinweis zum Datenschutz</h3>
                 <p class="admin-info-text">
-                    Diese Gruppe und alle personenbezogenen Daten werden automatisch am <strong><?php echo $deletion_date; ?></strong> gelöscht (3 Monate nach dem Event).
+                    Diese Gruppe und alle personenbezogenen Daten werden automatisch am <strong><?php echo htmlspecialchars($deletion_date); ?></strong> gelöscht (3 Monate nach dem Event).
                     Anonymisierte Statistiken bleiben erhalten.
                 </p>
             </div>
