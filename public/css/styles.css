@@ -3132,3 +3132,10 @@ a.button:disabled {
     justify-content: center;
     border-radius: 8px;
 }
+
+button.faq-question {
+    background: none;
+    border: none;
+    width: 100%;
+    margin: 0;
+}
