@@ -46,13 +46,15 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
             <section class="faq-section">
                 <h2>🎁 Allgemeine Fragen</h2>
                 
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        <span>Was ist Wichtlä.ch?</span>
-                        <span class="faq-icon">▼</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-1" id="faq-question-1" onclick="toggleFaq(this)">
+                            <span class="faq-title">Was ist Wichtlä.ch?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-1" class="faq-answer" role="region" aria-labelledby="faq-question-1">
+<p>
                             Wichtlä.ch ist ein <strong>kostenloses Online-Tool</strong> zum Organisieren von Wichtel-Events. Du kannst damit ganz einfach:
                         </p>
                         <ul>
@@ -68,13 +70,15 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                 </div>
                 
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        <span>Kostet Wichtlä.ch etwas?</span>
-                        <span class="faq-icon">▼</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-2" id="faq-question-2" onclick="toggleFaq(this)">
+                            <span class="faq-title">Kostet Wichtlä.ch etwas?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-2" class="faq-answer" role="region" aria-labelledby="faq-question-2">
+<p>
                             <strong>Nein, Wichtlä.ch ist 100% kostenlos!</strong>
                         </p>
                         <p>
@@ -83,13 +87,15 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                 </div>
                 
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        <span>Muss ich mich registrieren?</span>
-                        <span class="faq-icon">▼</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-3" id="faq-question-3" onclick="toggleFaq(this)">
+                            <span class="faq-title">Muss ich mich registrieren?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-3" class="faq-answer" role="region" aria-labelledby="faq-question-3">
+<p>
                             <strong>Nein!</strong> Es ist keine Registrierung erforderlich. Du erstellst einfach eine Gruppe, fügst Teilnehmer hinzu und erhältst einen Admin-Link per E-Mail. Fertig!
                         </p>
                         <p>
@@ -98,13 +104,15 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                 </div>
                 
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        <span>Wie viele Personen können mitmachen?</span>
-                        <span class="faq-icon">▼</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-4" id="faq-question-4" onclick="toggleFaq(this)">
+                            <span class="faq-title">Wie viele Personen können mitmachen?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-4" class="faq-answer" role="region" aria-labelledby="faq-question-4">
+<p>
                             <strong>Mindestens 3 Personen</strong> werden empfohlen für ein funktionierendes Wichteln. Nach oben gibt es praktisch keine Grenze – ob 5, 20 oder 100 Teilnehmer, das System funktioniert für alle Gruppengrößen.
                         </p>
                         <p>
@@ -118,13 +126,15 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
             <section class="faq-section">
                 <h2>⚙️ Funktionen & Nutzung</h2>
                 
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        <span>Wie funktioniert das Losziehen?</span>
-                        <span class="faq-icon">▼</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-5" id="faq-question-5" onclick="toggleFaq(this)">
+                            <span class="faq-title">Wie funktioniert das Losziehen?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-5" class="faq-answer" role="region" aria-labelledby="faq-question-5">
+<p>
                             Der Algorithmus stellt sicher, dass:
                         </p>
                         <ul>
@@ -139,13 +149,15 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                 </div>
                 
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        <span>Was sind Ausschlüsse und wofür brauche ich sie?</span>
-                        <span class="faq-icon">▼</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-6" id="faq-question-6" onclick="toggleFaq(this)">
+                            <span class="faq-title">Was sind Ausschlüsse und wofür brauche ich sie?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-6" class="faq-answer" role="region" aria-labelledby="faq-question-6">
+<p>
                             <strong>Ausschlüsse</strong> verhindern, dass bestimmte Personen einander ziehen. Das ist sinnvoll bei:
                         </p>
                         <ul>
@@ -160,13 +172,15 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                 </div>
                 
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        <span>Kann ich später noch Teilnehmer hinzufügen?</span>
-                        <span class="faq-icon">▼</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-7" id="faq-question-7" onclick="toggleFaq(this)">
+                            <span class="faq-title">Kann ich später noch Teilnehmer hinzufügen?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-7" class="faq-answer" role="region" aria-labelledby="faq-question-7">
+<p>
                             <strong>Ja!</strong> Als Admin kannst du über deinen Admin-Link jederzeit:
                         </p>
                         <ul>
@@ -180,13 +194,15 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                 </div>
                 
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        <span>Kann ich die Ziehung wiederholen?</span>
-                        <span class="faq-icon">▼</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-8" id="faq-question-8" onclick="toggleFaq(this)">
+                            <span class="faq-title">Kann ich die Ziehung wiederholen?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-8" class="faq-answer" role="region" aria-labelledby="faq-question-8">
+<p>
                             <strong>Ja</strong>, als Admin kannst du die Ziehung zurücksetzen und neu durchführen lassen. Das ist nützlich, wenn:
                         </p>
                         <ul>
@@ -200,13 +216,15 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                 </div>
                 
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        <span>Was passiert, wenn jemand sein Los verliert?</span>
-                        <span class="faq-icon">▼</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-9" id="faq-question-9" onclick="toggleFaq(this)">
+                            <span class="faq-title">Was passiert, wenn jemand sein Los verliert?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-9" class="faq-answer" role="region" aria-labelledby="faq-question-9">
+<p>
                             Kein Problem! Jeder Teilnehmer kann sein Los jederzeit wieder abrufen:
                         </p>
                         <ul>
@@ -217,13 +235,15 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                 </div>
                 
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        <span>Kann ich mehrere Wichtel-Gruppen erstellen?</span>
-                        <span class="faq-icon">▼</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-10" id="faq-question-10" onclick="toggleFaq(this)">
+                            <span class="faq-title">Kann ich mehrere Wichtel-Gruppen erstellen?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-10" class="faq-answer" role="region" aria-labelledby="faq-question-10">
+<p>
                             <strong>Ja, absolut!</strong> Du kannst beliebig viele Gruppen erstellen, z.B.:
                         </p>
                         <ul>
@@ -242,13 +262,15 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
             <section class="faq-section">
                 <h2>🔒 Datenschutz & Sicherheit</h2>
                 
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        <span>Sind meine Daten sicher?</span>
-                        <span class="faq-icon">▼</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-11" id="faq-question-11" onclick="toggleFaq(this)">
+                            <span class="faq-title">Sind meine Daten sicher?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-11" class="faq-answer" role="region" aria-labelledby="faq-question-11">
+<p>
                             <strong>Ja!</strong> Wir nehmen Datenschutz sehr ernst:
                         </p>
                         <ul>
@@ -264,13 +286,15 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                 </div>
                 
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        <span>Welche Daten werden gespeichert?</span>
-                        <span class="faq-icon">▼</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-12" id="faq-question-12" onclick="toggleFaq(this)">
+                            <span class="faq-title">Welche Daten werden gespeichert?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-12" class="faq-answer" role="region" aria-labelledby="faq-question-12">
+<p>
                             Wir speichern nur das Nötigste:
                         </p>
                         <ul>
@@ -286,13 +310,15 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                 </div>
                 
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        <span>Wie lange werden meine Daten aufbewahrt?</span>
-                        <span class="faq-icon">▼</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-13" id="faq-question-13" onclick="toggleFaq(this)">
+                            <span class="faq-title">Wie lange werden meine Daten aufbewahrt?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-13" class="faq-answer" role="region" aria-labelledby="faq-question-13">
+<p>
                             Gruppen und alle zugehörigen Daten werden <strong>automatisch nach 90 Tagen gelöscht</strong>.
                         </p>
                         <p>
@@ -301,13 +327,15 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                 </div>
                 
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        <span>Kann jemand anders mein Los sehen?</span>
-                        <span class="faq-icon">▼</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-14" id="faq-question-14" onclick="toggleFaq(this)">
+                            <span class="faq-title">Kann jemand anders mein Los sehen?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-14" class="faq-answer" role="region" aria-labelledby="faq-question-14">
+<p>
                             <strong>Nein!</strong> Jedes Los ist durch einen einzigartigen, geheimen Link geschützt. Niemand kann dein Los sehen – auch nicht der Admin –, es sei denn, du teilst deinen Los-Link.
                         </p>
                         <p>
@@ -321,13 +349,15 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
             <section class="faq-section">
                 <h2>🆘 Probleme & Support</h2>
                 
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        <span>Ich habe keine E-Mail erhalten – was tun?</span>
-                        <span class="faq-icon">▼</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-15" id="faq-question-15" onclick="toggleFaq(this)">
+                            <span class="faq-title">Ich habe keine E-Mail erhalten – was tun?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-15" class="faq-answer" role="region" aria-labelledby="faq-question-15">
+<p>
                             Wenn du keine E-Mail erhalten hast, prüfe bitte:
                         </p>
                         <ul>
@@ -342,13 +372,15 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                 </div>
                 
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        <span>Ich habe meinen Admin-Link verloren!</span>
-                        <span class="faq-icon">▼</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-16" id="faq-question-16" onclick="toggleFaq(this)">
+                            <span class="faq-title">Ich habe meinen Admin-Link verloren!</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-16" class="faq-answer" role="region" aria-labelledby="faq-question-16">
+<p>
                             Der Admin-Link wurde dir per E-Mail zugeschickt. Schau in deinem Posteingang (und Spam-Ordner) nach E-Mails von Wichtlä.ch.
                         </p>
                         <p>
@@ -356,17 +388,19 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                         </p>
                         <div class="highlight-box">
                             <strong>💡 Tipp:</strong> Speichere den Admin-Link als Lesezeichen im Browser!
-                        </div>
                     </div>
                 </div>
+                </div>
                 
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        <span>Die Ziehung funktioniert nicht – warum?</span>
-                        <span class="faq-icon">▼</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-17" id="faq-question-17" onclick="toggleFaq(this)">
+                            <span class="faq-title">Die Ziehung funktioniert nicht – warum?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-17" class="faq-answer" role="region" aria-labelledby="faq-question-17">
+<p>
                             Mögliche Gründe:
                         </p>
                         <ul>
@@ -380,13 +414,15 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                 </div>
                 
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        <span>Kann ich eine Gruppe löschen?</span>
-                        <span class="faq-icon">▼</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-18" id="faq-question-18" onclick="toggleFaq(this)">
+                            <span class="faq-title">Kann ich eine Gruppe löschen?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-18" class="faq-answer" role="region" aria-labelledby="faq-question-18">
+<p>
                             <strong>Ja!</strong> Als Admin findest du im Admin-Bereich eine "Gruppe löschen"-Option. Alle Daten werden sofort und unwiderruflich gelöscht.
                         </p>
                         <p>
@@ -395,13 +431,15 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                 </div>
                 
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        <span>Funktioniert Wichtlä.ch auf dem Smartphone?</span>
-                        <span class="faq-icon">▼</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-19" id="faq-question-19" onclick="toggleFaq(this)">
+                            <span class="faq-title">Funktioniert Wichtlä.ch auf dem Smartphone?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-19" class="faq-answer" role="region" aria-labelledby="faq-question-19">
+<p>
                             <strong>Ja, vollständig!</strong> Wichtlä.ch ist komplett responsive und funktioniert auf allen Geräten:
                         </p>
                         <ul>
@@ -420,13 +458,15 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
             <section class="faq-section">
                 <h2>💡 Tipps & Best Practices</h2>
                 
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        <span>Wann ist der beste Zeitpunkt, um zu starten?</span>
-                        <span class="faq-icon">▼</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-20" id="faq-question-20" onclick="toggleFaq(this)">
+                            <span class="faq-title">Wann ist der beste Zeitpunkt, um zu starten?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-20" class="faq-answer" role="region" aria-labelledby="faq-question-20">
+<p>
                             <strong>3-4 Wochen vor dem Event</strong> ist ideal:
                         </p>
                         <ul>
@@ -440,13 +480,15 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                 </div>
                 
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        <span>Welches Budget empfehlt ihr?</span>
-                        <span class="faq-icon">▼</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-21" id="faq-question-21" onclick="toggleFaq(this)">
+                            <span class="faq-title">Welches Budget empfehlt ihr?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-21" class="faq-answer" role="region" aria-labelledby="faq-question-21">
+<p>
                             Das hängt von eurer Gruppe ab:
                         </p>
                         <ul>
@@ -460,13 +502,15 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                 </div>
                 
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        <span>Soll das Wichteln anonym bleiben?</span>
-                        <span class="faq-icon">▼</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-22" id="faq-question-22" onclick="toggleFaq(this)">
+                            <span class="faq-title">Soll das Wichteln anonym bleiben?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-22" class="faq-answer" role="region" aria-labelledby="faq-question-22">
+<p>
                             Das ist Geschmackssache:
                         </p>
                         <ul>
@@ -479,13 +523,15 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                 </div>
                 
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFaq(this)">
-                        <span>Was tun, wenn jemand nicht mitmachen will?</span>
-                        <span class="faq-icon">▼</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-23" id="faq-question-23" onclick="toggleFaq(this)">
+                            <span class="faq-title">Was tun, wenn jemand nicht mitmachen will?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-23" class="faq-answer" role="region" aria-labelledby="faq-question-23">
+<p>
                             <strong>Wichteln sollte immer freiwillig sein!</strong> Niemand sollte sich gezwungen fühlen.
                         </p>
                         <p>
@@ -504,19 +550,16 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
     </div>
     
     <script>
-        function toggleFaq(element) {
-            const faqItem = element.parentElement;
+        function toggleFaq(button) {
+            const faqItem = button.closest('.faq-item');
             const wasActive = faqItem.classList.contains('active');
-            
-            // Optional: Close all other FAQ items
-            // document.querySelectorAll('.faq-item').forEach(item => {
-            //     item.classList.remove('active');
-            // });
             
             if (wasActive) {
                 faqItem.classList.remove('active');
+                button.setAttribute('aria-expanded', 'false');
             } else {
                 faqItem.classList.add('active');
+                button.setAttribute('aria-expanded', 'true');
             }
         }
     </script>
