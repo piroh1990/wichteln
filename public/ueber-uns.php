@@ -56,7 +56,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
             <section class="content-section">
                 <h2>Wer steckt dahinter?</h2>
                 <p>
-                    Wichtlä.ch wurde von <strong>Patrick Raths</strong> ins Leben gerufen und wird aus der <strong>Schweiz</strong> betrieben. Die Idee entstand aus einem ganz alltäglichen Problem: Jedes Jahr in der Vorweihnachtszeit das gleiche Spiel – Zettel schreiben, in einen Hut werfen, hoffen, dass niemand sich selbst zieht, und dann die Lose irgendwie an alle verteilen. Besonders wenn nicht alle am selben Ort sind, wird das schnell kompliziert.
+                    Wichtlä.ch wurde von <a href="https://raths-it.ch"><strong>Raths-IT</strong></a> ins Leben gerufen und wird aus der <strong>Schweiz</strong> betrieben. Die Idee entstand aus einem ganz alltäglichen Problem: Jedes Jahr in der Vorweihnachtszeit das gleiche Spiel – Zettel schreiben, in einen Hut werfen, hoffen, dass niemand sich selbst zieht, und dann die Lose irgendwie an alle verteilen. Besonders wenn nicht alle am selben Ort sind, wird das schnell kompliziert.
                 </p>
                 <p>
                     Aus diesem Bedarf heraus wurde Wichtlä.ch entwickelt: ein schlankes, schnelles Online-Tool, das genau dieses Problem löst. Ohne unnötigen Schnickschnack, ohne Datensammelei, ohne Registrierungszwang – einfach Wichteln, wie es sein sollte.
