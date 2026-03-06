@@ -17,6 +17,7 @@
             <li><a href="wichtel-ideen.php" class="nav-link">Geschenkideen</a></li>
             <li><a href="firmenwichteln-tipps.php" class="nav-link">Firmenwichteln</a></li>
             <li><a href="faq.php" class="nav-link">FAQ</a></li>
+            <li><a href="ueber-uns.php" class="nav-link">Über uns</a></li>
             <li><a href="create_group.php" class="nav-link nav-link-primary">Gruppe erstellen</a></li>
         </ul>
     </div>

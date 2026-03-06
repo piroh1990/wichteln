@@ -26,7 +26,200 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
     <link rel="stylesheet" href="css/styles.css">
     
     <?php include __DIR__ . '/../includes/templates/matomo_tracking.php'; ?>
-    
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "Was ist Wichtlä.ch?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Wichtlä.ch ist ein kostenloses Online-Tool zum Organisieren von Wichtel-Events. Du kannst damit Wichtel-Gruppen erstellen, Teilnehmer hinzufügen, automatisch und fair Namen ziehen lassen, Lose per E-Mail verschicken und Ausschlüsse definieren. Alles ohne Registrierung, ohne App-Download – einfach im Browser!"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Kostet Wichtlä.ch etwas?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Nein, Wichtlä.ch ist 100% kostenlos! Es gibt keine versteckten Kosten, keine Premium-Accounts und keine Einschränkungen."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Muss ich mich registrieren?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Nein! Es ist keine Registrierung erforderlich. Du erstellst einfach eine Gruppe, fügst Teilnehmer hinzu und erhältst einen Admin-Link per E-Mail."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Wie viele Personen können mitmachen?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Mindestens 3 Personen werden empfohlen für ein funktionierendes Wichteln. Nach oben gibt es praktisch keine Grenze – ob 5, 20 oder 100 Teilnehmer, das System funktioniert für alle Gruppengrössen."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Wie funktioniert das Losziehen?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Der Algorithmus stellt sicher, dass niemand sich selbst zieht, jede Person genau eine andere Person beschenkt, jede Person genau ein Geschenk erhält und definierte Ausschlüsse eingehalten werden. Das Los wird per E-Mail verschickt und bleibt geheim."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Was sind Ausschlüsse und wofür brauche ich sie?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Ausschlüsse verhindern, dass bestimmte Personen einander ziehen. Das ist sinnvoll bei Paaren, engen Freunden, Geschwistern in Familien-Wichteln oder Vorgesetzten/Mitarbeitern im Firmenwichteln."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Kann ich später noch Teilnehmer hinzufügen?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Ja! Als Admin kannst du über deinen Admin-Link jederzeit neue Teilnehmer hinzufügen, Wunschlisten ergänzen oder ändern und weitere Ausschlüsse definieren. Sobald die Namen gezogen wurden, müsste die Ziehung neu durchgeführt werden."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Kann ich die Ziehung wiederholen?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Ja, als Admin kannst du die Ziehung zurücksetzen und neu durchführen lassen. Das ist nützlich, wenn du Ausschlüsse vergessen hast, neue Teilnehmer hinzugekommen sind oder ein Fehler passiert ist."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Was passiert, wenn jemand sein Los verliert?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Kein Problem! Jeder Teilnehmer kann sein Los jederzeit wieder abrufen: Auf der Startseite gibt es den Link 'Los abrufen', E-Mail-Adresse eingeben und das Los wird erneut zugeschickt."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Kann ich mehrere Wichtel-Gruppen erstellen?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Ja, absolut! Du kannst beliebig viele Gruppen erstellen, z.B. eine für die Familie, eine für Freunde und eine für die Arbeit. Jede Gruppe hat ihren eigenen Admin-Link."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Sind meine Daten sicher?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Ja! Wir verwenden SSL-Verschlüsselung für alle Verbindungen, der Server-Standort ist in der Schweiz, wir halten das Schweizer Datenschutzgesetz (DSG) ein und Gruppen werden automatisch nach Ablauf gelöscht."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Welche Daten werden gespeichert?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Wir speichern nur das Nötigste: Namen der Teilnehmer, E-Mail-Adressen (für Benachrichtigungen), Wunschlisten (optional), Ausschlüsse und Ziehungsergebnisse. Nicht gespeichert werden: Telefonnummern, Adressen, Zahlungsdaten oder sonstige persönliche Informationen."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Wie lange werden meine Daten aufbewahrt?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Gruppen und alle zugehörigen Daten werden automatisch nach 90 Tagen gelöscht. Als Admin kannst du deine Gruppe auch jederzeit manuell löschen."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Kann jemand anders mein Los sehen?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Nein! Jedes Los ist durch einen einzigartigen, geheimen Link geschützt. Niemand kann dein Los sehen – auch nicht der Admin –, es sei denn, du teilst deinen Los-Link."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Ich habe keine E-Mail erhalten – was tun?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Prüfe bitte deinen Spam-Ordner, ob du dich bei der E-Mail-Adresse vertippt hast, und warte 1-2 Minuten. Nutze die 'Los erneut zusenden'-Funktion auf der Startseite oder kontaktiere den Admin."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Ich habe meinen Admin-Link verloren!",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Der Admin-Link wurde dir per E-Mail zugeschickt. Schau in deinem Posteingang und Spam-Ordner nach E-Mails von Wichtlä.ch. Tipp: Speichere den Admin-Link als Lesezeichen im Browser!"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Die Ziehung funktioniert nicht – warum?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Mögliche Gründe: Zu viele Ausschlüsse (mathematisch unmöglich), zu wenige Teilnehmer (mindestens 3 erforderlich) oder ein technisches Problem (Browser-Cache leeren). Reduziere die Ausschlüsse oder füge mehr Teilnehmer hinzu."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Kann ich eine Gruppe löschen?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Ja! Als Admin findest du im Admin-Bereich eine 'Gruppe löschen'-Option. Alle Daten werden sofort und unwiderruflich gelöscht."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Funktioniert Wichtlä.ch auf dem Smartphone?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Ja, vollständig! Wichtlä.ch ist komplett responsive und funktioniert auf Smartphones (iOS & Android), Desktop-Computern und Tablets. Keine App nötig – einfach im Browser öffnen!"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Wann ist der beste Zeitpunkt, um zu starten?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "3-4 Wochen vor dem Event ist ideal. Genug Zeit zum Geschenke-Besorgen, Teilnehmer können in Ruhe überlegen und bei Problemen bleibt Zeit für Korrekturen. Für spontane Wichtel-Aktionen reicht auch 1-2 Wochen Vorlauf."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Welches Budget empfehlt ihr?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Das hängt von eurer Gruppe ab: 10-15 CHF für Freunde, Studenten und grosse Gruppen; 15-25 CHF als Standard für die meisten Wichtel-Events; 25-50 CHF für Firmen und kleinere Kreise. Wählt ein Budget, das für alle bezahlbar ist!"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Soll das Wichteln anonym bleiben?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Das ist Geschmackssache: Anonym ist spannender mit mehr Rätselraten, offen ist persönlicher und einfacher bei der Geschenkauswahl. Viele Gruppen machen es so: Geschenke anonym verpacken, aber nach dem Auspacken verrät sich der Schenker."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Was tun, wenn jemand nicht mitmachen will?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Wichteln sollte immer freiwillig sein! Niemand sollte sich gezwungen fühlen. Bei Firmenwichteln: Macht eine Umfrage vorher und organisiert das Event nur, wenn genug Leute mitmachen wollen."
+                }
+            }
+        ]
+    }
+    </script>
+
 </head>
 <body>
     <?php include __DIR__ . '/../includes/templates/navigation.php'; ?>
@@ -565,12 +758,38 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
     </script>
     
     <!-- Simple Footer -->
-    <footer style="background: var(--secondary-dark); color: white; text-align: center; padding: 2rem;">
-        <p style="margin: 0; color: white; opacity: 1;">
-            © <?php echo date('Y'); ?> wichtlä.ch • 
-            <a href="impressum.php" style="color: white; text-decoration: underline;">Impressum</a> • 
-            <a href="datenschutz.php" style="color: white; text-decoration: underline;">Datenschutz</a>
-        </p>
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Wichteln</h4>
+                    <ul class="footer-links">
+                        <li><a href="was-ist-wichteln.php">Was ist Wichteln?</a></li>
+                        <li><a href="wichtel-ideen.php">Geschenkideen</a></li>
+                        <li><a href="firmenwichteln-tipps.php">Firmenwichteln</a></li>
+                        <li><a href="faq.php">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Loslegen</h4>
+                    <ul class="footer-links">
+                        <li><a href="create_group.php">Gruppe erstellen</a></li>
+                        <li><a href="participant.php">Teilnehmerbereich</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Rechtliches</h4>
+                    <ul class="footer-links">
+                        <li><a href="ueber-uns.php">Über uns</a></li>
+                        <li><a href="impressum.php">Impressum</a></li>
+                        <li><a href="datenschutz.php">Datenschutz</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; <?php echo date('Y'); ?> wichtlä.ch</p>
+            </div>
+        </div>
     </footer>
     
     <?php include __DIR__ . '/cookie-banner.php'; ?>

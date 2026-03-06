@@ -393,12 +393,38 @@
         </div>
     </div>
     
-    <footer style="background: var(--secondary-dark); color: white; text-align: center; padding: 2rem; margin-top: 3rem;">
-        <p style="margin: 0; color: white; opacity: 1;">
-            © <?php echo date('Y'); ?> wichtlä.ch • 
-            <a href="impressum.php" style="color: white; text-decoration: underline;">Impressum</a> • 
-            <a href="datenschutz.php" style="color: white; text-decoration: underline;">Datenschutz</a>
-        </p>
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Wichteln</h4>
+                    <ul class="footer-links">
+                        <li><a href="was-ist-wichteln.php">Was ist Wichteln?</a></li>
+                        <li><a href="wichtel-ideen.php">Geschenkideen</a></li>
+                        <li><a href="firmenwichteln-tipps.php">Firmenwichteln</a></li>
+                        <li><a href="faq.php">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Loslegen</h4>
+                    <ul class="footer-links">
+                        <li><a href="create_group.php">Gruppe erstellen</a></li>
+                        <li><a href="participant.php">Teilnehmerbereich</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Rechtliches</h4>
+                    <ul class="footer-links">
+                        <li><a href="ueber-uns.php">Über uns</a></li>
+                        <li><a href="impressum.php">Impressum</a></li>
+                        <li><a href="datenschutz.php">Datenschutz</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; <?php echo date('Y'); ?> wichtlä.ch</p>
+            </div>
+        </div>
     </footer>
     
     <!-- Cookie Banner -->

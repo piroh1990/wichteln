@@ -26,7 +26,28 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
     <link rel="stylesheet" href="css/styles.css">
     
     <?php include __DIR__ . '/../includes/templates/matomo_tracking.php'; ?>
-    
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "100+ Wichtel-Geschenkideen für 10-30 CHF",
+        "description": "Die besten Wichtel-Geschenkideen für jedes Budget: praktisch, lustig, kreativ und persönlich.",
+        "author": {
+            "@type": "Organization",
+            "name": "Wichtlä.ch"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "Wichtlä.ch",
+            "url": "https://xn--wichtl-gua.ch/"
+        },
+        "url": "https://xn--wichtl-gua.ch/wichtel-ideen.php",
+        "inLanguage": "de",
+        "mainEntityOfPage": "https://xn--wichtl-gua.ch/wichtel-ideen.php"
+    }
+    </script>
+
 </head>
 <body>
     <?php include __DIR__ . '/../includes/templates/navigation.php'; ?>
@@ -320,13 +341,38 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
         </article>
     </div>
     
-    <!-- Simple Footer -->
-    <footer style="background: var(--secondary-dark); color: white; text-align: center; padding: 2rem;">
-        <p style="margin: 0; color: white; opacity: 1;">
-            © <?php echo date('Y'); ?> wichtlä.ch • 
-            <a href="impressum.php" style="color: white; text-decoration: underline;">Impressum</a> • 
-            <a href="datenschutz.php" style="color: white; text-decoration: underline;">Datenschutz</a>
-        </p>
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Wichteln</h4>
+                    <ul class="footer-links">
+                        <li><a href="was-ist-wichteln.php">Was ist Wichteln?</a></li>
+                        <li><a href="wichtel-ideen.php">Geschenkideen</a></li>
+                        <li><a href="firmenwichteln-tipps.php">Firmenwichteln</a></li>
+                        <li><a href="faq.php">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Loslegen</h4>
+                    <ul class="footer-links">
+                        <li><a href="create_group.php">Gruppe erstellen</a></li>
+                        <li><a href="participant.php">Teilnehmerbereich</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Rechtliches</h4>
+                    <ul class="footer-links">
+                        <li><a href="ueber-uns.php">Über uns</a></li>
+                        <li><a href="impressum.php">Impressum</a></li>
+                        <li><a href="datenschutz.php">Datenschutz</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; <?php echo date('Y'); ?> wichtlä.ch</p>
+            </div>
+        </div>
     </footer>
     
     <?php include __DIR__ . '/cookie-banner.php'; ?>
