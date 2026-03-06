@@ -581,7 +581,7 @@ if ($show_group_selector) {
                                   placeholder="- Bücher über...&#10;- Schokolade&#10;- Etwas Selbstgemachtes&#10;- Überraschung!"><?php echo htmlspecialchars($participant['wishlist'] ?? ''); ?></textarea>
                     </div>
                     <input type="hidden" name="update_wishlist" value="1">
-                    <button type="submit" class="button primary">
+                    <button type="submit" class="button primary" aria-label="Wunschliste speichern">
                         <span aria-hidden="true">💾</span>
                         Wunschliste speichern
                     </button>
@@ -648,7 +648,7 @@ if ($show_group_selector) {
             
             <div class="link-display-container">
                 <pre id="participant-link" class="link-display" data-url="<?php echo htmlspecialchars(get_display_url('/participant.php?token=' . urlencode($participant_token))); ?>"><?php echo htmlspecialchars(get_display_url('/participant.php?token=' . urlencode($participant_token))); ?></pre>
-                <button class="button secondary copy-btn" onclick="copyToClipboard('participant-link')">
+                <button class="button secondary copy-btn" onclick="copyToClipboard('participant-link')" aria-label="Deinen persönlichen Teilnehmer-Link kopieren">
                     <span aria-hidden="true">📋</span>
                     Link kopieren
                 </button>
