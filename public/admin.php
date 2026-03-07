@@ -747,6 +747,7 @@ if (isset($_POST['draw'])) {
                                 <td>
                                     <a href="admin.php?token=<?php echo urlencode($admin_token); ?>&delete_exclusion=<?php echo urlencode($ex['id']); ?>" 
                                        class="button error small"
+                                       aria-label="Ausschluss löschen: <?php echo htmlspecialchars($ex['participant_name']); ?> darf nicht <?php echo htmlspecialchars($ex['excluded_name']); ?> wichteln"
                                        onclick="return confirm('Möchtest du diesen Ausschluss wirklich löschen?');">
                                         Löschen
                                     </a>
