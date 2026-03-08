@@ -723,7 +723,7 @@ if (isset($_POST['draw'])) {
                     </div>
                     
                     <div class="form-group">
-                        <label style="opacity: 0;">Hinzufügen</label>
+                        <label aria-hidden="true" style="opacity: 0;">Hinzufügen</label>
                         <button type="submit" name="add_exclusion" class="button secondary">Ausschluss hinzufügen</button>
                     </div>
                 </div>
