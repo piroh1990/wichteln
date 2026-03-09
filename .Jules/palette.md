@@ -1,9 +1,15 @@
-## 2024-03-03 - Added ARIA labels to Admin icon buttons
-**Learning:** Icon buttons and actions with implicit visual context (like edit/save/copy buttons next to participant names) need explicit ARIA labels because screen readers will otherwise announce them vaguely (e.g., "Link kopieren", "Speichern") without context of *whose* link is being copied or saved. Adding `aria-label` with contextual data like `aria-label="Teilnehmer-Link kopieren für <?php echo htmlspecialchars($p['name']); ?>"` makes the interface much more accessible without adding visual clutter.
-**Action:** When creating repeating components in a list/grid (like the participants grid in `admin.php`), always ensure actionable buttons have `aria-label`s that inject the item's unique identifier/name for clear screen-reader context.
-## 2024-05-15 - Added ARIA labels to buttons on participant page
-**Learning:** Even buttons that have visual text labels (like "Link kopieren") might still benefit from more descriptive `aria-label` attributes to provide better context to screen reader users (e.g. "Deinen persönlichen Teilnehmer-Link kopieren"), particularly when multiple actions could be interpreted vaguely. Wait, actually, standard text buttons might not strictly need an `aria-label` if the visible text is clear, but adding one when it provides extra useful context doesn't hurt. However, if the button has both an icon wrapped in `aria-hidden="true"` and a text node, an `aria-label` that provides the full context ensures screen readers announce the action perfectly.
-**Action:** Review primary buttons in participant views to ensure they are accessible. For text buttons containing decorative emojis, ensure the emoji is in an `aria-hidden` span, and if the visible text isn't descriptive enough on its own out of context, add an `aria-label`.
-## 2024-05-18 - Added ARIA labels to delete exclusion buttons in admin tables
-**Learning:** Tables displaying multiple rows of items (like the "Aktive Ausschlüsse" table) often use repetitive "Löschen" (Delete) buttons in the action column. For screen reader users, hearing "Löschen" repeatedly without context makes it impossible to know which item is being deleted, as the column headers alone don't establish the relationship clearly enough.
-**Action:** When creating repeating components in a table (like delete actions per row), always ensure actionable buttons or links have `aria-label`s that inject the item's unique row data (e.g., `aria-label="Ausschluss löschen: Person A darf nicht Person B wichteln"`) for clear, independent screen-reader context.
+## 2024-05-14 - Loading state button breaks POST variables
+**Learning:** When disabling a named submit button via JavaScript to show a loading state, the browser omits the button's name and value from the `$_POST` payload. To prevent breaking backend logic that relies on checking `isset($_POST['button_name'])`, a corresponding `<input type="hidden" name="[button_name]" value="1">` must be added to the form.
+**Action:** When adding loading states to submit buttons that use a `name` attribute, ensure to add a hidden input with the same name.
+
+## $(date +%Y-%m-%d) - Missing Loading State on Admin Forms
+**Learning:** Admin forms like `update-group-form` can be submitted multiple times without visual feedback, leading to confusion. Adding a visual loading state with `disabled=true` and `cursor=wait` along with a spinner (`<span class="loading" aria-hidden="true"></span>`) provides necessary feedback.
+**Action:** When creating or modifying forms, always ensure the submit button has a visual loading state triggered via JavaScript on the `submit` event.
+
+## 2024-05-14 - Loading state button breaks POST variables
+**Learning:** When disabling a named submit button via JavaScript to show a loading state, the browser omits the button's name and value from the `$_POST` payload. To prevent breaking backend logic that relies on checking `isset($_POST['button_name'])`, a corresponding `<input type="hidden" name="[button_name]" value="1">` must be added to the form.
+**Action:** When adding loading states to submit buttons that use a `name` attribute, ensure to add a hidden input with the same name.
+
+## 2024-05-20 - Missing Loading State on Admin Forms
+**Learning:** Admin forms like `update-group-form` can be submitted multiple times without visual feedback, leading to confusion. Adding a visual loading state with `disabled=true` and `cursor=wait` along with a spinner (`<span class="loading" aria-hidden="true"></span>`) provides necessary feedback.
+**Action:** When creating or modifying forms, always ensure the submit button has a visual loading state triggered via JavaScript on the `submit` event.

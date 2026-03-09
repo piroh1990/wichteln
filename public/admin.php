@@ -551,7 +551,7 @@ if (isset($_POST['draw'])) {
 
         <!-- Gruppendetails bearbeiten -->
         <h2>Gruppendetails</h2>
-        <form method="POST">
+        <form method="POST" id="update-group-form">
             <div class="form-group">
                 <label for="budget">Budget (optional):</label>
                 <input type="number" step="0.01" id="budget" name="budget" value="<?php echo htmlspecialchars($group['budget'] ?? ''); ?>" placeholder="z.B. 20.00">
@@ -564,7 +564,10 @@ if (isset($_POST['draw'])) {
                 <label for="gift_exchange_date">Datum der Geschenkübergabe (optional):</label>
                 <input type="date" id="gift_exchange_date" name="gift_exchange_date" value="<?php echo htmlspecialchars($group['gift_exchange_date'] ?? ''); ?>">
             </div>
-            <button type="submit" name="update_group" class="button secondary">Gruppendetails aktualisieren</button>
+            <input type="hidden" name="update_group" value="1">
+            <button type="submit" class="button secondary">
+                <span aria-hidden="true">💾</span> Gruppendetails aktualisieren
+            </button>
         </form>
         
         <hr>
@@ -808,6 +811,20 @@ if (isset($_POST['draw'])) {
                         submitBtn.style.minWidth = submitBtn.offsetWidth + 'px';
                         submitBtn.style.whiteSpace = 'nowrap';
                         submitBtn.innerHTML = '<span class="loading" aria-hidden="true"></span> Wird ausgelost...';
+                        submitBtn.disabled = true;
+                        submitBtn.style.cursor = 'wait';
+                    }
+                });
+            }
+
+            var updateGroupForm = document.getElementById('update-group-form');
+            if (updateGroupForm) {
+                updateGroupForm.addEventListener('submit', function(e) {
+                    var submitBtn = updateGroupForm.querySelector('button[type="submit"]');
+                    if (submitBtn) {
+                        submitBtn.style.minWidth = submitBtn.offsetWidth + 'px';
+                        submitBtn.style.whiteSpace = 'nowrap';
+                        submitBtn.innerHTML = '<span class="loading" aria-hidden="true"></span> Wird aktualisiert...';
                         submitBtn.disabled = true;
                         submitBtn.style.cursor = 'wait';
                     }
