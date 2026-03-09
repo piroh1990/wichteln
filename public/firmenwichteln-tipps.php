@@ -5,11 +5,10 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
 ?>
 <!DOCTYPE html>
 <html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>Firmenwichteln: Tipps & Ideen für erfolgreiches Teamwichteln | Wichtlä.ch</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Professionelle Tipps für Firmenwichteln: Organisation, Budget-Planung, Geschenkideen für Kollegen und kreative Varianten. Stärke dein Team zur Weihnachtszeit!">
+<?php
+$pageTitle = 'Firmenwichteln: Tipps & Ideen für erfolgreiches Teamwichteln | Wichtlä.ch';
+$pageDescription = 'Professionelle Tipps für Firmenwichteln: Organisation, Budget-Planung, Geschenkideen für Kollegen und kreative Varianten. Stärke dein Team zur Weihnachtszeit!';
+$extraTags = <<<'HTML'
     <meta name="keywords" content="Firmenwichteln, Wichteln Büro, Teamwichteln, Wichteln Arbeit, Wichteln Kollegen, Wichteln Organisation Firma">
     <link rel="canonical" href="https://wichtlä.ch/firmenwichteln-tipps.php">
     
@@ -17,17 +16,9 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
     <meta property="og:url" content="https://wichtlä.ch/firmenwichteln-tipps.php">
     <meta property="og:title" content="Firmenwichteln: Tipps & Ideen für erfolgreiches Teamwichteln">
     <meta property="og:description" content="Alles für erfolgreiches Firmenwichteln: Organisation, Budget und Geschenkideen.">
-    
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css">
-    
-    <?php include __DIR__ . '/../includes/templates/matomo_tracking.php'; ?>
-    
-</head>
+HTML;
+include __DIR__ . '/../includes/templates/header.php';
+?>
 <body>
     <?php include __DIR__ . '/../includes/templates/navigation.php'; ?>
     

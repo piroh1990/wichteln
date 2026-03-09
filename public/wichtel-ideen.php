@@ -5,11 +5,10 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
 ?>
 <!DOCTYPE html>
 <html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>100+ Wichtel-Geschenkideen für 10-30 CHF | Wichtlä.ch</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Die besten Wichtel-Geschenkideen von 10-30 CHF: Kreative, lustige und praktische Geschenke für Kollegen, Freunde und Familie. Jetzt inspirieren lassen!">
+<?php
+$pageTitle = '100+ Wichtel-Geschenkideen für 10-30 CHF | Wichtlä.ch';
+$pageDescription = 'Die besten Wichtel-Geschenkideen von 10-30 CHF: Kreative, lustige und praktische Geschenke für Kollegen, Freunde und Familie. Jetzt inspirieren lassen!';
+$extraTags = <<<'HTML'
     <meta name="keywords" content="Wichtelgeschenke, Geschenkideen Wichteln, Wichteln Ideen, Schrottwichteln Ideen, Wichtelgeschenk 10 CHF, Wichtelgeschenk 20 CHF">
     <link rel="canonical" href="https://wichtlä.ch/wichtel-ideen.php">
     
@@ -17,17 +16,9 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
     <meta property="og:url" content="https://wichtlä.ch/wichtel-ideen.php">
     <meta property="og:title" content="100+ Wichtel-Geschenkideen für 10-30 CHF">
     <meta property="og:description" content="Kreative, lustige und praktische Wichtelgeschenke für jeden Geschmack.">
-    
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css">
-    
-    <?php include __DIR__ . '/../includes/templates/matomo_tracking.php'; ?>
-    
-</head>
+HTML;
+include __DIR__ . '/../includes/templates/header.php';
+?>
 <body>
     <?php include __DIR__ . '/../includes/templates/navigation.php'; ?>
     

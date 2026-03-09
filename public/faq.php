@@ -5,11 +5,10 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
 ?>
 <!DOCTYPE html>
 <html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>FAQ - Häufig gestellte Fragen zum Online Wichteln | Wichtlä.ch</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Alle Antworten zu Wichtlä.ch: Kosten, Datenschutz, Funktionen, Probleme und Tipps. Finde schnell Hilfe für dein Wichtel-Event!">
+<?php
+$pageTitle = 'FAQ - Häufig gestellte Fragen zum Online Wichteln | Wichtlä.ch';
+$pageDescription = 'Alle Antworten zu Wichtlä.ch: Kosten, Datenschutz, Funktionen, Probleme und Tipps. Finde schnell Hilfe für dein Wichtel-Event!';
+$extraTags = <<<'HTML'
     <meta name="keywords" content="Wichteln FAQ, Wichteln Hilfe, Online Wichteln Fragen, Wichteln Anleitung, Wichteln Support">
     <link rel="canonical" href="https://wichtlä.ch/faq.php">
     
@@ -17,17 +16,9 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
     <meta property="og:url" content="https://wichtlä.ch/faq.php">
     <meta property="og:title" content="FAQ - Häufig gestellte Fragen zum Online Wichteln">
     <meta property="og:description" content="Alle Antworten zu Wichtlä.ch: Kosten, Datenschutz, Funktionen und mehr.">
-    
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css">
-    
-    <?php include __DIR__ . '/../includes/templates/matomo_tracking.php'; ?>
-    
-</head>
+HTML;
+include __DIR__ . '/../includes/templates/header.php';
+?>
 <body>
     <?php include __DIR__ . '/../includes/templates/navigation.php'; ?>
     

@@ -5,11 +5,10 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
 ?>
 <!DOCTYPE html>
 <html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>Was ist Wichteln? - Tradition, Regeln & Varianten | Wichtlä.ch</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Erfahre alles über die Wichtel-Tradition: Herkunft, Regeln, Varianten wie Schrottwichteln und Motto-Wichteln. Der ultimative Guide zum beliebten Brauch.">
+<?php
+$pageTitle = 'Was ist Wichteln? - Tradition, Regeln & Varianten | Wichtlä.ch';
+$pageDescription = 'Erfahre alles über die Wichtel-Tradition: Herkunft, Regeln, Varianten wie Schrottwichteln und Motto-Wichteln. Der ultimative Guide zum beliebten Brauch.';
+$extraTags = <<<'HTML'
     <meta name="keywords" content="Wichteln, Wichteln Regeln, Schrottwichteln, Wichteln Tradition, Wichteln Varianten, Wichtelbrauch, Julklapp">
     <link rel="canonical" href="https://wichtlä.ch/was-ist-wichteln.php">
     
@@ -18,19 +17,9 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
     <meta property="og:url" content="https://wichtlä.ch/was-ist-wichteln.php">
     <meta property="og:title" content="Was ist Wichteln? - Tradition, Regeln & Varianten">
     <meta property="og:description" content="Der ultimative Guide zur Wichtel-Tradition: Herkunft, Regeln und beliebte Varianten.">
-    
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css">
-    
-
-    
-    <?php include __DIR__ . '/../includes/templates/matomo_tracking.php'; ?>
-    
-</head>
+HTML;
+include __DIR__ . '/../includes/templates/header.php';
+?>
 <body>
     <?php include __DIR__ . '/../includes/templates/navigation.php'; ?>
     
