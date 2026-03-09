@@ -62,3 +62,29 @@ run_test("sanitize_for_api: empty inputs", function() {
     assert_equals("", sanitize_for_api(""), "Empty string should remain empty");
     assert_equals([], sanitize_for_api([]), "Empty array should remain empty");
 });
+
+// Test validate_input email validation
+run_test("validate_input: email validation", function() {
+    $field = "Email";
+
+    // Valid emails
+    assert_equals(null, validate_input($field, "test@example.com", ['email']), "Should accept standard email");
+    assert_equals(null, validate_input($field, "user.name+tag@sub.example.com", ['email']), "Should accept complex email");
+    assert_equals(null, validate_input($field, "a@b.cd", ['email']), "Should accept short domain");
+
+    // Invalid emails
+    assert_equals("Email muss eine gültige E-Mail sein", validate_input($field, "plainaddress", ['email']), "Should reject plain string");
+    assert_equals("Email muss eine gültige E-Mail sein", validate_input($field, "#@%^%#$@#$@#.com", ['email']), "Should reject garbage");
+    assert_equals("Email muss eine gültige E-Mail sein", validate_input($field, "@example.com", ['email']), "Should reject missing user part");
+    assert_equals("Email muss eine gültige E-Mail sein", validate_input($field, "Joe Smith <email@example.com>", ['email']), "Should reject name with email");
+    assert_equals("Email muss eine gültige E-Mail sein", validate_input($field, "email.example.com", ['email']), "Should reject missing @");
+    assert_equals("Email muss eine gültige E-Mail sein", validate_input($field, "email@example@example.com", ['email']), "Should reject double @");
+    assert_equals("Email muss eine gültige E-Mail sein", validate_input($field, "email@example", ['email']), "Should reject missing TLD dot");
+    assert_equals("Email muss eine gültige E-Mail sein", validate_input($field, "email@.com", ['email']), "Should reject domain starting with dot");
+
+    // Edge case: empty string
+    assert_equals("Email muss eine gültige E-Mail sein", validate_input($field, "", ['email']), "Empty string with 'email' rule should be invalid");
+
+    // Mixed rules: required + email
+    assert_equals("Email ist erforderlich", validate_input($field, "", ['required', 'email']), "Empty string with 'required' + 'email' should hit 'required' first");
+});
