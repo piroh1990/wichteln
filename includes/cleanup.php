@@ -71,13 +71,14 @@ function cleanup_old_groups($pdo) {
 
                 // 2. Archive Statistics
                 $insert_sql = "INSERT INTO `group_statistics`
-                               (original_group_id, participant_count, participant_with_email_count, exclusion_count,
+                               (original_group_id, group_name, participant_count, participant_with_email_count, exclusion_count,
                                 budget, gift_exchange_date, is_drawn, created_at, archived_at)
-                               VALUES (?, ?, ?, ?, ?, ?, ?, ?, " . ($driver === 'sqlite' ? "datetime('now')" : "NOW()") . ")";
+                               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, " . ($driver === 'sqlite' ? "datetime('now')" : "NOW()") . ")";
 
                 $stmt = $pdo->prepare($insert_sql);
                 $stmt->execute([
                     $group_id,
+                    $group_name,
                     $participant_count,
                     $participant_with_email_count,
                     $exclusion_count,

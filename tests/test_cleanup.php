@@ -45,6 +45,7 @@ run_test("Test Cleanup Logic", function() {
     $pdo->exec("CREATE TABLE `group_statistics` (
       `id` INTEGER PRIMARY KEY AUTOINCREMENT,
       `original_group_id` INTEGER,
+      `group_name` TEXT,
       `participant_count` INTEGER DEFAULT 0,
       `participant_with_email_count` INTEGER DEFAULT 0,
       `exclusion_count` INTEGER DEFAULT 0,
