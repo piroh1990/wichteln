@@ -87,6 +87,7 @@ COMMENT='Wichtel-Ausschlüsse';
 CREATE TABLE IF NOT EXISTS `group_statistics` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `original_group_id` INT NULL COMMENT 'ID der ursprünglichen Gruppe (optional)',
+  `group_name` VARCHAR(255) NULL COMMENT 'Name der ursprünglichen Gruppe',
   `participant_count` INT DEFAULT 0 COMMENT 'Anzahl der Teilnehmer',
   `participant_with_email_count` INT DEFAULT 0 COMMENT 'Anzahl der Teilnehmer mit E-Mail',
   `exclusion_count` INT DEFAULT 0 COMMENT 'Anzahl der Ausschlüsse',
