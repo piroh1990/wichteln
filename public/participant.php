@@ -521,34 +521,10 @@ if ($show_group_selector) {
             </div>
             
             <?php 
-            // Google Ad Position 1: Nach Wichtelpartner-Bereich
-            if (defined('GOOGLE_ADS_ENABLED') && GOOGLE_ADS_ENABLED && 
-                defined('GOOGLE_ADS_SHOW_OPTION1') && GOOGLE_ADS_SHOW_OPTION1): 
-                $is_testing = defined('GOOGLE_ADS_TESTING') && GOOGLE_ADS_TESTING;
+            $position = 1;
+            $label = "Position 1: Nach Wichtelpartner";
+            include __DIR__ . '/../includes/templates/google_ads.php';
             ?>
-            <div class="ad-container">
-                <div class="ad-label"><?php echo $is_testing ? 'Test-Anzeige (Position 1)' : 'Anzeige'; ?></div>
-                <?php if ($is_testing): ?>
-                    <div class="ad-test-placeholder">
-                        📊 Google Ad Placeholder<br>
-                        Position 1: Nach Wichtelpartner<br>
-                        Responsive Display Ad
-                    </div>
-                <?php else: ?>
-                    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<?php echo htmlspecialchars(GOOGLE_ADS_CLIENT); ?>"
-                         crossorigin="anonymous"></script>
-                    <ins class="adsbygoogle"
-                         style="display:block"
-                         data-ad-client="<?php echo htmlspecialchars(GOOGLE_ADS_CLIENT); ?>"
-                         data-ad-slot="<?php echo htmlspecialchars(GOOGLE_ADS_SLOT_OPTION1); ?>"
-                         data-ad-format="auto"
-                         data-full-width-responsive="true"></ins>
-                    <script>
-                         (adsbygoogle = window.adsbygoogle || []).push({});
-                    </script>
-                <?php endif; ?>
-            </div>
-            <?php endif; ?>
         <?php else: ?>
             <div class="section-card waiting-card">
                 <div class="waiting-icon">⏳</div>
@@ -673,34 +649,10 @@ if ($show_group_selector) {
         <?php endif; ?>
 
         <?php 
-        // Google Ad Position 2: Am Ende der Seite
-        if (defined('GOOGLE_ADS_ENABLED') && GOOGLE_ADS_ENABLED && 
-            defined('GOOGLE_ADS_SHOW_OPTION2') && GOOGLE_ADS_SHOW_OPTION2): 
-            $is_testing = defined('GOOGLE_ADS_TESTING') && GOOGLE_ADS_TESTING;
+        $position = 2;
+        $label = "Position 2: Am Ende der Seite";
+        include __DIR__ . '/../includes/templates/google_ads.php';
         ?>
-        <div class="ad-container">
-            <div class="ad-label"><?php echo $is_testing ? 'Test-Anzeige (Position 2)' : 'Anzeige'; ?></div>
-            <?php if ($is_testing): ?>
-                <div class="ad-test-placeholder">
-                    📊 Google Ad Placeholder<br>
-                    Position 2: Am Ende der Seite<br>
-                    Responsive Display Ad
-                </div>
-            <?php else: ?>
-                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<?php echo htmlspecialchars(GOOGLE_ADS_CLIENT); ?>"
-                     crossorigin="anonymous"></script>
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="<?php echo htmlspecialchars(GOOGLE_ADS_CLIENT); ?>"
-                     data-ad-slot="<?php echo htmlspecialchars(GOOGLE_ADS_SLOT_OPTION2); ?>"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-                <script>
-                     (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
-            <?php endif; ?>
-        </div>
-        <?php endif; ?>
     </div>
     
     <!-- Cookie Banner -->

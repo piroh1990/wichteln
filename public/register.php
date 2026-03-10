@@ -122,7 +122,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
             <div class="form-group">
                 <label for="email">E-Mail (optional):</label>
-                <input type="email" id="email" name="email" placeholder="deine@email.ch">
+                <input type="email" id="email" name="email" placeholder="deine@email.ch" aria-describedby="email_hint">
+                <small id="email_hint" class="form-hint">Wir senden dir deinen Wichtelpartner per E-Mail, sobald die Auslosung stattfindet.</small>
             </div>
             <button type="submit" class="button primary">Registrieren</button>
         </form>
