@@ -692,7 +692,10 @@ if (isset($_POST['draw'])) {
             <div class="empty-state">
                 <div class="empty-icon">👥</div>
                 <p class="empty-text">Noch keine Teilnehmer registriert.</p>
-                <p class="empty-hint">Teile den Einladungslink oben, damit sich Teilnehmer anmelden können.</p>
+                <p class="empty-hint" style="margin-bottom: 1rem;">Teile den Einladungslink, damit sich Teilnehmer anmelden können.</p>
+                <button class="button primary copy-button" onclick="copyToClipboard('participant-link')" aria-label="Einladungslink für Teilnehmer kopieren">
+                    <span class="btn-icon" aria-hidden="true">📋</span> Einladungslink kopieren
+                </button>
             </div>
         <?php endif; ?>
 
