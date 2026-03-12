@@ -43,7 +43,8 @@ $x = 15;
 $y = 35;
 
 // Use built-in font if TTF not available
-for ($i = 0; $i < strlen($captcha_code); $i++) {
+$code_length = strlen($captcha_code);
+for ($i = 0; $i < $code_length; $i++) {
     $char = $captcha_code[$i];
     $char_angle = random_int(-15, 15);
     $char_y = $y + random_int(-5, 5);
