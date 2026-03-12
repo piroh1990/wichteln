@@ -24,6 +24,8 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
     
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    <!-- Shared JavaScript -->
+    <script src="js/main.js"></script>
     
     <?php include __DIR__ . '/../includes/templates/matomo_tracking.php'; ?>
 
@@ -744,16 +746,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
     
     <script>
         function toggleFaq(button) {
-            const faqItem = button.closest('.faq-item');
-            const wasActive = faqItem.classList.contains('active');
-            
-            if (wasActive) {
-                faqItem.classList.remove('active');
-                button.setAttribute('aria-expanded', 'false');
-            } else {
-                faqItem.classList.add('active');
-                button.setAttribute('aria-expanded', 'true');
-            }
+            toggleFAQ(button);
         }
     </script>
     

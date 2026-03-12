@@ -420,49 +420,8 @@ if ($show_group_selector) {
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- CSS Stylesheet -->
     <link rel="stylesheet" href="css/styles.css">
-    <!-- JavaScript für Kopieren-Button -->
-    <script>
-        function copyToClipboard(elementId) {
-            var element = document.getElementById(elementId);
-            var copyText = element.getAttribute('data-url') || element.innerText || element.textContent;
-            
-            // Moderne Clipboard API (bevorzugt)
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(copyText).then(function() {
-                    // Zeige Erfolgs-Feedback
-                    var btn = event.target.closest('button');
-                    var originalText = btn.innerHTML;
-                    btn.innerHTML = '✓ Kopiert!';
-                    btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
-                    setTimeout(function() {
-                        btn.innerHTML = originalText;
-                        btn.style.background = '';
-                    }, 2000);
-                }).catch(function(err) {
-                    fallbackCopy(copyText);
-                });
-            } else {
-                fallbackCopy(copyText);
-            }
-        }
-        
-        function fallbackCopy(text) {
-            var tempInput = document.createElement("textarea");
-            tempInput.value = text;
-            tempInput.style.position = "fixed";
-            tempInput.style.opacity = "0";
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            tempInput.setSelectionRange(0, 99999);
-            try {
-                document.execCommand("copy");
-                alert("Link kopiert!");
-            } catch (err) {
-                alert("Fehler beim Kopieren. Bitte manuell kopieren.");
-            }
-            document.body.removeChild(tempInput);
-        }
-    </script>
+    <!-- Shared JavaScript -->
+    <script src="js/main.js"></script>
     <?php include __DIR__ . '/../includes/templates/matomo_tracking.php'; ?>
 </head>
 <body>
@@ -663,19 +622,7 @@ if ($show_group_selector) {
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            var wishlistForm = document.querySelector('.wishlist-form');
-            if (wishlistForm) {
-                wishlistForm.addEventListener('submit', function(e) {
-                    var submitBtn = wishlistForm.querySelector('button[type="submit"]');
-                    if (submitBtn) {
-                        submitBtn.style.minWidth = submitBtn.offsetWidth + 'px';
-                        submitBtn.style.whiteSpace = 'nowrap';
-                        submitBtn.innerHTML = '<span class="loading" aria-hidden="true"></span> Wird gespeichert...';
-                        submitBtn.disabled = true;
-                        submitBtn.style.cursor = 'wait';
-                    }
-                });
-            }
+            handleFormSubmit(document.querySelector('.wishlist-form'), 'Wird gespeichert...');
         });
     </script>
 </body>

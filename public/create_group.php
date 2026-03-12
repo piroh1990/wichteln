@@ -106,6 +106,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Roboto&display=swap" rel="stylesheet">
     <!-- CSS Stylesheet -->
     <link rel="stylesheet" href="css/styles.css">
+    <!-- Shared JavaScript -->
+    <script src="js/main.js"></script>
     <?php include __DIR__ . '/../includes/templates/matomo_tracking.php'; ?>
 </head>
 <body>
@@ -169,20 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            var form = document.getElementById('create-group-form');
-            if (form) {
-                form.addEventListener('submit', function(e) {
-                    var submitBtn = form.querySelector('button[type="submit"]');
-                    if (submitBtn) {
-                        // Mindestbreite setzen, um "Springen" zu verhindern
-                        submitBtn.style.minWidth = submitBtn.offsetWidth + 'px';
-                        submitBtn.style.whiteSpace = 'nowrap';
-                        submitBtn.innerHTML = '<span class="loading" aria-hidden="true"></span> Wird erstellt...';
-                        submitBtn.disabled = true;
-                        submitBtn.style.cursor = 'wait';
-                    }
-                });
-            }
+            handleFormSubmit(document.getElementById('create-group-form'), 'Wird erstellt...');
         });
     </script>
         <!-- Cookie Banner -->

@@ -17,3 +17,7 @@
 ## 2024-05-24 - Context for Optional Communication Fields
 **Learning:** In this application, optional contact fields (like email for receiving Wichtel assignments) are actually critical for the full experience. Leaving them without context causes users to skip them. The `.form-hint` class combined with `aria-describedby` is the standard reusable pattern in this design system for providing this context accessibly.
 **Action:** When adding optional fields that impact downstream notifications, always pair them with a `.form-hint` description linked via `aria-describedby` to explain the "why".
+
+## 2026-03-12 - Extracting Common JavaScript Functions
+**Learning:** Significant code duplication was found in inline scripts across multiple PHP files for common tasks like clipboard copying, toast notifications, and FAQ toggling. Centralizing these into a single `main.js` library improves maintainability and ensures consistent accessibility features (like ARIA roles for notifications).
+**Action:** Always check for existing utility functions in `public/js/main.js` before implementing inline scripts for UI interactions.
