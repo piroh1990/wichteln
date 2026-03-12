@@ -21,3 +21,6 @@
 ## 2026-03-12 - Extracting Common JavaScript Functions
 **Learning:** Significant code duplication was found in inline scripts across multiple PHP files for common tasks like clipboard copying, toast notifications, and FAQ toggling. Centralizing these into a single `main.js` library improves maintainability and ensures consistent accessibility features (like ARIA roles for notifications).
 **Action:** Always check for existing utility functions in `public/js/main.js` before implementing inline scripts for UI interactions.
+## 2024-05-25 - ARIA Toggling on Mobile Navigation
+**Learning:** Mobile navigation toggle buttons (hamburger menus) often lack proper ARIA attributes to indicate their state to screen readers. Adding `aria-expanded` and toggling it via JavaScript (along with `aria-label` and `aria-controls`) significantly improves accessibility for these components.
+**Action:** When working with toggleable UI elements like mobile menus or dropdowns, ensure `aria-expanded` is present and correctly toggled by the associated JavaScript logic.
