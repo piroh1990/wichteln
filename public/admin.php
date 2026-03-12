@@ -402,62 +402,8 @@ if (isset($_POST['draw'])) {
     <!-- CSS Stylesheet -->
     <link rel="stylesheet" href="css/styles.css">
     
-    <!-- JavaScript für Kopieren-Button -->
-    <script>
-        function showToast(message, type = 'success') {
-            const toast = document.createElement('div');
-            toast.className = `notification ${type}`;
-            // Accessibility attributes
-            toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
-            toast.setAttribute('aria-live', type === 'error' ? 'assertive' : 'polite');
-
-            toast.style.cssText = 'position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.15); min-width: 300px; justify-content: center;';
-            toast.textContent = message;
-            document.body.appendChild(toast);
-
-            // Fade out and remove
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transition = 'opacity 0.5s ease';
-                setTimeout(() => toast.remove(), 500);
-            }, 3000);
-        }
-
-        function copyToClipboard(elementId) {
-            var element = document.getElementById(elementId);
-            var copyText = element.getAttribute('data-url') || element.innerText || element.textContent;
-            
-            // Moderne Clipboard API (bevorzugt)
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(copyText).then(function() {
-                    showToast("Link erfolgreich kopiert! 📋");
-                }).catch(function(err) {
-                    // Fallback bei Fehler
-                    fallbackCopy(copyText);
-                });
-            } else {
-                // Fallback für ältere Browser
-                fallbackCopy(copyText);
-            }
-        }
-        
-        function fallbackCopy(text) {
-            var tempInput = document.createElement("textarea");
-            tempInput.value = text;
-            tempInput.style.position = "fixed";
-            tempInput.style.opacity = "0";
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            tempInput.setSelectionRange(0, 99999); // Für mobile Geräte
-            try {
-                document.execCommand("copy");
-                showToast("Link erfolgreich kopiert! 📋");
-            } catch (err) {
-                showToast("Fehler beim Kopieren. Bitte manuell kopieren.", "error");
-            }
-            document.body.removeChild(tempInput);
-        }
-    </script>
+    <!-- Shared JavaScript -->
+    <script src="js/main.js"></script>
     <?php include __DIR__ . '/../includes/templates/matomo_tracking.php'; ?>
 </head>
 <body>
@@ -806,33 +752,8 @@ if (isset($_POST['draw'])) {
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            var drawForm = document.getElementById('draw-form');
-            if (drawForm) {
-                drawForm.addEventListener('submit', function(e) {
-                    var submitBtn = drawForm.querySelector('button[type="submit"]');
-                    if (submitBtn) {
-                        submitBtn.style.minWidth = submitBtn.offsetWidth + 'px';
-                        submitBtn.style.whiteSpace = 'nowrap';
-                        submitBtn.innerHTML = '<span class="loading" aria-hidden="true"></span> Wird ausgelost...';
-                        submitBtn.disabled = true;
-                        submitBtn.style.cursor = 'wait';
-                    }
-                });
-            }
-
-            var updateGroupForm = document.getElementById('update-group-form');
-            if (updateGroupForm) {
-                updateGroupForm.addEventListener('submit', function(e) {
-                    var submitBtn = updateGroupForm.querySelector('button[type="submit"]');
-                    if (submitBtn) {
-                        submitBtn.style.minWidth = submitBtn.offsetWidth + 'px';
-                        submitBtn.style.whiteSpace = 'nowrap';
-                        submitBtn.innerHTML = '<span class="loading" aria-hidden="true"></span> Wird aktualisiert...';
-                        submitBtn.disabled = true;
-                        submitBtn.style.cursor = 'wait';
-                    }
-                });
-            }
+            handleFormSubmit(document.getElementById('draw-form'), 'Wird ausgelost...');
+            handleFormSubmit(document.getElementById('update-group-form'), 'Wird aktualisiert...');
         });
     </script>
 </body>

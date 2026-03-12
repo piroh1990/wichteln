@@ -26,6 +26,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;600;700&display=swap" rel="stylesheet">
     <!-- CSS Stylesheet -->
     <link rel="stylesheet" href="css/styles.css">
+    <!-- Shared JavaScript -->
+    <script src="js/main.js"></script>
     <?php include __DIR__ . '/../includes/templates/matomo_tracking.php'; ?>
 
     <script type="application/ld+json">
@@ -195,7 +197,7 @@
             <div class="faq-list">
                 <div class="faq-item">
                     <h3>
-                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-1" id="faq-question-1" onclick="toggleFAQ(this)">
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-1" id="faq-question-1" onclick="toggleFAQ(this, true)">
                             <span class="faq-title">Wie funktioniert die Auslosung?</span>
                             <span class="faq-toggle" aria-hidden="true">+</span>
                         </button>
@@ -207,7 +209,7 @@
                 
                 <div class="faq-item">
                     <h3>
-                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-2" id="faq-question-2" onclick="toggleFAQ(this)">
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-2" id="faq-question-2" onclick="toggleFAQ(this, true)">
                             <span class="faq-title">Kann ich Ausschlüsse einstellen?</span>
                             <span class="faq-toggle" aria-hidden="true">+</span>
                         </button>
@@ -219,7 +221,7 @@
                 
                 <div class="faq-item">
                     <h3>
-                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-3" id="faq-question-3" onclick="toggleFAQ(this)">
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-3" id="faq-question-3" onclick="toggleFAQ(this, true)">
                             <span class="faq-title">Was passiert nach der Auslosung?</span>
                             <span class="faq-toggle" aria-hidden="true">+</span>
                         </button>
@@ -231,7 +233,7 @@
                 
                 <div class="faq-item">
                     <h3>
-                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-4" id="faq-question-4" onclick="toggleFAQ(this)">
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-4" id="faq-question-4" onclick="toggleFAQ(this, true)">
                             <span class="faq-title">Ist eine Registrierung notwendig?</span>
                             <span class="faq-toggle" aria-hidden="true">+</span>
                         </button>
@@ -243,7 +245,7 @@
                 
                 <div class="faq-item">
                     <h3>
-                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-5" id="faq-question-5" onclick="toggleFAQ(this)">
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-5" id="faq-question-5" onclick="toggleFAQ(this, true)">
                             <span class="faq-title">Kann ich die Auslosung zurücksetzen?</span>
                             <span class="faq-toggle" aria-hidden="true">+</span>
                         </button>
@@ -255,7 +257,7 @@
                 
                 <div class="faq-item">
                     <h3>
-                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-6" id="faq-question-6" onclick="toggleFAQ(this)">
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-6" id="faq-question-6" onclick="toggleFAQ(this, true)">
                             <span class="faq-title">Wie viele Teilnehmer sind möglich?</span>
                             <span class="faq-toggle" aria-hidden="true">+</span>
                         </button>
@@ -312,29 +314,6 @@
     </footer>
 
     <script>
-        function toggleFAQ(button) {
-            const item = button.closest('.faq-item');
-            const isActive = item.classList.contains('active');
-            
-            // Schließe alle anderen FAQs
-            document.querySelectorAll('.faq-item').forEach(otherItem => {
-                if (otherItem !== item) {
-                    otherItem.classList.remove('active');
-                    const otherBtn = otherItem.querySelector('.faq-question');
-                    if (otherBtn) otherBtn.setAttribute('aria-expanded', 'false');
-                }
-            });
-            
-            // Öffne/Schließe die geklickte FAQ
-            if (isActive) {
-                item.classList.remove('active');
-                button.setAttribute('aria-expanded', 'false');
-            } else {
-                item.classList.add('active');
-                button.setAttribute('aria-expanded', 'true');
-            }
-        }
-
         // Smooth scroll für CTA Buttons
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
