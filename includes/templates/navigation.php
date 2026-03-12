@@ -5,7 +5,7 @@
             <img src="images/logo.png" alt="Wichtlä.ch Logo" height="40">
         </a>
         
-        <button class="nav-toggle" id="navToggle" aria-label="Menü öffnen">
+        <button class="nav-toggle" id="navToggle" aria-label="Menü öffnen" aria-expanded="false" aria-controls="navMenu">
             <span></span>
             <span></span>
             <span></span>
@@ -33,6 +33,10 @@ document.addEventListener('DOMContentLoaded', function() {
         navToggle.addEventListener('click', function() {
             navToggle.classList.toggle('active');
             navMenu.classList.toggle('active');
+
+            const isExpanded = navToggle.classList.contains('active');
+            navToggle.setAttribute('aria-expanded', isExpanded);
+            navToggle.setAttribute('aria-label', isExpanded ? 'Menü schließen' : 'Menü öffnen');
         });
         
         // Close menu when clicking outside
@@ -40,6 +44,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!navToggle.contains(event.target) && !navMenu.contains(event.target)) {
                 navToggle.classList.remove('active');
                 navMenu.classList.remove('active');
+                navToggle.setAttribute('aria-expanded', 'false');
+                navToggle.setAttribute('aria-label', 'Menü öffnen');
             }
         });
     }

@@ -17,3 +17,7 @@
 ## 2024-05-24 - Context for Optional Communication Fields
 **Learning:** In this application, optional contact fields (like email for receiving Wichtel assignments) are actually critical for the full experience. Leaving them without context causes users to skip them. The `.form-hint` class combined with `aria-describedby` is the standard reusable pattern in this design system for providing this context accessibly.
 **Action:** When adding optional fields that impact downstream notifications, always pair them with a `.form-hint` description linked via `aria-describedby` to explain the "why".
+
+## 2024-05-25 - ARIA Toggling on Mobile Navigation
+**Learning:** Mobile navigation toggle buttons (hamburger menus) often lack proper ARIA attributes to indicate their state to screen readers. Adding `aria-expanded` and toggling it via JavaScript (along with `aria-label` and `aria-controls`) significantly improves accessibility for these components.
+**Action:** When working with toggleable UI elements like mobile menus or dropdowns, ensure `aria-expanded` is present and correctly toggled by the associated JavaScript logic.
