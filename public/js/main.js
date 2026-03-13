@@ -108,6 +108,8 @@ function handleFormSubmit(form, loadingText = 'Wird geladen...') {
     if (!form) return;
 
     form.addEventListener('submit', function(e) {
+        if (e.defaultPrevented) return;
+
         const submitBtn = form.querySelector('button[type="submit"]');
         if (submitBtn && !submitBtn.disabled) {
             submitBtn.style.minWidth = submitBtn.offsetWidth + 'px';

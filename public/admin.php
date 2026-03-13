@@ -586,10 +586,10 @@ if (isset($_POST['draw'])) {
                             <?php 
                             $can_send_email = $group['is_drawn'] && !empty($p['email']) && !empty($p['assigned_to']);
                             ?>
-                            <form method="POST" class="action-form">
+                            <form method="POST" class="action-form resend-email-form">
                                 <input type="hidden" name="participant_id" value="<?php echo $p['id']; ?>">
+                                <input type="hidden" name="resend_email" value="1">
                                 <button type="submit" 
-                                        name="resend_email" 
                                         class="action-btn email-btn <?php echo !$can_send_email ? 'disabled' : ''; ?>"
                                         title="<?php echo $can_send_email ? 'E-Mail erneut senden' : 'E-Mail kann nicht gesendet werden (keine E-Mail-Adresse oder Auslosung nicht durchgeführt)'; ?>"
                                         aria-label="E-Mail senden an <?php echo htmlspecialchars($p['name']); ?>"
@@ -614,6 +614,7 @@ if (isset($_POST['draw'])) {
                         <div class="participant-email-edit">
                             <form method="POST" class="email-edit-form">
                                 <input type="hidden" name="participant_id" value="<?php echo $p['id']; ?>">
+                                <input type="hidden" name="update_participant_email" value="1">
                                 <div class="email-edit-group">
                                     <input type="email" 
                                            name="participant_email" 
@@ -622,7 +623,6 @@ if (isset($_POST['draw'])) {
                                            class="email-edit-input"
                                            aria-label="E-Mail-Adresse für <?php echo htmlspecialchars($p['name']); ?>">
                                     <button type="submit" 
-                                            name="update_participant_email" 
                                             class="email-edit-btn"
                                             title="E-Mail speichern"
                                             aria-label="E-Mail für <?php echo htmlspecialchars($p['name']); ?> speichern">
@@ -676,7 +676,8 @@ if (isset($_POST['draw'])) {
                     
                     <div class="form-group">
                         <label aria-hidden="true" style="opacity: 0;">Hinzufügen</label>
-                        <button type="submit" name="add_exclusion" class="button secondary">Ausschluss hinzufügen</button>
+                        <input type="hidden" name="add_exclusion" value="1">
+                        <button type="submit" class="button secondary">Ausschluss hinzufügen</button>
                     </div>
                 </div>
             </form>
@@ -731,8 +732,9 @@ if (isset($_POST['draw'])) {
             
             <h3>Auslosung zurücksetzen</h3>
             <p class="text-muted">Du kannst die Auslosung zurücksetzen, um sie erneut durchzuführen. Dies löscht alle aktuellen Zuordnungen, und du kannst danach neue Teilnehmer hinzufügen oder Ausschlüsse ändern.</p>
-            <form method="POST" style="margin-top: 1rem;" onsubmit="return confirm('Möchtest du die Auslosung wirklich zurücksetzen? Alle aktuellen Zuordnungen werden gelöscht.');">
-                <button type="submit" name="reset_draw" class="button error">Auslosung zurücksetzen</button>
+            <form method="POST" style="margin-top: 1rem;" id="reset-draw-form" onsubmit="return confirm('Möchtest du die Auslosung wirklich zurücksetzen? Alle aktuellen Zuordnungen werden gelöscht.');">
+                <input type="hidden" name="reset_draw" value="1">
+                <button type="submit" class="button error">Auslosung zurücksetzen</button>
             </form>
         <?php endif; ?>
         
@@ -740,8 +742,9 @@ if (isset($_POST['draw'])) {
         <hr>
         <h2 style="color: var(--error);">⚠️ Gefahrenzone</h2>
         <p class="text-muted">Das Löschen der Gruppe kann nicht rückgängig gemacht werden. Alle Teilnehmer, Ausschlüsse und die Auslosung werden permanent gelöscht.</p>
-        <form method="POST" style="margin-top: 1rem;" onsubmit="return confirm('⚠️ ACHTUNG: Möchtest du die Gruppe \"<?php echo htmlspecialchars($group['name']); ?>\" wirklich PERMANENT löschen?\n\nAlle Teilnehmer, Ausschlüsse und die Auslosung werden unwiderruflich gelöscht!\n\nDiese Aktion kann NICHT rückgängig gemacht werden.');">
-            <button type="submit" name="delete_group" class="button error" style="background: linear-gradient(135deg, #dc3545, #c82333);">
+        <form method="POST" style="margin-top: 1rem;" id="delete-group-form" onsubmit="return confirm('⚠️ ACHTUNG: Möchtest du die Gruppe \"<?php echo htmlspecialchars($group['name']); ?>\" wirklich PERMANENT löschen?\n\nAlle Teilnehmer, Ausschlüsse und die Auslosung werden unwiderruflich gelöscht!\n\nDiese Aktion kann NICHT rückgängig gemacht werden.');">
+            <input type="hidden" name="delete_group" value="1">
+            <button type="submit" class="button error" style="background: linear-gradient(135deg, #dc3545, #c82333);">
                 <span aria-hidden="true">🗑️</span> Gruppe permanent löschen
             </button>
         </form>
@@ -754,6 +757,19 @@ if (isset($_POST['draw'])) {
         document.addEventListener('DOMContentLoaded', function() {
             handleFormSubmit(document.getElementById('draw-form'), 'Wird ausgelost...');
             handleFormSubmit(document.getElementById('update-group-form'), 'Wird aktualisiert...');
+            handleFormSubmit(document.getElementById('reset-draw-form'), 'Wird zurückgesetzt...');
+            handleFormSubmit(document.getElementById('delete-group-form'), 'Wird gelöscht...');
+
+            const exclusionForm = document.querySelector('.exclusion-form');
+            if (exclusionForm) handleFormSubmit(exclusionForm, 'Wird hinzugefügt...');
+
+            document.querySelectorAll('.resend-email-form').forEach(form => {
+                handleFormSubmit(form, 'Wird gesendet...');
+            });
+
+            document.querySelectorAll('.email-edit-form').forEach(form => {
+                handleFormSubmit(form, 'Wird gespeichert...');
+            });
         });
     </script>
 </body>

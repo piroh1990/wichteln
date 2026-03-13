@@ -50,3 +50,5 @@ Temporary Items
 # Backup files
 *.bak
 *.backup
+node_modules
+*.log
