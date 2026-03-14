@@ -2491,12 +2491,20 @@ a.button:disabled {
     margin-top: 1.5rem;
 }
 
+.wishlist-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
 .wishlist-heading {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     font-size: 1.25rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0;
     color: var(--text-color);
 }
 

@@ -458,11 +458,16 @@ if ($show_group_selector) {
                     
                     <?php if (!empty($assigned['wishlist'])): ?>
                         <div class="partner-wishlist-section">
-                            <h3 class="wishlist-heading">
-                                <span class="wishlist-icon">📝</span>
-                                Wunschliste von <?php echo htmlspecialchars($assigned['name']); ?>
-                            </h3>
-                            <div class="wishlist-display">
+                            <div class="wishlist-header">
+                                <h3 class="wishlist-heading">
+                                    <span class="wishlist-icon" aria-hidden="true">📝</span>
+                                    Wunschliste von <?php echo htmlspecialchars($assigned['name']); ?>
+                                </h3>
+                                <button class="button secondary small copy-button" onclick="copyToClipboard('partner-wishlist', 'Wunschliste kopiert! 📋')" aria-label="Wunschliste von <?php echo htmlspecialchars($assigned['name']); ?> kopieren">
+                                    <span aria-hidden="true">📋</span> Kopieren
+                                </button>
+                            </div>
+                            <div class="wishlist-display" id="partner-wishlist">
                                 <p><?php echo nl2br(htmlspecialchars($assigned['wishlist'])); ?></p>
                             </div>
                         </div>

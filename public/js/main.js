@@ -29,8 +29,9 @@ function showToast(message, type = 'success') {
 /**
  * Copies text from an element to the clipboard
  * @param {string} elementId - The ID of the element containing the text/URL
+ * @param {string} successMessage - Optional custom success message
  */
-function copyToClipboard(elementId) {
+function copyToClipboard(elementId, successMessage = "Link erfolgreich kopiert! 📋") {
     var element = document.getElementById(elementId);
     if (!element) return;
 
@@ -39,20 +40,21 @@ function copyToClipboard(elementId) {
     // Modern Clipboard API (preferred)
     if (navigator.clipboard && window.isSecureContext) {
         navigator.clipboard.writeText(copyText).then(function() {
-            showToast("Link erfolgreich kopiert! 📋");
+            showToast(successMessage);
         }).catch(function(err) {
-            fallbackCopy(copyText);
+            fallbackCopy(copyText, successMessage);
         });
     } else {
-        fallbackCopy(copyText);
+        fallbackCopy(copyText, successMessage);
     }
 }
 
 /**
  * Fallback for copying text to clipboard in older browsers
  * @param {string} text - The text to copy
+ * @param {string} successMessage - Custom success message
  */
-function fallbackCopy(text) {
+function fallbackCopy(text, successMessage) {
     var tempInput = document.createElement("textarea");
     tempInput.value = text;
     tempInput.style.position = "fixed";
@@ -62,7 +64,7 @@ function fallbackCopy(text) {
     tempInput.setSelectionRange(0, 99999);
     try {
         document.execCommand("copy");
-        showToast("Link erfolgreich kopiert! 📋");
+        showToast(successMessage);
     } catch (err) {
         showToast("Fehler beim Kopieren. Bitte manuell kopieren.", "error");
     }
