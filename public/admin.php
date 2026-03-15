@@ -508,7 +508,7 @@ if (isset($_POST['draw'])) {
             </div>
             <div class="form-group">
                 <label for="gift_exchange_date">Datum der Geschenkübergabe (optional):</label>
-                <input type="date" id="gift_exchange_date" name="gift_exchange_date" value="<?php echo htmlspecialchars($group['gift_exchange_date'] ?? ''); ?>">
+                <input type="date" id="gift_exchange_date" name="gift_exchange_date" value="<?php echo htmlspecialchars($group['gift_exchange_date'] ?? ''); ?>" min="<?php echo date('Y-m-d'); ?>">
             </div>
             <input type="hidden" name="update_group" value="1">
             <button type="submit" class="button secondary">
