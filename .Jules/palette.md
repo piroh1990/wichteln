@@ -24,3 +24,7 @@
 ## 2024-05-25 - ARIA Toggling on Mobile Navigation
 **Learning:** Mobile navigation toggle buttons (hamburger menus) often lack proper ARIA attributes to indicate their state to screen readers. Adding `aria-expanded` and toggling it via JavaScript (along with `aria-label` and `aria-controls`) significantly improves accessibility for these components.
 **Action:** When working with toggleable UI elements like mobile menus or dropdowns, ensure `aria-expanded` is present and correctly toggled by the associated JavaScript logic.
+
+## 2024-05-24 - HTML5 Date Validation
+**Learning:** Implementing the 'min' attribute on 'date' inputs is a quick, native way to prevent users from selecting past dates for future events like gift exchanges, improving form validation UX.
+**Action:** Use native HTML validation constraints (like 'min' and 'max') wherever possible before relying on complex JS or backend-only validation to provide immediate user feedback.

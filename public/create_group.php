@@ -145,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
             <div class="form-group">
                 <label for="gift_exchange_date">Datum der Geschenkübergabe (optional):</label>
-                <input type="date" id="gift_exchange_date" name="gift_exchange_date">
+                <input type="date" id="gift_exchange_date" name="gift_exchange_date" min="<?php echo date('Y-m-d'); ?>">
             </div>
             <div class="form-group captcha-group">
                 <label for="captcha_answer">Sicherheitscode:<span class="required-indicator" aria-hidden="true" title="Erforderlich">*</span></label>
