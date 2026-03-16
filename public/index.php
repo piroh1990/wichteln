@@ -85,15 +85,15 @@
                 
                 <div class="hero-features">
                     <div class="hero-feature">
-                        <span class="feature-icon-small">📧</span>
+                        <span class="feature-icon-small" aria-hidden="true">📧</span>
                         <span>Namen ziehen per E-Mail</span>
                     </div>
                     <div class="hero-feature">
-                        <span class="feature-icon-small">⚖️</span>
+                        <span class="feature-icon-small" aria-hidden="true">⚖️</span>
                         <span>Auschlüsse möglich</span>
                     </div>
                     <div class="hero-feature">
-                        <span class="feature-icon-small">💰</span>
+                        <span class="feature-icon-small" aria-hidden="true">💰</span>
                         <span>100% kostenlos</span>
                     </div>
                 </div>
@@ -121,28 +121,28 @@
             <div class="steps">
                 <div class="step">
                     <span class="step-number">1</span>
-                    <span class="step-icon">📝</span>
+                    <span class="step-icon" aria-hidden="true">📝</span>
                     <h3>Gruppe erstellen</h3>
                     <p>Erstelle eine Wichtel-Gruppe mit Namen, Budget und Datum der Geschenkübergabe. Erhalte sofort einen Admin-Link zur Verwaltung.</p>
                 </div>
                 
                 <div class="step">
                     <span class="step-number">2</span>
-                    <span class="step-icon">👥</span>
+                    <span class="step-icon" aria-hidden="true">👥</span>
                     <h3>Teilnehmer einladen</h3>
                     <p>Teile den Einladungslink mit allen Teilnehmern. Jeder trägt sich selbst ein - ganz einfach mit Name und optional E-Mail.</p>
                 </div>
                 
                 <div class="step">
                     <span class="step-number">3</span>
-                    <span class="step-icon">🎯</span>
+                    <span class="step-icon" aria-hidden="true">🎯</span>
                     <h3>Ausschlüsse festlegen</h3>
                     <p>Lege fest, wer wem nicht wichteln soll - perfekt für Paare oder Geschwister, die sich nicht gegenseitig beschenken möchten.</p>
                 </div>
                 
                 <div class="step">
                     <span class="step-number">4</span>
-                    <span class="step-icon">🎲</span>
+                    <span class="step-icon" aria-hidden="true">🎲</span>
                     <h3>Auslosen</h3>
                     <p>Mit einem Klick werden die Namen ausgelost. Jeder Teilnehmer erhält automatisch eine E-Mail mit seinem Wichtelpartner.</p>
                 </div>
@@ -157,32 +157,32 @@
             
             <div class="feature-grid">
                 <div class="feature-card">
-                    <h3><span class="feature-icon">🔒</span> Sicher & Privat</h3>
+                    <h3><span class="feature-icon" aria-hidden="true">🔒</span> Sicher & Privat</h3>
                     <p>Deine Daten bleiben sicher. Niemand außer dir kennt alle Zuordnungen. Jeder Teilnehmer sieht nur seinen eigenen Wichtelpartner.</p>
                 </div>
                 
                 <div class="feature-card">
-                    <h3><span class="feature-icon">⚡</span> Blitzschnell</h3>
+                    <h3><span class="feature-icon" aria-hidden="true">⚡</span> Blitzschnell</h3>
                     <p>In weniger als 2 Minuten ist deine Wichtel-Gruppe erstellt und die ersten Einladungen verschickt. Keine Registrierung notwendig!</p>
                 </div>
                 
                 <div class="feature-card">
-                    <h3><span class="feature-icon">🎨</span> Modern & Schön</h3>
+                    <h3><span class="feature-icon" aria-hidden="true">🎨</span> Modern & Schön</h3>
                     <p>Moderne, ansprechende Oberfläche, die auf allen Geräten perfekt funktioniert - vom Smartphone bis zum Desktop.</p>
                 </div>
                 
                 <div class="feature-card">
-                    <h3><span class="feature-icon">💝</span> Ausschlüsse</h3>
+                    <h3><span class="feature-icon" aria-hidden="true">💝</span> Ausschlüsse</h3>
                     <p>Lege fest, wer wem nicht wichteln kann. Ideal für Paare, Geschwister oder Mitbewohner, die sich nicht gegenseitig ziehen sollen.</p>
                 </div>
                 
                 <div class="feature-card">
-                    <h3><span class="feature-icon">📧</span> E-Mail Benachrichtigung</h3>
+                    <h3><span class="feature-icon" aria-hidden="true">📧</span> E-Mail Benachrichtigung</h3>
                     <p>Alle Teilnehmer erhalten automatisch eine E-Mail mit ihrem gezogenen Namen - inklusive aller wichtigen Gruppendetails.</p>
                 </div>
                 
                 <div class="feature-card">
-                    <h3><span class="feature-icon">💰</span> Komplett Kostenlos</h3>
+                    <h3><span class="feature-icon" aria-hidden="true">💰</span> Komplett Kostenlos</h3>
                     <p>Keine versteckten Kosten, keine Premium-Features. Einfach kostenlos und ohne Einschränkungen nutzen.</p>
                 </div>
             </div>
