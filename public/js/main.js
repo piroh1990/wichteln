@@ -114,6 +114,13 @@ function handleFormSubmit(form, loadingText = 'Wird geladen...') {
 
         const submitBtn = form.querySelector('button[type="submit"]');
         if (submitBtn && !submitBtn.disabled) {
+            if (submitBtn.name) {
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = submitBtn.name;
+                hiddenInput.value = submitBtn.value || '1';
+                form.appendChild(hiddenInput);
+            }
             submitBtn.style.minWidth = submitBtn.offsetWidth + 'px';
             submitBtn.style.whiteSpace = 'nowrap';
             submitBtn.innerHTML = `<span class="loading" aria-hidden="true"></span> ${loadingText}`;
