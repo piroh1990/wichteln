@@ -485,7 +485,7 @@ if (isset($_POST['draw'])) {
 
         <!-- Auto-Lösch Hinweis -->
         <div class="admin-info-box warning">
-            <div class="admin-info-icon">ℹ️</div>
+            <div class="admin-info-icon" aria-hidden="true">ℹ️</div>
             <div class="admin-info-content">
                 <h3 class="admin-info-title">Wichtiger Hinweis zum Datenschutz</h3>
                 <p class="admin-info-text">
@@ -534,7 +534,7 @@ if (isset($_POST['draw'])) {
         </div>
         
         <div class="admin-info-box">
-            <div class="admin-info-icon">💡</div>
+            <div class="admin-info-icon" aria-hidden="true">💡</div>
             <div class="admin-info-content">
                 <h3 class="admin-info-title">Hinweis für dich als Administrator</h3>
                 <p class="admin-info-text">Wenn du selbst beim Wichteln mitmachen möchtest, musst du dich ebenfalls über den obigen Einladungslink als Teilnehmer registrieren. Der Admin-Link dient nur zur Verwaltung der Gruppe.</p>
@@ -636,7 +636,7 @@ if (isset($_POST['draw'])) {
             </div>
         <?php else: ?>
             <div class="empty-state">
-                <div class="empty-icon">👥</div>
+                <div class="empty-icon" aria-hidden="true">👥</div>
                 <p class="empty-text">Noch keine Teilnehmer registriert.</p>
                 <p class="empty-hint" style="margin-bottom: 1rem;">Teile den Einladungslink, damit sich Teilnehmer anmelden können.</p>
                 <button class="button primary copy-button" onclick="copyToClipboard('participant-link')" aria-label="Einladungslink für Teilnehmer kopieren">

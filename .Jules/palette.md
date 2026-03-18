@@ -28,3 +28,7 @@
 ## 2024-05-24 - HTML5 Date Validation
 **Learning:** Implementing the 'min' attribute on 'date' inputs is a quick, native way to prevent users from selecting past dates for future events like gift exchanges, improving form validation UX.
 **Action:** Use native HTML validation constraints (like 'min' and 'max') wherever possible before relying on complex JS or backend-only validation to provide immediate user feedback.
+
+## $(date +%Y-%m-%d) - Decorative Emoji Accessibility
+**Learning:** Decorative emojis used as icons (e.g., `<span class="idea-icon">☕</span>` or inside buttons) lack built-in accessibility safeguards, leading to screen readers announcing literal descriptions like "smiling face" which interrupts the reading flow when the icon is purely visual.
+**Action:** Always add `aria-hidden="true"` to any `span` or `div` containing purely decorative emojis to prevent redundant or confusing screen reader announcements.

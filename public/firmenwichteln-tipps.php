@@ -71,25 +71,25 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                 
                 <div class="benefits-grid">
                     <div class="benefit-card">
-                        <div class="benefit-icon">🤝</div>
+                        <div class="benefit-icon" aria-hidden="true">🤝</div>
                         <h3>Teambuilding</h3>
                         <p>Stärkt den Zusammenhalt über Abteilungsgrenzen hinweg und fördert den informellen Austausch.</p>
                     </div>
                     
                     <div class="benefit-card">
-                        <div class="benefit-icon">🎉</div>
+                        <div class="benefit-icon" aria-hidden="true">🎉</div>
                         <h3>Positive Stimmung</h3>
                         <p>Bringt Freude und Abwechslung in den Arbeitsalltag – besonders wertvoll in stressigen Zeiten.</p>
                     </div>
                     
                     <div class="benefit-card">
-                        <div class="benefit-icon">💰</div>
+                        <div class="benefit-icon" aria-hidden="true">💰</div>
                         <h3>Faire Kosten</h3>
                         <p>Jeder gibt gleich viel aus – niemand fühlt sich unter Druck gesetzt oder ausgeschlossen.</p>
                     </div>
                     
                     <div class="benefit-card">
-                        <div class="benefit-icon">✨</div>
+                        <div class="benefit-icon" aria-hidden="true">✨</div>
                         <h3>Wertschätzung</h3>
                         <p>Zeigt Wertschätzung und persönliche Aufmerksamkeit zwischen Kollegen.</p>
                     </div>

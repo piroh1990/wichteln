@@ -163,7 +163,7 @@
             
             <h3>Grundsatz: Keine Weitergabe</h3>
             <div class="privacy-highlight">
-                <span class="privacy-icon">🔒</span>
+                <span class="privacy-icon" aria-hidden="true">🔒</span>
                 <p><strong>Ihre Wichtel-Daten bleiben privat:</strong> Wir geben Ihre Wichtel-Gruppendaten (Namen, E-Mail-Adressen, Wunschlisten) grundsätzlich nicht an Dritte weiter. Die einzige Ausnahme ist der Versand von E-Mails über unseren E-Mail-Provider.</p>
             </div>
             
@@ -295,7 +295,7 @@
             
             <h4>Datenweitergabe an Google</h4>
             <div class="privacy-highlight">
-                <span class="privacy-icon">⚠️</span>
+                <span class="privacy-icon" aria-hidden="true">⚠️</span>
                 <p><strong>Hinweis:</strong> Bei der Nutzung von Google AdSense werden Daten an Google übermittelt. Google kann diese Daten mit anderen Google-Diensten verknüpfen. Weitere Informationen finden Sie in der <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Datenschutzerklärung von Google</a>.</p>
             </div>
             
@@ -349,7 +349,7 @@
             
             <h4>Datenschutzfreundliche Alternative</h4>
             <div class="privacy-highlight">
-                <span class="privacy-icon">✅</span>
+                <span class="privacy-icon" aria-hidden="true">✅</span>
                 <p><strong>Kein Tracking durch Dritte:</strong> Im Gegensatz zu Tools wie Google Analytics oder Facebook Pixel werden Ihre Daten ausschliesslich auf unserem Server gespeichert und niemals an Drittanbieter weitergegeben.</p>
             </div>
             
