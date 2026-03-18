@@ -116,37 +116,37 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                 
                 <div class="variant-grid">
                     <div class="variant-card">
-                        <div class="variant-icon">🎲</div>
+                        <div class="variant-icon" aria-hidden="true">🎲</div>
                         <h3>Würfel-Wichteln</h3>
                         <p>Bei dieser Variante werden die Geschenke in die Mitte gelegt und durch Würfeln verteilt. Spannung garantiert!</p>
                     </div>
                     
                     <div class="variant-card">
-                        <div class="variant-icon">♻️</div>
+                        <div class="variant-icon" aria-hidden="true">♻️</div>
                         <h3>Schrott-Wichteln</h3>
                         <p>Jeder bringt ein ungeliebtes oder skurriles Geschenk mit – Humor und Kreativität stehen im Vordergrund.</p>
                     </div>
                     
                     <div class="variant-card">
-                        <div class="variant-icon">🎭</div>
+                        <div class="variant-icon" aria-hidden="true">🎭</div>
                         <h3>Motto-Wichteln</h3>
                         <p>Alle Geschenke folgen einem bestimmten Thema wie "Rot", "Selbstgemacht" oder "Regional".</p>
                     </div>
                     
                     <div class="variant-card">
-                        <div class="variant-icon">🎅</div>
+                        <div class="variant-icon" aria-hidden="true">🎅</div>
                         <h3>Wichtel-Engel</h3>
                         <p>Über mehrere Wochen beschenkt ein "Wichtel-Engel" eine Person mit kleinen Aufmerksamkeiten – anonym.</p>
                     </div>
                     
                     <div class="variant-card">
-                        <div class="variant-icon">🌟</div>
+                        <div class="variant-icon" aria-hidden="true">🌟</div>
                         <h3>Gedicht-Wichteln</h3>
                         <p>Jedes Geschenk wird mit einem selbstverfassten Gedicht oder Rätsel überreicht – sehr persönlich!</p>
                     </div>
                     
                     <div class="variant-card">
-                        <div class="variant-icon">📦</div>
+                        <div class="variant-icon" aria-hidden="true">📦</div>
                         <h3>Überraschungs-Wichteln</h3>
                         <p>Niemand weiß, wer wen beschenkt. Die Geschenke werden gemischt verteilt – totale Überraschung!</p>
                     </div>

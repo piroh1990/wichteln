@@ -69,7 +69,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                 <div class="ideas-grid">
                     <!-- Praktische Geschenke -->
                     <div class="idea-card">
-                        <span class="idea-icon">☕</span>
+                        <span class="idea-icon" aria-hidden="true">☕</span>
                         <span class="idea-category">Praktisch</span>
                         <h3 class="idea-title">Hochwertige Thermotasse</h3>
                         <p class="idea-description">Perfekt für Kaffee- oder Teeliebhaber. Hält Getränke stundenlang warm oder kalt.</p>
@@ -77,7 +77,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                     
                     <div class="idea-card">
-                        <span class="idea-icon">🧦</span>
+                        <span class="idea-icon" aria-hidden="true">🧦</span>
                         <span class="idea-category">Praktisch</span>
                         <h3 class="idea-title">Lustige Socken</h3>
                         <p class="idea-description">Socken mit witzigen Motiven, Sprüchen oder in verrückten Farben – immer beliebt!</p>
@@ -85,7 +85,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                     
                     <div class="idea-card">
-                        <span class="idea-icon">📓</span>
+                        <span class="idea-icon" aria-hidden="true">📓</span>
                         <span class="idea-category">Praktisch</span>
                         <h3 class="idea-title">Schönes Notizbuch</h3>
                         <p class="idea-description">Hochwertiges Journal oder Bullet Journal für Notizen, Ideen und Kreativität.</p>
@@ -93,7 +93,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                     
                     <div class="idea-card">
-                        <span class="idea-icon">🕯️</span>
+                        <span class="idea-icon" aria-hidden="true">🕯️</span>
                         <span class="idea-category">Gemütlich</span>
                         <h3 class="idea-title">Duftkerzen-Set</h3>
                         <p class="idea-description">Hochwertige Duftkerzen für eine gemütliche Atmosphäre zu Hause.</p>
@@ -101,7 +101,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                     
                     <div class="idea-card">
-                        <span class="idea-icon">🍫</span>
+                        <span class="idea-icon" aria-hidden="true">🍫</span>
                         <span class="idea-category">Lecker</span>
                         <h3 class="idea-title">Schweizer Schokolade</h3>
                         <p class="idea-description">Premium-Schokolade aus der Schweiz – ein Klassiker, der immer ankommt!</p>
@@ -109,7 +109,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                     
                     <div class="idea-card">
-                        <span class="idea-icon">🌱</span>
+                        <span class="idea-icon" aria-hidden="true">🌱</span>
                         <span class="idea-category">Nachhaltig</span>
                         <h3 class="idea-title">Mini-Pflanze</h3>
                         <p class="idea-description">Sukkulente, Kaktus oder kleiner Kräutertopf – bringt Leben ins Büro.</p>
@@ -118,7 +118,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     
                     <!-- Lustige Geschenke -->
                     <div class="idea-card">
-                        <span class="idea-icon">🎲</span>
+                        <span class="idea-icon" aria-hidden="true">🎲</span>
                         <span class="idea-category">Lustig</span>
                         <h3 class="idea-title">Lustiges Kartenspiel</h3>
                         <p class="idea-description">„Klattschen", „Exploding Kittens" oder andere Party-Spiele für gesellige Runden.</p>
@@ -126,7 +126,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                     
                     <div class="idea-card">
-                        <span class="idea-icon">🦙</span>
+                        <span class="idea-icon" aria-hidden="true">🦙</span>
                         <span class="idea-category">Lustig</span>
                         <h3 class="idea-title">Witzige Büro-Deko</h3>
                         <p class="idea-description">Lustige Figuren, Sprüche-Schilder oder skurrile Schreibtisch-Accessoires.</p>
@@ -134,7 +134,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                     
                     <div class="idea-card">
-                        <span class="idea-icon">🎭</span>
+                        <span class="idea-icon" aria-hidden="true">🎭</span>
                         <span class="idea-category">Lustig</span>
                         <h3 class="idea-title">Witziges T-Shirt</h3>
                         <p class="idea-description">T-Shirts mit lustigen Sprüchen, Wortspielen oder verrückten Motiven.</p>
@@ -143,7 +143,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     
                     <!-- Kreative Geschenke -->
                     <div class="idea-card">
-                        <span class="idea-icon">🎨</span>
+                        <span class="idea-icon" aria-hidden="true">🎨</span>
                         <span class="idea-category">Kreativ</span>
                         <h3 class="idea-title">Malbuch für Erwachsene</h3>
                         <p class="idea-description">Mandala- oder Ausmalbücher zur Entspannung und Kreativität.</p>
@@ -151,7 +151,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                     
                     <div class="idea-card">
-                        <span class="idea-icon">🧩</span>
+                        <span class="idea-icon" aria-hidden="true">🧩</span>
                         <span class="idea-category">Kreativ</span>
                         <h3 class="idea-title">3D-Puzzle</h3>
                         <p class="idea-description">Kleine 3D-Puzzles von Sehenswürdigkeiten oder coolen Objekten.</p>
@@ -159,7 +159,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                     
                     <div class="idea-card">
-                        <span class="idea-icon">📷</span>
+                        <span class="idea-icon" aria-hidden="true">📷</span>
                         <span class="idea-category">Kreativ</span>
                         <h3 class="idea-title">Polaroid-Fotoalbum</h3>
                         <p class="idea-description">Mini-Album für Sofortbilder – perfekt für Erinnerungen!</p>
@@ -168,7 +168,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     
                     <!-- Tech & Gadgets -->
                     <div class="idea-card">
-                        <span class="idea-icon">🔌</span>
+                        <span class="idea-icon" aria-hidden="true">🔌</span>
                         <span class="idea-category">Tech</span>
                         <h3 class="idea-title">Powerbank</h3>
                         <p class="idea-description">Kompakte Powerbank für unterwegs – praktisch und beliebt.</p>
@@ -176,7 +176,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                     
                     <div class="idea-card">
-                        <span class="idea-icon">📱</span>
+                        <span class="idea-icon" aria-hidden="true">📱</span>
                         <span class="idea-category">Tech</span>
                         <h3 class="idea-title">Handy-Gadgets</h3>
                         <p class="idea-description">Handyhalter, PopSocket, Kabel-Organizer oder kreative Hüllen.</p>
@@ -184,7 +184,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                     
                     <div class="idea-card">
-                        <span class="idea-icon">💡</span>
+                        <span class="idea-icon" aria-hidden="true">💡</span>
                         <span class="idea-category">Tech</span>
                         <h3 class="idea-title">LED-Lichterkette</h3>
                         <p class="idea-description">Batteriebetriebene Lichterkette für gemütliche Stimmung.</p>
@@ -193,7 +193,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     
                     <!-- Wellness & Self-Care -->
                     <div class="idea-card">
-                        <span class="idea-icon">🛁</span>
+                        <span class="idea-icon" aria-hidden="true">🛁</span>
                         <span class="idea-category">Wellness</span>
                         <h3 class="idea-title">Badebomben-Set</h3>
                         <p class="idea-description">Luxuriöse Badezusätze für entspannte Wellness-Momente.</p>
@@ -201,7 +201,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                     
                     <div class="idea-card">
-                        <span class="idea-icon">🧴</span>
+                        <span class="idea-icon" aria-hidden="true">🧴</span>
                         <span class="idea-category">Wellness</span>
                         <h3 class="idea-title">Handcreme-Set</h3>
                         <p class="idea-description">Hochwertige Handcremes in verschiedenen Düften – besonders im Winter.</p>
@@ -209,7 +209,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                     
                     <div class="idea-card">
-                        <span class="idea-icon">☕</span>
+                        <span class="idea-icon" aria-hidden="true">☕</span>
                         <span class="idea-category">Wellness</span>
                         <h3 class="idea-title">Tee-Set Premium</h3>
                         <p class="idea-description">Auswahl an hochwertigen Teesorten mit schöner Verpackung.</p>
@@ -218,7 +218,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     
                     <!-- Kulinarisches -->
                     <div class="idea-card">
-                        <span class="idea-icon">🍷</span>
+                        <span class="idea-icon" aria-hidden="true">🍷</span>
                         <span class="idea-category">Kulinarisch</span>
                         <h3 class="idea-title">Gewürz-Set</h3>
                         <p class="idea-description">Edle Gewürzmischungen oder regionale Spezialitäten zum Kochen.</p>
@@ -226,7 +226,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                     
                     <div class="idea-card">
-                        <span class="idea-icon">🍯</span>
+                        <span class="idea-icon" aria-hidden="true">🍯</span>
                         <span class="idea-category">Kulinarisch</span>
                         <h3 class="idea-title">Schweizer Honig</h3>
                         <p class="idea-description">Regionaler Honig aus der Schweiz – nachhaltig und lecker.</p>
@@ -234,7 +234,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                     
                     <div class="idea-card">
-                        <span class="idea-icon">☕</span>
+                        <span class="idea-icon" aria-hidden="true">☕</span>
                         <span class="idea-category">Kulinarisch</span>
                         <h3 class="idea-title">Barista-Kaffee</h3>
                         <p class="idea-description">Hochwertige Kaffeebohnen von lokalen Röstereien.</p>
@@ -243,7 +243,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     
                     <!-- Schrottwichteln -->
                     <div class="idea-card">
-                        <span class="idea-icon">🦄</span>
+                        <span class="idea-icon" aria-hidden="true">🦄</span>
                         <span class="idea-category">Schrott</span>
                         <h3 class="idea-title">Einhorn-Produkte</h3>
                         <p class="idea-description">Von Einhorn-Schlappen bis Einhorn-Klopapier – je skurriler, desto besser!</p>
@@ -251,7 +251,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                     
                     <div class="idea-card">
-                        <span class="idea-icon">🎤</span>
+                        <span class="idea-icon" aria-hidden="true">🎤</span>
                         <span class="idea-category">Schrott</span>
                         <h3 class="idea-title">Nutzlose Gadgets</h3>
                         <p class="idea-description">USB-Staubsauger, selbstrührende Tasse, Desktop-Boxsack – herrlich überflüssig.</p>
@@ -259,7 +259,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </div>
                     
                     <div class="idea-card">
-                        <span class="idea-icon">📚</span>
+                        <span class="idea-icon" aria-hidden="true">📚</span>
                         <span class="idea-category">Schrott</span>
                         <h3 class="idea-title">„Wie werde ich reich"-Bücher</h3>
                         <p class="idea-description">Ironische Ratgeber oder Bücher mit herrlich absurden Titeln.</p>

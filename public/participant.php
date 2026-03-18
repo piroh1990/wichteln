@@ -196,7 +196,7 @@ if (!empty($participant_token)) {
         </div>
 
         <div class="section-card waiting-card">
-            <div class="waiting-icon">🏠</div>
+            <div class="waiting-icon" aria-hidden="true">🏠</div>
             <h2>Was möchtest du tun?</h2>
             <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem; flex-wrap: wrap;">
                 <a href="index.php" class="cta-button cta-button-secondary">
@@ -210,7 +210,7 @@ if (!empty($participant_token)) {
 
         <div class="section-card">
             <div class="section-card-header">
-                <span class="section-icon">💡</span>
+                <span class="section-icon" aria-hidden="true">💡</span>
                 <h2>So kommst du zu deinem Teilnehmerbereich</h2>
             </div>
             <ul>
@@ -447,7 +447,7 @@ if ($show_group_selector) {
         <?php if ($group['is_drawn']): ?>
             <div class="partner-reveal-card">
                 <div class="partner-reveal-header">
-                    <span class="partner-reveal-icon">🎁</span>
+                    <span class="partner-reveal-icon" aria-hidden="true">🎁</span>
                     <h2 class="partner-reveal-title">Dein Wichtelpartner</h2>
                 </div>
                 
@@ -491,7 +491,7 @@ if ($show_group_selector) {
             ?>
         <?php else: ?>
             <div class="section-card waiting-card">
-                <div class="waiting-icon">⏳</div>
+                <div class="waiting-icon" aria-hidden="true">⏳</div>
                 <h2>Auslosung ausstehend</h2>
                 <p>Die Auslosung wurde noch nicht durchgeführt. Bitte schaue später wieder vorbei!</p>
             </div>
@@ -501,7 +501,7 @@ if ($show_group_selector) {
         <!-- Wunschliste Section -->
         <div class="section-card">
             <div class="section-card-header">
-                <span class="section-icon">📝</span>
+                <span class="section-icon" aria-hidden="true">📝</span>
                 <h2>Deine Wunschliste</h2>
             </div>
             
@@ -530,7 +530,7 @@ if ($show_group_selector) {
                 <?php if (!empty($participant['wishlist'])): ?>
                     <div class="wishlist-display locked">
                         <div class="wishlist-locked-header">
-                            <span class="lock-icon">🔒</span>
+                            <span class="lock-icon" aria-hidden="true">🔒</span>
                             <span>Deine gespeicherte Wunschliste</span>
                         </div>
                         <p><?php echo nl2br(htmlspecialchars($participant['wishlist'])); ?></p>
@@ -542,7 +542,7 @@ if ($show_group_selector) {
                     </div>
                 <?php endif; ?>
                 <p class="text-muted">
-                    <span class="info-icon">ℹ️</span>
+                    <span class="info-icon" aria-hidden="true">ℹ️</span>
                     Die Wunschliste kann nach der Auslosung nicht mehr geändert werden.
                 </p>
             <?php endif; ?>
@@ -551,7 +551,7 @@ if ($show_group_selector) {
         <!-- Gruppendetails Section -->
         <div class="section-card">
             <div class="section-card-header">
-                <span class="section-icon">ℹ️</span>
+                <span class="section-icon" aria-hidden="true">ℹ️</span>
                 <h2>Gruppendetails</h2>
             </div>
             
@@ -580,7 +580,7 @@ if ($show_group_selector) {
         <!-- Teilnehmer-Link Section -->
         <div class="section-card">
             <div class="section-card-header">
-                <span class="section-icon">🔗</span>
+                <span class="section-icon" aria-hidden="true">🔗</span>
                 <h2>Dein persönlicher Link</h2>
             </div>
             

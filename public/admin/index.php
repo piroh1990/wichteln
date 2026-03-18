@@ -305,7 +305,7 @@ $month_names = [
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-card-header">
-                    <div class="stat-card-icon primary">🎁</div>
+                    <div class="stat-card-icon primary" aria-hidden="true">🎁</div>
                     <span class="stat-card-label">Gesamt Gruppen</span>
                 </div>
                 <div class="stat-card-value"><?php echo $total_groups; ?></div>
@@ -316,7 +316,7 @@ $month_names = [
 
             <div class="stat-card">
                 <div class="stat-card-header">
-                    <div class="stat-card-icon success">👥</div>
+                    <div class="stat-card-icon success" aria-hidden="true">👥</div>
                     <span class="stat-card-label">Teilnehmer</span>
                 </div>
                 <div class="stat-card-value"><?php echo $total_participants; ?></div>
@@ -327,7 +327,7 @@ $month_names = [
 
             <div class="stat-card">
                 <div class="stat-card-header">
-                    <div class="stat-card-icon warning">📊</div>
+                    <div class="stat-card-icon warning" aria-hidden="true">📊</div>
                     <span class="stat-card-label">Durchschn. Gruppengrösse</span>
                 </div>
                 <div class="stat-card-value"><?php echo $avg_group_size; ?></div>
@@ -338,7 +338,7 @@ $month_names = [
 
             <div class="stat-card">
                 <div class="stat-card-header">
-                    <div class="stat-card-icon info">✓</div>
+                    <div class="stat-card-icon info" aria-hidden="true">✓</div>
                     <span class="stat-card-label">Abschlussrate</span>
                 </div>
                 <div class="stat-card-value"><?php echo $completion_rate; ?>%</div>
@@ -349,7 +349,7 @@ $month_names = [
 
             <div class="stat-card">
                 <div class="stat-card-header">
-                    <div class="stat-card-icon primary">💰</div>
+                    <div class="stat-card-icon primary" aria-hidden="true">💰</div>
                     <span class="stat-card-label">Durchschn. Budget</span>
                 </div>
                 <div class="stat-card-value"><?php echo $avg_budget !== null ? number_format($avg_budget, 0) : '–'; ?></div>
@@ -360,7 +360,7 @@ $month_names = [
 
             <div class="stat-card">
                 <div class="stat-card-header">
-                    <div class="stat-card-icon success">✉️</div>
+                    <div class="stat-card-icon success" aria-hidden="true">✉️</div>
                     <span class="stat-card-label">E-Mail-Rate</span>
                 </div>
                 <div class="stat-card-value"><?php echo $email_rate; ?>%</div>
@@ -371,7 +371,7 @@ $month_names = [
 
             <div class="stat-card">
                 <div class="stat-card-header">
-                    <div class="stat-card-icon warning">📅</div>
+                    <div class="stat-card-icon warning" aria-hidden="true">📅</div>
                     <span class="stat-card-label">Bevorstehende Events</span>
                 </div>
                 <div class="stat-card-value"><?php echo $upcoming_events; ?></div>
@@ -382,7 +382,7 @@ $month_names = [
 
             <div class="stat-card">
                 <div class="stat-card-header">
-                    <div class="stat-card-icon info">🆕</div>
+                    <div class="stat-card-icon info" aria-hidden="true">🆕</div>
                     <span class="stat-card-label">Gruppen diesen Monat</span>
                 </div>
                 <div class="stat-card-value"><?php echo $groups_this_month; ?></div>
@@ -440,21 +440,21 @@ $month_names = [
 
                             <div class="group-stats">
                                 <div class="group-stat">
-                                    <span class="group-stat-icon">👥</span>
+                                    <span class="group-stat-icon" aria-hidden="true">👥</span>
                                     <div class="group-stat-content">
                                         <span class="group-stat-value"><?php echo $group['participant_count']; ?></span>
                                         <span class="group-stat-label">Teilnehmer</span>
                                     </div>
                                 </div>
                                 <div class="group-stat">
-                                    <span class="group-stat-icon">✉️</span>
+                                    <span class="group-stat-icon" aria-hidden="true">✉️</span>
                                     <div class="group-stat-content">
                                         <span class="group-stat-value"><?php echo $group['participants_with_email']; ?></span>
                                         <span class="group-stat-label">Mit E-Mail</span>
                                     </div>
                                 </div>
                                 <div class="group-stat">
-                                    <span class="group-stat-icon">🚫</span>
+                                    <span class="group-stat-icon" aria-hidden="true">🚫</span>
                                     <div class="group-stat-content">
                                         <span class="group-stat-value"><?php echo $group['exclusion_count']; ?></span>
                                         <span class="group-stat-label">Ausschlüsse</span>
@@ -513,7 +513,7 @@ $month_names = [
                 <?php render_pagination($page, $total_pages, 'page', $master_token, ['archive_page' => $archive_page]); ?>
             <?php else: ?>
                 <div class="empty-state">
-                    <div class="empty-state-icon">🎁</div>
+                    <div class="empty-state-icon" aria-hidden="true">🎁</div>
                     <h3 class="empty-state-title">Keine Gruppen vorhanden</h3>
                     <p class="empty-state-text">Es wurden noch keine Wichtel-Gruppen erstellt.</p>
                 </div>
