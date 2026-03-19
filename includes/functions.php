@@ -436,6 +436,50 @@ function get_base_url() {
     return $protocol . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/');
 }
 
+/**
+ * Führt die Wichtel-Auslosung durch.
+ *
+ * @param array $participant_ids Liste der Teilnehmer-IDs.
+ * @param array $exclusions_map Map von Teilnehmer-ID zu Liste ausgeschlossener Teilnehmer-IDs.
+ * @param int $max_attempts Maximale Anzahl der Versuche (Shuffle).
+ * @return array|false Gibt das Array der zugewiesenen IDs zurück oder false, wenn keine gültige Auslosung gefunden wurde.
+ */
+function perform_draw($participant_ids, $exclusions_map = [], $max_attempts = 1000) {
+    if (count($participant_ids) < 2) {
+        return false;
+    }
+
+    $assigned_ids = $participant_ids;
+    $attempt = 0;
+    $valid_assignment = false;
+    $count = count($participant_ids);
+
+    while (!$valid_assignment && $attempt < $max_attempts) {
+        shuffle($assigned_ids);
+        $valid_assignment = true;
+
+        for ($i = 0; $i < $count; $i++) {
+            $giver = $participant_ids[$i];
+            $receiver = $assigned_ids[$i];
+
+            // Prüfen ob Person sich selbst zieht
+            if ($giver == $receiver) {
+                $valid_assignment = false;
+                break;
+            }
+
+            // Prüfen ob Zuteilung ausgeschlossen
+            if (isset($exclusions_map[$giver]) && in_array($receiver, $exclusions_map[$giver])) {
+                $valid_assignment = false;
+                break;
+            }
+        }
+        $attempt++;
+    }
+
+    return $valid_assignment ? $assigned_ids : false;
+}
+
 // Funktion zur Generierung einer lesbaren Display-URL (ohne https:// und mit wichtlä.ch statt Punycode)
 function get_display_url($path = '') {
     // Konvertiere Punycode zurück zu IDN (internationalisierte Domain)
