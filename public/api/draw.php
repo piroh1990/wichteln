@@ -106,40 +106,12 @@ if ($action === 'reset') {
     }
     
     $participant_ids = array_column($participants, 'id');
-    $assigned_ids = $participant_ids;
     
     // Gültige Zuteilung finden
-    $max_attempts = 1000;
-    $attempt = 0;
-    $valid_assignment = false;
+    $assigned_ids = perform_draw($participant_ids, $exclusions_map);
     
-    while (!$valid_assignment && $attempt < $max_attempts) {
-        shuffle($assigned_ids);
-        $valid_assignment = true;
-        
-        for ($i = 0; $i < count($participant_ids); $i++) {
-            $giver = $participant_ids[$i];
-            $receiver = $assigned_ids[$i];
-            
-            // Prüfen ob Person sich selbst zieht
-            if ($giver == $receiver) {
-                $valid_assignment = false;
-                break;
-            }
-            
-            // Prüfen ob Zuteilung ausgeschlossen
-            if (isset($exclusions_map[$giver]) && in_array($receiver, $exclusions_map[$giver])) {
-                $valid_assignment = false;
-                break;
-            }
-        }
-        
-        $attempt++;
-    }
-    
-    if (!$valid_assignment) {
+    if ($assigned_ids === false) {
         api_response(400, false, 'Keine gültige Auslosung möglich. Bitte Ausschlüsse überprüfen.', [
-            'attempts' => $attempt,
             'participants_count' => count($participants),
             'exclusions_count' => count($exclusion_rules)
         ]);
@@ -212,7 +184,6 @@ if ($action === 'reset') {
             'group_id' => $group_id,
             'is_drawn' => true,
             'participants_count' => count($participants),
-            'attempts_needed' => $attempt,
             'emails_sent' => $emails_sent,
             'assignments' => $assignments
         ]);

@@ -275,43 +275,16 @@ if (isset($_POST['draw'])) {
         }
         
         $participant_ids = array_column($participants, 'id');
-        $assigned_ids = $participant_ids;
         
-        // Versuche eine gültige Zuteilung zu finden (max 1000 Versuche)
-        $max_attempts = 1000;
-        $attempt = 0;
-        $valid_assignment = false;
+        // Versuche eine gültige Zuteilung zu finden
+        $assigned_ids = perform_draw($participant_ids, $exclusions_map);
         
-        while (!$valid_assignment && $attempt < $max_attempts) {
-            shuffle($assigned_ids);
-            $valid_assignment = true;
-            
-            for ($i = 0; $i < count($participant_ids); $i++) {
-                $giver = $participant_ids[$i];
-                $receiver = $assigned_ids[$i];
-                
-                // Prüfe ob Person sich selbst zieht
-                if ($giver == $receiver) {
-                    $valid_assignment = false;
-                    break;
-                }
-                
-                // Prüfe ob diese Zuteilung ausgeschlossen ist
-                if (isset($exclusions_map[$giver]) && in_array($receiver, $exclusions_map[$giver])) {
-                    $valid_assignment = false;
-                    break;
-                }
-            }
-            
-            $attempt++;
-        }
-        
-        if (!$valid_assignment) {
+        if ($assigned_ids === false) {
             $draw_error = 'Es konnte keine gültige Auslosung gefunden werden. Bitte überprüfe die Ausschlüsse - möglicherweise sind zu viele Ausschlüsse definiert.';
         } else {
             // Zuordnungen speichern
+            $stmt = $pdo->prepare("UPDATE `participants` SET `assigned_to` = ? WHERE `id` = ?");
             for ($i = 0; $i < count($participant_ids); $i++) {
-                $stmt = $pdo->prepare("UPDATE `participants` SET `assigned_to` = ? WHERE `id` = ?");
                 $stmt->execute([$assigned_ids[$i], $participant_ids[$i]]);
             }
 
