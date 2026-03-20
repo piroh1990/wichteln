@@ -512,12 +512,13 @@ if ($show_group_selector) {
                     <div class="form-group">
                         <label for="wishlist" class="form-label">
                             <span>Deine Wünsche</span>
-                            <span class="form-hint">z.B. Bücher, Schokolade, Selbstgemachtes...</span>
+                            <span id="wishlist-hint" class="form-hint">z.B. Bücher, Schokolade, Selbstgemachtes...</span>
                         </label>
                         <textarea id="wishlist" 
                                   name="wishlist" 
                                   rows="6" 
                                   class="form-textarea"
+                                  aria-describedby="wishlist-hint"
                                   placeholder="- Bücher über...&#10;- Schokolade&#10;- Etwas Selbstgemachtes&#10;- Überraschung!"><?php echo htmlspecialchars($participant['wishlist'] ?? ''); ?></textarea>
                     </div>
                     <input type="hidden" name="update_wishlist" value="1">
