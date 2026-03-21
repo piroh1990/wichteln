@@ -188,7 +188,7 @@ if (!empty($participant_token)) {
     <div class="container" style="margin-top: 2rem;">
         <div class="participant-info-card">
             <div class="participant-welcome">
-                <h1 class="participant-greeting">Keine Gruppe gefunden 🎄</h1>
+                <h1 class="participant-greeting">Keine Gruppe gefunden <span aria-hidden="true">🎄</span></h1>
                 <p class="participant-group-name">
                     Du hast noch keine Wichtel-Gruppe besucht oder dein Link ist nicht mehr gültig.
                 </p>
@@ -334,7 +334,7 @@ if ($show_group_selector) {
     <?php include __DIR__ . '/../includes/templates/navigation.php'; ?>
     <div class="container">
         <div class="group-selector">
-            <h1>Willkommen zurück! 🎄</h1>
+            <h1>Willkommen zurück! <span aria-hidden="true">🎄</span></h1>
             <p>Du nimmst an mehreren Wichtel-Gruppen teil. Bitte wähle die Gruppe aus, die du ansehen möchtest:</p>
             
             <form method="POST" id="group-selector-form">
@@ -432,14 +432,14 @@ if ($show_group_selector) {
         <!-- Welcome Card -->
         <div class="participant-info-card">
             <div class="participant-welcome">
-                <h1 class="participant-greeting">Willkommen, <?php echo htmlspecialchars($participant['name']); ?>! 🎄</h1>
-                <p class="participant-group-name">📦 Gruppe: <?php echo htmlspecialchars($group['name']); ?></p>
+                <h1 class="participant-greeting">Willkommen, <?php echo htmlspecialchars($participant['name']); ?>! <span aria-hidden="true">🎄</span></h1>
+                <p class="participant-group-name"><span aria-hidden="true">📦</span> Gruppe: <?php echo htmlspecialchars($group['name']); ?></p>
             </div>
         </div>
         
         <?php if (isset($wishlist_success)): ?>
             <div class="notification success">
-                ✓ <?php echo htmlspecialchars($wishlist_success); ?>
+                <span aria-hidden="true">✓</span> <?php echo htmlspecialchars($wishlist_success); ?>
             </div>
         <?php endif; ?>
         
@@ -479,7 +479,7 @@ if ($show_group_selector) {
                     <?php endif; ?>
                 <?php else: ?>
                     <div class="notification error">
-                        ⚠️ Dein Wichtelpartner konnte nicht gefunden werden.
+                        <span aria-hidden="true">⚠️</span> Dein Wichtelpartner konnte nicht gefunden werden.
                     </div>
                 <?php endif; ?>
             </div>

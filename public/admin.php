@@ -533,9 +533,9 @@ if (isset($_POST['draw'])) {
                                 <h3 class="participant-name"><?php echo htmlspecialchars($p['name'] ?? ''); ?></h3>
                                 <div class="participant-email">
                                     <?php if (!empty($p['email'])): ?>
-                                        <span class="email-display">✉️ <?php echo htmlspecialchars($p['email']); ?></span>
+                                        <span class="email-display"><span aria-hidden="true">✉️</span> <?php echo htmlspecialchars($p['email']); ?></span>
                                     <?php else: ?>
-                                        <span class="email-missing">⚠️ Keine E-Mail</span>
+                                        <span class="email-missing"><span aria-hidden="true">⚠️</span> Keine E-Mail</span>
                                     <?php endif; ?>
                                 </div>
                             </div>
@@ -700,7 +700,7 @@ if (isset($_POST['draw'])) {
             <hr>
             <h2>Auslosung</h2>
             <div class="notification success">
-                ✓ Die Auslosung wurde bereits durchgeführt. Alle Teilnehmer mit E-Mail-Adresse wurden benachrichtigt.
+                <span aria-hidden="true">✓</span> Die Auslosung wurde bereits durchgeführt. Alle Teilnehmer mit E-Mail-Adresse wurden benachrichtigt.
             </div>
             
             <h3>Auslosung zurücksetzen</h3>
@@ -713,7 +713,7 @@ if (isset($_POST['draw'])) {
         
         <!-- Gruppe löschen -->
         <hr>
-        <h2 style="color: var(--error);">⚠️ Gefahrenzone</h2>
+        <h2 style="color: var(--error);"><span aria-hidden="true">⚠️</span> Gefahrenzone</h2>
         <p class="text-muted">Das Löschen der Gruppe kann nicht rückgängig gemacht werden. Alle Teilnehmer, Ausschlüsse und die Auslosung werden permanent gelöscht.</p>
         <form method="POST" style="margin-top: 1rem;" id="delete-group-form" onsubmit="return confirm('⚠️ ACHTUNG: Möchtest du die Gruppe \"<?php echo htmlspecialchars($group['name']); ?>\" wirklich PERMANENT löschen?\n\nAlle Teilnehmer, Ausschlüsse und die Auslosung werden unwiderruflich gelöscht!\n\nDiese Aktion kann NICHT rückgängig gemacht werden.');">
             <input type="hidden" name="delete_group" value="1">
