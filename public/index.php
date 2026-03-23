@@ -76,7 +76,7 @@
         </div>
         <div class="container">
             <div class="hero-content">
-                <div class="hero-badge">✨ Kostenlos & Einfach</div>
+                <div class="hero-badge"><span aria-hidden="true">✨</span> Kostenlos & Einfach</div>
                 <h1 class="hero-title">
                     <span class="hero-title-main">Wichteln leicht gemacht</span>
                     <span class="hero-title-sub">Organisiere dein Wichteln online</span>
@@ -101,11 +101,11 @@
                 <div class="hero-cta">
                     <a href="create_group.php" class="cta-button cta-button-primary">
                         <span>Jetzt Gruppe erstellen</span>
-                        <span class="cta-arrow">→</span>
+                        <span class="cta-arrow" aria-hidden="true">→</span>
                     </a>
                     <a href="participant.php" class="cta-button cta-button-secondary">
                         <span>Zum Teilnehmerbereich</span>
-                        <span class="cta-arrow">→</span>
+                        <span class="cta-arrow" aria-hidden="true">→</span>
                     </a>
                     <p class="cta-subtext">Keine Registrierung erforderlich • Sofort loslegen</p>
                 </div>
