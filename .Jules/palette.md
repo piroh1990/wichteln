@@ -36,3 +36,6 @@
 ## $(date +%Y-%m-%d) - Confirmation Dialog for Non-Destructive Actions
 **Learning:** Actions that are technically non-destructive but have immediate, irreversible communicative side effects (like triggering an algorithm that sends out mass emails) can cause user anxiety if they lack a confirmation step. Users may accidentally click the button or not realize the action is final.
 **Action:** Always add an `onsubmit` confirmation dialog (or a similar UI verification step) to forms that trigger mass communication or other irreversible actions, even if the action doesn't delete data.
+## $(date +%Y-%m-%d) - Providing Context for Optional Fields with .form-hint
+**Learning:** Optional fields in forms (like budget, description, and gift exchange date) often lack context, which can cause users to skip them or input incorrect information. Adding explanatory text helps users understand the purpose of these fields and improves the overall form-filling experience. By pairing this text with the `.form-hint` class and associating it with the input field using `aria-describedby`, we ensure both visual clarity and accessibility for screen reader users.
+**Action:** Always provide context for optional form fields that could benefit from an explanation. Use the `.form-hint` class for the explanatory text and link it to the input field using `aria-describedby`.
