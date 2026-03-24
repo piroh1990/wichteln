@@ -473,15 +473,18 @@ if (isset($_POST['draw'])) {
         <form method="POST" id="update-group-form">
             <div class="form-group">
                 <label for="budget">Budget (optional):</label>
-                <input type="number" step="0.01" id="budget" name="budget" value="<?php echo htmlspecialchars($group['budget'] ?? ''); ?>" placeholder="z.B. 20.00">
+                <input type="number" step="0.01" id="budget" name="budget" value="<?php echo htmlspecialchars($group['budget'] ?? ''); ?>" placeholder="z.B. 20.00" aria-describedby="budget_hint">
+                <small id="budget_hint" class="form-hint">Lege einen Richtwert für die Geschenke fest.</small>
             </div>
             <div class="form-group">
                 <label for="description">Beschreibung (optional):</label>
-                <textarea id="description" name="description" rows="4"><?php echo htmlspecialchars($group['description'] ?? ''); ?></textarea>
+                <textarea id="description" name="description" rows="4" aria-describedby="description_hint"><?php echo htmlspecialchars($group['description'] ?? ''); ?></textarea>
+                <small id="description_hint" class="form-hint">Zusätzliche Infos, z.B. Treffpunkt oder Motto.</small>
             </div>
             <div class="form-group">
                 <label for="gift_exchange_date">Datum der Geschenkübergabe (optional):</label>
-                <input type="date" id="gift_exchange_date" name="gift_exchange_date" value="<?php echo htmlspecialchars($group['gift_exchange_date'] ?? ''); ?>" min="<?php echo date('Y-m-d'); ?>">
+                <input type="date" id="gift_exchange_date" name="gift_exchange_date" value="<?php echo htmlspecialchars($group['gift_exchange_date'] ?? ''); ?>" min="<?php echo date('Y-m-d'); ?>" aria-describedby="gift_exchange_date_hint">
+                <small id="gift_exchange_date_hint" class="form-hint">Wann werden die Geschenke ausgetauscht?</small>
             </div>
             <input type="hidden" name="update_group" value="1">
             <button type="submit" class="button secondary">
