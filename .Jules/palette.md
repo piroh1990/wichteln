@@ -32,3 +32,7 @@
 ## $(date +%Y-%m-%d) - Decorative Emoji Accessibility
 **Learning:** Decorative emojis used as icons (e.g., `<span class="idea-icon">☕</span>` or inside buttons) lack built-in accessibility safeguards, leading to screen readers announcing literal descriptions like "smiling face" which interrupts the reading flow when the icon is purely visual.
 **Action:** Always add `aria-hidden="true"` to any `span` or `div` containing purely decorative emojis to prevent redundant or confusing screen reader announcements.
+
+## $(date +%Y-%m-%d) - Confirmation Dialog for Non-Destructive Actions
+**Learning:** Actions that are technically non-destructive but have immediate, irreversible communicative side effects (like triggering an algorithm that sends out mass emails) can cause user anxiety if they lack a confirmation step. Users may accidentally click the button or not realize the action is final.
+**Action:** Always add an `onsubmit` confirmation dialog (or a similar UI verification step) to forms that trigger mass communication or other irreversible actions, even if the action doesn't delete data.

@@ -692,7 +692,7 @@ if (isset($_POST['draw'])) {
             <hr>
             <h2>Auslosung durchführen</h2>
             <p>Wenn alle Teilnehmer registriert sind und alle Ausschlüsse definiert wurden, kannst du die Auslosung durchführen.</p>
-            <form method="POST" style="margin-top: 1rem;" id="draw-form">
+            <form method="POST" style="margin-top: 1rem;" id="draw-form" onsubmit="return confirm('Möchtest du die Auslosung wirklich durchführen? Alle Teilnehmer mit hinterlegter E-Mail-Adresse werden sofort benachrichtigt.');">
                 <input type="hidden" name="draw" value="1">
                 <button type="submit" class="button primary">Jetzt auslosen</button>
             </form>
