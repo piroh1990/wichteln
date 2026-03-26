@@ -385,6 +385,13 @@ if ($show_group_selector) {
                 submitButton.classList.add('enabled');
             });
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('group-selector-form');
+            if (form) {
+                handleFormSubmit(form, 'Wird geöffnet...');
+            }
+        });
     </script>
 </body>
 </html>
