@@ -107,12 +107,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="container">
         <h1>Registrierung für <?php echo htmlspecialchars($group['name']); ?></h1>
         <?php if (isset($error)): ?>
-            <div class="notification error">
+            <div class="notification error" role="alert" aria-live="assertive">
                 <?php echo htmlspecialchars($error); ?>
             </div>
         <?php endif; ?>
         <?php if (isset($email_error)): ?>
-            <div class="notification error">
+            <div class="notification error" role="alert" aria-live="assertive">
                 <?php echo htmlspecialchars($email_error); ?>
             </div>
         <?php endif; ?>

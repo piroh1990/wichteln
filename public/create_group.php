@@ -121,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="container">
         <h1>Wichtel Gruppe erstellen</h1>
         <?php if (isset($error)): ?>
-            <div class="notification error">
+            <div class="notification error" role="alert" aria-live="assertive">
                 <?php echo htmlspecialchars($error); ?>
             </div>
         <?php endif; ?>
