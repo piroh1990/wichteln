@@ -385,73 +385,73 @@ if (isset($_POST['draw'])) {
         <h1>Admin Bereich - <?php echo htmlspecialchars($group['name']); ?></h1>
         
         <?php if (isset($update_error)): ?>
-            <div class="notification error">
+            <div class="notification error" role="alert" aria-live="assertive">
                 <?php echo htmlspecialchars($update_error); ?>
             </div>
         <?php endif; ?>
         
         <?php if (isset($update_success)): ?>
-            <div class="notification success">
+            <div class="notification success" role="status" aria-live="polite">
                 <?php echo htmlspecialchars($update_success); ?>
             </div>
         <?php endif; ?>
         
         <?php if (isset($draw_error)): ?>
-            <div class="notification error">
+            <div class="notification error" role="alert" aria-live="assertive">
                 <?php echo htmlspecialchars($draw_error); ?>
             </div>
         <?php endif; ?>
         
         <?php if (isset($exclusion_success)): ?>
-            <div class="notification success">
+            <div class="notification success" role="status" aria-live="polite">
                 <?php echo htmlspecialchars($exclusion_success); ?>
             </div>
         <?php endif; ?>
         
         <?php if (isset($exclusion_error)): ?>
-            <div class="notification error">
+            <div class="notification error" role="alert" aria-live="assertive">
                 <?php echo htmlspecialchars($exclusion_error); ?>
             </div>
         <?php endif; ?>
         
         <?php if (isset($reset_success)): ?>
-            <div class="notification success">
+            <div class="notification success" role="status" aria-live="polite">
                 <?php echo htmlspecialchars($reset_success); ?>
             </div>
         <?php endif; ?>
         
         <?php if (isset($reset_error)): ?>
-            <div class="notification error">
+            <div class="notification error" role="alert" aria-live="assertive">
                 <?php echo htmlspecialchars($reset_error); ?>
             </div>
         <?php endif; ?>
         
         <?php if (isset($delete_error)): ?>
-            <div class="notification error">
+            <div class="notification error" role="alert" aria-live="assertive">
                 <?php echo htmlspecialchars($delete_error); ?>
             </div>
         <?php endif; ?>
         
         <?php if (isset($participant_success)): ?>
-            <div class="notification success">
+            <div class="notification success" role="status" aria-live="polite">
                 <?php echo htmlspecialchars($participant_success); ?>
             </div>
         <?php endif; ?>
         
         <?php if (isset($participant_error)): ?>
-            <div class="notification error">
+            <div class="notification error" role="alert" aria-live="assertive">
                 <?php echo htmlspecialchars($participant_error); ?>
             </div>
         <?php endif; ?>
         
         <?php if (isset($email_success)): ?>
-            <div class="notification success">
+            <div class="notification success" role="status" aria-live="polite">
                 <?php echo $email_success; ?>
             </div>
         <?php endif; ?>
         
         <?php if (isset($email_error)): ?>
-            <div class="notification error">
+            <div class="notification error" role="alert" aria-live="assertive">
                 <?php echo htmlspecialchars($email_error); ?>
             </div>
         <?php endif; ?>
@@ -702,7 +702,7 @@ if (isset($_POST['draw'])) {
         <?php else: ?>
             <hr>
             <h2>Auslosung</h2>
-            <div class="notification success">
+            <div class="notification success" role="status" aria-live="polite">
                 <span aria-hidden="true">✓</span> Die Auslosung wurde bereits durchgeführt. Alle Teilnehmer mit E-Mail-Adresse wurden benachrichtigt.
             </div>
             

@@ -290,13 +290,13 @@ $month_names = [
 
     <div class="admin-container">
         <?php if (isset($message)): ?>
-            <div class="notification success">
+            <div class="notification success" role="status" aria-live="polite">
                 <?php echo htmlspecialchars($message); ?>
             </div>
         <?php endif; ?>
 
         <?php if (isset($error)): ?>
-            <div class="notification error">
+            <div class="notification error" role="alert" aria-live="assertive">
                 <?php echo htmlspecialchars($error); ?>
             </div>
         <?php endif; ?>

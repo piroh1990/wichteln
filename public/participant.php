@@ -438,7 +438,7 @@ if ($show_group_selector) {
         </div>
         
         <?php if (isset($wishlist_success)): ?>
-            <div class="notification success">
+            <div class="notification success" role="status" aria-live="polite">
                 <span aria-hidden="true">✓</span> <?php echo htmlspecialchars($wishlist_success); ?>
             </div>
         <?php endif; ?>
@@ -478,7 +478,7 @@ if ($show_group_selector) {
                         </div>
                     <?php endif; ?>
                 <?php else: ?>
-                    <div class="notification error">
+                    <div class="notification error" role="alert" aria-live="assertive">
                         <span aria-hidden="true">⚠️</span> Dein Wichtelpartner konnte nicht gefunden werden.
                     </div>
                 <?php endif; ?>
