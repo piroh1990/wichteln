@@ -686,7 +686,11 @@ if (isset($_POST['draw'])) {
                     </tbody>
                 </table>
             <?php else: ?>
-                <p class="text-muted">Keine Ausschlüsse definiert.</p>
+                <div class="empty-state">
+                    <div class="empty-icon" aria-hidden="true">🤝</div>
+                    <p class="empty-text">Keine Ausschlüsse definiert.</p>
+                    <p class="empty-hint">Jeder kann jedem zugelost werden.</p>
+                </div>
             <?php endif; ?>
         <?php endif; ?>
 
