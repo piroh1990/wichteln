@@ -39,3 +39,7 @@
 ## $(date +%Y-%m-%d) - Providing Context for Optional Fields with .form-hint
 **Learning:** Optional fields in forms (like budget, description, and gift exchange date) often lack context, which can cause users to skip them or input incorrect information. Adding explanatory text helps users understand the purpose of these fields and improves the overall form-filling experience. By pairing this text with the `.form-hint` class and associating it with the input field using `aria-describedby`, we ensure both visual clarity and accessibility for screen reader users.
 **Action:** Always provide context for optional form fields that could benefit from an explanation. Use the `.form-hint` class for the explanatory text and link it to the input field using `aria-describedby`.
+
+## 2024-05-26 - Undefined CSS Variables Break Visual Hierarchy
+**Learning:** Using undefined CSS variables (like `var(--text-muted)` instead of `var(--text-secondary)`) causes browsers to silently ignore the color declaration and inherit from the parent. This destroys the intended visual hierarchy for form hints and empty states, making them harder to distinguish from primary text and reducing overall readability.
+**Action:** Always verify that CSS variables used in utility classes (like `.form-hint` or `.text-muted`) actually exist in the `:root` definitions.
