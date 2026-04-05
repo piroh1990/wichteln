@@ -579,8 +579,10 @@ $month_names = [
                 </div>
                 <?php render_pagination($archive_page, $total_archive_pages, 'archive_page', $master_token, ['page' => $page]); ?>
             <?php else: ?>
-                <div class="empty-state" style="padding: 2rem; background: #f8f9fa; border-radius: 8px; text-align: center;">
-                    <p style="color: #6c757d; margin: 0;">Keine archivierten Daten vorhanden.</p>
+                <div class="empty-state">
+                    <div class="empty-state-icon" aria-hidden="true">📊</div>
+                    <h3 class="empty-state-title">Keine archivierten Gruppen</h3>
+                    <p class="empty-state-text">Keine archivierten Daten vorhanden.</p>
                 </div>
             <?php endif; ?>
         </div>
