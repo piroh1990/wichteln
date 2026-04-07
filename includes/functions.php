@@ -429,6 +429,100 @@ function create_admin_email($group_name, $admin_link, $invite_link, $budget, $de
     return $html;
 }
 
+// Funktion zum Erstellen einer E-Mail bei Wunschlisten-Aktualisierung
+function create_wishlist_update_email($giver_name, $updater_name, $wishlist) {
+    $html = '
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wunschliste aktualisiert</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, \'Helvetica Neue\', Arial, sans-serif; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); min-height: 100vh;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 40px 20px;">
+        <tr>
+            <td align="center">
+                <!-- Main Container -->
+                <table width="600" cellpadding="0" cellspacing="0" style="background: #ffffff; border-radius: 16px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12); overflow: hidden; max-width: 100%;">
+                    
+                    <!-- Header -->
+                    <tr>
+                        <td style="background: linear-gradient(135deg, #264653 0%, #2a9d8f 100%); padding: 40px 30px; text-align: center;">
+                            <h1 style="margin: 0; color: #ffffff; font-family: \'Playfair Display\', Georgia, serif; font-size: 32px; font-weight: 700; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);">🎁 Wichteln</h1>
+                            <p style="margin: 10px 0 0 0; color: rgba(255, 255, 255, 0.9); font-size: 16px;">Wunschliste wurde aktualisiert!</p>
+                        </td>
+                    </tr>
+                    
+                    <!-- Content -->
+                    <tr>
+                        <td style="padding: 40px 30px;">
+                            
+                            <!-- Greeting -->
+                            <p style="margin: 0 0 20px 0; color: #2b2d42; font-size: 16px; line-height: 1.6;">
+                                Hallo <strong style="color: #e63946;">' . htmlspecialchars($giver_name) . '</strong>,
+                            </p>
+                            
+                            <p style="margin: 0 0 25px 0; color: #2b2d42; font-size: 16px; line-height: 1.6;">
+                                Dein Wichtelpartner <strong>' . htmlspecialchars($updater_name) . '</strong> hat seine Wunschliste aktualisiert.
+                            </p>';
+
+    if (!empty($wishlist)) {
+        $html .= '
+                            <!-- Wishlist Box -->
+                            <table width="100%" cellpadding="0" cellspacing="0" style="background: #f8f9fa; border-left: 4px solid #2a9d8f; border-radius: 8px; margin: 20px 0;">
+                                <tr>
+                                    <td style="padding: 20px;">
+                                        <p style="margin: 0 0 12px 0; color: #2a9d8f; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">✨ Aktuelle Wunschliste von ' . htmlspecialchars($updater_name) . '</p>
+                                        <p style="margin: 0; color: #2b2d42; font-size: 15px; line-height: 1.7; white-space: pre-wrap;">' . htmlspecialchars($wishlist) . '</p>
+                                    </td>
+                                </tr>
+                            </table>';
+    } else {
+        $html .= '
+                            <!-- Empty Wishlist Notice -->
+                            <table width="100%" cellpadding="0" cellspacing="0" style="background: #f8f9fa; border-left: 4px solid #f4a261; border-radius: 8px; margin: 20px 0;">
+                                <tr>
+                                    <td style="padding: 20px;">
+                                        <p style="margin: 0; color: #2b2d42; font-size: 15px; line-height: 1.7;">
+                                            <strong style="color: #f4a261;">📋</strong> Die Wunschliste ist derzeit leer.
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>';
+    }
+
+    $html .= '
+                            <!-- Closing -->
+                            <p style="margin: 30px 0 0 0; color: #2b2d42; font-size: 16px; line-height: 1.6;">
+                                Viel Spaß beim Wichteln! 🎄
+                            </p>
+                            
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background: #264653; padding: 25px 30px; text-align: center;">
+                            <p style="margin: 0; color: rgba(255, 255, 255, 0.8); font-size: 13px;">
+                                Diese E-Mail wurde automatisch von <strong style="color: #ffffff;">wichtlä.ch</strong> versendet
+                            </p>
+                            <p style="margin: 8px 0 0 0; color: rgba(255, 255, 255, 0.6); font-size: 12px;">
+                                © ' . date('Y') . ' wichtlä.ch - Online Wichteln leicht gemacht
+                            </p>
+                        </td>
+                    </tr>
+                    
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>';
+    
+    return $html;
+}
+
 // Funktion zur Generierung der Basis-URL
 function get_base_url() {
     $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || 

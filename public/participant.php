@@ -279,8 +279,8 @@ if ($participant) {
         $assigned = $stmt->fetch(PDO::FETCH_ASSOC);
     }
     
-    // Wunschliste aktualisieren (nur wenn noch nicht ausgelost)
-    if (isset($_POST['update_wishlist']) && !$group['is_drawn']) {
+    // Wunschliste aktualisieren
+    if (isset($_POST['update_wishlist'])) {
         if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
             die('CSRF-Token ungültig.');
         }
@@ -289,6 +289,23 @@ if ($participant) {
         
         $stmt = $pdo->prepare("UPDATE `participants` SET `wishlist` = ? WHERE `id` = ?");
         $stmt->execute([$wishlist, $participant['id']]);
+        
+        // Nach Auslosung: E-Mail an denjenigen senden, der diesen Teilnehmer gezogen hat
+        if ($group['is_drawn']) {
+            $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `assigned_to` = ? AND `group_id` = ?");
+            $stmt->execute([$participant['id'], $participant['group_id']]);
+            $giver = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($giver && !empty($giver['email'])) {
+                $subject = 'Wunschliste aktualisiert 🎁';
+                $html_message = create_wishlist_update_email(
+                    $giver['name'],
+                    $participant['name'],
+                    $wishlist
+                );
+                send_email($giver['email'], $subject, $html_message, true);
+            }
+        }
         
         // Teilnehmer neu abrufen
         $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `participant_token` = ?");
@@ -523,6 +540,9 @@ if ($show_group_selector) {
             
             <?php if (!$group['is_drawn']): ?>
                 <p class="section-description">Trage hier deine Wünsche ein. Dein Wichtelpartner wird diese nach der Auslosung sehen können.</p>
+            <?php else: ?>
+                <p class="section-description">Du kannst deine Wunschliste jederzeit anpassen. Dein Wichtelpartner wird per E-Mail über Änderungen informiert.</p>
+            <?php endif; ?>
                 <form method="POST" class="wishlist-form">
                     <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
                     <div class="form-group">
@@ -543,26 +563,6 @@ if ($show_group_selector) {
                         Wunschliste speichern
                     </button>
                 </form>
-            <?php else: ?>
-                <?php if (!empty($participant['wishlist'])): ?>
-                    <div class="wishlist-display locked">
-                        <div class="wishlist-locked-header">
-                            <span class="lock-icon" aria-hidden="true">🔒</span>
-                            <span>Deine gespeicherte Wunschliste</span>
-                        </div>
-                        <p><?php echo nl2br(htmlspecialchars($participant['wishlist'])); ?></p>
-                    </div>
-                <?php else: ?>
-                    <div class="empty-wishlist">
-                        <span class="empty-wishlist-icon" aria-hidden="true">📋</span>
-                        <p>Du hast keine Wunschliste hinterlegt.</p>
-                    </div>
-                <?php endif; ?>
-                <p class="text-muted">
-                    <span class="info-icon" aria-hidden="true">ℹ️</span>
-                    Die Wunschliste kann nach der Auslosung nicht mehr geändert werden.
-                </p>
-            <?php endif; ?>
         </div>
         
         <!-- Gruppendetails Section -->
