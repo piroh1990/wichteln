@@ -286,12 +286,13 @@ if ($participant) {
         }
 
         $wishlist = trim($_POST['wishlist']);
+        $old_wishlist = $participant['wishlist'] ?? '';
         
         $stmt = $pdo->prepare("UPDATE `participants` SET `wishlist` = ? WHERE `id` = ?");
         $stmt->execute([$wishlist, $participant['id']]);
         
-        // Nach Auslosung: E-Mail an denjenigen senden, der diesen Teilnehmer gezogen hat
-        if ($group['is_drawn']) {
+        // Nach Auslosung: E-Mail an denjenigen senden, der diesen Teilnehmer gezogen hat (nur bei Änderung)
+        if ($group['is_drawn'] && $wishlist !== $old_wishlist) {
             $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `assigned_to` = ? AND `group_id` = ?");
             $stmt->execute([$participant['id'], $participant['group_id']]);
             $giver = $stmt->fetch(PDO::FETCH_ASSOC);
