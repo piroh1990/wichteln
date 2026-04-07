@@ -202,6 +202,23 @@ switch ($method) {
             // Nach Auslosung nur Wunschliste aktualisieren
             $stmt = $pdo->prepare("UPDATE `participants` SET `wishlist` = ? WHERE `id` = ?");
             $stmt->execute([$wishlist, $participant['id']]);
+            
+            // E-Mail an denjenigen senden, der diesen Teilnehmer gezogen hat
+            if ($wishlist !== $participant['wishlist']) {
+                $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `assigned_to` = ? AND `group_id` = ?");
+                $stmt->execute([$participant['id'], $participant['group_id']]);
+                $giver = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                if ($giver && !empty($giver['email'])) {
+                    $subject = 'Wunschliste aktualisiert 🎁';
+                    $html_message = create_wishlist_update_email(
+                        $giver['name'],
+                        $participant['name'],
+                        $wishlist
+                    );
+                    send_email($giver['email'], $subject, $html_message, true);
+                }
+            }
         } else {
             // Vor Auslosung alle Felder aktualisieren
             $name = $input['name'] ?? $participant['name'];

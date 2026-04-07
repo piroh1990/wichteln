@@ -93,3 +93,42 @@ run_test("create_admin_email: basic rendering", function() {
     assert_true(strpos($html, $description) !== false, "HTML should contain description");
     assert_true(strpos($html, $gift_date) !== false, "HTML should contain gift date");
 });
+
+// Test create_wishlist_update_email
+run_test("create_wishlist_update_email: basic rendering", function() {
+    $giver_name = "Max";
+    $updater_name = "Erika";
+    $wishlist = "Schokolade, Wein";
+
+    $html = create_wishlist_update_email($giver_name, $updater_name, $wishlist);
+
+    assert_true(strpos($html, htmlspecialchars($giver_name)) !== false, "HTML should contain giver name");
+    assert_true(strpos($html, htmlspecialchars($updater_name)) !== false, "HTML should contain updater name");
+    assert_true(strpos($html, htmlspecialchars($wishlist)) !== false, "HTML should contain wishlist");
+    assert_true(strpos($html, "aktualisiert") !== false, "HTML should mention update");
+});
+
+run_test("create_wishlist_update_email: empty wishlist", function() {
+    $giver_name = "Max";
+    $updater_name = "Erika";
+    $wishlist = "";
+
+    $html = create_wishlist_update_email($giver_name, $updater_name, $wishlist);
+
+    assert_true(strpos($html, htmlspecialchars($giver_name)) !== false, "HTML should contain giver name");
+    assert_true(strpos($html, htmlspecialchars($updater_name)) !== false, "HTML should contain updater name");
+    assert_true(strpos($html, "derzeit leer") !== false, "HTML should mention empty wishlist");
+});
+
+run_test("create_wishlist_update_email: HTML escaping", function() {
+    $giver_name = "<script>alert('Max')</script>";
+    $updater_name = "<b>Erika</b>";
+    $wishlist = "<i>Schokolade</i>";
+
+    $html = create_wishlist_update_email($giver_name, $updater_name, $wishlist);
+
+    assert_true(strpos($html, htmlspecialchars($giver_name)) !== false, "Giver name should be escaped");
+    assert_true(strpos($html, htmlspecialchars($updater_name)) !== false, "Updater name should be escaped");
+    assert_true(strpos($html, htmlspecialchars($wishlist)) !== false, "Wishlist should be escaped");
+    assert_true(strpos($html, $giver_name) === false, "Unescaped giver name should not be present");
+});
