@@ -3,6 +3,9 @@
 
 require_once __DIR__ . '/../includes/functions.php';
 
+// Session starten für CSRF-Token
+session_start();
+
 $invite_token = $_GET['token'] ?? '';
 $pdo = db_connect();
 

@@ -444,6 +444,15 @@ if ($show_group_selector) {
             </div>
         </div>
         
+        <?php if (empty($participant['email'])): ?>
+            <div class="notification warning" role="alert">
+                <span aria-hidden="true">⚠️</span>
+                <div>
+                    <strong>Kein E-Mail hinterlegt:</strong> Speichere dir unbedingt deinen persönlichen Link (unten auf dieser Seite), damit du später wieder auf deinen Teilnehmerbereich zugreifen kannst!
+                </div>
+            </div>
+        <?php endif; ?>
+        
         <?php if (isset($wishlist_success)): ?>
             <div class="notification success" role="status" aria-live="polite">
                 <span aria-hidden="true">✓</span> <?php echo htmlspecialchars($wishlist_success); ?>
