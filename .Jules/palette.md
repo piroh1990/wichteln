@@ -39,3 +39,7 @@
 ## $(date +%Y-%m-%d) - Providing Context for Optional Fields with .form-hint
 **Learning:** Optional fields in forms (like budget, description, and gift exchange date) often lack context, which can cause users to skip them or input incorrect information. Adding explanatory text helps users understand the purpose of these fields and improves the overall form-filling experience. By pairing this text with the `.form-hint` class and associating it with the input field using `aria-describedby`, we ensure both visual clarity and accessibility for screen reader users.
 **Action:** Always provide context for optional form fields that could benefit from an explanation. Use the `.form-hint` class for the explanatory text and link it to the input field using `aria-describedby`.
+
+## 2026-04-08 - Dynamic aria-current for Navigation
+**Learning:** Global navigation menus often lack structural context for screen readers to indicate the currently active page. Relying only on visual cues or page titles forces users to guess their location within the navigation hierarchy. Adding `aria-current="page"` dynamically based on the current route solves this accessibly.
+**Action:** Always dynamically apply `aria-current="page"` to the active link in navigation menus to provide explicit context to assistive technologies.
