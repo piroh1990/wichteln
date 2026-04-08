@@ -11,14 +11,15 @@
             <span></span>
         </button>
         
+        <?php $current_page = basename($_SERVER['PHP_SELF']); ?>
         <ul class="nav-menu" id="navMenu">
-            <li><a href="index.php" class="nav-link">Home</a></li>
-            <li><a href="was-ist-wichteln.php" class="nav-link">Was ist Wichteln?</a></li>
-            <li><a href="wichtel-ideen.php" class="nav-link">Geschenkideen</a></li>
-            <li><a href="firmenwichteln-tipps.php" class="nav-link">Firmenwichteln</a></li>
-            <li><a href="faq.php" class="nav-link">FAQ</a></li>
-            <li><a href="ueber-uns.php" class="nav-link">Über uns</a></li>
-            <li><a href="create_group.php" class="nav-link nav-link-primary">Gruppe erstellen</a></li>
+            <li><a href="index.php" class="nav-link"<?php echo $current_page === 'index.php' ? ' aria-current="page"' : ''; ?>>Home</a></li>
+            <li><a href="was-ist-wichteln.php" class="nav-link"<?php echo $current_page === 'was-ist-wichteln.php' ? ' aria-current="page"' : ''; ?>>Was ist Wichteln?</a></li>
+            <li><a href="wichtel-ideen.php" class="nav-link"<?php echo $current_page === 'wichtel-ideen.php' ? ' aria-current="page"' : ''; ?>>Geschenkideen</a></li>
+            <li><a href="firmenwichteln-tipps.php" class="nav-link"<?php echo $current_page === 'firmenwichteln-tipps.php' ? ' aria-current="page"' : ''; ?>>Firmenwichteln</a></li>
+            <li><a href="faq.php" class="nav-link"<?php echo $current_page === 'faq.php' ? ' aria-current="page"' : ''; ?>>FAQ</a></li>
+            <li><a href="ueber-uns.php" class="nav-link"<?php echo $current_page === 'ueber-uns.php' ? ' aria-current="page"' : ''; ?>>Über uns</a></li>
+            <li><a href="create_group.php" class="nav-link nav-link-primary"<?php echo $current_page === 'create_group.php' ? ' aria-current="page"' : ''; ?>>Gruppe erstellen</a></li>
         </ul>
     </div>
 </nav>
