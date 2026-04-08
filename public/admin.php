@@ -570,7 +570,7 @@ if (isset($_POST['draw'])) {
                                         title="<?php echo $can_send_email ? 'E-Mail erneut senden' : 'E-Mail kann nicht gesendet werden (keine E-Mail-Adresse oder Auslosung nicht durchgeführt)'; ?>"
                                         aria-label="E-Mail senden an <?php echo htmlspecialchars($p['name']); ?>"
                                         <?php echo !$can_send_email ? 'disabled' : ''; ?>
-                                        <?php echo $can_send_email ? 'onclick="return confirm(\'E-Mail mit Wichtelpartner-Info an ' . htmlspecialchars($p['name']) . ' senden?\');"' : ''; ?>>
+                                        <?php echo $can_send_email ? 'onclick="return confirm(\'E-Mail mit Wichtelpartner-Info an ' . htmlspecialchars(addslashes($p['name'])) . ' senden?\');"' : ''; ?>>
                                     <span class="btn-icon" aria-hidden="true">📧</span>
                                     <span class="btn-text">E-Mail senden</span>
                                 </button>
