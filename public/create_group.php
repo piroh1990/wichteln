@@ -49,14 +49,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         // Sende Admin-E-Mail
         $subject = 'Deine Wichtelgruppe "' . $group_name . '" wurde erstellt! 🎁';
-        $html_message = create_admin_email(
-            $group_name,
-            $admin_link,
-            $invite_link,
-            $group_budget,
-            $group_description,
-            $gift_exchange_date_formatted
-        );
+        $html_message = create_admin_email([
+            'group_name' => $group_name,
+            'admin_link' => $admin_link,
+            'invite_link' => $invite_link,
+            'budget' => $group_budget,
+            'description' => $group_description,
+            'gift_date' => $gift_exchange_date_formatted
+        ]);
         
         $email_sent = send_email($admin_email, $subject, $html_message, true);
 

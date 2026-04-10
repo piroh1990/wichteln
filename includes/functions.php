@@ -68,15 +68,18 @@ function send_email($to, $subject, $message, $is_html = false) {
     return mail($to, $subject, $message, $headers);
 }
 
-// Funktion zum Erstellen einer schönen HTML-E-Mail im Wichtel-Design
-function create_html_email($name, $assigned_name, $wishlist, $budget, $description, $gift_date) {
-    $html = '
+/**
+ * Gemeinsames Template für alle E-Mails
+ */
+function render_email_template($title, $preview_text, $body_content) {
+    $current_year = date('Y');
+    return '
 <!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dein Wichtelpartner</title>
+    <title>' . htmlspecialchars($title) . '</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, \'Helvetica Neue\', Arial, sans-serif; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); min-height: 100vh;">
     <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 40px 20px;">
@@ -89,14 +92,47 @@ function create_html_email($name, $assigned_name, $wishlist, $budget, $descripti
                     <tr>
                         <td style="background: linear-gradient(135deg, #264653 0%, #2a9d8f 100%); padding: 40px 30px; text-align: center;">
                             <h1 style="margin: 0; color: #ffffff; font-family: \'Playfair Display\', Georgia, serif; font-size: 32px; font-weight: 700; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);">🎁 Wichteln</h1>
-                            <p style="margin: 10px 0 0 0; color: rgba(255, 255, 255, 0.9); font-size: 16px;">Dein Wichtelpartner wurde ausgelost!</p>
+                            <p style="margin: 10px 0 0 0; color: rgba(255, 255, 255, 0.9); font-size: 16px;">' . htmlspecialchars($preview_text) . '</p>
                         </td>
                     </tr>
                     
                     <!-- Content -->
                     <tr>
                         <td style="padding: 40px 30px;">
-                            
+                            ' . $body_content . '
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background: #264653; padding: 25px 30px; text-align: center;">
+                            <p style="margin: 0; color: rgba(255, 255, 255, 0.8); font-size: 13px;">
+                                Diese E-Mail wurde automatisch von <strong style="color: #ffffff;">wichtlä.ch</strong> versendet
+                            </p>
+                            <p style="margin: 8px 0 0 0; color: rgba(255, 255, 255, 0.6); font-size: 12px;">
+                                © ' . $current_year . ' wichtlä.ch - Online Wichteln leicht gemacht
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>';
+}
+
+// Funktion zum Erstellen einer schönen HTML-E-Mail im Wichtel-Design
+function create_html_email($data) {
+    $name = $data['name'] ?? '';
+    $assigned_name = $data['assigned_name'] ?? '';
+    $wishlist = $data['wishlist'] ?? '';
+    $budget = $data['budget'] ?? '';
+    $description = $data['description'] ?? '';
+    $gift_date = $data['gift_date'] ?? '';
+
+    $body = '
                             <!-- Greeting -->
                             <p style="margin: 0 0 20px 0; color: #2b2d42; font-size: 16px; line-height: 1.6;">
                                 Hallo <strong style="color: #e63946;">' . htmlspecialchars($name) . '</strong>,
@@ -114,7 +150,7 @@ function create_html_email($name, $assigned_name, $wishlist, $budget, $descripti
     
     // Wunschliste wenn vorhanden
     if (!empty($wishlist)) {
-        $html .= '
+        $body .= '
                             <!-- Wishlist Box -->
                             <table width="100%" cellpadding="0" cellspacing="0" style="background: #f8f9fa; border-left: 4px solid #2a9d8f; border-radius: 8px; margin: 20px 0;">
                                 <tr>
@@ -126,7 +162,7 @@ function create_html_email($name, $assigned_name, $wishlist, $budget, $descripti
                             </table>';
     }
     
-    $html .= '
+    $body .= '
                             <!-- Group Details -->
                             <table width="100%" cellpadding="0" cellspacing="0" style="margin: 30px 0 20px 0; border-top: 2px solid #e1e4e8; padding-top: 20px;">
                                 <tr>
@@ -154,61 +190,21 @@ function create_html_email($name, $assigned_name, $wishlist, $budget, $descripti
                             <!-- Closing -->
                             <p style="margin: 30px 0 0 0; color: #2b2d42; font-size: 16px; line-height: 1.6;">
                                 Viel Spaß beim Wichteln! 🎄
-                            </p>
-                            
-                        </td>
-                    </tr>
-                    
-                    <!-- Footer -->
-                    <tr>
-                        <td style="background: #264653; padding: 25px 30px; text-align: center;">
-                            <p style="margin: 0; color: rgba(255, 255, 255, 0.8); font-size: 13px;">
-                                Diese E-Mail wurde automatisch von <strong style="color: #ffffff;">wichtlä.ch</strong> versendet
-                            </p>
-                            <p style="margin: 8px 0 0 0; color: rgba(255, 255, 255, 0.6); font-size: 12px;">
-                                © ' . date('Y') . ' wichtlä.ch - Online Wichteln leicht gemacht
-                            </p>
-                        </td>
-                    </tr>
-                    
-                </table>
-            </td>
-        </tr>
-    </table>
-</body>
-</html>';
+                            </p>';
     
-    return $html;
+    return render_email_template('Dein Wichtelpartner', 'Dein Wichtelpartner wurde ausgelost!', $body);
 }
 
 // Funktion zum Erstellen einer Registrierungs-Bestätigungs-E-Mail
-function create_registration_email($name, $group_name, $participant_link, $budget, $description, $gift_date) {
-    $html = '
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Willkommen beim Wichteln</title>
-</head>
-<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, \'Helvetica Neue\', Arial, sans-serif; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); min-height: 100vh;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 40px 20px;">
-        <tr>
-            <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background: #ffffff; border-radius: 16px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12); overflow: hidden; max-width: 100%;">
-                    
-                    <!-- Header -->
-                    <tr>
-                        <td style="background: linear-gradient(135deg, #264653 0%, #2a9d8f 100%); padding: 40px 30px; text-align: center;">
-                            <h1 style="margin: 0; color: #ffffff; font-family: \'Playfair Display\', Georgia, serif; font-size: 32px; font-weight: 700; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);">🎁 Wichteln</h1>
-                            <p style="margin: 10px 0 0 0; color: rgba(255, 255, 255, 0.9); font-size: 16px;">Willkommen beim Wichteln!</p>
-                        </td>
-                    </tr>
-                    
-                    <!-- Content -->
-                    <tr>
-                        <td style="padding: 40px 30px;">
-                            
+function create_registration_email($data) {
+    $name = $data['name'] ?? '';
+    $group_name = $data['group_name'] ?? '';
+    $participant_link = $data['participant_link'] ?? '';
+    $budget = $data['budget'] ?? '';
+    $description = $data['description'] ?? '';
+    $gift_date = $data['gift_date'] ?? '';
+
+    $body = '
                             <p style="margin: 0 0 20px 0; color: #2b2d42; font-size: 16px; line-height: 1.6;">
                                 Hallo <strong style="color: #e63946;">' . htmlspecialchars($name) . '</strong>,
                             </p>
@@ -267,61 +263,21 @@ function create_registration_email($name, $group_name, $participant_link, $budge
                             
                             <p style="margin: 25px 0 0 0; color: #2b2d42; font-size: 16px; line-height: 1.6;">
                                 Viel Spaß beim Wichteln! 🎄
-                            </p>
-                            
-                        </td>
-                    </tr>
-                    
-                    <!-- Footer -->
-                    <tr>
-                        <td style="background: #264653; padding: 25px 30px; text-align: center;">
-                            <p style="margin: 0; color: rgba(255, 255, 255, 0.8); font-size: 13px;">
-                                Diese E-Mail wurde automatisch von <strong style="color: #ffffff;">wichtlä.ch</strong> versendet
-                            </p>
-                            <p style="margin: 8px 0 0 0; color: rgba(255, 255, 255, 0.6); font-size: 12px;">
-                                © ' . date('Y') . ' wichtlä.ch - Online Wichteln leicht gemacht
-                            </p>
-                        </td>
-                    </tr>
-                    
-                </table>
-            </td>
-        </tr>
-    </table>
-</body>
-</html>';
+                            </p>';
     
-    return $html;
+    return render_email_template('Willkommen beim Wichteln', 'Willkommen beim Wichteln!', $body);
 }
 
 // Funktion zum Erstellen einer Admin-Willkommens-E-Mail
-function create_admin_email($group_name, $admin_link, $invite_link, $budget, $description, $gift_date) {
-    $html = '
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deine Wichtelgruppe wurde erstellt</title>
-</head>
-<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, \'Helvetica Neue\', Arial, sans-serif; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); min-height: 100vh;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 40px 20px;">
-        <tr>
-            <td align="center">
-                <table width="600" cellpadding="0" cellspacing="0" style="background: #ffffff; border-radius: 16px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12); overflow: hidden; max-width: 100%;">
-                    
-                    <!-- Header -->
-                    <tr>
-                        <td style="background: linear-gradient(135deg, #264653 0%, #2a9d8f 100%); padding: 40px 30px; text-align: center;">
-                            <h1 style="margin: 0; color: #ffffff; font-family: \'Playfair Display\', Georgia, serif; font-size: 32px; font-weight: 700; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);">🎁 Wichteln</h1>
-                            <p style="margin: 10px 0 0 0; color: rgba(255, 255, 255, 0.9); font-size: 16px;">Deine Gruppe wurde erfolgreich erstellt!</p>
-                        </td>
-                    </tr>
-                    
-                    <!-- Content -->
-                    <tr>
-                        <td style="padding: 40px 30px;">
-                            
+function create_admin_email($data) {
+    $group_name = $data['group_name'] ?? '';
+    $admin_link = $data['admin_link'] ?? '';
+    $invite_link = $data['invite_link'] ?? '';
+    $budget = $data['budget'] ?? '';
+    $description = $data['description'] ?? '';
+    $gift_date = $data['gift_date'] ?? '';
+
+    $body = '
                             <p style="margin: 0 0 20px 0; color: #2b2d42; font-size: 16px; line-height: 1.6;">
                                 Hallo <strong style="color: #e63946;">Admin</strong>,
                             </p>
@@ -402,62 +358,14 @@ function create_admin_email($group_name, $admin_link, $invite_link, $budget, $de
                             
                             <p style="margin: 25px 0 0 0; color: #2b2d42; font-size: 16px; line-height: 1.6;">
                                 Viel Spaß beim Wichteln! 🎄
-                            </p>
-                            
-                        </td>
-                    </tr>
-                    
-                    <!-- Footer -->
-                    <tr>
-                        <td style="background: #264653; padding: 25px 30px; text-align: center;">
-                            <p style="margin: 0; color: rgba(255, 255, 255, 0.8); font-size: 13px;">
-                                Diese E-Mail wurde automatisch von <strong style="color: #ffffff;">wichtlä.ch</strong> versendet
-                            </p>
-                            <p style="margin: 8px 0 0 0; color: rgba(255, 255, 255, 0.6); font-size: 12px;">
-                                © ' . date('Y') . ' wichtlä.ch - Online Wichteln leicht gemacht
-                            </p>
-                        </td>
-                    </tr>
-                    
-                </table>
-            </td>
-        </tr>
-    </table>
-</body>
-</html>';
+                            </p>';
     
-    return $html;
+    return render_email_template('Deine Wichtelgruppe wurde erstellt', 'Deine Gruppe wurde erfolgreich erstellt!', $body);
 }
 
 // Funktion zum Erstellen einer E-Mail bei Wunschlisten-Aktualisierung
 function create_wishlist_update_email($giver_name, $updater_name, $wishlist) {
-    $html = '
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wunschliste aktualisiert</title>
-</head>
-<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, \'Helvetica Neue\', Arial, sans-serif; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); min-height: 100vh;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 40px 20px;">
-        <tr>
-            <td align="center">
-                <!-- Main Container -->
-                <table width="600" cellpadding="0" cellspacing="0" style="background: #ffffff; border-radius: 16px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12); overflow: hidden; max-width: 100%;">
-                    
-                    <!-- Header -->
-                    <tr>
-                        <td style="background: linear-gradient(135deg, #264653 0%, #2a9d8f 100%); padding: 40px 30px; text-align: center;">
-                            <h1 style="margin: 0; color: #ffffff; font-family: \'Playfair Display\', Georgia, serif; font-size: 32px; font-weight: 700; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);">🎁 Wichteln</h1>
-                            <p style="margin: 10px 0 0 0; color: rgba(255, 255, 255, 0.9); font-size: 16px;">Wunschliste wurde aktualisiert!</p>
-                        </td>
-                    </tr>
-                    
-                    <!-- Content -->
-                    <tr>
-                        <td style="padding: 40px 30px;">
-                            
+    $body = '
                             <!-- Greeting -->
                             <p style="margin: 0 0 20px 0; color: #2b2d42; font-size: 16px; line-height: 1.6;">
                                 Hallo <strong style="color: #e63946;">' . htmlspecialchars($giver_name) . '</strong>,
@@ -468,7 +376,7 @@ function create_wishlist_update_email($giver_name, $updater_name, $wishlist) {
                             </p>';
 
     if (!empty($wishlist)) {
-        $html .= '
+        $body .= '
                             <!-- Wishlist Box -->
                             <table width="100%" cellpadding="0" cellspacing="0" style="background: #f8f9fa; border-left: 4px solid #2a9d8f; border-radius: 8px; margin: 20px 0;">
                                 <tr>
@@ -479,7 +387,7 @@ function create_wishlist_update_email($giver_name, $updater_name, $wishlist) {
                                 </tr>
                             </table>';
     } else {
-        $html .= '
+        $body .= '
                             <!-- Empty Wishlist Notice -->
                             <table width="100%" cellpadding="0" cellspacing="0" style="background: #f8f9fa; border-left: 4px solid #f4a261; border-radius: 8px; margin: 20px 0;">
                                 <tr>
@@ -492,35 +400,13 @@ function create_wishlist_update_email($giver_name, $updater_name, $wishlist) {
                             </table>';
     }
 
-    $html .= '
+    $body .= '
                             <!-- Closing -->
                             <p style="margin: 30px 0 0 0; color: #2b2d42; font-size: 16px; line-height: 1.6;">
                                 Viel Spaß beim Wichteln! 🎄
-                            </p>
-                            
-                        </td>
-                    </tr>
-                    
-                    <!-- Footer -->
-                    <tr>
-                        <td style="background: #264653; padding: 25px 30px; text-align: center;">
-                            <p style="margin: 0; color: rgba(255, 255, 255, 0.8); font-size: 13px;">
-                                Diese E-Mail wurde automatisch von <strong style="color: #ffffff;">wichtlä.ch</strong> versendet
-                            </p>
-                            <p style="margin: 8px 0 0 0; color: rgba(255, 255, 255, 0.6); font-size: 12px;">
-                                © ' . date('Y') . ' wichtlä.ch - Online Wichteln leicht gemacht
-                            </p>
-                        </td>
-                    </tr>
-                    
-                </table>
-            </td>
-        </tr>
-    </table>
-</body>
-</html>';
+                            </p>';
     
-    return $html;
+    return render_email_template('Wunschliste aktualisiert', 'Wunschliste wurde aktualisiert!', $body);
 }
 
 // Funktion zur Generierung der Basis-URL
