@@ -47,14 +47,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $gift_exchange_date_display = $group['gift_exchange_date'] ? date('d.m.Y', strtotime($group['gift_exchange_date'])) : "Nicht festgelegt";
             
             $subject = 'Willkommen beim Wichteln! 🎁';
-            $html_message = create_registration_email(
-                $name,
-                $group['name'],
-                $participant_link,
-                $budget_display,
-                $description_display,
-                $gift_exchange_date_display
-            );
+            $html_message = create_registration_email([
+                'name' => $name,
+                'group_name' => $group['name'],
+                'participant_link' => $participant_link,
+                'budget' => $budget_display,
+                'description' => $description_display,
+                'gift_date' => $gift_exchange_date_display
+            ]);
 
             if (!send_email($email, $subject, $html_message, true)) {
                 // Fehlerbehandlung, falls E-Mail nicht gesendet werden konnte

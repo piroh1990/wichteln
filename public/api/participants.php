@@ -157,7 +157,14 @@ switch ($method) {
             $gift_date = $group['gift_exchange_date'] ? date('d.m.Y', strtotime($group['gift_exchange_date'])) : "Nicht festgelegt";
             
             $subject = 'Willkommen beim Wichteln! 🎁';
-            $html_message = create_registration_email($name, $group['name'], $participant_link, $group_budget, $group_description, $gift_date);
+            $html_message = create_registration_email([
+                'name' => $name,
+                'group_name' => $group['name'],
+                'participant_link' => $participant_link,
+                'budget' => $group_budget,
+                'description' => $group_description,
+                'gift_date' => $gift_date
+            ]);
             send_email($email, $subject, $html_message, true);
         }
         

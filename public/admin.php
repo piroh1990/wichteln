@@ -145,14 +145,14 @@ if (isset($_POST['resend_email'])) {
 
                 // Erstelle HTML-E-Mail
                 $subject = 'Dein Wichtelpartner 🎁';
-                $html_message = create_html_email(
-                    $participant['name'],
-                    $assigned['name'],
-                    $assigned['wishlist'] ?? '',
-                    $group_budget,
-                    $group_description,
-                    $gift_exchange_date
-                );
+                $html_message = create_html_email([
+                    'name' => $participant['name'],
+                    'assigned_name' => $assigned['name'],
+                    'wishlist' => $assigned['wishlist'] ?? '',
+                    'budget' => $group_budget,
+                    'description' => $group_description,
+                    'gift_date' => $gift_exchange_date
+                ]);
 
                 if (send_email($participant['email'], $subject, $html_message, true)) {
                     $email_success = "E-Mail erfolgreich an " . htmlspecialchars($participant['name']) . " gesendet.";
@@ -316,14 +316,14 @@ if (isset($_POST['draw'])) {
 
                             // Erstelle HTML-E-Mail
                             $subject = 'Dein Wichtelpartner 🎁';
-                            $html_message = create_html_email(
-                                $participant['name'],
-                                $assigned['name'],
-                                $assigned['wishlist'] ?? '',
-                                $group_budget,
-                                $group_description,
-                                $gift_exchange_date
-                            );
+                            $html_message = create_html_email([
+                                'name' => $participant['name'],
+                                'assigned_name' => $assigned['name'],
+                                'wishlist' => $assigned['wishlist'] ?? '',
+                                'budget' => $group_budget,
+                                'description' => $group_description,
+                                'gift_date' => $gift_exchange_date
+                            ]);
 
                             if (!send_email($participant['email'], $subject, $html_message, true)) {
                                 // Fehlerbehandlung, falls E-Mail nicht gesendet werden konnte

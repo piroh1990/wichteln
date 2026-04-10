@@ -161,14 +161,14 @@ if ($action === 'reset') {
                             $gift_date = $group['gift_exchange_date'] ? date('d.m.Y', strtotime($group['gift_exchange_date'])) : "Nicht festgelegt";
                             
                             $subject = 'Dein Wichtelpartner 🎁';
-                            $html_message = create_html_email(
-                                $participant['name'],
-                                $assigned['name'],
-                                $assigned['wishlist'] ?? '',
-                                $group_budget,
-                                $group_description,
-                                $gift_date
-                            );
+                            $html_message = create_html_email([
+                                'name' => $participant['name'],
+                                'assigned_name' => $assigned['name'],
+                                'wishlist' => $assigned['wishlist'] ?? '',
+                                'budget' => $group_budget,
+                                'description' => $group_description,
+                                'gift_date' => $gift_date
+                            ]);
                             
                             if (send_email($participant['email'], $subject, $html_message, true)) {
                                 $emails_sent++;
