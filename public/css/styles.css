@@ -1035,6 +1035,7 @@ a.button:disabled {
     position: relative;
     overflow: hidden;
     margin: 0.5rem;
+    cursor: pointer;
 }
 
 .cta-button-primary {
