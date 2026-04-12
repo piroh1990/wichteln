@@ -711,7 +711,7 @@ if (isset($_POST['draw'])) {
             </div>
             
             <h3>Auslosung zurücksetzen</h3>
-            <p class="text-muted">Du kannst die Auslosung zurücksetzen, um sie erneut durchzuführen. Dies löscht alle aktuellen Zuordnungen, und du kannst danach neue Teilnehmer hinzufügen oder Ausschlüsse ändern.</p>
+            <p class="text-secondary">Du kannst die Auslosung zurücksetzen, um sie erneut durchzuführen. Dies löscht alle aktuellen Zuordnungen, und du kannst danach neue Teilnehmer hinzufügen oder Ausschlüsse ändern.</p>
             <form method="POST" style="margin-top: 1rem;" id="reset-draw-form" onsubmit="return confirm('Möchtest du die Auslosung wirklich zurücksetzen? Alle aktuellen Zuordnungen werden gelöscht.');">
                 <input type="hidden" name="reset_draw" value="1">
                 <button type="submit" class="button error">Auslosung zurücksetzen</button>
@@ -721,7 +721,7 @@ if (isset($_POST['draw'])) {
         <!-- Gruppe löschen -->
         <hr>
         <h2 style="color: var(--error);"><span aria-hidden="true">⚠️</span> Gefahrenzone</h2>
-        <p class="text-muted">Das Löschen der Gruppe kann nicht rückgängig gemacht werden. Alle Teilnehmer, Ausschlüsse und die Auslosung werden permanent gelöscht.</p>
+        <p class="text-secondary">Das Löschen der Gruppe kann nicht rückgängig gemacht werden. Alle Teilnehmer, Ausschlüsse und die Auslosung werden permanent gelöscht.</p>
         <form method="POST" style="margin-top: 1rem;" id="delete-group-form" onsubmit="return confirm('⚠️ ACHTUNG: Möchtest du die Gruppe \"<?php echo htmlspecialchars($group['name']); ?>\" wirklich PERMANENT löschen?\n\nAlle Teilnehmer, Ausschlüsse und die Auslosung werden unwiderruflich gelöscht!\n\nDiese Aktion kann NICHT rückgängig gemacht werden.');">
             <input type="hidden" name="delete_group" value="1">
             <button type="submit" class="button error" style="background: linear-gradient(135deg, #dc3545, #c82333);">

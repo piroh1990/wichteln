@@ -463,7 +463,7 @@ if ($show_group_selector) {
         </div>
         
         <?php if (empty($participant['email'])): ?>
-            <div class="notification warning" role="alert">
+            <div class="notification warning" role="alert" aria-live="assertive">
                 <span aria-hidden="true">⚠️</span>
                 <div>
                     <strong>Kein E-Mail hinterlegt:</strong> Speichere dir unbedingt deinen persönlichen Link (unten auf dieser Seite), damit du später wieder auf deinen Teilnehmerbereich zugreifen kannst!

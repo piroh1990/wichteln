@@ -2570,7 +2570,7 @@ a.button:disabled {
 
 .empty-wishlist p {
     margin: 0;
-    color: var(--text-muted);
+    color: var(--text-secondary);
 }
 
 /* Section Cards */
@@ -2604,7 +2604,7 @@ a.button:disabled {
 }
 
 .section-description {
-    color: var(--text-muted);
+    color: var(--text-secondary);
     margin-bottom: 1.5rem;
     line-height: 1.6;
 }
@@ -2625,7 +2625,7 @@ a.button:disabled {
 }
 
 .waiting-card p {
-    color: var(--text-muted);
+    color: var(--text-secondary);
     margin: 0;
 }
 
@@ -2646,7 +2646,7 @@ a.button:disabled {
 .form-hint {
     font-size: 0.875rem;
     font-weight: 400;
-    color: var(--text-muted);
+    color: var(--text-secondary);
 }
 
 .form-textarea {
@@ -2686,7 +2686,7 @@ a.button:disabled {
 .info-label {
     font-size: 0.875rem;
     font-weight: 600;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     display: flex;
     align-items: center;
     gap: 0.5rem;

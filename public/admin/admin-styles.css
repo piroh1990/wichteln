@@ -638,7 +638,7 @@ body {
     background: #f8f9fa;
 }
 
-.archive-table .text-muted {
+.archive-table .text-secondary {
     color: #adb5bd;
     font-size: 0.85em;
 }

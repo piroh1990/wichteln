@@ -549,15 +549,15 @@ $month_names = [
                                         <?php if (!empty($stat['group_name'])): ?>
                                             <?php echo htmlspecialchars($stat['group_name']); ?>
                                         <?php else: ?>
-                                            <span class="text-muted">Unbekannt</span>
+                                            <span class="text-secondary">Unbekannt</span>
                                         <?php endif; ?>
                                     </td>
                                     <td>
-                                        <?php echo $stat['gift_exchange_date'] ? date('d.m.Y', strtotime($stat['gift_exchange_date'])) : '<span class="text-muted">Unbekannt</span>'; ?>
+                                        <?php echo $stat['gift_exchange_date'] ? date('d.m.Y', strtotime($stat['gift_exchange_date'])) : '<span class="text-secondary">Unbekannt</span>'; ?>
                                     </td>
                                     <td>
                                         <?php echo $stat['participant_count']; ?>
-                                        <span class="text-muted">(<?php echo $stat['participant_with_email_count']; ?> mit Mail)</span>
+                                        <span class="text-secondary">(<?php echo $stat['participant_with_email_count']; ?> mit Mail)</span>
                                     </td>
                                     <td>
                                         <?php echo $stat['budget'] ? number_format($stat['budget'], 2) . ' CHF' : '–'; ?>
@@ -569,7 +569,7 @@ $month_names = [
                                             <span class="archive-status-badge not-drawn">Nicht beendet</span>
                                         <?php endif; ?>
                                     </td>
-                                    <td class="text-muted">
+                                    <td class="text-secondary">
                                         <?php echo date('d.m.Y H:i', strtotime($stat['archived_at'])); ?>
                                     </td>
                                 </tr>

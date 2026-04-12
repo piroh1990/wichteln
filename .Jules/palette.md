@@ -43,3 +43,7 @@
 ## 2026-04-08 - Dynamic aria-current for Navigation
 **Learning:** Global navigation menus often lack structural context for screen readers to indicate the currently active page. Relying only on visual cues or page titles forces users to guess their location within the navigation hierarchy. Adding `aria-current="page"` dynamically based on the current route solves this accessibly.
 **Action:** Always dynamically apply `aria-current="page"` to the active link in navigation menus to provide explicit context to assistive technologies.
+
+## 2026-04-12 - CSS Variable Naming Consistency for Visual Hierarchy
+**Learning:** Using undefined CSS variables (like `--text-muted`) instead of standard variables (like `--text-secondary`) defined in the design system breaks the intended visual hierarchy, as browsers silently ignore the undefined variable. Adhering to the specific tokens in `:root` is critical for consistent UI/UX.
+**Action:** When adjusting text colors or styles, always verify the exact CSS variable name in the root design tokens to ensure the style is correctly applied.
