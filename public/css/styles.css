@@ -1037,6 +1037,12 @@ a.button:disabled {
     margin: 0.5rem;
 }
 
+.cta-button:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(42, 157, 143, 0.4);
+    transform: translateY(-3px);
+}
+
 .cta-button-primary {
     background: linear-gradient(135deg, var(--primary-color), var(--accent-light));
     box-shadow: 0 8px 24px rgba(230, 57, 70, 0.4);
@@ -2985,6 +2991,23 @@ a.button:disabled {
     justify-content: center;
     font-weight: bold;
     font-size: 1.2rem;
+}
+
+.group-card:has(input[type="radio"]:focus-visible) {
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 4px rgba(42, 157, 143, 0.2);
+}
+
+/* Fallback for browsers not supporting :has */
+.group-card input[type="radio"]:focus-visible ~ .group-card-content {
+    outline: 2px solid var(--secondary-color);
+    outline-offset: 2px;
+    border-radius: 12px;
+}
+@supports selector(:has(*)) {
+    .group-card input[type="radio"]:focus-visible ~ .group-card-content {
+        outline: none;
+    }
 }
 
 .group-card-content {

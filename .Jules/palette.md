@@ -43,3 +43,7 @@
 ## 2026-04-08 - Dynamic aria-current for Navigation
 **Learning:** Global navigation menus often lack structural context for screen readers to indicate the currently active page. Relying only on visual cues or page titles forces users to guess their location within the navigation hierarchy. Adding `aria-current="page"` dynamically based on the current route solves this accessibly.
 **Action:** Always dynamically apply `aria-current="page"` to the active link in navigation menus to provide explicit context to assistive technologies.
+
+## 2024-04-13 - Unified Keyboard Focus Indicators
+**Learning:** Custom interactive elements (like the `.group-card` radio wrappers and `.cta-button` links) were entirely skipping keyboard focus indicators because they didn't share the standard `.button` class, making keyboard navigation on landing and participant pages invisible to screen readers and power users.
+**Action:** Always ensure custom components (cards acting as radio buttons, standalone CTA links) have explicit `:focus-visible` styles that match the established design system focus rings (e.g., `box-shadow` or `outline` using `--secondary-color`).
