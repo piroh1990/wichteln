@@ -1035,6 +1035,12 @@ a.button:disabled {
     position: relative;
     overflow: hidden;
     margin: 0.5rem;
+    cursor: pointer;
+}
+
+.cta-button:focus-visible {
+    outline: 3px solid currentColor;
+    outline-offset: 3px;
 }
 
 .cta-button-primary {
@@ -1704,6 +1710,12 @@ a.button:disabled {
     display: inline-block;
     transition: all 0.3s;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    cursor: pointer;
+}
+
+.cta-button-white:focus-visible {
+    outline: 3px solid currentColor;
+    outline-offset: 3px;
 }
 
 .cta-button-white:hover {

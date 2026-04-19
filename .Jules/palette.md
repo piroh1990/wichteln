@@ -43,3 +43,6 @@
 ## 2026-04-08 - Dynamic aria-current for Navigation
 **Learning:** Global navigation menus often lack structural context for screen readers to indicate the currently active page. Relying only on visual cues or page titles forces users to guess their location within the navigation hierarchy. Adding `aria-current="page"` dynamically based on the current route solves this accessibly.
 **Action:** Always dynamically apply `aria-current="page"` to the active link in navigation menus to provide explicit context to assistive technologies.
+## $(date +%Y-%m-%d) - Focus States on Custom Interactive Elements
+**Learning:** Custom interactive elements (like `a.cta-button`) used as buttons often lack proper focus states when they are heavily styled, making keyboard navigation difficult or impossible for screen reader and power users. Adding an explicit `:focus-visible` state (e.g., using `outline: 3px solid currentColor`) ensures they remain accessible without compromising the intended visual design for mouse users.
+**Action:** When creating or modifying custom interactive elements (like stylized links or custom components acting as buttons), always add a distinct `:focus-visible` outline.
