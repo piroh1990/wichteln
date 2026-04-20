@@ -113,6 +113,13 @@ function handleFormSubmit(form, loadingText = 'Wird geladen...') {
         if (e.defaultPrevented) return;
 
         const submitBtn = form.querySelector('button[type="submit"]');
+
+        // Prevent double submission if already loading via aria-disabled
+        if (submitBtn && submitBtn.getAttribute('aria-disabled') === 'true') {
+            e.preventDefault();
+            return;
+        }
+
         if (submitBtn && !submitBtn.disabled) {
             if (submitBtn.name) {
                 const hiddenInput = document.createElement('input');
@@ -124,7 +131,14 @@ function handleFormSubmit(form, loadingText = 'Wird geladen...') {
             submitBtn.style.minWidth = submitBtn.offsetWidth + 'px';
             submitBtn.style.whiteSpace = 'nowrap';
             submitBtn.innerHTML = `<span class="loading" aria-hidden="true"></span> ${loadingText}`;
-            submitBtn.disabled = true;
+
+            // Use aria-disabled instead of native disabled to keep it in the accessibility tree
+            // so that aria-busy is correctly announced by screen readers.
+            submitBtn.setAttribute('aria-disabled', 'true');
+            submitBtn.setAttribute('aria-busy', 'true');
+
+            // Replicate visual disabled styles
+            submitBtn.style.opacity = '0.7';
             submitBtn.style.cursor = 'wait';
         }
     });
