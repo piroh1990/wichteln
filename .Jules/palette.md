@@ -43,3 +43,6 @@
 ## 2026-04-08 - Dynamic aria-current for Navigation
 **Learning:** Global navigation menus often lack structural context for screen readers to indicate the currently active page. Relying only on visual cues or page titles forces users to guess their location within the navigation hierarchy. Adding `aria-current="page"` dynamically based on the current route solves this accessibly.
 **Action:** Always dynamically apply `aria-current="page"` to the active link in navigation menus to provide explicit context to assistive technologies.
+## 2026-04-21 - Custom Components & Focus Visibility
+**Learning:** When hiding native form controls (like radio buttons or checkboxes using opacity: 0) to build custom interactive components (like `.group-card`), keyboard navigation becomes invisible if focus styles are not explicitly managed. The native focus indicator is hidden along with the input.
+**Action:** Apply explicit `:focus-visible` styles to the surrounding visible wrapper element using a sibling selector (e.g., `input[type="radio"]:focus-visible ~ .card-content`) to ensure keyboard accessibility remains intact.
