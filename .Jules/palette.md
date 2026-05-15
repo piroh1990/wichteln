@@ -43,3 +43,10 @@
 ## 2026-04-08 - Dynamic aria-current for Navigation
 **Learning:** Global navigation menus often lack structural context for screen readers to indicate the currently active page. Relying only on visual cues or page titles forces users to guess their location within the navigation hierarchy. Adding `aria-current="page"` dynamically based on the current route solves this accessibly.
 **Action:** Always dynamically apply `aria-current="page"` to the active link in navigation menus to provide explicit context to assistive technologies.
+## 2024-05-18 - Keyboard Navigation for Custom Radio Buttons
+**Learning:** When building custom interactive components like group selection cards by visually hiding native radio inputs (`opacity: 0`), standard keyboard navigation focus styling is lost, rendering the component inaccessible to keyboard and screen reader users.
+**Action:** Always apply explicit `:focus-visible` styles to the visible wrapper element (e.g., using `input[type="radio"]:focus-visible ~ .card-wrapper`) to ensure keyboard focus remains clearly visible without affecting mouse interactions.
+
+## 2024-05-18 - Screen Reader Context for Loading Buttons
+**Learning:** Disabling a submit button (e.g., `submitBtn.disabled = true`) to indicate a loading state removes it from the accessibility tree, but screen readers may not clearly communicate why it became inactive or that a background process is occurring.
+**Action:** When programmatically disabling a button during form submission, explicitly set `aria-disabled="true"` and `aria-busy="true"` on the button element to properly announce the loading state to assistive technologies.
