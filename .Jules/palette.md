@@ -2,7 +2,7 @@
 **Learning:** When disabling a named submit button via JavaScript to show a loading state, the browser omits the button's name and value from the `$_POST` payload. To prevent breaking backend logic that relies on checking `isset($_POST['button_name'])`, a corresponding `<input type="hidden" name="[button_name]" value="1">` must be added to the form.
 **Action:** When adding loading states to submit buttons that use a `name` attribute, ensure to add a hidden input with the same name.
 
-## $(date +%Y-%m-%d) - Missing Loading State on Admin Forms
+## 2024-05-26 - Missing Loading State on Admin Forms
 **Learning:** Admin forms like `update-group-form` can be submitted multiple times without visual feedback, leading to confusion. Adding a visual loading state with `disabled=true` and `cursor=wait` along with a spinner (`<span class="loading" aria-hidden="true"></span>`) provides necessary feedback.
 **Action:** When creating or modifying forms, always ensure the submit button has a visual loading state triggered via JavaScript on the `submit` event.
 
@@ -29,17 +29,21 @@
 **Learning:** Implementing the 'min' attribute on 'date' inputs is a quick, native way to prevent users from selecting past dates for future events like gift exchanges, improving form validation UX.
 **Action:** Use native HTML validation constraints (like 'min' and 'max') wherever possible before relying on complex JS or backend-only validation to provide immediate user feedback.
 
-## $(date +%Y-%m-%d) - Decorative Emoji Accessibility
+## 2024-05-26 - Decorative Emoji Accessibility
 **Learning:** Decorative emojis used as icons (e.g., `<span class="idea-icon">☕</span>` or inside buttons) lack built-in accessibility safeguards, leading to screen readers announcing literal descriptions like "smiling face" which interrupts the reading flow when the icon is purely visual.
 **Action:** Always add `aria-hidden="true"` to any `span` or `div` containing purely decorative emojis to prevent redundant or confusing screen reader announcements.
 
-## $(date +%Y-%m-%d) - Confirmation Dialog for Non-Destructive Actions
+## 2024-05-26 - Confirmation Dialog for Non-Destructive Actions
 **Learning:** Actions that are technically non-destructive but have immediate, irreversible communicative side effects (like triggering an algorithm that sends out mass emails) can cause user anxiety if they lack a confirmation step. Users may accidentally click the button or not realize the action is final.
 **Action:** Always add an `onsubmit` confirmation dialog (or a similar UI verification step) to forms that trigger mass communication or other irreversible actions, even if the action doesn't delete data.
-## $(date +%Y-%m-%d) - Providing Context for Optional Fields with .form-hint
+## 2024-05-26 - Providing Context for Optional Fields with .form-hint
 **Learning:** Optional fields in forms (like budget, description, and gift exchange date) often lack context, which can cause users to skip them or input incorrect information. Adding explanatory text helps users understand the purpose of these fields and improves the overall form-filling experience. By pairing this text with the `.form-hint` class and associating it with the input field using `aria-describedby`, we ensure both visual clarity and accessibility for screen reader users.
 **Action:** Always provide context for optional form fields that could benefit from an explanation. Use the `.form-hint` class for the explanatory text and link it to the input field using `aria-describedby`.
 
 ## 2026-04-08 - Dynamic aria-current for Navigation
 **Learning:** Global navigation menus often lack structural context for screen readers to indicate the currently active page. Relying only on visual cues or page titles forces users to guess their location within the navigation hierarchy. Adding `aria-current="page"` dynamically based on the current route solves this accessibly.
 **Action:** Always dynamically apply `aria-current="page"` to the active link in navigation menus to provide explicit context to assistive technologies.
+
+## 2024-05-26 - Accessible Loading States for Buttons
+**Learning:** When disabling a form submit button to indicate a loading state via JavaScript (e.g., inside `handleFormSubmit`), screen readers might not effectively announce the ongoing process just from the `disabled` property.
+**Action:** Explicitly set the `aria-disabled="true"` and `aria-busy="true"` attributes on the button element alongside the `disabled` state to properly inform screen readers of the ongoing background process and inactive state.
