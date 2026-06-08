@@ -123,11 +123,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(get_csrf_token()); ?>">
             <div class="form-group">
                 <label for="name">Name:<span class="required-indicator" aria-hidden="true" title="Erforderlich">*</span></label>
-                <input type="text" id="name" name="name" required placeholder="Dein Name">
+                <input type="text" id="name" name="name" required placeholder="Dein Name" autocomplete="name">
             </div>
             <div class="form-group">
                 <label for="email">E-Mail (optional):</label>
-                <input type="email" id="email" name="email" placeholder="deine@email.ch" aria-describedby="email_hint">
+                <input type="email" id="email" name="email" placeholder="deine@email.ch" aria-describedby="email_hint" autocomplete="email">
                 <small id="email_hint" class="form-hint">Wir senden dir deinen Wichtelpartner per E-Mail, sobald die Auslosung stattfindet.</small>
             </div>
             <button type="submit" class="button primary">Registrieren</button>
