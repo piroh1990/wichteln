@@ -43,3 +43,7 @@
 ## 2026-04-08 - Dynamic aria-current for Navigation
 **Learning:** Global navigation menus often lack structural context for screen readers to indicate the currently active page. Relying only on visual cues or page titles forces users to guess their location within the navigation hierarchy. Adding `aria-current="page"` dynamically based on the current route solves this accessibly.
 **Action:** Always dynamically apply `aria-current="page"` to the active link in navigation menus to provide explicit context to assistive technologies.
+
+## 2024-06-11 - aria-busy for disabled loading buttons
+**Learning:** When disabling a form submit button to indicate a loading state via JavaScript, explicitly setting `aria-busy="true"` is crucial to properly inform screen readers of the ongoing background process. Setting `aria-disabled="true"` alongside the native `disabled=true` attribute is technically redundant according to W3C specifications, though harmless.
+**Action:** Add `submitBtn.setAttribute('aria-busy', 'true');` whenever a button is disabled to show a loading state.
