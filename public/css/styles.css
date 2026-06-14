@@ -2987,6 +2987,11 @@ a.button:disabled {
     font-size: 1.2rem;
 }
 
+.group-card input[type="radio"]:focus-visible ~ .group-card-content {
+    outline: 3px solid var(--secondary-color);
+    outline-offset: 2px;
+}
+
 .group-card-content {
     position: relative;
     padding: 1rem;
