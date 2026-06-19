@@ -125,6 +125,7 @@ function handleFormSubmit(form, loadingText = 'Wird geladen...') {
             submitBtn.style.whiteSpace = 'nowrap';
             submitBtn.innerHTML = `<span class="loading" aria-hidden="true"></span> ${loadingText}`;
             submitBtn.disabled = true;
+            submitBtn.setAttribute('aria-busy', 'true');
             submitBtn.style.cursor = 'wait';
         }
     });
