@@ -133,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="form-group">
                 <label for="admin_email">Deine E-Mail-Adresse (Admin):<span class="required-indicator" aria-hidden="true" title="Erforderlich">*</span></label>
                 <input type="email" id="admin_email" name="admin_email" required placeholder="admin@beispiel.ch" aria-describedby="admin_email_hint">
-                <small id="admin_email_hint" style="color: #5f6368; font-size: 13px; display: block; margin-top: 5px;">Du erhältst den Admin-Link per E-Mail</small>
+                <small id="admin_email_hint" class="form-hint">Du erhältst den Admin-Link per E-Mail</small>
             </div>
             <div class="form-group">
                 <label for="budget">Budget (optional):</label>
@@ -161,7 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     </button>
                 </div>
                 <input type="text" id="captcha_answer" name="captcha_answer" required placeholder="Gib die Zahlen aus dem Bild ein" maxlength="5" autocomplete="off" aria-describedby="captcha_hint">
-                <small id="captcha_hint" class="captcha-hint">Bitte gib die 5 Zahlen aus dem Bild ein.</small>
+                <small id="captcha_hint" class="form-hint">Bitte gib die 5 Zahlen aus dem Bild ein.</small>
             </div>
             <button type="submit" class="button primary">Gruppe erstellen</button>
         </form>
