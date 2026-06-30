@@ -489,21 +489,21 @@ $month_names = [
                             <div class="group-actions">
                                 <a href="https://xn--wichtl-gua.ch/admin.php?token=<?php echo urlencode($group['admin_token']); ?>"
                                    class="btn btn-primary">
-                                    <img src="https://xn--wichtl-gua.ch/images/icon-admin.svg" alt="Verwalten" width="16" height="16">
+                                    <img src="https://xn--wichtl-gua.ch/images/icon-admin.svg" alt="" aria-hidden="true" width="16" height="16">
                                     Verwalten
                                 </a>
 
                                 <a href="<?php echo htmlspecialchars(admin_url($master_token, ['action' => 'reset', 'group_id' => $group['id'], 'page' => $page, 'archive_page' => $archive_page])); ?>"
                                    class="btn btn-secondary"
                                    onclick="return confirm('Möchtest du die Gruppe &quot;<?php echo htmlspecialchars($group['name']); ?>&quot; wirklich zurücksetzen?');">
-                                    <img src="https://xn--wichtl-gua.ch/images/icon-reset.svg" alt="Reset" width="16" height="16">
+                                    <img src="https://xn--wichtl-gua.ch/images/icon-reset.svg" alt="" aria-hidden="true" width="16" height="16">
                                     Reset
                                 </a>
 
                                 <a href="<?php echo htmlspecialchars(admin_url($master_token, ['action' => 'delete', 'group_id' => $group['id'], 'page' => $page, 'archive_page' => $archive_page])); ?>"
                                    class="btn btn-danger"
                                    onclick="return confirm('⚠️ WARNUNG: Möchtest du die Gruppe &quot;<?php echo htmlspecialchars($group['name']); ?>&quot; wirklich PERMANENT löschen?\n\nDiese Aktion kann NICHT rückgängig gemacht werden!');">
-                                    <img src="https://xn--wichtl-gua.ch/images/icon-delete.svg" alt="Delete" width="16" height="16">
+                                    <img src="https://xn--wichtl-gua.ch/images/icon-delete.svg" alt="" aria-hidden="true" width="16" height="16">
                                     Löschen
                                 </a>
                             </div>
