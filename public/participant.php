@@ -375,7 +375,8 @@ if ($show_group_selector) {
                 <?php endforeach; ?>
                 
                 <div class="submit-container">
-                    <button type="submit" name="select_group" class="group-submit-button" id="submit-button" disabled>Gruppe öffnen</button>
+                    <input type="hidden" name="select_group" value="1">
+                    <button type="submit" class="group-submit-button" id="submit-button" disabled>Gruppe öffnen</button>
                 </div>
             </form>
         </div>
