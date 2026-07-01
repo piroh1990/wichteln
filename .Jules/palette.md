@@ -43,3 +43,7 @@
 ## 2026-04-08 - Dynamic aria-current for Navigation
 **Learning:** Global navigation menus often lack structural context for screen readers to indicate the currently active page. Relying only on visual cues or page titles forces users to guess their location within the navigation hierarchy. Adding `aria-current="page"` dynamically based on the current route solves this accessibly.
 **Action:** Always dynamically apply `aria-current="page"` to the active link in navigation menus to provide explicit context to assistive technologies.
+
+## $(date +%Y-%m-%d) - Decorative Action Icons Accessibility
+**Learning:** Decorative icons (like SVGs) used alongside descriptive text within a button often redundantly announce their `alt` text to screen readers. For example, a "Delete" button with an icon that has `alt="Delete"` will be read as "Delete Delete".
+**Action:** Always add `alt=""` and `aria-hidden="true"` to images or icons that are purely decorative or redundant to the accompanying text within interactive elements.
