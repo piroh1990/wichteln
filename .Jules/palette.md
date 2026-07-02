@@ -43,3 +43,6 @@
 ## 2026-04-08 - Dynamic aria-current for Navigation
 **Learning:** Global navigation menus often lack structural context for screen readers to indicate the currently active page. Relying only on visual cues or page titles forces users to guess their location within the navigation hierarchy. Adding `aria-current="page"` dynamically based on the current route solves this accessibly.
 **Action:** Always dynamically apply `aria-current="page"` to the active link in navigation menus to provide explicit context to assistive technologies.
+## $(date +%Y-%m-%d) - CSS Variable Undefined Access
+**Learning:** Found several instances where `--text-muted` was used instead of the correct defined variable `--text-secondary`, which caused texts to not have their intended color and potentially fail accessibility color contrast requirements.
+**Action:** Always verify that CSS variables are defined in the `:root` pseudo-class (usually in the main `styles.css` file) before using them.
