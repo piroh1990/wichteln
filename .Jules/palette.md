@@ -43,3 +43,9 @@
 ## 2026-04-08 - Dynamic aria-current for Navigation
 **Learning:** Global navigation menus often lack structural context for screen readers to indicate the currently active page. Relying only on visual cues or page titles forces users to guess their location within the navigation hierarchy. Adding `aria-current="page"` dynamically based on the current route solves this accessibly.
 **Action:** Always dynamically apply `aria-current="page"` to the active link in navigation menus to provide explicit context to assistive technologies.
+## 2026-07-04 - Focus Visible for Visually Hidden Inputs
+**Learning:** When using visually hidden native inputs (like radio buttons with opacity 0) wrapped in custom UI components (like cards), standard keyboard focus indicators are lost. A custom  rule on the native input must be explicitly mapped to the custom wrapper using CSS sibling selectors (e.g., ) to ensure power users and screen reader users can see where focus currently is.
+**Action:** Always verify keyboard navigation for custom form controls and apply the design system's focus outline () to the visible wrapper element when the hidden input receives focus.
+## 2024-07-04 - Focus Visible for Visually Hidden Inputs
+**Learning:** When using visually hidden native inputs (like radio buttons with opacity 0) wrapped in custom UI components (like cards), standard keyboard focus indicators are lost. A custom `:focus-visible` rule on the native input must be explicitly mapped to the custom wrapper using CSS sibling selectors (e.g., `~`) to ensure power users and screen reader users can see where focus currently is.
+**Action:** Always verify keyboard navigation for custom form controls and apply the design system's focus outline (`outline: 3px solid var(--secondary-color)`) to the visible wrapper element when the hidden input receives focus.
