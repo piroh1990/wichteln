@@ -2970,6 +2970,11 @@ a.button:disabled {
     background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
 }
 
+.group-card input[type="radio"]:focus-visible ~ .group-card-content {
+    outline: 3px solid var(--secondary-color);
+    outline-offset: 2px;
+}
+
 .group-card input[type="radio"]:checked ~ .group-card-content::before {
     content: '✓';
     position: absolute;
