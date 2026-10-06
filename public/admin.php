@@ -413,7 +413,7 @@ if (isset($_SESSION['admin_flash']) && is_array($_SESSION['admin_flash'])) {
     <meta name="msapplication-TileImage" content="/images/favicon/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Roboto&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;600;700&display=swap" rel="stylesheet">
     <!-- CSS Stylesheet -->
     <link rel="stylesheet" href="css/styles.css">
     
@@ -423,8 +423,45 @@ if (isset($_SESSION['admin_flash']) && is_array($_SESSION['admin_flash'])) {
 </head>
 <body>
     <?php include __DIR__ . '/../includes/templates/navigation.php'; ?>
-    <div class="container">
-        <h1>Admin Bereich - <?php echo htmlspecialchars($group['name']); ?></h1>
+    <div class="container app-page">
+        <?php
+        $reveal_already_sent = !empty($group['reveal_sent_at']);
+        $reveal_sent_label = $reveal_already_sent ? format_reveal_sent_at($group['reveal_sent_at']) : '';
+        if ($reveal_already_sent && $reveal_sent_label === '') {
+            $reveal_sent_label = (string) $group['reveal_sent_at'];
+        }
+        $budget_label = ($group['budget'] !== null && $group['budget'] !== '')
+            ? number_format((float) $group['budget'], 2) . ' CHF'
+            : 'Nicht festgelegt';
+        $exchange_label = !empty($group['gift_exchange_date'])
+            ? date('d.m.Y', strtotime($group['gift_exchange_date']))
+            : 'Nicht festgelegt';
+        $mail_stats = reveal_recipient_stats($participants);
+        ?>
+        <header class="app-hero">
+            <p class="app-kicker">Gruppenverwaltung</p>
+            <h1><?php echo htmlspecialchars($group['name']); ?></h1>
+            <p class="app-hero-lead">Einladungen, Teilnehmer, Auslosung und Auflösung an einem Ort.</p>
+            <div class="status-row">
+                <span class="status-pill <?php echo $group['is_drawn'] ? 'is-done' : 'is-wait'; ?>">
+                    <?php echo $group['is_drawn'] ? 'Ausgelost' : 'Noch nicht ausgelost'; ?>
+                </span>
+                <span class="status-pill <?php echo $reveal_already_sent ? 'is-done' : 'is-wait'; ?>">
+                    <?php echo $reveal_already_sent ? 'Auflösung gesendet' : 'Auflösung offen'; ?>
+                </span>
+                <span class="status-pill"><?php echo (int) count($participants); ?> Teilnehmer</span>
+            </div>
+            <nav class="app-toc" aria-label="Bereiche dieser Seite">
+                <a href="#ueberblick">Überblick</a>
+                <a href="#gruppendetails">Details</a>
+                <a href="#einladung">Einladung</a>
+                <a href="#teilnehmer">Teilnehmer</a>
+                <a href="#ausschluesse">Ausschlüsse</a>
+                <a href="#auslosung">Auslosung</a>
+                <a href="#aufloesung">Auflösung</a>
+                <a href="#gefahrenzone">Gefahrenzone</a>
+            </nav>
+        </header>
         
         <?php if (!empty($csrf_error)): ?>
             <div class="notification error" role="alert" aria-live="assertive">
@@ -523,20 +560,47 @@ if (isset($_SESSION['admin_flash']) && is_array($_SESSION['admin_flash'])) {
             </div>
         <?php endif; ?>
 
-        <!-- Auto-Lösch Hinweis -->
-        <div class="admin-info-box warning">
-            <div class="admin-info-icon" aria-hidden="true">ℹ️</div>
-            <div class="admin-info-content">
-                <h3 class="admin-info-title">Wichtiger Hinweis zum Datenschutz</h3>
-                <p class="admin-info-text">
-                    Diese Gruppe und alle personenbezogenen Daten werden automatisch am <strong><?php echo htmlspecialchars($deletion_date); ?></strong> gelöscht (3 Monate nach dem Event).
-                    Anonymisierte Statistiken bleiben erhalten.
-                </p>
+        <section class="section-card" id="ueberblick" aria-labelledby="overview-heading">
+            <div class="section-card-header">
+                <span class="section-icon" aria-hidden="true">📌</span>
+                <h2 id="overview-heading">Überblick</h2>
             </div>
-        </div>
+            <div class="status-grid">
+                <div class="status-tile">
+                    <span class="status-tile-label">Budget</span>
+                    <span class="status-tile-value"><?php echo htmlspecialchars($budget_label); ?></span>
+                </div>
+                <div class="status-tile">
+                    <span class="status-tile-label">Geschenkübergabe</span>
+                    <span class="status-tile-value"><?php echo htmlspecialchars($exchange_label); ?></span>
+                </div>
+                <div class="status-tile">
+                    <span class="status-tile-label">Mit E-Mail</span>
+                    <span class="status-tile-value"><?php echo (int) $mail_stats['with_email']; ?> von <?php echo (int) count($participants); ?></span>
+                </div>
+                <div class="status-tile">
+                    <span class="status-tile-label">Auflösung</span>
+                    <span class="status-tile-value"><?php echo $reveal_already_sent ? htmlspecialchars($reveal_sent_label) : 'Noch nicht gesendet'; ?></span>
+                </div>
+            </div>
+            <div class="admin-info-box warning">
+                <div class="admin-info-icon" aria-hidden="true">ℹ️</div>
+                <div class="admin-info-content">
+                    <h3 class="admin-info-title">Wichtiger Hinweis zum Datenschutz</h3>
+                    <p class="admin-info-text">
+                        Diese Gruppe und alle personenbezogenen Daten werden automatisch am <strong><?php echo htmlspecialchars($deletion_date); ?></strong> gelöscht (3 Monate nach dem Event).
+                        Anonymisierte Statistiken bleiben erhalten.
+                    </p>
+                </div>
+            </div>
+        </section>
 
-        <!-- Gruppendetails bearbeiten -->
-        <h2>Gruppendetails</h2>
+        <section class="section-card" id="gruppendetails" aria-labelledby="details-heading">
+            <div class="section-card-header">
+                <span class="section-icon" aria-hidden="true">✏️</span>
+                <h2 id="details-heading">Gruppendetails</h2>
+            </div>
+            <p class="section-description">Budget, Datum und Beschreibung sehen alle Teilnehmer in ihrem Bereich.</p>
         <form method="POST" id="update-group-form">
             <?php echo csrf_input(); ?>
             <div class="form-group">
@@ -555,51 +619,75 @@ if (isset($_SESSION['admin_flash']) && is_array($_SESSION['admin_flash'])) {
                 <small id="gift_exchange_date_hint" class="form-hint">Wann werden die Geschenke ausgetauscht?</small>
             </div>
             <input type="hidden" name="update_group" value="1">
-            <button type="submit" class="button secondary">
+            <button type="submit" class="button primary">
                 <span aria-hidden="true">💾</span> Gruppendetails aktualisieren
             </button>
         </form>
-        
-        <hr>
-        
-        <!-- Einladungslink für Teilnehmer -->
-        <h2>Einladungslink für Teilnehmer</h2>
-        <pre id="participant-link"><?php echo htmlspecialchars(get_display_url('/register.php?token=' . urlencode($group['invite_token']))); ?></pre>
-        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem;">
-            <button class="button secondary small copy-button" onclick="copyToClipboard('participant-link')" aria-label="Einladungslink kopieren">Link kopieren</button>
-            <a href="https://api.whatsapp.com/send?text=<?php echo urlencode('Hallo! Du bist eingeladen, beim Wichteln mitzumachen. 🎁') . '%0A%0A' . urlencode('Gruppe: ' . $group['name']) . '%0A%0A' . urlencode('Melde dich hier an: ' . get_display_url('/register.php?token=' . urlencode($group['invite_token']))); ?>" 
-               target="_blank" 
-               class="button secondary small">
-                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="margin-right: 0.25rem;">
-                    <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z" fill="#25D366"/>
-                </svg>
-                Via WhatsApp teilen
-            </a>
-        </div>
-        
-        <div class="admin-info-box">
-            <div class="admin-info-icon" aria-hidden="true">💡</div>
-            <div class="admin-info-content">
-                <h3 class="admin-info-title">Hinweis für dich als Administrator</h3>
-                <p class="admin-info-text">Wenn du selbst beim Wichteln mitmachen möchtest, musst du dich ebenfalls über den obigen Einladungslink als Teilnehmer registrieren. Der Admin-Link dient nur zur Verwaltung der Gruppe.</p>
+        </section>
+
+        <section class="section-card" id="einladung" aria-labelledby="invite-heading">
+            <div class="section-card-header">
+                <span class="section-icon" aria-hidden="true">🔗</span>
+                <h2 id="invite-heading">Einladung</h2>
             </div>
-        </div>
-        
-        <!-- Admin-Link anzeigen -->
-        <h2>Admin-Link</h2>
-        <p>Dieser Link ermöglicht den direkten Zugriff auf den Admin-Bereich:</p>
-        <pre id="admin-link"><?php echo htmlspecialchars(get_display_url('/admin.php?token=' . urlencode($admin_token))); ?></pre>
-        <button class="button secondary small copy-button" onclick="copyToClipboard('admin-link')" aria-label="Admin-Link kopieren">Link kopieren</button>
-        
-        <hr>
-        
-        <!-- Teilnehmerliste anzeigen -->
-        <h2>Teilnehmer (<?php echo count($participants); ?>)</h2>
+            <p class="section-description">Teile diesen Link, damit sich alle selbst eintragen können.</p>
+            <div class="link-box">
+                <pre id="participant-link" class="link-display"><?php echo htmlspecialchars(get_display_url('/register.php?token=' . urlencode($group['invite_token']))); ?></pre>
+                <div class="link-actions">
+                    <button type="button" class="button secondary small copy-button" onclick="copyToClipboard('participant-link')" aria-label="Einladungslink kopieren">Link kopieren</button>
+                    <a href="https://api.whatsapp.com/send?text=<?php echo urlencode('Hallo! Du bist eingeladen, beim Wichteln mitzumachen. 🎁') . '%0A%0A' . urlencode('Gruppe: ' . $group['name']) . '%0A%0A' . urlencode('Melde dich hier an: ' . get_display_url('/register.php?token=' . urlencode($group['invite_token']))); ?>"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="button secondary small share-whatsapp"
+                       aria-label="Einladungslink per WhatsApp teilen">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                            <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
+                        </svg>
+                        Via WhatsApp teilen
+                    </a>
+                </div>
+            </div>
+
+            <div class="admin-info-box">
+                <div class="admin-info-icon" aria-hidden="true">💡</div>
+                <div class="admin-info-content">
+                    <h3 class="admin-info-title">Hinweis für dich als Administrator</h3>
+                    <p class="admin-info-text">Wenn du selbst beim Wichteln mitmachen möchtest, musst du dich ebenfalls über den obigen Einladungslink als Teilnehmer registrieren. Der Admin-Link dient nur zur Verwaltung der Gruppe.</p>
+                </div>
+            </div>
+
+            <div class="admin-link-block">
+                <h3>Dein Admin-Link</h3>
+                <p class="section-description">Speichere diesen Link. Nur damit kommst du wieder in die Verwaltung.</p>
+                <div class="link-box">
+                    <pre id="admin-link" class="link-display"><?php echo htmlspecialchars(get_display_url('/admin.php?token=' . urlencode($admin_token))); ?></pre>
+                    <div class="link-actions">
+                        <button type="button" class="button secondary small copy-button" onclick="copyToClipboard('admin-link')" aria-label="Admin-Link kopieren">Link kopieren</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-card" id="teilnehmer" aria-labelledby="participants-heading">
+            <div class="section-card-header">
+                <span class="section-icon" aria-hidden="true">👥</span>
+                <h2 id="participants-heading">Teilnehmer und Mails (<?php echo count($participants); ?>)</h2>
+            </div>
+            <p class="section-description">Persönliche Links und E-Mail-Adressen pflegst du direkt bei jeder Person. Nach der Auslosung kannst du die Zuordnung erneut per E-Mail senden.</p>
         <?php if ($participants): ?>
             <div class="participants-grid">
                 <?php foreach ($participants as $p): ?>
                     <div class="participant-card">
                         <div class="participant-header">
+                            <?php
+                            $avatar_name = (string) ($p['name'] ?? '');
+                            if (function_exists('mb_substr')) {
+                                $avatar_initial = mb_strtoupper(mb_substr($avatar_name, 0, 1, 'UTF-8'), 'UTF-8');
+                            } else {
+                                $avatar_initial = strtoupper(substr($avatar_name, 0, 1));
+                            }
+                            ?>
+                            <span class="participant-avatar" aria-hidden="true"><?php echo htmlspecialchars($avatar_initial); ?></span>
                             <div class="participant-info">
                                 <h3 class="participant-name"><?php echo htmlspecialchars($p['name'] ?? ''); ?></h3>
                                 <div class="participant-email">
@@ -688,18 +776,20 @@ if (isset($_SESSION['admin_flash']) && is_array($_SESSION['admin_flash'])) {
                 <div class="empty-icon" aria-hidden="true">👥</div>
                 <p class="empty-text">Noch keine Teilnehmer registriert.</p>
                 <p class="empty-hint" style="margin-bottom: 1rem;">Teile den Einladungslink, damit sich Teilnehmer anmelden können.</p>
-                <button class="button primary copy-button" onclick="copyToClipboard('participant-link')" aria-label="Einladungslink für Teilnehmer kopieren">
+                <button type="button" class="button primary copy-button" onclick="copyToClipboard('participant-link')" aria-label="Einladungslink für Teilnehmer kopieren">
                     <span class="btn-icon" aria-hidden="true">📋</span> Einladungslink kopieren
                 </button>
             </div>
         <?php endif; ?>
+        </section>
 
-        <!-- Ausschlüsse verwalten -->
+        <section class="section-card" id="ausschluesse" aria-labelledby="exclusions-heading">
+            <div class="section-card-header">
+                <span class="section-icon" aria-hidden="true">🤝</span>
+                <h2 id="exclusions-heading">Ausschlüsse</h2>
+            </div>
         <?php if (!$group['is_drawn'] && count($participants) >= 2): ?>
-            <hr>
-            
-            <h2>Ausschlüsse verwalten</h2>
-            <p>Lege fest, wer wem nicht wichteln kann. Dies ist nützlich, wenn z.B. Paare sich gegenseitig nicht beschenken sollen.</p>
+            <p class="section-description">Lege fest, wer wem nicht wichteln kann. Das ist nützlich, wenn sich zum Beispiel Paare nicht gegenseitig beschenken sollen.</p>
             
             <form method="POST" class="exclusion-form">
                 <?php echo csrf_input(); ?>
@@ -725,16 +815,16 @@ if (isset($_SESSION['admin_flash']) && is_array($_SESSION['admin_flash'])) {
                     </div>
                     
                     <div class="form-group">
-                        <label aria-hidden="true" style="opacity: 0;">Hinzufügen</label>
+                        <label class="button-align-label" aria-hidden="true">Hinzufügen</label>
                         <input type="hidden" name="add_exclusion" value="1">
-                        <button type="submit" class="button secondary">Ausschluss hinzufügen</button>
+                        <button type="submit" class="button primary">Ausschluss hinzufügen</button>
                     </div>
                 </div>
             </form>
             
             <?php if ($exclusions): ?>
                 <h3>Aktive Ausschlüsse</h3>
-                <table>
+                <table class="app-table">
                     <thead>
                         <tr>
                             <th>Person</th>
@@ -745,9 +835,9 @@ if (isset($_SESSION['admin_flash']) && is_array($_SESSION['admin_flash'])) {
                     <tbody>
                         <?php foreach ($exclusions as $ex): ?>
                             <tr>
-                                <td><?php echo htmlspecialchars($ex['participant_name']); ?></td>
-                                <td><?php echo htmlspecialchars($ex['excluded_name']); ?></td>
-                                <td>
+                                <td data-label="Person"><?php echo htmlspecialchars($ex['participant_name']); ?></td>
+                                <td data-label="kann nicht wichteln"><?php echo htmlspecialchars($ex['excluded_name']); ?></td>
+                                <td data-label="Aktion">
                                     <form method="POST" class="inline-action-form" onsubmit="return confirm('Möchtest du diesen Ausschluss wirklich löschen?');">
                                         <?php echo csrf_input(); ?>
                                         <input type="hidden" name="delete_exclusion" value="<?php echo (int) $ex['id']; ?>">
@@ -769,33 +859,67 @@ if (isset($_SESSION['admin_flash']) && is_array($_SESSION['admin_flash'])) {
                     <p class="empty-hint">Jeder kann jedem zugelost werden.</p>
                 </div>
             <?php endif; ?>
+        <?php elseif (!$group['is_drawn']): ?>
+            <div class="empty-state">
+                <div class="empty-icon" aria-hidden="true">🤝</div>
+                <p class="empty-text">Ausschlüsse sind noch nicht möglich.</p>
+                <p class="empty-hint">Sobald mindestens zwei Personen dabei sind, kannst du festlegen, wer wen nicht beschenken soll.</p>
+            </div>
+        <?php else: ?>
+            <p class="section-description">Nach der Auslosung können Ausschlüsse nicht mehr geändert werden. Ein Zurücksetzen ist in der Gefahrenzone möglich.</p>
+            <?php if ($exclusions): ?>
+                <table class="app-table">
+                    <thead>
+                        <tr>
+                            <th>Person</th>
+                            <th>kann nicht wichteln</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($exclusions as $ex): ?>
+                            <tr>
+                                <td data-label="Person"><?php echo htmlspecialchars($ex['participant_name']); ?></td>
+                                <td data-label="kann nicht wichteln"><?php echo htmlspecialchars($ex['excluded_name']); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php else: ?>
+                <div class="empty-state">
+                    <div class="empty-icon" aria-hidden="true">🤝</div>
+                    <p class="empty-text">Keine Ausschlüsse gesetzt.</p>
+                    <p class="empty-hint">Bei dieser Auslosung konnte jeder jedem zugelost werden.</p>
+                </div>
+            <?php endif; ?>
         <?php endif; ?>
+        </section>
 
-        <!-- Auslosung durchführen -->
+        <section class="section-card" id="auslosung" aria-labelledby="draw-heading">
+            <div class="section-card-header">
+                <span class="section-icon" aria-hidden="true">🎲</span>
+                <h2 id="draw-heading">Auslosung</h2>
+            </div>
         <?php if (!$group['is_drawn']): ?>
-            <hr>
-            <h2>Auslosung durchführen</h2>
-            <p>Wenn alle Teilnehmer registriert sind und alle Ausschlüsse definiert wurden, kannst du die Auslosung durchführen.</p>
-            <form method="POST" style="margin-top: 1rem;" id="draw-form" onsubmit="return confirm('Möchtest du die Auslosung wirklich durchführen? Alle Teilnehmer mit hinterlegter E-Mail-Adresse werden sofort benachrichtigt.');">
+            <p class="section-description">Wenn alle Teilnehmer registriert sind und die Ausschlüsse stimmen, kannst du die Namen ziehen. Personen mit E-Mail werden sofort benachrichtigt.</p>
+            <?php if (count($participants) < 2): ?>
+                <div class="empty-state">
+                    <div class="empty-icon" aria-hidden="true">🎲</div>
+                    <p class="empty-text">Noch zu wenige Teilnehmer.</p>
+                    <p class="empty-hint">Für eine Auslosung braucht es mindestens zwei Personen.</p>
+                </div>
+            <?php endif; ?>
+            <form method="POST" id="draw-form" onsubmit="return confirm('Möchtest du die Auslosung wirklich durchführen? Alle Teilnehmer mit hinterlegter E-Mail-Adresse werden sofort benachrichtigt.');">
                 <?php echo csrf_input(); ?>
                 <input type="hidden" name="draw" value="1">
                 <button type="submit" class="button primary">Jetzt auslosen</button>
             </form>
         <?php else: ?>
-            <hr>
-            <h2>Auslosung</h2>
             <div class="notification success" role="status" aria-live="polite">
                 <span aria-hidden="true">✓</span> Die Auslosung wurde bereits durchgeführt. Alle Teilnehmer mit E-Mail-Adresse wurden benachrichtigt.
             </div>
-            
-            <h3>Auslosung zurücksetzen</h3>
-            <p class="text-muted">Du kannst die Auslosung zurücksetzen, um sie erneut durchzuführen. Dies löscht alle aktuellen Zuordnungen, und du kannst danach neue Teilnehmer hinzufügen oder Ausschlüsse ändern.</p>
-            <form method="POST" style="margin-top: 1rem;" id="reset-draw-form" onsubmit="return confirm('Möchtest du die Auslosung wirklich zurücksetzen? Alle aktuellen Zuordnungen werden gelöscht.');">
-                <?php echo csrf_input(); ?>
-                <input type="hidden" name="reset_draw" value="1">
-                <button type="submit" class="button error">Auslosung zurücksetzen</button>
-            </form>
+            <p class="section-description">Die Zuordnungen sind aktiv. Zurücksetzen und Löschen findest du in der Gefahrenzone.</p>
         <?php endif; ?>
+        </section>
 
         <!-- Auflösung an alle Teilnehmer -->
         <?php
@@ -811,8 +935,7 @@ if (isset($_SESSION['admin_flash']) && is_array($_SESSION['admin_flash'])) {
             $reveal_confirm = "Die Auflösung verrät allen Teilnehmern, wer wem ein Geschenk gemacht hat. Das kann nicht rückgängig gemacht werden und nimmt die Überraschung vorweg.\n\nAuflösung jetzt an alle senden?";
         }
         ?>
-        <hr>
-        <section class="reveal-panel" aria-labelledby="reveal-heading">
+        <section class="section-card reveal-panel" id="aufloesung" aria-labelledby="reveal-heading">
             <div class="reveal-panel-header">
                 <span class="reveal-panel-icon" aria-hidden="true">✨</span>
                 <div>
@@ -864,17 +987,35 @@ if (isset($_SESSION['admin_flash']) && is_array($_SESSION['admin_flash'])) {
             <?php endif; ?>
         </section>
         
-        <!-- Gruppe löschen -->
-        <hr>
-        <h2 style="color: var(--error);"><span aria-hidden="true">⚠️</span> Gefahrenzone</h2>
-        <p class="text-muted">Das Löschen der Gruppe kann nicht rückgängig gemacht werden. Alle Teilnehmer, Ausschlüsse und die Auslosung werden permanent gelöscht.</p>
-        <form method="POST" style="margin-top: 1rem;" id="delete-group-form" onsubmit="return confirm('⚠️ ACHTUNG: Möchtest du die Gruppe \"<?php echo htmlspecialchars($group['name']); ?>\" wirklich PERMANENT löschen?\n\nAlle Teilnehmer, Ausschlüsse und die Auslosung werden unwiderruflich gelöscht!\n\nDiese Aktion kann NICHT rückgängig gemacht werden.');">
-            <?php echo csrf_input(); ?>
-            <input type="hidden" name="delete_group" value="1">
-            <button type="submit" class="button error" style="background: linear-gradient(135deg, #dc3545, #c82333);">
-                <span aria-hidden="true">🗑️</span> Gruppe permanent löschen
-            </button>
-        </form>
+        <section class="section-card danger-zone" id="gefahrenzone" aria-labelledby="danger-heading">
+            <div class="section-card-header">
+                <span class="section-icon" aria-hidden="true">⚠️</span>
+                <h2 id="danger-heading">Gefahrenzone</h2>
+            </div>
+            <p class="section-description">Diese Aktionen sind endgültig oder löschen die aktuellen Zuordnungen. Sie sind bewusst von der übrigen Verwaltung getrennt.</p>
+            <?php if ($group['is_drawn']): ?>
+                <div class="danger-block">
+                    <h3>Auslosung zurücksetzen</h3>
+                    <p class="text-muted">Du kannst die Auslosung zurücksetzen, um sie erneut durchzuführen. Dies löscht alle aktuellen Zuordnungen, und du kannst danach neue Teilnehmer hinzufügen oder Ausschlüsse ändern.</p>
+                    <form method="POST" id="reset-draw-form" onsubmit="return confirm('Möchtest du die Auslosung wirklich zurücksetzen? Alle aktuellen Zuordnungen werden gelöscht.');">
+                        <?php echo csrf_input(); ?>
+                        <input type="hidden" name="reset_draw" value="1">
+                        <button type="submit" class="button error">Auslosung zurücksetzen</button>
+                    </form>
+                </div>
+            <?php endif; ?>
+            <div class="danger-block">
+                <h3>Gruppe löschen</h3>
+                <p class="text-muted">Das Löschen der Gruppe kann nicht rückgängig gemacht werden. Alle Teilnehmer, Ausschlüsse und die Auslosung werden permanent gelöscht.</p>
+                <form method="POST" id="delete-group-form" onsubmit="return confirm('⚠️ ACHTUNG: Möchtest du die Gruppe \"<?php echo htmlspecialchars($group['name']); ?>\" wirklich PERMANENT löschen?\n\nAlle Teilnehmer, Ausschlüsse und die Auslosung werden unwiderruflich gelöscht!\n\nDiese Aktion kann NICHT rückgängig gemacht werden.');">
+                    <?php echo csrf_input(); ?>
+                    <input type="hidden" name="delete_group" value="1">
+                    <button type="submit" class="button error">
+                        <span aria-hidden="true">🗑️</span> Gruppe permanent löschen
+                    </button>
+                </form>
+            </div>
+        </section>
     </div>
     
     <!-- Footer -->

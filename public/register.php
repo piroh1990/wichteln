@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="msapplication-TileImage" content="/images/favicon/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Roboto&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;600;700&display=swap" rel="stylesheet">
     <!-- CSS Stylesheet -->
     <link rel="stylesheet" href="css/styles.css">
     <!-- Shared JavaScript -->
@@ -102,13 +102,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <?php include __DIR__ . '/../includes/templates/matomo_tracking.php'; ?>
 </head>
 <body>
-    <header>
-        <a href="index.php" title="Zur Startseite">
-            <img src="images/logo.png" alt="Wichtel Logo">
-        </a>
-    </header>
-    <div class="container">
-        <h1>Registrierung für <?php echo htmlspecialchars($group['name']); ?></h1>
+    <?php include __DIR__ . '/../includes/templates/navigation.php'; ?>
+    <div class="container app-page">
+        <header class="app-hero">
+            <p class="app-kicker">Einladung</p>
+            <h1>Mitmachen bei <?php echo htmlspecialchars($group['name']); ?></h1>
+            <p class="app-hero-lead">Trag dich ein. Danach siehst du deine Wunschliste und später, wen du beschenkst.</p>
+        </header>
         <?php if (isset($error)): ?>
             <div class="notification error" role="alert" aria-live="assertive">
                 <?php echo htmlspecialchars($error); ?>
@@ -119,22 +119,53 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <?php echo htmlspecialchars($email_error); ?>
             </div>
         <?php endif; ?>
-        <form method="POST" id="register-form">
-            <?php echo csrf_input(); ?>
-            <div class="form-group">
-                <label for="name">Name:<span class="required-indicator" aria-hidden="true" title="Erforderlich">*</span></label>
-                <input type="text" id="name" name="name" required placeholder="Dein Name">
+
+        <section class="section-card" aria-labelledby="register-group-heading">
+            <div class="section-card-header">
+                <span class="section-icon" aria-hidden="true">ℹ️</span>
+                <h2 id="register-group-heading">Das Wichteln</h2>
             </div>
-            <div class="form-group">
-                <label for="email">E-Mail (optional):</label>
-                <input type="email" id="email" name="email" placeholder="deine@email.ch" aria-describedby="email_hint">
-                <small id="email_hint" class="form-hint">Wir senden dir deinen Wichtelpartner per E-Mail, sobald die Auslosung stattfindet.</small>
+            <div class="group-info-grid">
+                <div class="group-info-item">
+                    <span class="info-label"><span aria-hidden="true">💰</span> Budget</span>
+                    <span class="info-value"><?php echo $group['budget'] !== null ? number_format($group['budget'], 2) . ' CHF' : 'Nicht festgelegt'; ?></span>
+                </div>
+                <div class="group-info-item">
+                    <span class="info-label"><span aria-hidden="true">📅</span> Geschenkübergabe</span>
+                    <span class="info-value"><?php echo $group['gift_exchange_date'] ? date('d.m.Y', strtotime($group['gift_exchange_date'])) : 'Nicht festgelegt'; ?></span>
+                </div>
+                <?php if (!empty($group['description'])): ?>
+                <div class="group-info-item full-width">
+                    <span class="info-label"><span aria-hidden="true">📄</span> Beschreibung</span>
+                    <span class="info-value"><?php echo htmlspecialchars($group['description']); ?></span>
+                </div>
+                <?php endif; ?>
             </div>
-            <button type="submit" class="button primary">Registrieren</button>
-        </form>
+        </section>
+
+        <section class="section-card" aria-labelledby="register-form-heading">
+            <div class="section-card-header">
+                <span class="section-icon" aria-hidden="true">✏️</span>
+                <h2 id="register-form-heading">Deine Anmeldung</h2>
+            </div>
+            <form method="POST" id="register-form">
+                <?php echo csrf_input(); ?>
+                <div class="form-group">
+                    <label for="name">Name:<span class="required-indicator" aria-hidden="true" title="Erforderlich">*</span></label>
+                    <input type="text" id="name" name="name" required placeholder="Dein Name" autocomplete="name">
+                </div>
+                <div class="form-group">
+                    <label for="email">E-Mail (optional):</label>
+                    <input type="email" id="email" name="email" placeholder="deine@email.ch" aria-describedby="email_hint" autocomplete="email">
+                    <small id="email_hint" class="form-hint">Wir senden dir deinen Wichtelpartner per E-Mail, sobald die Auslosung stattfindet.</small>
+                </div>
+                <button type="submit" class="button primary">Registrieren</button>
+            </form>
+        </section>
     </div>
     <!-- Cookie Banner -->
     <?php include __DIR__ . '/cookie-banner.php'; ?>
+    <?php include __DIR__ . '/../includes/templates/footer.php'; ?>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
