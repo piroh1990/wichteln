@@ -161,7 +161,7 @@ if (!empty($participant_token)) {
     <meta charset="UTF-8">
     <title>Keine Gruppe gefunden - Wichteln</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Roboto&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="apple-touch-icon" sizes="57x57" href="/images/favicon/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/images/favicon/apple-icon-60x60.png">
     <link rel="apple-touch-icon" sizes="72x72" href="/images/favicon/apple-icon-72x72.png">
@@ -186,15 +186,12 @@ if (!empty($participant_token)) {
     <!-- Navigation -->
     <?php include __DIR__ . '/../includes/templates/navigation.php'; ?>
 
-    <div class="container" style="margin-top: 2rem;">
-        <div class="participant-info-card">
-            <div class="participant-welcome">
-                <h1 class="participant-greeting">Keine Gruppe gefunden <span aria-hidden="true">🎄</span></h1>
-                <p class="participant-group-name">
-                    Du hast noch keine Wichtel-Gruppe besucht oder dein Link ist nicht mehr gültig.
-                </p>
-            </div>
-        </div>
+    <div class="container app-page">
+        <header class="app-hero">
+            <p class="app-kicker">Teilnehmerbereich</p>
+            <h1>Keine Gruppe gefunden</h1>
+            <p class="app-hero-lead">Du hast noch keine Wichtel-Gruppe besucht oder dein Link ist nicht mehr gültig.</p>
+        </header>
 
         <div class="section-card waiting-card">
             <div class="waiting-icon" aria-hidden="true">🏠</div>
@@ -334,7 +331,7 @@ if ($show_group_selector) {
     <meta charset="UTF-8">
     <title>Gruppe auswählen - Wichteln</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Roboto&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="apple-touch-icon" sizes="57x57" href="/images/favicon/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/images/favicon/apple-icon-60x60.png">
@@ -358,11 +355,13 @@ if ($show_group_selector) {
 <body>
     <!-- Navigation -->
     <?php include __DIR__ . '/../includes/templates/navigation.php'; ?>
-    <div class="container">
-        <div class="group-selector">
-            <h1>Willkommen zurück! <span aria-hidden="true">🎄</span></h1>
-            <p>Du nimmst an mehreren Wichtel-Gruppen teil. Bitte wähle die Gruppe aus, die du ansehen möchtest:</p>
-            
+    <div class="container app-page">
+        <header class="app-hero">
+            <p class="app-kicker">Teilnehmerbereich</p>
+            <h1>Willkommen zurück!</h1>
+            <p class="app-hero-lead">Du nimmst an mehreren Wichtel-Gruppen teil. Wähle die Gruppe, die du ansehen möchtest.</p>
+        </header>
+        <div class="group-selector app-selector">
             <form method="POST" id="group-selector-form">
                 <?php echo csrf_input(); ?>
                 <input type="hidden" name="select_group" value="1">
@@ -390,6 +389,7 @@ if ($show_group_selector) {
         </div>
     </div>
     
+    <script src="js/main.js"></script>
     <script>
         // Bei Klick auf die Card auch das Radio-Button aktivieren
         document.querySelectorAll('.group-card').forEach(card => {
@@ -420,6 +420,8 @@ if ($show_group_selector) {
             }
         });
     </script>
+    <?php include __DIR__ . '/cookie-banner.php'; ?>
+    <?php include __DIR__ . '/../includes/templates/footer.php'; ?>
 </body>
 </html>
     <?php
@@ -462,14 +464,12 @@ if ($show_group_selector) {
     <!-- Navigation -->
     <?php include __DIR__ . '/../includes/templates/navigation.php'; ?>
     
-    <div class="container" style="margin-top: 2rem;">
-        <!-- Welcome Card -->
-        <div class="participant-info-card">
-            <div class="participant-welcome">
-                <h1 class="participant-greeting">Willkommen, <?php echo htmlspecialchars($participant['name']); ?>! <span aria-hidden="true">🎄</span></h1>
-                <p class="participant-group-name"><span aria-hidden="true">📦</span> Gruppe: <?php echo htmlspecialchars($group['name']); ?></p>
-            </div>
-        </div>
+    <div class="container app-page">
+        <header class="app-hero">
+            <p class="app-kicker">Teilnehmerbereich</p>
+            <h1>Willkommen, <?php echo htmlspecialchars($participant['name']); ?>!</h1>
+            <p class="app-hero-lead">Gruppe <?php echo htmlspecialchars($group['name']); ?></p>
+        </header>
         
         <?php if (empty($participant['email'])): ?>
             <div class="notification warning" role="alert">
@@ -489,15 +489,13 @@ if ($show_group_selector) {
         <!-- Partner Reveal Card -->
         <?php if ($group['is_drawn']): ?>
             <div class="partner-reveal-card">
-                <div class="partner-reveal-header">
-                    <span class="partner-reveal-icon" aria-hidden="true">🎁</span>
-                    <h2 class="partner-reveal-title">Dein Wichtelpartner</h2>
-                </div>
-                
                 <?php if ($assigned): ?>
                     <div class="partner-name-container">
+                        <p class="partner-kicker"><span aria-hidden="true">🎁</span> Du beschenkst</p>
                         <p class="partner-name"><?php echo htmlspecialchars($assigned['name']); ?></p>
+                        <p class="partner-spotlight-note">Behalte den Namen für dich, bis ihr die Geschenke tauscht.</p>
                     </div>
+                    <div class="partner-reveal-body">
                     
                     <?php if (!empty($assigned['wishlist'])): ?>
                         <div class="partner-wishlist-section">
@@ -506,7 +504,7 @@ if ($show_group_selector) {
                                     <span class="wishlist-icon" aria-hidden="true">📝</span>
                                     Wunschliste von <?php echo htmlspecialchars($assigned['name']); ?>
                                 </h3>
-                                <button class="button secondary small copy-button" onclick="copyToClipboard('partner-wishlist', 'Wunschliste kopiert! 📋')" aria-label="Wunschliste von <?php echo htmlspecialchars($assigned['name']); ?> kopieren">
+                                <button type="button" class="button secondary small copy-button" onclick="copyToClipboard('partner-wishlist', 'Wunschliste kopiert! 📋')" aria-label="Wunschliste von <?php echo htmlspecialchars($assigned['name']); ?> kopieren">
                                     <span aria-hidden="true">📋</span> Kopieren
                                 </button>
                             </div>
@@ -520,16 +518,21 @@ if ($show_group_selector) {
                             <p><?php echo htmlspecialchars($assigned['name']); ?> hat noch keine Wunschliste hinterlegt.</p>
                         </div>
                     <?php endif; ?>
+                    </div>
                 <?php else: ?>
                     <div class="notification error" role="alert" aria-live="assertive">
                         <span aria-hidden="true">⚠️</span> Dein Wichtelpartner konnte nicht gefunden werden.
                     </div>
                 <?php endif; ?>
+            </div>
 
-                <?php if (!empty($reveal_pairs)): ?>
+            <?php if (!empty($reveal_pairs)): ?>
                     <?php $reveal_sent_label = format_reveal_sent_at($group['reveal_sent_at']); ?>
-                    <div class="group-reveal">
-                        <h3 class="group-reveal-title">Auflösung</h3>
+                    <section class="section-card group-reveal" aria-labelledby="reveal-list-heading">
+                        <div class="section-card-header">
+                            <span class="section-icon" aria-hidden="true">✨</span>
+                            <h2 id="reveal-list-heading" class="group-reveal-title">Auflösung</h2>
+                        </div>
                         <p class="section-description">
                             <?php if ($reveal_sent_label !== ''): ?>
                                 Auflösung versendet am <?php echo htmlspecialchars($reveal_sent_label); ?>.
@@ -554,9 +557,8 @@ if ($show_group_selector) {
                                 </li>
                             <?php endforeach; ?>
                         </ul>
-                    </div>
+                    </section>
                 <?php endif; ?>
-            </div>
             
             <?php 
             $position = 1;
@@ -615,20 +617,20 @@ if ($show_group_selector) {
             
             <div class="group-info-grid">
                 <div class="group-info-item">
-                    <span class="info-label">💰 Budget</span>
+                    <span class="info-label"><span aria-hidden="true">💰</span> Budget</span>
                     <span class="info-value">
                         <?php echo $group['budget'] !== null ? number_format($group['budget'], 2) . " CHF" : "Nicht festgelegt"; ?>
                     </span>
                 </div>
                 <div class="group-info-item">
-                    <span class="info-label">📅 Geschenkübergabe</span>
+                    <span class="info-label"><span aria-hidden="true">📅</span> Geschenkübergabe</span>
                     <span class="info-value">
                         <?php echo $group['gift_exchange_date'] ? date('d.m.Y', strtotime($group['gift_exchange_date'])) : "Nicht festgelegt"; ?>
                     </span>
                 </div>
                 <?php if (!empty($group['description'])): ?>
                 <div class="group-info-item full-width">
-                    <span class="info-label">📄 Beschreibung</span>
+                    <span class="info-label"><span aria-hidden="true">📄</span> Beschreibung</span>
                     <span class="info-value"><?php echo htmlspecialchars($group['description']); ?></span>
                 </div>
                 <?php endif; ?>
@@ -644,12 +646,14 @@ if ($show_group_selector) {
             
             <p class="section-description">Du kannst diesen Link verwenden, um später wieder auf deine Teilnahme zuzugreifen.</p>
             
-            <div class="link-display-container">
+            <div class="link-box">
                 <pre id="participant-link" class="link-display" data-url="<?php echo htmlspecialchars(get_display_url('/participant.php?token=' . urlencode($participant_token))); ?>"><?php echo htmlspecialchars(get_display_url('/participant.php?token=' . urlencode($participant_token))); ?></pre>
-                <button class="button secondary copy-btn" onclick="copyToClipboard('participant-link')" aria-label="Deinen persönlichen Teilnehmer-Link kopieren">
-                    <span aria-hidden="true">📋</span>
-                    Link kopieren
-                </button>
+                <div class="link-actions">
+                    <button type="button" class="button secondary copy-btn" onclick="copyToClipboard('participant-link')" aria-label="Deinen persönlichen Teilnehmer-Link kopieren">
+                        <span aria-hidden="true">📋</span>
+                        Link kopieren
+                    </button>
+                </div>
             </div>
         </div>
 
