@@ -42,26 +42,18 @@
             <h2>Betreiber</h2>
             <p>
                 Patrick Raths<br>
-                wichtlä.ch<br>
+                <span class="legal-placeholder">[Platzhalter: Strasse und Hausnummer fehlen noch]</span><br>
+                <span class="legal-placeholder">[Platzhalter: PLZ und Ort fehlen noch]</span><br>
                 Schweiz
+            </p>
+            <p class="legal-placeholder-note">
+                Die ladungsfähige Postadresse ist noch nicht hinterlegt. Die markierten Zeilen sind Platzhalter und keine Anschrift.
             </p>
             
             <h2>Kontakt</h2>
             <p>
-                <strong>E-Mail:</strong> <span id="email-address"></span>
+                <strong>E-Mail:</strong> <a href="mailto:kontakt@xn--wichtl-gua.ch">kontakt@wichtlä.ch</a>
             </p>
-            
-            <script>
-                // E-Mail-Adresse vor Spambots schützen
-                const user = 'kontakt';
-                const domain = 'wichtlä.ch';
-                const email = user + '@' + domain;
-                const emailElement = document.getElementById('email-address');
-                const link = document.createElement('a');
-                link.href = 'mailto:' + email;
-                link.textContent = email;
-                emailElement.appendChild(link);
-            </script>
             
             <h2>Haftungsausschluss</h2>
             

@@ -50,7 +50,7 @@
             
             <h3>Unsere Datenschutzphilosophie</h3>
             <div class="privacy-highlight">
-                <p><strong>Wir teilen Ihre Daten niemals mit Dritten.</strong> Ihre Privatsphäre ist uns wichtig, und wir verwenden Ihre Daten ausschliesslich für die Funktionalität des Wichtel-Systems.</p>
+                <p><strong>Wichtel-Gruppen- und Zuteilungsdaten geben wir nicht an Dritte weiter.</strong> Namen, E-Mail-Adressen, Wunschlisten und Zuordnungen nutzen wir nur für das Wichteln in Ihrer Gruppe. Werbung und Reichweitenmessung sind davon getrennt und stehen in Abschnitt 10.</p>
             </div>
             
             <h2>2. Datenerfassung auf dieser Website</h2>
@@ -91,7 +91,7 @@
             
             <h3>Unsere Cookie-Verwendung</h3>
             <div class="privacy-highlight">
-                <p><strong>Funktionale Cookies für automatisches Login:</strong> Wir verwenden Cookies ausschliesslich, um Ihre Teilnahme an Wichtel-Gruppen zu speichern. Dies ermöglicht Ihnen ein automatisches Login, ohne dass Sie Ihren Teilnehmer-Link jedes Mal eingeben müssen.</p>
+                <p><strong>Funktionale Cookies für automatisches Login:</strong> Für die Teilnahme speichern wir Cookies, damit Sie nicht jedes Mal den Teilnehmer-Link eingeben müssen. Cookies von Matomo und Google AdSense beschreiben wir in Abschnitt 10. Ohne Einwilligung setzen diese Dienste keine Tracking-Cookies.</p>
             </div>
             
             <h3>Welche Informationen speichern wir im Cookie?</h3>
@@ -161,21 +161,16 @@
             
             <h2>6. Datenweitergabe</h2>
             
-            <h3>Grundsatz: Keine Weitergabe</h3>
+            <h3>Wichtel-Gruppen- und Zuteilungsdaten</h3>
             <div class="privacy-highlight">
                 <span class="privacy-icon" aria-hidden="true">🔒</span>
                 <p><strong>Ihre Wichtel-Daten bleiben privat:</strong> Wir geben Ihre Wichtel-Gruppendaten (Namen, E-Mail-Adressen, Wunschlisten) grundsätzlich nicht an Dritte weiter. Die einzige Ausnahme ist der Versand von E-Mails über unseren E-Mail-Provider.</p>
             </div>
             
-            <h3>Ausnahme: Werbe-Partner</h3>
+            <h3>Werbung und Reichweitenmessung</h3>
             <p>
-                Für die Finanzierung unseres kostenlosen Dienstes nutzen wir Google AdSense zur Anzeige von Werbung. Dabei werden technische Daten (IP-Adresse, Browser-Informationen, Seitenaufrufe) an Google übermittelt. Diese Daten sind <strong>nicht mit Ihren Wichtel-Gruppendaten verknüpft</strong>.
+                Google AdSense und Matomo erhalten keine Wichtel-Gruppen- oder Zuteilungsdaten. Welche technischen Daten sie nach einer Einwilligung verarbeiten, steht nur in Abschnitt 10.
             </p>
-            <ul>
-                <li><strong>Google AdSense:</strong> Siehe Abschnitt „Werbung und Analyse-Tools" für Details</li>
-                <li><strong>Zweck:</strong> Anzeige personalisierter Werbung</li>
-                <li><strong>Kontrollmöglichkeit:</strong> Sie können personalisierte Werbung in den Google-Einstellungen deaktivieren</li>
-            </ul>
             
             <h3>Innerhalb der Wichtel-Gruppe</h3>
             <p> 
@@ -229,129 +224,99 @@
                 <li><strong>Zugriffskontrolle:</strong> Nur autorisierte Personen können auf Gruppendaten zugreifen</li>
             </ul>
             
-            <h2>10. Werbung und Analyse-Tools</h2>
-            
+            <h2>10. Werbung, Cookies und Reichweitenmessung</h2>
+
+            <p>
+                In diesem Abschnitt stehen Google AdSense, Matomo, die zugehörigen Cookies, die Rechtsgrundlage und der Widerruf. Das funktionale Login-Cookie aus Abschnitt 4 bleibt davon getrennt.
+            </p>
+
             <h3>Google AdSense</h3>
             <p>
-                Diese Website verwendet Google AdSense, einen Dienst zur Einbindung von Werbeanzeigen der Google Ireland Limited („Google"), Gordon House, Barrow Street, Dublin 4, Irland.
+                Zur Finanzierung des kostenlosen Angebots können wir Google AdSense einsetzen, einen Werbedienst der Google Ireland Limited («Google»), Gordon House, Barrow Street, Dublin 4, Irland. Anzeigen stehen nur auf öffentlichen Seiten, sind mit «Anzeige» gekennzeichnet und erscheinen nicht im Teilnehmerbereich.
             </p>
-            
-            <h4>Zweck und Umfang</h4>
             <p>
-                Google AdSense verwendet Cookies und ähnliche Technologien, um Ihnen relevante Werbung anzuzeigen und die Effektivität von Werbekampagnen zu messen. Die Anzeigen basieren auf Ihren vorherigen Besuchen auf dieser und anderen Websites.
+                Das Skript <code>adsbygoogle.js</code> laden wir erst nach Ihrer Einwilligung über eine Consent-Management-Plattform (Google Funding Choices, Privacy &amp; messaging). Solange diese CMP nicht mit einer echten Publisher-ID eingerichtet ist, wird kein AdSense-Skript geladen. Lehnen Sie ab, erscheinen keine Anzeigen.
             </p>
-            
-            <h4>Erhobene Daten</h4>
             <p>
-                Google AdSense erfasst folgende Informationen:
+                Nach der Einwilligung kann Google technische Daten verarbeiten, insbesondere IP-Adresse, Browser- und Geräteinformationen, aufgerufene Seiten, angezeigte Anzeigen, Klicks sowie Datum und Uhrzeit. Diese Angaben sind nicht mit Ihren Wichtel-Gruppen- oder Zuteilungsdaten verknüpft. Google kann sie mit anderen Google-Diensten verbinden. Weitere Informationen: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Datenschutzerklärung von Google</a> und <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener">Wie Google Daten bei Werbung verwendet</a>.
             </p>
+
+            <h3>Matomo</h3>
+            <p>
+                Für die Reichweitenmessung nutzen wir Matomo auf einem Server des Betreibers (<code>analytics.patrick-raths.ch</code>). Bis zu Ihrer Einwilligung setzen wir keine Tracking-Cookies. Lehnen Sie ab, bleibt die Messung ohne Tracking-Cookies. Erst nach «Akzeptieren» darf Matomo Cookies setzen, um wiederkehrende Besuche zu erkennen.
+            </p>
+            <p>Soweit die Messung läuft, können das insbesondere sein:</p>
             <ul>
-                <li>Ihre IP-Adresse (anonymisiert)</li>
-                <li>Informationen über den Browser und das Betriebssystem</li>
-                <li>Besuchte Seiten und angezeigte Anzeigen</li>
-                <li>Klicks auf Anzeigen</li>
+                <li>gekürzte IP-Adresse</li>
+                <li>aufgerufene Seiten und Verweildauer</li>
+                <li>Browsertyp und Betriebssystem</li>
+                <li>Bildschirmauflösung</li>
+                <li>Herkunftsseite (Referrer)</li>
                 <li>Datum und Uhrzeit des Zugriffs</li>
             </ul>
-            
-            <h4>Cookies von Google AdSense</h4>
+
+            <h3>Cookies</h3>
             <p>
-                Google verwendet verschiedene Cookies, um personalisierte Werbung anzuzeigen. Dazu gehören unter anderem:
+                Ohne Einwilligung setzen AdSense und Matomo keine Tracking-Cookies. Der eigene Hinweis auf der Seite merkt sich Ihre Wahl für Matomo im Cookie <code>wichteln_consent</code> (angenommen oder abgelehnt, 180 Tage). Dieses Cookie schaltet keine Werbung frei. Nach einer Einwilligung können zusätzlich diese Cookies entstehen:
             </p>
             <table>
                 <thead>
                     <tr>
-                        <th>Cookie-Name</th>
+                        <th>Cookie</th>
+                        <th>Dienst</th>
                         <th>Zweck</th>
                         <th>Lebensdauer</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
+                        <td><code>wichteln_consent</code></td>
+                        <td>wichtlä.ch</td>
+                        <td>Speichert, ob Sie Matomo-Cookies erlauben</td>
+                        <td>180 Tage</td>
+                    </tr>
+                    <tr>
+                        <td><code>_pk_id</code>, <code>_pk_ses</code></td>
+                        <td>Matomo</td>
+                        <td>Wiedererkennung und Sitzung, nur nach Einwilligung</td>
+                        <td>bis 13 Monate</td>
+                    </tr>
+                    <tr>
                         <td><code>__gads</code></td>
-                        <td>Registrierung und Berichterstattung von Nutzeraktionen</td>
+                        <td>Google AdSense</td>
+                        <td>Auslieferung und Messung von Anzeigen, nur nach Einwilligung</td>
                         <td>13 Monate</td>
                     </tr>
                     <tr>
                         <td><code>__gac</code></td>
-                        <td>Kampagnen-bezogene Informationen</td>
+                        <td>Google AdSense</td>
+                        <td>Kampagnenbezogene Angaben, nur nach Einwilligung</td>
                         <td>90 Tage</td>
                     </tr>
                     <tr>
                         <td><code>IDE</code></td>
-                        <td>Anzeigenpersonalisierung (DoubleClick)</td>
+                        <td>Google</td>
+                        <td>Anzeigenpersonalisierung, nur nach Einwilligung</td>
                         <td>13 Monate</td>
                     </tr>
                 </tbody>
             </table>
-            
-            <h4>Rechtsgrundlage und Widerspruchsrecht</h4>
+
+            <h3>Rechtsgrundlage</h3>
             <p>
-                Die Datenverarbeitung erfolgt auf Grundlage Ihrer Einwilligung. Sie haben jederzeit das Recht, personalisierte Werbung zu deaktivieren:
+                Die Verarbeitung zu Werbe- und Analysezwecken stützt sich auf Ihre Einwilligung nach dem Schweizer Datenschutzgesetz. Für Personen im EWR und im Vereinigten Königreich kommt zusätzlich Art. 6 Abs. 1 lit. a DSGVO dazu. Anzeigen fragen wir über die Google-CMP ab (Funding Choices / Privacy &amp; messaging, TCF für EWR und UK, einschliesslich einer Nachricht für die Schweiz). Der Hinweis auf dieser Website ohne aktive Google-CMP gibt nur die Wahl, ob Matomo Cookies setzen darf.
             </p>
-            <ul>
-                <li><strong>Google Anzeigeneinstellungen:</strong> <a href="https://adssettings.google.com/" target="_blank" rel="noopener">https://adssettings.google.com/</a></li>
-                <li><strong>Digitale Werbeallianz:</strong> <a href="https://www.youronlinechoices.com/ch-de/" target="_blank" rel="noopener">www.youronlinechoices.com</a></li>
-            </ul>
-            
-            <h4>Datenweitergabe an Google</h4>
-            <div class="privacy-highlight">
-                <span class="privacy-icon" aria-hidden="true">⚠️</span>
-                <p><strong>Hinweis:</strong> Bei der Nutzung von Google AdSense werden Daten an Google übermittelt. Google kann diese Daten mit anderen Google-Diensten verknüpfen. Weitere Informationen finden Sie in der <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Datenschutzerklärung von Google</a>.</p>
-            </div>
-            
-            <h3>Matomo (Website-Analyse)</h3>
+
+            <h3>Widerruf</h3>
             <p>
-                Diese Website verwendet Matomo, eine Open-Source-Software zur statistischen Auswertung der Besucherzugriffe. Matomo wird auf unserem eigenen Server betrieben, sodass alle Analysedaten bei uns verbleiben und nicht an Dritte weitergegeben werden.
+                Sie können die Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen. Danach laden wir keine Anzeigen, und Matomo arbeitet ohne Tracking-Cookies. Die Rechtmässigkeit der Verarbeitung bis zum Widerruf bleibt unberührt. Ist die Google-CMP aktiv, öffnet die Schaltfläche die Einwilligungsnachricht von Google erneut.
             </p>
-            
-            <h4>Zweck der Datenerhebung</h4>
             <p>
-                Wir nutzen Matomo, um die Nutzung unserer Website zu analysieren und kontinuierlich zu verbessern. Die Statistiken helfen uns zu verstehen, wie Besucher unsere Website nutzen und wo wir Verbesserungen vornehmen können.
+                <button type="button" id="consent-revoke" class="button secondary">Einwilligung widerrufen</button>
             </p>
-            
-            <h4>Erhobene Daten</h4>
             <p>
-                Matomo erfasst folgende Informationen:
+                Personalisierte Werbung können Sie ausserdem in den <a href="https://adssettings.google.com/" target="_blank" rel="noopener">Google-Anzeigeneinstellungen</a> und über <a href="https://www.youronlinechoices.com/ch-de/" target="_blank" rel="noopener">Your Online Choices</a> einschränken. Wenn Sie Cookies im Browser löschen, müssen Sie die Wahl erneut treffen.
             </p>
-            <ul>
-                <li>Anonymisierte IP-Adresse (die letzten 2 Bytes werden entfernt)</li>
-                <li>Besuchte Seiten und Verweildauer</li>
-                <li>Browsertyp und -version</li>
-                <li>Betriebssystem</li>
-                <li>Bildschirmauflösung</li>
-                <li>Herkunftswebsite (Referrer)</li>
-                <li>Datum und Uhrzeit des Zugriffs</li>
-            </ul>
-            
-            <h4>IP-Anonymisierung</h4>
-            <p>
-                Ihre IP-Adresse wird vor der Speicherung anonymisiert, sodass keine Rückschlüsse auf einzelne Personen möglich sind. Die Daten werden ausschliesslich in anonymisierter Form verarbeitet.
-            </p>
-            
-            <h4>Cookies von Matomo</h4>
-            <p>
-                Matomo verwendet ein Cookie namens <code>_pk_id</code>, das 13 Monate gespeichert wird, um wiederkehrende Besucher zu erkennen. Dieses Cookie enthält keine personenbezogenen Daten.
-            </p>
-            
-            <h4>Widerspruchsrecht (Opt-Out)</h4>
-            <p>
-                Sie haben jederzeit das Recht, der Analyse durch Matomo zu widersprechen. Nutzen Sie dazu das folgende Opt-Out-Tool:
-            </p>
-            
-            <div class="privacy-highlight" style="background: white; border: 2px solid var(--border-color); padding: 2rem;">
-                <div id="matomo-opt-out"></div>
-                <script src="https://analytics.patrick-raths.ch/index.php?module=CoreAdminHome&action=optOutJS&divId=matomo-opt-out&language=auto&backgroundColor=FFFFFF&fontColor=000000&fontSize=12px&fontFamily=Arial&showIntro=1"></script>
-            </div>
-            
-            <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-secondary);">
-                <strong>Hinweis:</strong> Wenn Sie Cookies in Ihrem Browser löschen, wird auch das Opt-Out-Cookie gelöscht und Sie müssen es erneut setzen.
-            </p>
-            
-            <h4>Datenschutzfreundliche Alternative</h4>
-            <div class="privacy-highlight">
-                <span class="privacy-icon" aria-hidden="true">✅</span>
-                <p><strong>Kein Tracking durch Dritte:</strong> Im Gegensatz zu Tools wie Google Analytics oder Facebook Pixel werden Ihre Daten ausschliesslich auf unserem Server gespeichert und niemals an Drittanbieter weitergegeben.</p>
-            </div>
             
             <h2>11. Server-Log-Dateien</h2>
             
@@ -376,7 +341,7 @@
                 Bei Fragen zum Datenschutz oder zur Ausübung Ihrer Rechte können Sie uns unter den im Impressum angegebenen Kontaktdaten erreichen:
             </p>
             <p>
-                <strong>E-Mail:</strong> <a href="mailto:kontakt@wichtlä.ch">kontakt@wichtlä.ch</a>
+                <strong>E-Mail:</strong> <a href="mailto:kontakt@xn--wichtl-gua.ch">kontakt@wichtlä.ch</a>
             </p>
             
             <h2>13. Änderungen dieser Datenschutzerklärung</h2>

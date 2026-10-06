@@ -90,11 +90,12 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                 <script>
                     // E-Mail-Adresse vor Spambots schützen
                     const user = 'kontakt';
-                    const domain = 'wichtlä.ch';
-                    const email = user + '@' + domain;
+                    const displayDomain = 'wichtlä.ch';
+                    const mailDomain = 'xn--wichtl-gua.ch';
+                    const email = user + '@' + displayDomain;
                     const emailElement = document.getElementById('email-address');
                     const link = document.createElement('a');
-                    link.href = 'mailto:' + email;
+                    link.href = 'mailto:' + user + '@' + mailDomain;
                     link.textContent = email;
                     emailElement.appendChild(link);
                 </script>

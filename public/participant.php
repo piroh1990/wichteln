@@ -559,12 +559,6 @@ if ($show_group_selector) {
                         </ul>
                     </section>
                 <?php endif; ?>
-            
-            <?php 
-            $position = 1;
-            $label = "Position 1: Nach Wichtelpartner";
-            include __DIR__ . '/../includes/templates/google_ads.php';
-            ?>
         <?php else: ?>
             <div class="section-card waiting-card">
                 <div class="waiting-icon" aria-hidden="true">⏳</div>
@@ -673,12 +667,6 @@ if ($show_group_selector) {
             </a>
         </div>
         <?php endif; ?>
-
-        <?php 
-        $position = 2;
-        $label = "Position 2: Am Ende der Seite";
-        include __DIR__ . '/../includes/templates/google_ads.php';
-        ?>
     </div>
     
     <!-- Cookie Banner -->

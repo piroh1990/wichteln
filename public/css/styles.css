@@ -3011,19 +3011,41 @@ a.button:disabled {
     }
 }
 
+.public-ad-slot {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
 .ad-test-placeholder {
     background: #e3f2fd;
     border: 3px dashed #2196F3;
     display: flex;
     align-items: center;
     justify-content: center;
-       color: #1976D2;
+    color: #1976D2;
     font-size: 1rem;
     font-family: monospace;
     font-weight: bold;
     padding: 2rem;
     min-height: 250px;
     text-align: center;
+}
+
+.legal-placeholder {
+    display: inline-block;
+    margin: 0.15rem 0;
+    padding: 0.1rem 0.45rem;
+    background: #fff4e5;
+    border: 1px dashed #c47b00;
+    border-radius: 4px;
+    color: #8a4b00;
+    font-weight: 600;
+}
+
+.legal-placeholder-note {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
 }
 
 /* Info Icon */
