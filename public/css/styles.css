@@ -2346,6 +2346,11 @@ a.button:disabled {
     margin: 0;
 }
 
+.inline-action-form {
+    display: inline;
+    margin: 0;
+}
+
 /* Email Edit Section */
 .participant-email-edit {
     margin-top: 1rem;
@@ -2570,7 +2575,7 @@ a.button:disabled {
 
 .empty-wishlist p {
     margin: 0;
-    color: var(--text-muted);
+    color: var(--text-secondary);
 }
 
 /* Section Cards */
@@ -2604,7 +2609,7 @@ a.button:disabled {
 }
 
 .section-description {
-    color: var(--text-muted);
+    color: var(--text-secondary);
     margin-bottom: 1.5rem;
     line-height: 1.6;
 }
@@ -2625,7 +2630,7 @@ a.button:disabled {
 }
 
 .waiting-card p {
-    color: var(--text-muted);
+    color: var(--text-secondary);
     margin: 0;
 }
 
@@ -2646,7 +2651,7 @@ a.button:disabled {
 .form-hint {
     font-size: 0.875rem;
     font-weight: 400;
-    color: var(--text-muted);
+    color: var(--text-secondary);
 }
 
 .form-textarea {
@@ -2686,7 +2691,7 @@ a.button:disabled {
 .info-label {
     font-size: 0.875rem;
     font-weight: 600;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -2985,6 +2990,12 @@ a.button:disabled {
     justify-content: center;
     font-weight: bold;
     font-size: 1.2rem;
+}
+
+/* Das native Radio ist unsichtbar (opacity: 0). Der Fokusring muss auf die sichtbare Karte. */
+.group-card input[type="radio"]:focus-visible ~ .group-card-content {
+    outline: 3px solid var(--secondary-color);
+    outline-offset: 2px;
 }
 
 .group-card-content {

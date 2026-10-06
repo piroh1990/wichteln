@@ -83,3 +83,22 @@ run_test("verify_csrf_token: missing session token", function() {
 
     assert_true(!verify_csrf_token("any_token"), "Should return false if no token is in session");
 });
+
+run_test("verify_csrf_token: rejects non-string", function() {
+    $_SESSION['csrf_token'] = "valid_token";
+    assert_true(!verify_csrf_token(["valid_token"]), "Should return false for an array token");
+});
+
+run_test("csrf_failure_message: german text", function() {
+    $message = csrf_failure_message();
+    assert_true(is_string($message) && $message !== "", "CSRF error message should not be empty");
+    assert_true(strpos($message, "CSRF") !== false, "CSRF error message should mention CSRF");
+});
+
+run_test("master_admin_token_matches", function() {
+    assert_true(defined("MASTER_ADMIN_TOKEN"), "MASTER_ADMIN_TOKEN should be defined");
+    assert_true(master_admin_token_matches(MASTER_ADMIN_TOKEN), "Configured token should match");
+    assert_true(!master_admin_token_matches(MASTER_ADMIN_TOKEN . "x"), "A different token should not match");
+    assert_true(!master_admin_token_matches(""), "Empty token should not match");
+    assert_true(!master_admin_token_matches(null), "Null token should not match");
+});

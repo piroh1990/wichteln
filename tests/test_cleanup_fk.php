@@ -29,7 +29,7 @@ run_test("Test Cleanup with FK Constraints (No CASCADE)", function() {
       `group_id` INTEGER NOT NULL,
       `name` TEXT NOT NULL,
       `email` TEXT,
-      `token` TEXT,
+      `participant_token` TEXT,
       `assigned_to` INTEGER,
       `wishlist` TEXT,
       `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,

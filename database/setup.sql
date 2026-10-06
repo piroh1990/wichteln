@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `participants` (
   `group_id` INT NOT NULL COMMENT 'Referenz zur Gruppe',
   `name` VARCHAR(255) NOT NULL COMMENT 'Name des Teilnehmers',
   `email` VARCHAR(255) NULL COMMENT 'E-Mail des Teilnehmers (optional)',
-  `token` VARCHAR(64) NOT NULL UNIQUE COMMENT 'Persönlicher Zugangs-Token',
+  `participant_token` VARCHAR(64) NOT NULL UNIQUE COMMENT 'Persönlicher Zugangs-Token',
   `assigned_to` INT NULL COMMENT 'ID des zugewiesenen Wichtelpartners',
   `wishlist` TEXT NULL COMMENT 'Wunschliste des Teilnehmers',
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Registrierungszeitpunkt',
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `participants` (
   FOREIGN KEY (`group_id`) REFERENCES `groups`(`id`) ON DELETE CASCADE,
   FOREIGN KEY (`assigned_to`) REFERENCES `participants`(`id`) ON DELETE SET NULL,
   
-  INDEX idx_participant_token (`token`),
+  INDEX idx_participant_token (`participant_token`),
   INDEX idx_group_participants (`group_id`),
   INDEX idx_assigned_to (`assigned_to`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
@@ -133,7 +133,7 @@ VALUES (
 );
 
 -- Test-Teilnehmer erstellen
-INSERT INTO `participants` (`group_id`, `name`, `email`, `token`, `wishlist`) VALUES
+INSERT INTO `participants` (`group_id`, `name`, `email`, `participant_token`, `wishlist`) VALUES
 (1, 'Max Mustermann', 'max@test.ch', 'token_max_123', 'Bücher, Schokolade'),
 (1, 'Anna Beispiel', 'anna@test.ch', 'token_anna_456', 'Tee, Kerzen'),
 (1, 'Peter Test', 'peter@test.ch', 'token_peter_789', 'Socken, Kaffee');

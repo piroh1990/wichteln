@@ -13,6 +13,17 @@
 
 require_once __DIR__ . '/helpers.php';
 
+/**
+ * Die Datenbankspalte heisst participant_token.
+ * Aeltere API-Clients erwarten zusaetzlich das Feld token.
+ */
+function with_participant_token_alias($participant) {
+    if (is_array($participant) && isset($participant['participant_token']) && !isset($participant['token'])) {
+        $participant['token'] = $participant['participant_token'];
+    }
+    return $participant;
+}
+
 // CORS Headers setzen
 set_cors_headers();
 
@@ -58,11 +69,11 @@ switch ($method) {
             $participant['group'] = $stmt->fetch(PDO::FETCH_ASSOC);
             
             log_api_request('SUCCESS', '/api/participants.php', "Participant ID: $participant_id");
-            api_response(200, true, 'Teilnehmer erfolgreich abgerufen', sanitize_for_api($participant));
+            api_response(200, true, 'Teilnehmer erfolgreich abgerufen', sanitize_for_api(with_participant_token_alias($participant)));
             
         } elseif ($token) {
             // Teilnehmer per Token abrufen
-            $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `token` = ?");
+            $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `participant_token` = ?");
             $stmt->execute([$token]);
             $participant = $stmt->fetch(PDO::FETCH_ASSOC);
             
@@ -83,7 +94,7 @@ switch ($method) {
             $participant['group'] = $stmt->fetch(PDO::FETCH_ASSOC);
             
             log_api_request('SUCCESS', '/api/participants.php', "Participant Token");
-            api_response(200, true, 'Teilnehmer erfolgreich abgerufen', sanitize_for_api($participant));
+            api_response(200, true, 'Teilnehmer erfolgreich abgerufen', sanitize_for_api(with_participant_token_alias($participant)));
             
         } elseif ($group_id) {
             // Alle Teilnehmer einer Gruppe
@@ -143,7 +154,7 @@ switch ($method) {
         $participant_token = generate_token();
         
         // Teilnehmer erstellen
-        $stmt = $pdo->prepare("INSERT INTO `participants` (`group_id`, `name`, `email`, `token`, `wishlist`) VALUES (?, ?, ?, ?, ?)");
+        $stmt = $pdo->prepare("INSERT INTO `participants` (`group_id`, `name`, `email`, `participant_token`, `wishlist`) VALUES (?, ?, ?, ?, ?)");
         $stmt->execute([$group_id, $name, $email, $participant_token, $wishlist]);
         
         $participant_id = $pdo->lastInsertId();
@@ -173,6 +184,7 @@ switch ($method) {
             'id' => intval($participant_id),
             'name' => $name,
             'token' => $participant_token,
+            'participant_token' => $participant_token,
             'participant_link' => get_display_url('/participant.php?token=' . urlencode($participant_token))
         ]);
         break;
@@ -188,7 +200,7 @@ switch ($method) {
             $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `id` = ?");
             $stmt->execute([$participant_id]);
         } else {
-            $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `token` = ?");
+            $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `participant_token` = ?");
             $stmt->execute([$token]);
         }
         

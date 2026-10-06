@@ -15,8 +15,10 @@ info:
     - On exceed: HTTP 429 Response
     
     ## CORS
-    - Cross-Origin Requests are supported
-    - Preflight (OPTIONS) Requests are handled automatically
+    - Only origins listed in `API_ALLOW_ORIGINS` receive `Access-Control-Allow-Origin`
+    - The wildcard `*` is not supported and is ignored
+    - Browsers send the origin in punycode (for example `https://xn--wichtl-gua.ch`)
+    - Preflight (OPTIONS) requests are handled automatically
   version: 1.0.0
   contact:
     name: GitHub Repository
@@ -505,8 +507,13 @@ components:
           type: string
           format: email
           example: "john@example.com"
+        participant_token:
+          type: string
+          description: Personal access token. Database column name.
+          example: "part123token456..."
         token:
           type: string
+          description: Alias of participant_token, kept for older clients.
           example: "part123token456..."
         assigned_to:
           type: integer

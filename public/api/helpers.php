@@ -9,10 +9,65 @@ require_once __DIR__ . '/../../includes/functions.php';
 require_once __DIR__ . '/../../includes/api_config.php';
 
 /**
- * Setzt CORS-Header
+ * Liefert die erlaubten CORS-Origins.
+ * '*' wird nie übernommen. API_ALLOW_ORIGINS (Liste) hat Vorrang,
+ * API_ALLOW_ORIGIN bleibt als einzelne konkrete Origin kompatibel.
+ *
+ * @return string[]
+ */
+function get_api_allowed_origins() {
+    $origins = [];
+
+    if (defined('API_ALLOW_ORIGINS')) {
+        $configured = API_ALLOW_ORIGINS;
+        if (is_string($configured)) {
+            $configured = explode(',', $configured);
+        }
+        if (is_array($configured)) {
+            foreach ($configured as $origin) {
+                if (!is_string($origin)) {
+                    continue;
+                }
+                $origin = trim($origin);
+                if ($origin !== '' && $origin !== '*') {
+                    $origins[] = $origin;
+                }
+            }
+        }
+    }
+
+    if (defined('API_ALLOW_ORIGIN') && is_string(API_ALLOW_ORIGIN)) {
+        $legacy = trim(API_ALLOW_ORIGIN);
+        if ($legacy !== '' && $legacy !== '*' && !in_array($legacy, $origins, true)) {
+            $origins[] = $legacy;
+        }
+    }
+
+    return array_values(array_unique($origins));
+}
+
+/**
+ * API-Token zeitkonstant vergleichen.
+ */
+function api_token_matches($provided) {
+    if (!is_string($provided) || $provided === '') {
+        return false;
+    }
+    if (!defined('API_TOKEN') || !is_string(API_TOKEN) || API_TOKEN === '') {
+        return false;
+    }
+    return hash_equals(API_TOKEN, $provided);
+}
+
+/**
+ * Setzt CORS-Header nur für explizit erlaubte Origins.
  */
 function set_cors_headers() {
-    header('Access-Control-Allow-Origin: ' . API_ALLOW_ORIGIN);
+    $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
+    if (is_string($origin) && $origin !== '' && in_array($origin, get_api_allowed_origins(), true)) {
+        header('Access-Control-Allow-Origin: ' . $origin);
+        header('Vary: Origin');
+    }
     header('Access-Control-Allow-Methods: ' . API_ALLOW_METHODS);
     header('Access-Control-Allow-Headers: ' . API_ALLOW_HEADERS);
     header('Access-Control-Max-Age: 86400'); // 24 Stunden
@@ -55,7 +110,7 @@ function authenticate_api() {
     }
     
     // Token validieren
-    if (!$token || $token !== API_TOKEN) {
+    if (!api_token_matches($token)) {
         log_api_request('UNAUTHORIZED', $_SERVER['REQUEST_URI']);
         api_response(401, false, 'Ungültiges oder fehlendes API-Token', null);
         exit();
@@ -69,37 +124,71 @@ function authenticate_api() {
 }
 
 /**
- * Rate Limiting Check
+ * Verzeichnis für Rate-Limit-Zähler, ausserhalb von public/.
  */
-function check_rate_limit() {
-    $ip = $_SERVER['REMOTE_ADDR'];
-    $cache_key = 'api_rate_limit_' . md5($ip);
-    $cache_file = sys_get_temp_dir() . '/' . $cache_key;
-    
-    $current_time = time();
-    $time_window = 60; // 1 Minute
-    
-    if (file_exists($cache_file)) {
-        $data = json_decode(file_get_contents($cache_file), true);
-        
-        // Zeitfenster abgelaufen?
-        if ($current_time - $data['start_time'] > $time_window) {
-            // Neues Zeitfenster
+function api_rate_limit_dir() {
+    return dirname(__DIR__, 2) . '/logs/rate-limit';
+}
+
+/**
+ * Rate Limiting Check.
+ * Zähler liegen unter logs/rate-limit (nicht im weltbeschreibbaren Temp-Verzeichnis)
+ * und werden mit einem exklusiven Lock aktualisiert.
+ *
+ * @param string|null $identity Standard: Client-IP. Nur für Tests überschreiben.
+ */
+function check_rate_limit($identity = null) {
+    if ($identity === null) {
+        $identity = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'unknown';
+    }
+    if (!is_string($identity) || $identity === '') {
+        $identity = 'unknown';
+    }
+
+    $dir = api_rate_limit_dir();
+    if (!is_dir($dir) && !@mkdir($dir, 0750, true) && !is_dir($dir)) {
+        error_log('API rate limit directory is not writable: ' . $dir);
+        return true;
+    }
+
+    $file = $dir . '/' . hash('sha256', $identity) . '.json';
+    $handle = @fopen($file, 'c+');
+    if ($handle === false) {
+        error_log('API rate limit file could not be opened: ' . $file);
+        return true;
+    }
+
+    $allowed = true;
+    try {
+        if (!flock($handle, LOCK_EX)) {
+            error_log('API rate limit file could not be locked: ' . $file);
+            return true;
+        }
+
+        $raw = stream_get_contents($handle);
+        $data = is_string($raw) ? json_decode($raw, true) : null;
+        $current_time = time();
+        $time_window = 60;
+
+        if (!is_array($data) || !isset($data['start_time'], $data['count'])
+            || ($current_time - (int) $data['start_time']) > $time_window) {
             $data = ['start_time' => $current_time, 'count' => 1];
         } else {
-            // Innerhalb des Zeitfensters
-            $data['count']++;
-            
-            if ($data['count'] > API_RATE_LIMIT) {
-                return false; // Limit überschritten
-            }
+            $data['count'] = (int) $data['count'] + 1;
         }
-    } else {
-        $data = ['start_time' => $current_time, 'count' => 1];
+
+        $allowed = $data['count'] <= (int) API_RATE_LIMIT;
+
+        rewind($handle);
+        ftruncate($handle, 0);
+        fwrite($handle, json_encode($data));
+        fflush($handle);
+    } finally {
+        flock($handle, LOCK_UN);
+        fclose($handle);
     }
-    
-    file_put_contents($cache_file, json_encode($data));
-    return true;
+
+    return $allowed;
 }
 
 /**

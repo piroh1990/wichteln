@@ -102,7 +102,7 @@ CREATE TABLE `participants` (
   `group_id` INT NOT NULL,
   `name` VARCHAR(255) NOT NULL,
   `email` VARCHAR(255) NULL,
-  `token` VARCHAR(64) NOT NULL UNIQUE,
+  `participant_token` VARCHAR(64) NOT NULL UNIQUE,
   `assigned_to` INT NULL,
   `wishlist` TEXT NULL,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -126,7 +126,7 @@ CREATE TABLE `exclusions` (
 -- Indexes for better performance
 CREATE INDEX idx_admin_token ON `groups`(`admin_token`);
 CREATE INDEX idx_invite_token ON `groups`(`invite_token`);
-CREATE INDEX idx_participant_token ON `participants`(`token`);
+CREATE INDEX idx_participant_token ON `participants`(`participant_token`);
 CREATE INDEX idx_group_participants ON `participants`(`group_id`);
 ```
 

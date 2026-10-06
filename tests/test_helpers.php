@@ -88,3 +88,26 @@ run_test("validate_input: email validation", function() {
     // Mixed rules: required + email
     assert_equals("Email ist erforderlich", validate_input($field, "", ['required', 'email']), "Empty string with 'required' + 'email' should hit 'required' first");
 });
+
+run_test("get_api_allowed_origins: no wildcard", function() {
+    $origins = get_api_allowed_origins();
+    assert_true(is_array($origins), "Allowlist should be an array");
+    assert_true(!in_array('*', $origins, true), "Wildcard origin must not be allowed");
+    foreach ($origins as $origin) {
+        assert_true(is_string($origin) && $origin !== '', "Each origin should be a non-empty string");
+    }
+});
+
+run_test("check_rate_limit: enforces limit with file lock", function() {
+    $identity = 'test-' . bin2hex(random_bytes(8));
+    $limit = (int) API_RATE_LIMIT;
+    for ($i = 0; $i < $limit; $i++) {
+        assert_true(check_rate_limit($identity), "Request " . ($i + 1) . " should be allowed");
+    }
+    assert_true(!check_rate_limit($identity), "Request over the limit should be rejected");
+
+    $file = api_rate_limit_dir() . '/' . hash('sha256', $identity) . '.json';
+    if (is_file($file)) {
+        unlink($file);
+    }
+});

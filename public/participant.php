@@ -235,7 +235,7 @@ if (!empty($participant_token)) {
     // Wenn Gruppenauswahl per POST gesendet wurde
     if (isset($_POST['select_group']) && isset($_POST['selected_token'])) {
         if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
-            die('CSRF-Token ungültig.');
+            abort_invalid_csrf();
         }
 
         $selected_token = $_POST['selected_token'];
@@ -282,7 +282,7 @@ if ($participant) {
     // Wunschliste aktualisieren
     if (isset($_POST['update_wishlist'])) {
         if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
-            die('CSRF-Token ungültig.');
+            abort_invalid_csrf();
         }
 
         $wishlist = trim($_POST['wishlist']);
@@ -356,7 +356,8 @@ if ($show_group_selector) {
             <p>Du nimmst an mehreren Wichtel-Gruppen teil. Bitte wähle die Gruppe aus, die du ansehen möchtest:</p>
             
             <form method="POST" id="group-selector-form">
-                <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
+                <?php echo csrf_input(); ?>
+                <input type="hidden" name="select_group" value="1">
                 <?php foreach ($participants as $p): ?>
                 <label class="group-card">
                     <input type="radio" name="selected_token" value="<?php echo htmlspecialchars($p['participant_token']); ?>" required aria-label="Gruppe: <?php echo htmlspecialchars($p['group_name']); ?> (als <?php echo htmlspecialchars($p['name']); ?>)">
@@ -545,7 +546,7 @@ if ($show_group_selector) {
                 <p class="section-description">Du kannst deine Wunschliste jederzeit anpassen. Dein Wichtelpartner wird per E-Mail über Änderungen informiert.</p>
             <?php endif; ?>
                 <form method="POST" class="wishlist-form">
-                    <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
+                    <?php echo csrf_input(); ?>
                     <div class="form-group">
                         <label for="wishlist" class="form-label">
                             <span>Deine Wünsche</span>

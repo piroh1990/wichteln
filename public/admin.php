@@ -3,6 +3,10 @@
 
 require_once __DIR__ . '/../includes/functions.php';
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 $admin_token = $_GET['token'] ?? '';
 $pdo = db_connect();
 
@@ -25,8 +29,15 @@ $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `group_id` = ?");
 $stmt->execute([$group['id']]);
 $participants = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+$csrf_error = null;
+$csrf_ok = true;
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !verify_csrf_token(isset($_POST['csrf_token']) ? $_POST['csrf_token'] : '')) {
+    $csrf_ok = false;
+    $csrf_error = csrf_failure_message();
+}
+
 // Auslosung zurücksetzen
-if (isset($_POST['reset_draw'])) {
+if ($csrf_ok && isset($_POST['reset_draw'])) {
     $pdo->beginTransaction();
     try {
         // Setze is_drawn auf 0
@@ -52,7 +63,7 @@ if (isset($_POST['reset_draw'])) {
 }
 
 // Gruppe löschen
-if (isset($_POST['delete_group'])) {
+if ($csrf_ok && isset($_POST['delete_group'])) {
     $pdo->beginTransaction();
     try {
         $group_id = $group['id'];
@@ -86,7 +97,7 @@ if (isset($_POST['delete_group'])) {
 }
 
 // Teilnehmer E-Mail aktualisieren
-if (isset($_POST['update_participant_email'])) {
+if ($csrf_ok && isset($_POST['update_participant_email'])) {
     $participant_id = intval($_POST['participant_id']);
     $new_email = trim($_POST['participant_email']);
     
@@ -114,7 +125,7 @@ if (isset($_POST['update_participant_email'])) {
 }
 
 // E-Mail erneut senden
-if (isset($_POST['resend_email'])) {
+if ($csrf_ok && isset($_POST['resend_email'])) {
     $participant_id = intval($_POST['participant_id']);
     
     // Prüfe ob Gruppe ausgelost wurde und Teilnehmer zur Gruppe gehört
@@ -167,8 +178,8 @@ if (isset($_POST['resend_email'])) {
 }
 
 // Teilnehmer löschen
-if (isset($_GET['delete'])) {
-    $participant_id = intval($_GET['delete']);
+if ($csrf_ok && isset($_POST['delete_participant'])) {
+    $participant_id = intval($_POST['delete_participant']);
     // Sicherstellen, dass die Gruppe noch nicht ausgelost wurde und der Teilnehmer zur Gruppe gehört
     if (!$group['is_drawn']) {
         $stmt = $pdo->prepare("DELETE FROM `participants` WHERE `id` = ? AND `group_id` = ?");
@@ -179,7 +190,7 @@ if (isset($_GET['delete'])) {
 }
 
 // Ausschluss hinzufügen
-if (isset($_POST['add_exclusion'])) {
+if ($csrf_ok && isset($_POST['add_exclusion'])) {
     $participant_id = intval($_POST['participant_id']);
     $excluded_id = intval($_POST['excluded_participant_id']);
     
@@ -201,8 +212,8 @@ if (isset($_POST['add_exclusion'])) {
 }
 
 // Ausschluss löschen
-if (isset($_GET['delete_exclusion'])) {
-    $exclusion_id = intval($_GET['delete_exclusion']);
+if ($csrf_ok && isset($_POST['delete_exclusion'])) {
+    $exclusion_id = intval($_POST['delete_exclusion']);
     // Sicherstellen, dass die Gruppe noch nicht ausgelost wurde
     if (!$group['is_drawn']) {
         $stmt = $pdo->prepare("DELETE FROM `exclusions` WHERE `id` = ? AND `group_id` = ?");
@@ -231,7 +242,7 @@ $base_date = $group['gift_exchange_date'] ? $group['gift_exchange_date'] : date(
 $deletion_date = date('d.m.Y', strtotime($base_date . ' + 3 months'));
 
 // Gruppe bearbeiten
-if (isset($_POST['update_group'])) {
+if ($csrf_ok && isset($_POST['update_group'])) {
     $new_budget = trim($_POST['budget']) ?: null;
     $new_description = trim($_POST['description']) ?: null;
     $new_gift_exchange_date = trim($_POST['gift_exchange_date']) ?: null;
@@ -256,7 +267,7 @@ if (isset($_POST['update_group'])) {
 }
 
 // Auslosung durchführen
-if (isset($_POST['draw'])) {
+if ($csrf_ok && isset($_POST['draw'])) {
     if (count($participants) < 2) {
         $draw_error = 'Es müssen mindestens 2 Teilnehmer vorhanden sein.';
     } else {
@@ -384,6 +395,12 @@ if (isset($_POST['draw'])) {
     <div class="container">
         <h1>Admin Bereich - <?php echo htmlspecialchars($group['name']); ?></h1>
         
+        <?php if (!empty($csrf_error)): ?>
+            <div class="notification error" role="alert" aria-live="assertive">
+                <?php echo htmlspecialchars($csrf_error); ?>
+            </div>
+        <?php endif; ?>
+
         <?php if (isset($update_error)): ?>
             <div class="notification error" role="alert" aria-live="assertive">
                 <?php echo htmlspecialchars($update_error); ?>
@@ -471,6 +488,7 @@ if (isset($_POST['draw'])) {
         <!-- Gruppendetails bearbeiten -->
         <h2>Gruppendetails</h2>
         <form method="POST" id="update-group-form">
+            <?php echo csrf_input(); ?>
             <div class="form-group">
                 <label for="budget">Budget (optional):</label>
                 <input type="number" step="0.01" id="budget" name="budget" value="<?php echo htmlspecialchars($group['budget'] ?? ''); ?>" placeholder="z.B. 20.00" aria-describedby="budget_hint">
@@ -563,6 +581,7 @@ if (isset($_POST['draw'])) {
                             $can_send_email = $group['is_drawn'] && !empty($p['email']) && !empty($p['assigned_to']);
                             ?>
                             <form method="POST" class="action-form resend-email-form">
+                                <?php echo csrf_input(); ?>
                                 <input type="hidden" name="participant_id" value="<?php echo $p['id']; ?>">
                                 <input type="hidden" name="resend_email" value="1">
                                 <button type="submit" 
@@ -577,18 +596,22 @@ if (isset($_POST['draw'])) {
                             </form>
                             
                             <?php if (!$group['is_drawn']): ?>
-                                <a href="admin.php?token=<?php echo urlencode($admin_token); ?>&delete=<?php echo urlencode($p['id']); ?>" 
-                                   class="action-btn delete-btn"
-                                   aria-label="<?php echo htmlspecialchars($p['name']); ?> löschen"
-                                   onclick="return confirm('Möchtest du <?php echo htmlspecialchars($p['name']); ?> wirklich löschen?');">
-                                    <span class="btn-icon" aria-hidden="true">🗑️</span>
-                                    <span class="btn-text">Löschen</span>
-                                </a>
+                                <form method="POST" class="action-form" onsubmit="return confirm('Möchtest du <?php echo htmlspecialchars($p['name']); ?> wirklich löschen?');">
+                                    <?php echo csrf_input(); ?>
+                                    <input type="hidden" name="delete_participant" value="<?php echo (int) $p['id']; ?>">
+                                    <button type="submit"
+                                            class="action-btn delete-btn"
+                                            aria-label="<?php echo htmlspecialchars($p['name']); ?> löschen">
+                                        <span class="btn-icon" aria-hidden="true">🗑️</span>
+                                        <span class="btn-text">Löschen</span>
+                                    </button>
+                                </form>
                             <?php endif; ?>
                         </div>
                         
                         <div class="participant-email-edit">
                             <form method="POST" class="email-edit-form">
+                                <?php echo csrf_input(); ?>
                                 <input type="hidden" name="participant_id" value="<?php echo $p['id']; ?>">
                                 <input type="hidden" name="update_participant_email" value="1">
                                 <div class="email-edit-group">
@@ -629,6 +652,7 @@ if (isset($_POST['draw'])) {
             <p>Lege fest, wer wem nicht wichteln kann. Dies ist nützlich, wenn z.B. Paare sich gegenseitig nicht beschenken sollen.</p>
             
             <form method="POST" class="exclusion-form">
+                <?php echo csrf_input(); ?>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="participant_id">Person:<span class="required-indicator" aria-hidden="true" title="Erforderlich">*</span></label>
@@ -674,12 +698,15 @@ if (isset($_POST['draw'])) {
                                 <td><?php echo htmlspecialchars($ex['participant_name']); ?></td>
                                 <td><?php echo htmlspecialchars($ex['excluded_name']); ?></td>
                                 <td>
-                                    <a href="admin.php?token=<?php echo urlencode($admin_token); ?>&delete_exclusion=<?php echo urlencode($ex['id']); ?>" 
-                                       class="button error small"
-                                       aria-label="Ausschluss löschen: <?php echo htmlspecialchars($ex['participant_name']); ?> darf nicht <?php echo htmlspecialchars($ex['excluded_name']); ?> wichteln"
-                                       onclick="return confirm('Möchtest du diesen Ausschluss wirklich löschen?');">
-                                        Löschen
-                                    </a>
+                                    <form method="POST" class="inline-action-form" onsubmit="return confirm('Möchtest du diesen Ausschluss wirklich löschen?');">
+                                        <?php echo csrf_input(); ?>
+                                        <input type="hidden" name="delete_exclusion" value="<?php echo (int) $ex['id']; ?>">
+                                        <button type="submit"
+                                                class="button error small"
+                                                aria-label="Ausschluss löschen: <?php echo htmlspecialchars($ex['participant_name']); ?> darf nicht <?php echo htmlspecialchars($ex['excluded_name']); ?> wichteln">
+                                            Löschen
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -700,6 +727,7 @@ if (isset($_POST['draw'])) {
             <h2>Auslosung durchführen</h2>
             <p>Wenn alle Teilnehmer registriert sind und alle Ausschlüsse definiert wurden, kannst du die Auslosung durchführen.</p>
             <form method="POST" style="margin-top: 1rem;" id="draw-form" onsubmit="return confirm('Möchtest du die Auslosung wirklich durchführen? Alle Teilnehmer mit hinterlegter E-Mail-Adresse werden sofort benachrichtigt.');">
+                <?php echo csrf_input(); ?>
                 <input type="hidden" name="draw" value="1">
                 <button type="submit" class="button primary">Jetzt auslosen</button>
             </form>
@@ -713,6 +741,7 @@ if (isset($_POST['draw'])) {
             <h3>Auslosung zurücksetzen</h3>
             <p class="text-muted">Du kannst die Auslosung zurücksetzen, um sie erneut durchzuführen. Dies löscht alle aktuellen Zuordnungen, und du kannst danach neue Teilnehmer hinzufügen oder Ausschlüsse ändern.</p>
             <form method="POST" style="margin-top: 1rem;" id="reset-draw-form" onsubmit="return confirm('Möchtest du die Auslosung wirklich zurücksetzen? Alle aktuellen Zuordnungen werden gelöscht.');">
+                <?php echo csrf_input(); ?>
                 <input type="hidden" name="reset_draw" value="1">
                 <button type="submit" class="button error">Auslosung zurücksetzen</button>
             </form>
@@ -723,6 +752,7 @@ if (isset($_POST['draw'])) {
         <h2 style="color: var(--error);"><span aria-hidden="true">⚠️</span> Gefahrenzone</h2>
         <p class="text-muted">Das Löschen der Gruppe kann nicht rückgängig gemacht werden. Alle Teilnehmer, Ausschlüsse und die Auslosung werden permanent gelöscht.</p>
         <form method="POST" style="margin-top: 1rem;" id="delete-group-form" onsubmit="return confirm('⚠️ ACHTUNG: Möchtest du die Gruppe \"<?php echo htmlspecialchars($group['name']); ?>\" wirklich PERMANENT löschen?\n\nAlle Teilnehmer, Ausschlüsse und die Auslosung werden unwiderruflich gelöscht!\n\nDiese Aktion kann NICHT rückgängig gemacht werden.');">
+            <?php echo csrf_input(); ?>
             <input type="hidden" name="delete_group" value="1">
             <button type="submit" class="button error" style="background: linear-gradient(135deg, #dc3545, #c82333);">
                 <span aria-hidden="true">🗑️</span> Gruppe permanent löschen

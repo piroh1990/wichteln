@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = trim($_POST['email']) ?: null;
 
     if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
-        $error = 'Ungültiger CSRF-Token. Bitte lade die Seite neu und versuche es erneut.';
+        $error = csrf_failure_message();
     } elseif (empty($name)) {
         $error = "Name darf nicht leer sein.";
     } elseif ($email !== null && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -120,7 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
         <?php endif; ?>
         <form method="POST" id="register-form">
-            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(get_csrf_token()); ?>">
+            <?php echo csrf_input(); ?>
             <div class="form-group">
                 <label for="name">Name:<span class="required-indicator" aria-hidden="true" title="Erforderlich">*</span></label>
                 <input type="text" id="name" name="name" required placeholder="Dein Name">

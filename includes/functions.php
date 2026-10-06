@@ -45,10 +45,55 @@ function verify_csrf_token($token) {
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
-    if (empty($token) || empty($_SESSION['csrf_token'])) {
+    if (!is_string($token) || $token === '' || empty($_SESSION['csrf_token']) || !is_string($_SESSION['csrf_token'])) {
         return false;
     }
     return hash_equals($_SESSION['csrf_token'], $token);
+}
+
+/**
+ * Versteckte Formularfelder für den CSRF-Token.
+ */
+function csrf_input() {
+    return '<input type="hidden" name="csrf_token" value="'
+        . htmlspecialchars(get_csrf_token(), ENT_QUOTES, 'UTF-8')
+        . '">';
+}
+
+/**
+ * Einheitliche Fehlermeldung, wenn ein CSRF-Token fehlt oder ungültig ist.
+ */
+function csrf_failure_message() {
+    return 'Ungültiger CSRF-Token. Bitte lade die Seite neu und versuche es erneut.';
+}
+
+/**
+ * Anfrage mit HTTP 403 und der CSRF-Fehlermeldung beenden.
+ */
+function abort_invalid_csrf() {
+    if (!headers_sent()) {
+        http_response_code(403);
+        header('Content-Type: text/html; charset=utf-8');
+    }
+    $message = htmlspecialchars(csrf_failure_message(), ENT_QUOTES, 'UTF-8');
+    echo '<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Sicherheitsprüfung</title></head><body><p>'
+        . $message
+        . '</p></body></html>';
+    exit;
+}
+
+/**
+ * Master-Admin-Token zeitkonstant vergleichen.
+ * Leere Tokens gelten nie als gültig.
+ */
+function master_admin_token_matches($provided) {
+    if (!is_string($provided) || $provided === '') {
+        return false;
+    }
+    if (!defined('MASTER_ADMIN_TOKEN') || !is_string(MASTER_ADMIN_TOKEN) || MASTER_ADMIN_TOKEN === '') {
+        return false;
+    }
+    return hash_equals(MASTER_ADMIN_TOKEN, $provided);
 }
 
 // E-Mail senden mit PHP's mail() Funktion
