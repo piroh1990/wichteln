@@ -228,6 +228,17 @@ run_test("encode_mail_subject: ASCII bleibt, Umlaute werden kodiert", function()
     assert_equals('ohneZeile', encode_mail_subject("ohne\r\nZeile"));
 });
 
+run_test("html_onsubmit_confirm: Attribut bricht nicht an Anführungszeichen", function() {
+    $attr = html_onsubmit_confirm("Die Auflösung wurde bereits am 06.10.2026 versendet.\n\nWirklich \"erneut\" senden?");
+    assert_true(strpos($attr, '"') === false, "No raw double quote in the attribute");
+    assert_true(strpos($attr, '&quot;') !== false, "Quotes are HTML-escaped");
+    assert_true(strpos($attr, 'return confirm(') !== false);
+    assert_true(strpos($attr, '\\n') !== false, "Newline stays inside the JavaScript string");
+    $decoded = html_entity_decode($attr, ENT_QUOTES, 'UTF-8');
+    assert_true(strpos($decoded, 'return confirm("') === 0, "Decoded handler is a confirm call");
+    assert_true(substr($decoded, -2) === ');');
+});
+
 run_test("format_reveal_sent_at: deutsches Datum", function() {
     assert_equals('06.10.2026, 18:30 Uhr', format_reveal_sent_at('2026-10-06 18:30:00'));
     assert_equals('', format_reveal_sent_at(''));

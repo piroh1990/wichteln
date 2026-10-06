@@ -847,7 +847,7 @@ if (isset($_SESSION['admin_flash']) && is_array($_SESSION['admin_flash'])) {
                     <?php endif; ?>
                 </p>
 
-                <form method="POST" id="reveal-form" onsubmit="return confirm(<?php echo json_encode($reveal_confirm, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE); ?>);">
+                <form method="POST" id="reveal-form" onsubmit="<?php echo html_onsubmit_confirm($reveal_confirm); ?>">
                     <?php echo csrf_input(); ?>
                     <input type="hidden" name="send_reveal" value="1">
                     <?php if ($reveal_already_sent): ?>

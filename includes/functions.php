@@ -628,6 +628,18 @@ function reveal_email_subject() {
     return 'Auflösung: Wer hat wem gewichtelt?';
 }
 
+/**
+ * onsubmit-Wert für confirm(), sicher in ein doppeltes HTML-Attribut gesetzt.
+ * json_encode lässt die umschließenden Anführungszeichen stehen; die werden hier escaped.
+ */
+function html_onsubmit_confirm($message) {
+    $script = 'return confirm(' . json_encode(
+        (string) $message,
+        JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+    ) . ');';
+    return htmlspecialchars($script, ENT_QUOTES, 'UTF-8');
+}
+
 function format_reveal_sent_at($value) {
     if (!is_string($value) && !is_numeric($value)) {
         return '';
