@@ -2831,6 +2831,157 @@ a.button:disabled {
     margin: 0;
 }
 
+/* Auflösung im Admin und auf der Teilnehmerseite */
+.reveal-panel {
+    background: linear-gradient(180deg, rgba(244, 162, 97, 0.14), #ffffff 42%);
+    border: 1px solid rgba(244, 162, 97, 0.55);
+    border-left: 4px solid var(--accent-color);
+    border-radius: 16px;
+    padding: 1.5rem 1.5rem 1.35rem;
+    margin: 0.5rem 0 2rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.reveal-panel-header {
+    display: flex;
+    gap: 0.9rem;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+}
+
+.reveal-panel-icon {
+    font-size: 1.75rem;
+    line-height: 1;
+}
+
+.reveal-panel h2 {
+    margin: 0 0 0.25rem;
+    font-family: 'Playfair Display', serif;
+    color: var(--secondary-dark);
+}
+
+.reveal-panel-text {
+    margin: 0;
+    color: var(--text-secondary);
+}
+
+.reveal-sent-note {
+    margin: 0 0 0.9rem;
+    padding: 0.75rem 1rem;
+    background: rgba(42, 157, 143, 0.1);
+    border-radius: 10px;
+    color: var(--secondary-dark);
+    font-weight: 600;
+}
+
+.reveal-confirm-label {
+    display: flex;
+    gap: 0.7rem;
+    align-items: flex-start;
+    margin: 0 0 1rem;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    color: var(--text-primary);
+}
+
+.reveal-confirm-label input {
+    margin-top: 0.25rem;
+    flex-shrink: 0;
+}
+
+.reveal-panel .button {
+    margin-top: 0.35rem;
+}
+
+.reveal-panel form {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    box-shadow: none;
+}
+
+.reveal-panel h2 {
+    margin-top: 0;
+    padding-bottom: 0.35rem;
+}
+
+.group-reveal {
+    margin-top: 1.75rem;
+    padding-top: 1.25rem;
+    border-top: 2px solid rgba(240, 147, 251, 0.45);
+}
+
+.group-reveal-title {
+    margin: 0 0 0.35rem;
+    font-family: 'Playfair Display', serif;
+    color: var(--primary-color);
+}
+
+.reveal-pair-list {
+    list-style: none;
+    margin: 0.75rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.reveal-pair {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem 0.85rem;
+    padding: 0.85rem 1rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border-left: 4px solid var(--secondary-color);
+}
+
+.reveal-pair.is-you {
+    background: rgba(230, 57, 70, 0.07);
+    border-left-color: var(--primary-color);
+}
+
+.reveal-pair-person {
+    min-width: 8rem;
+}
+
+.reveal-pair-role {
+    display: block;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+}
+
+.reveal-pair-name {
+    font-weight: 700;
+    color: var(--secondary-dark);
+    word-break: break-word;
+}
+
+.reveal-pair.is-you .reveal-pair-name {
+    color: var(--primary-color);
+}
+
+.reveal-pair-arrow {
+    color: var(--primary-color);
+    font-weight: 700;
+    font-size: 1.15rem;
+}
+
+@media (max-width: 600px) {
+    .reveal-panel {
+        padding: 1.15rem;
+    }
+
+    .reveal-pair {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
 .ad-test-placeholder {
     background: #e3f2fd;
     border: 3px dashed #2196F3;
