@@ -18,18 +18,33 @@ define('COOKIE_MAX_TOKENS', 10); // Maximale Anzahl gespeicherter Tokens pro Coo
 define('MATOMO_URL', '//analytics.site.ch/'); // URL deiner Matomo Installation
 define('MATOMO_SITE_ID', '1'); // Deine Matomo Site ID
 
-// Google Ads Einstellungen
-define('GOOGLE_ADS_ENABLED', true); // Auf true setzen um Google Ads zu aktivieren (auch für Test-Modus!)
-define('GOOGLE_ADS_TESTING', true); // Auf true für Test-Modus (zeigt BLAUE Platzhalter statt echte Ads)
-define('GOOGLE_ADS_CLIENT', 'ca-pub-XXXXXXXXXXXXXXXXX'); // Deine Google AdSense Publisher ID
-define('GOOGLE_ADS_SLOT_OPTION1', '1234567890'); // Ad Slot ID für Position 1 (nach Wichtelpartner)
-define('GOOGLE_ADS_SLOT_OPTION2', '0987654321'); // Ad Slot ID für Position 2 (am Ende der Seite)
-define('GOOGLE_ADS_SLOT_OPTION3', '1122334455'); // Ad Slot ID für Position 3 (Sidebar Desktop)
+// Google AdSense
+// Produktiv erst nach AdSense-Freigabe, echten ca-pub- und Slot-IDs und
+// veröffentlichter Einwilligungsnachricht. Vorher false lassen.
+// Layout-Prüfung: GOOGLE_ADS_ENABLED und GOOGLE_ADS_TESTING beide true.
+// Der Testmodus zeigt die Markierung «Anzeige» und einen Platzhalter,
+// lädt aber kein adsbygoogle.js.
+define('GOOGLE_ADS_ENABLED', false);
+define('GOOGLE_ADS_TESTING', false);
+define('GOOGLE_ADS_CLIENT', 'ca-pub-XXXXXXXXXXXXXXXXX'); // echte Publisher-ID, z. B. ca-pub-1234567890123456
+define('GOOGLE_ADS_SLOT_OPTION1', '1234567890'); // Slot 1: Startseite, unter dem Hero, vor «So funktioniert's»
+define('GOOGLE_ADS_SLOT_OPTION2', '0987654321'); // Slot 2: was-ist-wichteln.php, nach dem Text, vor dem Footer
+define('GOOGLE_ADS_SLOT_OPTION3', ''); // ungenutzt
 
-// Google Ads Positionssteuerung (einzeln ein-/ausschaltbar)
-define('GOOGLE_ADS_SHOW_OPTION1', true); // Position 1: Nach Wichtelpartner-Bereich
-define('GOOGLE_ADS_SHOW_OPTION2', true); // Position 2: Am Ende der Seite (vor Footer)
-define('GOOGLE_ADS_SHOW_OPTION3', true); // Position 3: Sidebar (nur Desktop, experimentell)
+// Genau zwei öffentliche Slots. Option 3 bleibt aus. Kein Slot im Teilnehmerbereich.
+define('GOOGLE_ADS_SHOW_OPTION1', true);
+define('GOOGLE_ADS_SHOW_OPTION2', true);
+define('GOOGLE_ADS_SHOW_OPTION3', false);
+
+// Google-CMP (Funding Choices) über AdSense → Privacy & messaging.
+// true nur zusammen mit einer echten ca-pub-ID. Sonst lädt kein AdSense-Skript.
+// Einrichtung in der AdSense-Konsole:
+// 1. Privacy & messaging öffnen.
+// 2. Europäische Vorschriften (TCF / Funding Choices) für Schweiz, EWR und UK anlegen.
+// 3. Nachricht veröffentlichen und Consent Mode für Werbung aktivieren.
+// 4. Diesen Schalter erst danach auf true setzen.
+// Der eigene Cookie-Hinweis schaltet keine Anzeigen frei.
+define('GOOGLE_CMP_ENABLED', false);
 
 // Master Admin Token (Generiere ein sicheres, zufälliges Token)
 define('MASTER_ADMIN_TOKEN', 'generate_a_secure_random_token_here');

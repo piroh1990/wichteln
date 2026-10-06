@@ -113,6 +113,12 @@
         </div>
     </section>
 
+    <?php
+    $position = 1;
+    $label = 'Startseite, unter dem Hero';
+    include __DIR__ . '/../includes/templates/google_ads.php';
+    ?>
+
     <!-- How It Works Section -->
     <section class="how-it-works">
         <div class="container">

@@ -182,6 +182,12 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
             </div>
         </article>
     </div>
+
+    <?php
+    $position = 2;
+    $label = 'Was ist Wichteln, nach dem Text';
+    include __DIR__ . '/../includes/templates/google_ads.php';
+    ?>
     
     <footer class="site-footer">
         <div class="footer-container">
