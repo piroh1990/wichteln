@@ -272,6 +272,7 @@ Content-Type: application/json
     "id": 1,
     "name": "John Doe",
     "token": "...",
+    "participant_token": "...",
     "participant_link": "https://wichtlä.ch/participant.php?token=..."
   }
 }
@@ -554,19 +555,30 @@ All responses follow this format:
 
 ## 🚦 Rate Limiting
 
-- **Limit:** 60 requests per minute per IP
+- **Limit:** 60 requests per minute per IP (`API_RATE_LIMIT`)
 - **Header on exceeded:** `429 Too Many Requests`
+- Counters live in `logs/rate-limit/` (outside `public/`) and are updated with an exclusive file lock. `logs/` must be writable by PHP.
 
 ## 🔧 CORS (Cross-Origin Resource Sharing)
 
-The API supports CORS for cross-domain requests.
+Browser clients only receive `Access-Control-Allow-Origin` when their `Origin` header is on the allowlist. The wildcard `*` is ignored. Non-browser clients (for example the Android app) are unaffected, because they do not enforce CORS.
+
+Origins must match exactly, including scheme and port, without a trailing slash. Browsers send internationalized hosts as punycode.
 
 **Configuration in `includes/api_config.php`:**
 ```php
-define('API_ALLOW_ORIGIN', '*'); // Or specific domain
+define('API_ALLOW_ORIGINS', [
+    'https://wichtlä.ch',
+    'https://www.wichtlä.ch',
+    'https://xn--wichtl-gua.ch',
+    'https://www.xn--wichtl-gua.ch',
+    // 'http://localhost:8080',
+]);
 define('API_ALLOW_METHODS', 'GET, POST, PUT, DELETE, OPTIONS');
 define('API_ALLOW_HEADERS', 'Content-Type, Authorization, X-API-Token');
 ```
+
+A legacy single value `API_ALLOW_ORIGIN` is still read when it is a concrete origin. `API_ALLOW_ORIGIN = '*'` is ignored.
 
 ## 📝 Logging
 

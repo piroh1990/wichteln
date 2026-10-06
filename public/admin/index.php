@@ -3,32 +3,70 @@
 
 require_once __DIR__ . '/../../includes/functions.php';
 
-// Überprüfen, ob das master_token korrekt ist
-$master_token = $_GET['master_token'] ?? '';
+if (session_status() === PHP_SESSION_NONE) {
+    $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => '/',
+        'secure' => $secure,
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+    session_start();
+}
 
-if ($master_token !== MASTER_ADMIN_TOKEN) {
+// Token einmal akzeptieren (GET oder POST, alte Links bleiben gültig) und in der Session merken.
+$provided_token = '';
+if (isset($_POST['master_token']) && is_string($_POST['master_token'])) {
+    $provided_token = $_POST['master_token'];
+} elseif (isset($_GET['master_token']) && is_string($_GET['master_token'])) {
+    $provided_token = $_GET['master_token'];
+}
+
+if (master_admin_token_matches($provided_token)) {
+    if (empty($_SESSION['master_admin_authenticated'])) {
+        session_regenerate_id(true);
+    }
+    $_SESSION['master_admin_authenticated'] = true;
+}
+
+// Token aus der Adresszeile entfernen, damit er nicht in History, Logs oder Referrer bleibt.
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['master_token'])) {
+    $params = $_GET;
+    unset($params['master_token'], $params['action'], $params['group_id']);
+    $target = 'index.php';
+    if (!empty($params)) {
+        $target .= '?' . http_build_query($params);
+    }
+    header('Location: ' . $target);
+    exit;
+}
+
+if (empty($_SESSION['master_admin_authenticated'])) {
+    http_response_code(403);
     die('Zugriff verweigert. Ungültiges Master-Token.');
 }
 
 $pdo = db_connect();
 
-// Helper: URL mit master_token und Parametern bauen
-function admin_url($master_token, $params = []) {
-    $params['master_token'] = $master_token;
+// Helper: URL ohne Master-Token bauen (die Session hält die Anmeldung).
+function admin_url($params = []) {
+    if (empty($params)) {
+        return 'index.php';
+    }
     return 'index.php?' . http_build_query($params);
 }
 
 // Helper: Pagination rendern
-function render_pagination($current_page, $total_pages, $param_name, $master_token, $other_params = []) {
+function render_pagination($current_page, $total_pages, $param_name, $other_params = []) {
     if ($total_pages <= 1) return;
 
-    $max_visible = 7;
     echo '<nav class="pagination">';
 
     // Previous
     $prev_class = $current_page <= 1 ? ' disabled' : '';
     $prev_params = array_merge($other_params, [$param_name => $current_page - 1]);
-    echo '<a href="' . ($current_page > 1 ? htmlspecialchars(admin_url($master_token, $prev_params)) : '#') . '" class="pagination-link' . $prev_class . '">&larr; Vorherige</a>';
+    echo '<a href="' . ($current_page > 1 ? htmlspecialchars(admin_url($prev_params)) : '#') . '" class="pagination-link' . $prev_class . '">&larr; Vorherige</a>';
 
     // Page numbers with ellipsis
     $start = max(1, $current_page - 2);
@@ -37,27 +75,27 @@ function render_pagination($current_page, $total_pages, $param_name, $master_tok
     // Always show first page
     if ($start > 1) {
         $p = array_merge($other_params, [$param_name => 1]);
-        echo '<a href="' . htmlspecialchars(admin_url($master_token, $p)) . '" class="pagination-link">1</a>';
+        echo '<a href="' . htmlspecialchars(admin_url($p)) . '" class="pagination-link">1</a>';
         if ($start > 2) echo '<span class="pagination-ellipsis">&hellip;</span>';
     }
 
     for ($i = $start; $i <= $end; $i++) {
         $active = $i === $current_page ? ' active' : '';
         $p = array_merge($other_params, [$param_name => $i]);
-        echo '<a href="' . htmlspecialchars(admin_url($master_token, $p)) . '" class="pagination-link' . $active . '">' . $i . '</a>';
+        echo '<a href="' . htmlspecialchars(admin_url($p)) . '" class="pagination-link' . $active . '">' . $i . '</a>';
     }
 
     // Always show last page
     if ($end < $total_pages) {
         if ($end < $total_pages - 1) echo '<span class="pagination-ellipsis">&hellip;</span>';
         $p = array_merge($other_params, [$param_name => $total_pages]);
-        echo '<a href="' . htmlspecialchars(admin_url($master_token, $p)) . '" class="pagination-link">' . $total_pages . '</a>';
+        echo '<a href="' . htmlspecialchars(admin_url($p)) . '" class="pagination-link">' . $total_pages . '</a>';
     }
 
     // Next
     $next_class = $current_page >= $total_pages ? ' disabled' : '';
     $next_params = array_merge($other_params, [$param_name => $current_page + 1]);
-    echo '<a href="' . ($current_page < $total_pages ? htmlspecialchars(admin_url($master_token, $next_params)) : '#') . '" class="pagination-link' . $next_class . '">N&auml;chste &rarr;</a>';
+    echo '<a href="' . ($current_page < $total_pages ? htmlspecialchars(admin_url($next_params)) : '#') . '" class="pagination-link' . $next_class . '">N&auml;chste &rarr;</a>';
 
     echo '</nav>';
 }
@@ -68,48 +106,98 @@ $archive_page = max(1, intval($_GET['archive_page'] ?? 1));
 $per_page = 12;
 $archive_per_page = 15;
 
-// Aktionen: Reset oder Löschen einer Gruppe über GET-Parameter
-if (isset($_GET['action']) && isset($_GET['group_id'])) {
-    $action = $_GET['action'];
-    $group_id = intval($_GET['group_id']);
+// Zustandsändernde Aktionen nur per POST und mit gültigem CSRF-Token.
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
+    if (!verify_csrf_token(isset($_POST['csrf_token']) ? $_POST['csrf_token'] : '')) {
+        $error = csrf_failure_message();
+    } else {
+        $_SESSION = [];
+        if (ini_get('session.use_cookies')) {
+            $cookie_params = session_get_cookie_params();
+            setcookie(session_name(), '', [
+                'expires' => time() - 42000,
+                'path' => $cookie_params['path'],
+                'domain' => $cookie_params['domain'],
+                'secure' => $cookie_params['secure'],
+                'httponly' => $cookie_params['httponly'],
+                'samesite' => !empty($cookie_params['samesite']) ? $cookie_params['samesite'] : 'Lax',
+            ]);
+        }
+        session_destroy();
+        http_response_code(200);
+        echo '<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Abgemeldet</title></head><body><p>Du wurdest abgemeldet. Für einen erneuten Zugriff den Master-Admin-Link verwenden.</p></body></html>';
+        exit;
+    }
+}
 
-    if ($action === 'reset') {
-        // Gruppe zurücksetzen: is_drawn auf 0 setzen und assigned_to in Teilnehmern leeren
-        $pdo->beginTransaction();
-        try {
-            $stmt = $pdo->prepare("UPDATE `groups` SET `is_drawn` = 0 WHERE `id` = ?");
-            $stmt->execute([$group_id]);
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'], $_POST['group_id'])) {
+    if (!verify_csrf_token(isset($_POST['csrf_token']) ? $_POST['csrf_token'] : '')) {
+        $error = csrf_failure_message();
+    } else {
+        $action = $_POST['action'];
+        $group_id = intval($_POST['group_id']);
 
-            $stmt = $pdo->prepare("UPDATE `participants` SET `assigned_to` = NULL WHERE `group_id` = ?");
-            $stmt->execute([$group_id]);
+        if ($action === 'reset') {
+            // Gruppe zurücksetzen: is_drawn auf 0 setzen und assigned_to in Teilnehmern leeren
+            $pdo->beginTransaction();
+            try {
+                $stmt = $pdo->prepare("UPDATE `groups` SET `is_drawn` = 0 WHERE `id` = ?");
+                $stmt->execute([$group_id]);
 
-            $pdo->commit();
-            $message = "Gruppe erfolgreich zurückgesetzt.";
-        } catch (Exception $e) {
-            $pdo->rollBack();
-            $error = "Fehler beim Zurücksetzen der Gruppe: " . $e->getMessage();
+                $stmt = $pdo->prepare("UPDATE `participants` SET `assigned_to` = NULL WHERE `group_id` = ?");
+                $stmt->execute([$group_id]);
+
+                $pdo->commit();
+                $message = "Gruppe erfolgreich zurückgesetzt.";
+            } catch (Exception $e) {
+                $pdo->rollBack();
+                $error = "Fehler beim Zurücksetzen der Gruppe: " . $e->getMessage();
+            }
+        }
+
+        if ($action === 'delete') {
+            $pdo->beginTransaction();
+            try {
+                $stmt = $pdo->prepare("UPDATE `participants` SET `assigned_to` = NULL WHERE `group_id` = ?");
+                $stmt->execute([$group_id]);
+
+                $stmt = $pdo->prepare("DELETE FROM `participants` WHERE `group_id` = ?");
+                $stmt->execute([$group_id]);
+
+                $stmt = $pdo->prepare("DELETE FROM `groups` WHERE `id` = ?");
+                $stmt->execute([$group_id]);
+
+                $pdo->commit();
+                $message = "Gruppe erfolgreich gelöscht.";
+            } catch (Exception $e) {
+                $pdo->rollBack();
+                $error = "Fehler beim Löschen der Gruppe: " . $e->getMessage();
+            }
+        }
+
+        if (isset($message) || isset($error)) {
+            $_SESSION['master_admin_flash'] = [
+                'type' => isset($message) ? 'success' : 'error',
+                'text' => isset($message) ? $message : $error,
+            ];
+            header('Location: ' . admin_url(['page' => $page, 'archive_page' => $archive_page]));
+            exit;
         }
     }
+}
 
-    if ($action === 'delete') {
-        $pdo->beginTransaction();
-        try {
-            $stmt = $pdo->prepare("UPDATE `participants` SET `assigned_to` = NULL WHERE `group_id` = ?");
-            $stmt->execute([$group_id]);
-
-            $stmt = $pdo->prepare("DELETE FROM `participants` WHERE `group_id` = ?");
-            $stmt->execute([$group_id]);
-
-            $stmt = $pdo->prepare("DELETE FROM `groups` WHERE `id` = ?");
-            $stmt->execute([$group_id]);
-
-            $pdo->commit();
-            $message = "Gruppe erfolgreich gelöscht.";
-        } catch (Exception $e) {
-            $pdo->rollBack();
-            $error = "Fehler beim Löschen der Gruppe: " . $e->getMessage();
-        }
+if (!empty($_SESSION['master_admin_flash']) && is_array($_SESSION['master_admin_flash'])) {
+    $flash = $_SESSION['master_admin_flash'];
+    unset($_SESSION['master_admin_flash']);
+    if (($flash['type'] ?? '') === 'success') {
+        $message = $flash['text'] ?? '';
+    } else {
+        $error = $flash['text'] ?? '';
     }
+}
+
+if (isset($_GET['action'], $_GET['group_id']) && !isset($message) && !isset($error)) {
+    $error = 'Diese Aktion ist nur noch über die Schaltflächen auf dieser Seite möglich. Bitte lade die Seite neu.';
 }
 
 // ============================================================
@@ -286,6 +374,10 @@ $month_names = [
         <img src="https://xn--wichtl-gua.ch/images/logo.png" alt="Wichtel Logo">
         <h1>Admin Control Panel</h1>
         <p>Gesamtübersicht aller Wichtel-Gruppen</p>
+        <form method="POST" action="index.php" class="master-logout">
+            <?php echo csrf_input(); ?>
+            <button type="submit" name="logout" value="1">Abmelden</button>
+        </form>
     </div>
 
     <div class="admin-container">
@@ -489,28 +581,34 @@ $month_names = [
                             <div class="group-actions">
                                 <a href="https://xn--wichtl-gua.ch/admin.php?token=<?php echo urlencode($group['admin_token']); ?>"
                                    class="btn btn-primary">
-                                    <img src="https://xn--wichtl-gua.ch/images/icon-admin.svg" alt="Verwalten" width="16" height="16">
+                                    <img src="https://xn--wichtl-gua.ch/images/icon-admin.svg" alt="" aria-hidden="true" width="16" height="16">
                                     Verwalten
                                 </a>
 
-                                <a href="<?php echo htmlspecialchars(admin_url($master_token, ['action' => 'reset', 'group_id' => $group['id'], 'page' => $page, 'archive_page' => $archive_page])); ?>"
-                                   class="btn btn-secondary"
-                                   onclick="return confirm('Möchtest du die Gruppe &quot;<?php echo htmlspecialchars($group['name']); ?>&quot; wirklich zurücksetzen?');">
-                                    <img src="https://xn--wichtl-gua.ch/images/icon-reset.svg" alt="Reset" width="16" height="16">
-                                    Reset
-                                </a>
+                                <form method="POST" class="group-action-form" action="<?php echo htmlspecialchars(admin_url(['page' => $page, 'archive_page' => $archive_page])); ?>" onsubmit="return confirm('Möchtest du die Gruppe &quot;<?php echo htmlspecialchars($group['name']); ?>&quot; wirklich zurücksetzen?');">
+                                    <?php echo csrf_input(); ?>
+                                    <input type="hidden" name="action" value="reset">
+                                    <input type="hidden" name="group_id" value="<?php echo (int) $group['id']; ?>">
+                                    <button type="submit" class="btn btn-secondary">
+                                        <img src="https://xn--wichtl-gua.ch/images/icon-reset.svg" alt="" aria-hidden="true" width="16" height="16">
+                                        Reset
+                                    </button>
+                                </form>
 
-                                <a href="<?php echo htmlspecialchars(admin_url($master_token, ['action' => 'delete', 'group_id' => $group['id'], 'page' => $page, 'archive_page' => $archive_page])); ?>"
-                                   class="btn btn-danger"
-                                   onclick="return confirm('⚠️ WARNUNG: Möchtest du die Gruppe &quot;<?php echo htmlspecialchars($group['name']); ?>&quot; wirklich PERMANENT löschen?\n\nDiese Aktion kann NICHT rückgängig gemacht werden!');">
-                                    <img src="https://xn--wichtl-gua.ch/images/icon-delete.svg" alt="Delete" width="16" height="16">
-                                    Löschen
-                                </a>
+                                <form method="POST" class="group-action-form" action="<?php echo htmlspecialchars(admin_url(['page' => $page, 'archive_page' => $archive_page])); ?>" onsubmit="return confirm('⚠️ WARNUNG: Möchtest du die Gruppe &quot;<?php echo htmlspecialchars($group['name']); ?>&quot; wirklich PERMANENT löschen?\n\nDiese Aktion kann NICHT rückgängig gemacht werden!');">
+                                    <?php echo csrf_input(); ?>
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="group_id" value="<?php echo (int) $group['id']; ?>">
+                                    <button type="submit" class="btn btn-danger">
+                                        <img src="https://xn--wichtl-gua.ch/images/icon-delete.svg" alt="" aria-hidden="true" width="16" height="16">
+                                        Löschen
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     <?php endforeach; ?>
                 </div>
-                <?php render_pagination($page, $total_pages, 'page', $master_token, ['archive_page' => $archive_page]); ?>
+                <?php render_pagination($page, $total_pages, 'page', ['archive_page' => $archive_page]); ?>
             <?php else: ?>
                 <div class="empty-state">
                     <div class="empty-state-icon" aria-hidden="true">🎁</div>
@@ -577,7 +675,7 @@ $month_names = [
                         </tbody>
                     </table>
                 </div>
-                <?php render_pagination($archive_page, $total_archive_pages, 'archive_page', $master_token, ['page' => $page]); ?>
+                <?php render_pagination($archive_page, $total_archive_pages, 'archive_page', ['page' => $page]); ?>
             <?php else: ?>
                 <div class="empty-state">
                     <div class="empty-state-icon" aria-hidden="true">📊</div>

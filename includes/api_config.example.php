@@ -20,8 +20,20 @@ define('API_RATE_LIMIT', 60);
 define('API_ENABLED', true);
 
 // CORS Settings
-// WICHTIG: In Produktion spezifische Domain verwenden statt '*'
-define('API_ALLOW_ORIGIN', '*'); // z.B. 'https://yourapp.com'
+// Allowlist konkreter Origins. Der Wildcard '*' wird nicht mehr unterstützt
+// und von der API ignoriert. Browser senden den Origin-Header in Punycode,
+// also https://xn--wichtl-gua.ch statt https://wichtlä.ch.
+// Schema, Host und Port müssen exakt übereinstimmen, ohne abschliessenden Slash.
+// Weitere Origins (z.B. eine App oder http://localhost:8080) hier ergänzen.
+define('API_ALLOW_ORIGINS', [
+    'https://wichtlä.ch',
+    'https://www.wichtlä.ch',
+    'https://xn--wichtl-gua.ch',
+    'https://www.xn--wichtl-gua.ch',
+]);
+// Veraltet: eine einzelne Origin. '*' wird ignoriert. Nur setzen, wenn
+// API_ALLOW_ORIGINS nicht verwendet wird.
+// define('API_ALLOW_ORIGIN', 'https://app.example.com');
 define('API_ALLOW_METHODS', 'GET, POST, PUT, DELETE, OPTIONS');
 define('API_ALLOW_HEADERS', 'Content-Type, Authorization, X-API-Token');
 

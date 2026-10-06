@@ -5,6 +5,7 @@ includes/api_config.php
 # Logs
 logs/*.log
 logs/api.log
+logs/rate-limit/
 *.log
 
 # Database backups and dumps
