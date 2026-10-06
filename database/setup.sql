@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS `groups` (
   `description` TEXT NULL COMMENT 'Beschreibung der Gruppe (optional)',
   `gift_exchange_date` DATE NULL COMMENT 'Datum der Geschenkübergabe (optional)',
   `is_drawn` TINYINT(1) DEFAULT 0 COMMENT 'Wurde bereits ausgelost? (0=Nein, 1=Ja)',
+  `reveal_sent_at` DATETIME NULL DEFAULT NULL COMMENT 'Zeitpunkt, zu dem die Auflösung an alle Teilnehmer gesendet wurde',
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Erstellungszeitpunkt',
   
   INDEX idx_admin_token (`admin_token`),

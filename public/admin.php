@@ -38,10 +38,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !verify_csrf_token(isset($_POST['cs
 
 // Auslosung zurücksetzen
 if ($csrf_ok && isset($_POST['reset_draw'])) {
+    $clear_reveal = mysql_column_exists($pdo, 'groups', 'reveal_sent_at')
+        ? ', `reveal_sent_at` = NULL'
+        : '';
     $pdo->beginTransaction();
     try {
-        // Setze is_drawn auf 0
-        $stmt = $pdo->prepare("UPDATE `groups` SET `is_drawn` = 0 WHERE `id` = ?");
+        // Setze is_drawn auf 0 und verwerfe eine frühere Auflösung.
+        // Die Spaltenprüfung steht vor der Transaktion, weil SHOW COLUMNS in MySQL implizit committed.
+        $stmt = $pdo->prepare("UPDATE `groups` SET `is_drawn` = 0" . $clear_reveal . " WHERE `id` = ?");
         $stmt->execute([$group['id']]);
         
         // Setze assigned_to auf NULL für alle Teilnehmer der Gruppe
@@ -357,6 +361,33 @@ if ($csrf_ok && isset($_POST['draw'])) {
         }
     }
 }
+
+// Auflösung an alle Teilnehmer senden
+$reveal_error = null;
+if ($csrf_ok && isset($_POST['send_reveal'])) {
+    if (!$group['is_drawn']) {
+        $reveal_error = 'Die Auslosung wurde noch nicht durchgeführt.';
+    } elseif (!mysql_column_exists($pdo, 'groups', 'reveal_sent_at')) {
+        $reveal_error = 'Die Auflösung kann noch nicht gespeichert werden. Bitte die Migration für groups.reveal_sent_at ausführen.';
+    } elseif (!empty($group['reveal_sent_at']) && (!isset($_POST['confirm_resend']) || $_POST['confirm_resend'] !== '1')) {
+        $reveal_error = 'Die Auflösung wurde bereits versendet. Bitte bestätige den erneuten Versand ausdrücklich.';
+    } else {
+        $reveal_result = deliver_group_reveal($participants, $group);
+        if ($reveal_result['status'] === 'ok') {
+            $stmt = $pdo->prepare("UPDATE `groups` SET `reveal_sent_at` = NOW() WHERE `id` = ?");
+            $stmt->execute([$group['id']]);
+        }
+        $_SESSION['admin_flash'] = reveal_result_message($reveal_result);
+        header("Location: admin.php?token=" . urlencode($admin_token));
+        exit();
+    }
+}
+
+$admin_flash = null;
+if (isset($_SESSION['admin_flash']) && is_array($_SESSION['admin_flash'])) {
+    $admin_flash = $_SESSION['admin_flash'];
+    unset($_SESSION['admin_flash']);
+}
 ?>
 <!DOCTYPE html>
 <html lang="de">
@@ -470,6 +501,25 @@ if ($csrf_ok && isset($_POST['draw'])) {
         <?php if (isset($email_error)): ?>
             <div class="notification error" role="alert" aria-live="assertive">
                 <?php echo htmlspecialchars($email_error); ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if (is_array($admin_flash) && !empty($admin_flash['text'])): ?>
+            <?php
+            $flash_type = 'success';
+            if (isset($admin_flash['type']) && in_array($admin_flash['type'], array('success', 'error', 'warning'), true)) {
+                $flash_type = $admin_flash['type'];
+            }
+            $flash_role = ($flash_type === 'error') ? 'alert' : 'status';
+            ?>
+            <div class="notification <?php echo htmlspecialchars($flash_type); ?>" role="<?php echo $flash_role; ?>" aria-live="<?php echo ($flash_type === 'error') ? 'assertive' : 'polite'; ?>">
+                <?php echo htmlspecialchars($admin_flash['text']); ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if (!empty($reveal_error)): ?>
+            <div class="notification error" role="alert" aria-live="assertive">
+                <?php echo htmlspecialchars($reveal_error); ?>
             </div>
         <?php endif; ?>
 
@@ -746,6 +796,73 @@ if ($csrf_ok && isset($_POST['draw'])) {
                 <button type="submit" class="button error">Auslosung zurücksetzen</button>
             </form>
         <?php endif; ?>
+
+        <!-- Auflösung an alle Teilnehmer -->
+        <?php
+        $reveal_already_sent = !empty($group['reveal_sent_at']);
+        $reveal_sent_label = $reveal_already_sent ? format_reveal_sent_at($group['reveal_sent_at']) : '';
+        if ($reveal_already_sent && $reveal_sent_label === '') {
+            $reveal_sent_label = (string) $group['reveal_sent_at'];
+        }
+        $reveal_stats = reveal_recipient_stats($participants);
+        if ($reveal_already_sent) {
+            $reveal_confirm = 'Die Auflösung wurde bereits am ' . $reveal_sent_label . " versendet.\n\nEin erneuter Versand schickt die komplette Liste noch einmal an alle Teilnehmer. Wirklich erneut senden?";
+        } else {
+            $reveal_confirm = "Die Auflösung verrät allen Teilnehmern, wer wem ein Geschenk gemacht hat. Das kann nicht rückgängig gemacht werden und nimmt die Überraschung vorweg.\n\nAuflösung jetzt an alle senden?";
+        }
+        ?>
+        <hr>
+        <section class="reveal-panel" aria-labelledby="reveal-heading">
+            <div class="reveal-panel-header">
+                <span class="reveal-panel-icon" aria-hidden="true">✨</span>
+                <div>
+                    <h2 id="reveal-heading">Auflösung</h2>
+                    <p class="reveal-panel-text" id="reveal-description">Schicke allen Teilnehmern die komplette Liste, wer wem ein Geschenk gemacht hat (Geber → Beschenkter).</p>
+                </div>
+            </div>
+
+            <?php if (!$group['is_drawn']): ?>
+                <p class="form-hint" id="reveal-hint">Der Versand ist erst möglich, wenn die Auslosung durchgeführt wurde.</p>
+                <button type="button" class="button primary" disabled aria-disabled="true" aria-describedby="reveal-hint">
+                    Auflösung an alle senden
+                </button>
+            <?php else: ?>
+                <?php if ($reveal_already_sent): ?>
+                    <p class="reveal-sent-note">
+                        <span aria-hidden="true">✓</span>
+                        Auflösung versendet am <?php echo htmlspecialchars($reveal_sent_label); ?>.
+                    </p>
+                <?php endif; ?>
+
+                <p class="form-hint" id="reveal-hint">
+                    <?php if ((int) $reveal_stats['with_email'] === 1): ?>
+                        Es wird 1 E-Mail versendet.
+                    <?php else: ?>
+                        Es werden <?php echo (int) $reveal_stats['with_email']; ?> E-Mails versendet.
+                    <?php endif; ?>
+                    <?php if ((int) $reveal_stats['without_email'] === 1): ?>
+                        1 Teilnehmer ohne E-Mail-Adresse erhält keine Mail.
+                    <?php elseif ((int) $reveal_stats['without_email'] > 1): ?>
+                        <?php echo (int) $reveal_stats['without_email']; ?> Teilnehmer ohne E-Mail-Adresse erhalten keine Mail.
+                    <?php endif; ?>
+                </p>
+
+                <form method="POST" id="reveal-form" onsubmit="<?php echo html_onsubmit_confirm($reveal_confirm); ?>">
+                    <?php echo csrf_input(); ?>
+                    <input type="hidden" name="send_reveal" value="1">
+                    <?php if ($reveal_already_sent): ?>
+                        <label class="reveal-confirm-label" for="confirm-resend">
+                            <input type="checkbox" id="confirm-resend" name="confirm_resend" value="1" required>
+                            <span>Ich möchte die Auflösung erneut senden. Sie wurde bereits verschickt und geht noch einmal an alle.</span>
+                        </label>
+                    <?php endif; ?>
+                    <button type="submit" class="button primary" aria-describedby="reveal-hint">
+                        <span aria-hidden="true"><?php echo $reveal_already_sent ? '↻' : '✨'; ?></span>
+                        <?php echo $reveal_already_sent ? 'Auflösung erneut senden' : 'Auflösung an alle senden'; ?>
+                    </button>
+                </form>
+            <?php endif; ?>
+        </section>
         
         <!-- Gruppe löschen -->
         <hr>
@@ -769,6 +886,7 @@ if ($csrf_ok && isset($_POST['draw'])) {
             handleFormSubmit(document.getElementById('update-group-form'), 'Wird aktualisiert...');
             handleFormSubmit(document.getElementById('reset-draw-form'), 'Wird zurückgesetzt...');
             handleFormSubmit(document.getElementById('delete-group-form'), 'Wird gelöscht...');
+            handleFormSubmit(document.getElementById('reveal-form'), 'Wird gesendet...');
 
             const exclusionForm = document.querySelector('.exclusion-form');
             if (exclusionForm) handleFormSubmit(exclusionForm, 'Wird hinzugefügt...');

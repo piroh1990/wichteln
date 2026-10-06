@@ -59,9 +59,12 @@ mysql -u DEIN_USER -p DEINE_DATENBANK < database/migration_add_created_at.sql
 mysql -u DEIN_USER -p DEINE_DATENBANK < database/migration_statistics.sql
 mysql -u DEIN_USER -p DEINE_DATENBANK < database/migration_enhance_statistics.sql
 mysql -u DEIN_USER -p DEINE_DATENBANK < database/migrations/20261006_rename_participant_token.sql
+mysql -u DEIN_USER -p DEINE_DATENBANK < database/migrations/20261006_add_reveal_sent_at.sql
 ```
 
-`migration_add_created_at.sql` und die Statistik-Migrationen sind für ältere Stände. Sind die Spalten schon da, die jeweilige Datei überspringen oder den Fehler ignorieren, wenn sie nicht idempotent ist. Die Token-Migration ist idempotent.
+`migration_add_created_at.sql` und die Statistik-Migrationen sind für ältere Stände. Sind die Spalten schon da, die jeweilige Datei überspringen oder den Fehler ignorieren, wenn sie nicht idempotent ist. Die Token-Migration und `20261006_add_reveal_sent_at.sql` sind idempotent.
+
+`groups.reveal_sent_at` merkt sich, wann die Auflösung an alle Teilnehmer ging. In phpMyAdmin die Datenbank links auswählen, den Inhalt der Datei ins SQL-Fenster einfügen und ausführen. Ein zweites Mal ausführen ändert nichts. Danach kann der Admin nach der Auslosung «Auflösung an alle senden» nutzen.
 
 Prüfung:
 
@@ -168,4 +171,6 @@ git pull
 3. Neue Konstanten aus den `*.example.php` in die echten Konfigurationsdateien übernehmen. Aktuell dazu: `API_ALLOW_ORIGINS` in `includes/api_config.php`, falls die API von einem Browser aus einer anderen Origin aufgerufen wird.
 4. Den PHP-Benutzer auf Schreibrecht für `logs/` prüfen.
 
-Ein ziehender Deploy ändert das Aussehen der Seiten nicht. Geändert haben sich Schutzmechanismen (CSRF, Master-Admin-Session, CORS-Allowlist) und die einheitliche Spalte `participant_token`.
+Ein Deploy der CSRF-Härtung ändert das Aussehen der Seiten nicht. Geändert haben sich dabei Schutzmechanismen (CSRF, Master-Admin-Session, CORS-Allowlist) und die einheitliche Spalte `participant_token`.
+
+Die Auflösung ergänzt im Admin nach der Auslosung die Schaltfläche «Auflösung an alle senden». Dafür muss `groups.reveal_sent_at` existieren (`database/migrations/20261006_add_reveal_sent_at.sql`). Ohne diese Spalte bleibt der Versand gesperrt, die übrige Verwaltung funktioniert weiter.

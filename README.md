@@ -14,6 +14,7 @@ A modern, user-friendly web application for organizing Secret Santa groups. Perf
 - 👥 **Participant Management** - Add, edit, and delete participants
 - 🚫 **Define Exclusions** - Specify who cannot be paired with whom (e.g., couples)
 - 🎲 **Smart Drawing** - Automatic assignment considering all exclusions
+- ✨ **Reveal** - After the draw, email every participant the full list of who gifted whom
 - 🔄 **Reset Drawing** - Repeat the draw if necessary
 - 🗑️ **Delete Group** - Secure deletion with warnings
 - 📱 **WhatsApp Sharing** - Share invitation links directly via WhatsApp
@@ -23,6 +24,7 @@ A modern, user-friendly web application for organizing Secret Santa groups. Perf
 - 🎁 **Wishlist** - Create and edit your own wishlist
 - 👤 **View Partner** - See your Secret Santa partner and their wishlist after the draw
 - 📬 **Email Notification** - Automatic notification when the draw is complete
+- 📜 **Full list** - After the admin sends the reveal, the participant page shows every pair
 
 ### Design & UX
 - 🎨 **Modern Design** - Beautiful gradients and animations
@@ -261,6 +263,7 @@ Email templates are located in `functions.php`:
 - `create_html_email()` - Partner Notification
 - `create_registration_email()` - Registration Confirmation
 - `create_admin_email()` - Admin Welcome Email
+- `create_reveal_email()` - Full reveal (giver → recipient) with a plain-text alternative
 
 ## 🔒 Security Notes
 

@@ -107,6 +107,7 @@ $show_group_selector = false;
 $participant = null;
 $group = null;
 $assigned = null;
+$reveal_pairs = array();
 
 // Wenn Token in URL vorhanden ist
 if (!empty($participant_token)) {
@@ -277,6 +278,13 @@ if ($participant) {
         $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `id` = ?");
         $stmt->execute([$participant['assigned_to']]);
         $assigned = $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // Volle Auflösung nur, nachdem der Admin sie an alle verschickt hat
+    if ($group && !empty($group['is_drawn']) && !empty($group['reveal_sent_at'])) {
+        $stmt = $pdo->prepare("SELECT `id`, `name`, `assigned_to` FROM `participants` WHERE `group_id` = ?");
+        $stmt->execute([$group['id']]);
+        $reveal_pairs = build_reveal_pairs($stmt->fetchAll(PDO::FETCH_ASSOC));
     }
     
     // Wunschliste aktualisieren
@@ -515,6 +523,37 @@ if ($show_group_selector) {
                 <?php else: ?>
                     <div class="notification error" role="alert" aria-live="assertive">
                         <span aria-hidden="true">⚠️</span> Dein Wichtelpartner konnte nicht gefunden werden.
+                    </div>
+                <?php endif; ?>
+
+                <?php if (!empty($reveal_pairs)): ?>
+                    <?php $reveal_sent_label = format_reveal_sent_at($group['reveal_sent_at']); ?>
+                    <div class="group-reveal">
+                        <h3 class="group-reveal-title">Auflösung</h3>
+                        <p class="section-description">
+                            <?php if ($reveal_sent_label !== ''): ?>
+                                Auflösung versendet am <?php echo htmlspecialchars($reveal_sent_label); ?>.
+                            <?php else: ?>
+                                Die Auflösung wurde an alle Teilnehmer gesendet.
+                            <?php endif; ?>
+                            So lief die Runde (Geber → Beschenkter):
+                        </p>
+                        <ul class="reveal-pair-list">
+                            <?php foreach ($reveal_pairs as $pair): ?>
+                                <?php $is_you = ((string) $pair['giver_id'] === (string) $participant['id']); ?>
+                                <li class="reveal-pair<?php echo $is_you ? ' is-you' : ''; ?>">
+                                    <span class="reveal-pair-person">
+                                        <span class="reveal-pair-role">Geber<?php echo $is_you ? ' (du)' : ''; ?></span>
+                                        <span class="reveal-pair-name"><?php echo htmlspecialchars($pair['giver_name']); ?></span>
+                                    </span>
+                                    <span class="reveal-pair-arrow" aria-hidden="true">→</span>
+                                    <span class="reveal-pair-person">
+                                        <span class="reveal-pair-role">Beschenkter</span>
+                                        <span class="reveal-pair-name"><?php echo htmlspecialchars($pair['receiver_name']); ?></span>
+                                    </span>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
                     </div>
                 <?php endif; ?>
             </div>
