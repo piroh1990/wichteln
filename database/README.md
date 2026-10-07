@@ -47,7 +47,7 @@ php -r "echo bin2hex(random_bytes(16));"
 - Enthält Admin- und Invite-Tokens
 - Optional: Budget, Beschreibung, Datum
 - `reveal_sent_at`: Zeitpunkt der Auflösungs-Mail (NULL = noch nicht versendet). Bestehende Datenbanken: `migrations/20261006_add_reveal_sent_at.sql`
-- `reminder_sent_at`: Zeitpunkt der Erinnerung an die Geschenkübergabe (NULL = noch nicht versendet). Bestehende Datenbanken: `migrations/20261007_add_reminder_sent_at.sql`
+- `reminder_sent_at`: Zeitpunkt, zu dem der Admin die Erinnerung an die Geschenkübergabe über den Knopf im Admin-Bereich gesendet hat (NULL = noch nicht versendet). Bestehende Datenbanken: `migrations/20261007_add_reminder_sent_at.sql`
 
 ### Participants
 - Speichert alle Teilnehmer

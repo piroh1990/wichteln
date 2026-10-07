@@ -424,18 +424,6 @@ function gift_reminder_sentence($days) {
     return 'Die Geschenkübergabe war vor ' . abs($days) . ' Tagen.';
 }
 
-function gift_reminder_due($gift_date, $reminder_sent_at, $today, $within_days) {
-    if (!empty($reminder_sent_at)) {
-        return false;
-    }
-    $days = gift_days_until($gift_date, $today);
-    if ($days === null) {
-        return false;
-    }
-    $within_days = (int) $within_days;
-    return $days >= 0 && $days <= $within_days;
-}
-
 function create_gift_reminder_email($data) {
     $name = isset($data['name']) ? $data['name'] : '';
     $group_name = isset($data['group_name']) ? $data['group_name'] : '';
