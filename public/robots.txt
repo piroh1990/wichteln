@@ -1,4 +1,16 @@
 User-agent: *
 Allow: /
 
+# Token-Seiten nicht crawlen. Die Pfade gelten auch mit Query-String.
+Disallow: /participant.php
+Disallow: /admin.php
+Disallow: /register.php
+Disallow: /kalender.php
+Disallow: /captcha.php
+Disallow: /api/
+Disallow: /*?token=
+Disallow: /*&token=
+Disallow: /*?rolle=
+Disallow: /*master_token=
+
 Sitemap: https://xn--wichtl-gua.ch/sitemap.xml

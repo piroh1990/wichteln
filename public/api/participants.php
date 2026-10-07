@@ -174,7 +174,8 @@ switch ($method) {
                 'participant_link' => $participant_link,
                 'budget' => $group_budget,
                 'description' => $group_description,
-                'gift_date' => $gift_date
+                'gift_date' => $gift_date,
+                'ics_url' => !empty($group['gift_exchange_date']) ? gift_ics_url('teilnehmer', $participant_token) : ''
             ]);
             send_email($email, $subject, $html_message, true);
         }
@@ -214,30 +215,20 @@ switch ($method) {
         $stmt->execute([$participant['group_id']]);
         $group = $stmt->fetch(PDO::FETCH_ASSOC);
         
-        // Nur Wunschliste vor Auslosung änderbar
-        $wishlist = $input['wishlist'] ?? $participant['wishlist'];
+        // Nach der Auslosung nur die Wunschliste, davor auch Name und E-Mail.
+        $wishlist = array_key_exists('wishlist', $input) ? $input['wishlist'] : $participant['wishlist'];
+        $wishlist = normalize_wishlist_text($wishlist);
         
         if ($group['is_drawn']) {
-            // Nach Auslosung nur Wunschliste aktualisieren
             $stmt = $pdo->prepare("UPDATE `participants` SET `wishlist` = ? WHERE `id` = ?");
             $stmt->execute([$wishlist, $participant['id']]);
-            
-            // E-Mail an denjenigen senden, der diesen Teilnehmer gezogen hat
-            if ($wishlist !== $participant['wishlist']) {
-                $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `assigned_to` = ? AND `group_id` = ?");
-                $stmt->execute([$participant['id'], $participant['group_id']]);
-                $giver = $stmt->fetch(PDO::FETCH_ASSOC);
-                
-                if ($giver && !empty($giver['email'])) {
-                    $subject = 'Wunschliste aktualisiert 🎁';
-                    $html_message = create_wishlist_update_email(
-                        $giver['name'],
-                        $participant['name'],
-                        $wishlist
-                    );
-                    send_email($giver['email'], $subject, $html_message, true);
-                }
-            }
+            dispatch_wishlist_giver_mail(
+                $pdo,
+                $participant,
+                true,
+                $participant['wishlist'],
+                $wishlist
+            );
         } else {
             // Vor Auslosung alle Felder aktualisieren
             $name = $input['name'] ?? $participant['name'];

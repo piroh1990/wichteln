@@ -167,7 +167,8 @@ if ($action === 'reset') {
                                 'wishlist' => $assigned['wishlist'] ?? '',
                                 'budget' => $group_budget,
                                 'description' => $group_description,
-                                'gift_date' => $gift_date
+                                'gift_date' => $gift_date,
+                                'ics_url' => !empty($group['gift_exchange_date']) ? gift_ics_url('teilnehmer', isset($participant['participant_token']) ? $participant['participant_token'] : '') : ''
                             ]);
                             
                             if (send_email($participant['email'], $subject, $html_message, true)) {

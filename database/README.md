@@ -7,7 +7,7 @@ Dieses Verzeichnis enthält alle SQL-Skripte für die Datenbank-Einrichtung.
 - **`init.sql`** - Erstellt Datenbank und Benutzer (als root ausführen)
 - **`setup.sql`** - Erstellt alle Tabellen und Indizes (Neuanlage)
 - **`migration_*.sql`** - Ältere, ergänzende Migrationen
-- **`migrations/`** - Idempotente Migrationen für bestehende Datenbanken (`participant_token`, `groups.reveal_sent_at`)
+- **`migrations/`** - Idempotente Migrationen für bestehende Datenbanken (`participant_token`, `groups.reveal_sent_at`, `groups.reminder_sent_at`)
 - **`backups/`** - Verzeichnis für Datenbank-Backups (nicht im Repository)
 
 Die Teilnehmerspalte heisst `participant_token`. Bestehende Datenbanken, die noch `participants.token` haben, mit `migrations/20261006_rename_participant_token.sql` umbenennen. Die Migration löscht keine Daten und ist bei wiederholtem Ausführen wirkungslos. Siehe `INSTALL.md`.
@@ -47,6 +47,7 @@ php -r "echo bin2hex(random_bytes(16));"
 - Enthält Admin- und Invite-Tokens
 - Optional: Budget, Beschreibung, Datum
 - `reveal_sent_at`: Zeitpunkt der Auflösungs-Mail (NULL = noch nicht versendet). Bestehende Datenbanken: `migrations/20261006_add_reveal_sent_at.sql`
+- `reminder_sent_at`: Zeitpunkt der Erinnerung an die Geschenkübergabe (NULL = noch nicht versendet). Bestehende Datenbanken: `migrations/20261007_add_reminder_sent_at.sql`
 
 ### Participants
 - Speichert alle Teilnehmer

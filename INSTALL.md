@@ -60,11 +60,14 @@ mysql -u DEIN_USER -p DEINE_DATENBANK < database/migration_statistics.sql
 mysql -u DEIN_USER -p DEINE_DATENBANK < database/migration_enhance_statistics.sql
 mysql -u DEIN_USER -p DEINE_DATENBANK < database/migrations/20261006_rename_participant_token.sql
 mysql -u DEIN_USER -p DEINE_DATENBANK < database/migrations/20261006_add_reveal_sent_at.sql
+mysql -u DEIN_USER -p DEINE_DATENBANK < database/migrations/20261007_add_reminder_sent_at.sql
 ```
 
 `migration_add_created_at.sql` und die Statistik-Migrationen sind für ältere Stände. Sind die Spalten schon da, die jeweilige Datei überspringen oder den Fehler ignorieren, wenn sie nicht idempotent ist. Die Token-Migration und `20261006_add_reveal_sent_at.sql` sind idempotent.
 
 `groups.reveal_sent_at` merkt sich, wann die Auflösung an alle Teilnehmer ging. In phpMyAdmin die Datenbank links auswählen, den Inhalt der Datei ins SQL-Fenster einfügen und ausführen. Ein zweites Mal ausführen ändert nichts. Danach kann der Admin nach der Auslosung «Auflösung an alle senden» nutzen.
+
+`groups.reminder_sent_at` merkt sich, wann die Erinnerung an die Geschenkübergabe gesendet wurde. Dieselbe phpMyAdmin-Schritte gelten für `database/migrations/20261007_add_reminder_sent_at.sql`. Ohne die Spalte bleibt der Erinnerungs-Knopf gesperrt.
 
 Prüfung:
 
@@ -152,6 +155,14 @@ Täglich, zum Beispiel um 03:15:
 ```
 
 Der PHP-CLI-Binary heisst auf manchen Hostern anders (`php8.2`, `php74`). `which php` zeigt den Pfad. Das Skript braucht `includes/config.php` und eine erreichbare Datenbank.
+
+## 5b. Cron für die Geschenk-Erinnerung
+
+`scripts/send_gift_reminders.php` mailt Teilnehmer mit E-Mail, wenn das Geschenkdatum heute oder in den nächsten 7 Tagen liegt und `reminder_sent_at` noch leer ist. Ein zweiter Lauf am selben Tag sendet nichts mehr. `--dry-run` zeigt nur, wen es treffen würde.
+
+```cron
+15 8 * * * /usr/bin/php /pfad/zu/wichteln/scripts/send_gift_reminders.php >> /pfad/zu/wichteln/logs/reminder.log 2>&1
+```
 
 ## 6. Prüfen
 

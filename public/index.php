@@ -90,7 +90,7 @@
                     </div>
                     <div class="hero-feature">
                         <span class="feature-icon-small" aria-hidden="true">⚖️</span>
-                        <span>Auschlüsse möglich</span>
+                        <span>Ausschlüsse möglich</span>
                     </div>
                     <div class="hero-feature">
                         <span class="feature-icon-small" aria-hidden="true">💰</span>
@@ -99,7 +99,7 @@
                 </div>
                 
                 <div class="hero-cta">
-                    <a href="create_group.php" class="cta-button cta-button-primary">
+                    <a href="/create_group" class="cta-button cta-button-primary">
                         <span>Jetzt Gruppe erstellen</span>
                         <span class="cta-arrow" aria-hidden="true">→</span>
                     </a>
@@ -164,7 +164,7 @@
             <div class="feature-grid">
                 <div class="feature-card">
                     <h3><span class="feature-icon" aria-hidden="true">🔒</span> Sicher & Privat</h3>
-                    <p>Deine Daten bleiben sicher. Niemand außer dir kennt alle Zuordnungen. Jeder Teilnehmer sieht nur seinen eigenen Wichtelpartner.</p>
+                    <p>Bis zur Auflösung sieht jede Person nur, wen sie beschenkt. Die komplette Liste verschickt der Admin erst mit der Auflösungs-Mail an alle Teilnehmer.</p>
                 </div>
                 
                 <div class="feature-card">
@@ -233,7 +233,7 @@
                         </button>
                     </h3>
                     <div id="faq-answer-3" class="faq-answer" role="region" aria-labelledby="faq-question-3">
-                        <p>Alle Teilnehmer mit E-Mail-Adresse erhalten automatisch eine Nachricht mit dem Namen ihres Wichtelpartners. Außerdem können sie jederzeit über ihren persönlichen Link nachschauen, wen sie beschenken.</p>
+                        <p>Alle Teilnehmer mit E-Mail-Adresse erhalten automatisch eine Nachricht mit dem Namen ihres Wichtelpartners. Über den persönlichen Link können sie jederzeit nachschauen, wen sie beschenken. Die komplette Liste bleibt geheim, bis der Admin die Auflösung an alle schickt.</p>
                     </div>
                 </div>
                 
@@ -281,7 +281,7 @@
         <div class="container">
             <h2>Bereit für dein Wichteln?</h2>
             <p>Starte jetzt und organisiere dein perfektes Wichteln in wenigen Minuten</p>
-            <a href="create_group.php" class="cta-button">Kostenlos Gruppe erstellen »</a>
+            <a href="/create_group" class="cta-button">Kostenlos Gruppe erstellen »</a>
         </div>
     </section>
 
@@ -291,25 +291,26 @@
                 <div class="footer-section">
                     <h4>Wichteln</h4>
                     <ul class="footer-links">
-                        <li><a href="was-ist-wichteln.php">Was ist Wichteln?</a></li>
-                        <li><a href="wichtel-ideen.php">Geschenkideen</a></li>
-                        <li><a href="firmenwichteln-tipps.php">Firmenwichteln</a></li>
-                        <li><a href="faq.php">FAQ</a></li>
+                        <li><a href="/was-ist-wichteln">Was ist Wichteln?</a></li>
+                        <li><a href="/wichtel-ideen">Geschenkideen</a></li>
+                        <li><a href="/firmenwichteln-tipps">Firmenwichteln</a></li>
+                        <li><a href="/faq">FAQ</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
                     <h4>Loslegen</h4>
                     <ul class="footer-links">
-                        <li><a href="create_group.php">Gruppe erstellen</a></li>
+                        <li><a href="/create_group">Gruppe erstellen</a></li>
+                        <li><a href="/admin-link">Admin-Link erneut senden</a></li>
                         <li><a href="participant.php">Teilnehmerbereich</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
                     <h4>Rechtliches</h4>
                     <ul class="footer-links">
-                        <li><a href="ueber-uns.php">Über uns</a></li>
-                        <li><a href="impressum.php">Impressum</a></li>
-                        <li><a href="datenschutz.php">Datenschutz</a></li>
+                        <li><a href="/ueber-uns">Über uns</a></li>
+                        <li><a href="/impressum">Impressum</a></li>
+                        <li><a href="/datenschutz">Datenschutz</a></li>
                     </ul>
                 </div>
             </div>

@@ -26,6 +26,10 @@
 
 require_once __DIR__ . '/../includes/functions.php';
 
+if (!headers_sent()) {
+    header('X-Robots-Tag: noindex, nofollow');
+}
+
 session_start();
 
 $pdo = db_connect();
@@ -197,10 +201,10 @@ if (!empty($participant_token)) {
             <div class="waiting-icon" aria-hidden="true">🏠</div>
             <h2>Was möchtest du tun?</h2>
             <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem; flex-wrap: wrap;">
-                <a href="index.php" class="cta-button cta-button-secondary">
+                <a href="/" class="cta-button cta-button-secondary">
                     <span>Zur Startseite</span>
                 </a>
-                <a href="create_group.php" class="cta-button cta-button-primary">
+                <a href="/create_group" class="cta-button cta-button-primary">
                     <span>Neue Gruppe erstellen</span>
                 </a>
             </div>
@@ -290,35 +294,26 @@ if ($participant) {
             abort_invalid_csrf();
         }
 
-        $wishlist = trim($_POST['wishlist']);
+        $wishlist = normalize_wishlist_text(isset($_POST['wishlist']) ? $_POST['wishlist'] : '');
         $old_wishlist = $participant['wishlist'] ?? '';
         
         $stmt = $pdo->prepare("UPDATE `participants` SET `wishlist` = ? WHERE `id` = ?");
         $stmt->execute([$wishlist, $participant['id']]);
-        
-        // Nach Auslosung: E-Mail an denjenigen senden, der diesen Teilnehmer gezogen hat (nur bei Änderung)
-        if ($group['is_drawn'] && $wishlist !== $old_wishlist) {
-            $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `assigned_to` = ? AND `group_id` = ?");
-            $stmt->execute([$participant['id'], $participant['group_id']]);
-            $giver = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            if ($giver && !empty($giver['email'])) {
-                $subject = 'Wunschliste aktualisiert 🎁';
-                $html_message = create_wishlist_update_email(
-                    $giver['name'],
-                    $participant['name'],
-                    $wishlist
-                );
-                send_email($giver['email'], $subject, $html_message, true);
-            }
-        }
+
+        $wishlist_status = dispatch_wishlist_giver_mail(
+            $pdo,
+            $participant,
+            !empty($group['is_drawn']),
+            $old_wishlist,
+            $wishlist
+        );
         
         // Teilnehmer neu abrufen
         $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `participant_token` = ?");
         $stmt->execute([$participant_token]);
         $participant = $stmt->fetch(PDO::FETCH_ASSOC);
         
-        $wishlist_success = "Deine Wunschliste wurde erfolgreich gespeichert.";
+        $wishlist_success = wishlist_update_notice($wishlist_status);
     }
 }
 
@@ -621,6 +616,9 @@ if ($show_group_selector) {
                     <span class="info-value">
                         <?php echo $group['gift_exchange_date'] ? date('d.m.Y', strtotime($group['gift_exchange_date'])) : "Nicht festgelegt"; ?>
                     </span>
+                    <?php if (!empty($group['gift_exchange_date']) && !empty($participant_token)): ?>
+                        <a class="button secondary small calendar-link" href="kalender.php?rolle=teilnehmer&amp;token=<?php echo urlencode($participant_token); ?>">In Kalender speichern</a>
+                    <?php endif; ?>
                 </div>
                 <?php if (!empty($group['description'])): ?>
                 <div class="group-info-item full-width">

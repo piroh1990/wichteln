@@ -3,6 +3,10 @@
 
 require_once __DIR__ . '/../includes/functions.php';
 
+if (!headers_sent()) {
+    header('X-Robots-Tag: noindex, nofollow');
+}
+
 // Session starten für CSRF-Token
 session_start();
 
@@ -53,7 +57,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 'participant_link' => $participant_link,
                 'budget' => $budget_display,
                 'description' => $description_display,
-                'gift_date' => $gift_exchange_date_display
+                'gift_date' => $gift_exchange_date_display,
+                'ics_url' => !empty($group['gift_exchange_date']) ? gift_ics_url('teilnehmer', $participant_token) : ''
             ]);
 
             if (!send_email($email, $subject, $html_message, true)) {

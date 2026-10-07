@@ -10,32 +10,33 @@
             <div class="footer-section">
                 <h4>Wichtel-Infos</h4>
                 <ul class="footer-links">
-                    <li><a href="was-ist-wichteln.php">Was ist Wichteln?</a></li>
-                    <li><a href="wichtel-ideen.php">Geschenkideen</a></li>
-                    <li><a href="firmenwichteln-tipps.php">Firmenwichteln</a></li>
-                    <li><a href="faq.php">FAQ</a></li>
+                    <li><a href="/was-ist-wichteln">Was ist Wichteln?</a></li>
+                    <li><a href="/wichtel-ideen">Geschenkideen</a></li>
+                    <li><a href="/firmenwichteln-tipps">Firmenwichteln</a></li>
+                    <li><a href="/faq">FAQ</a></li>
                 </ul>
             </div>
             
             <div class="footer-section">
                 <h4>Rechtliches</h4>
                 <ul class="footer-links">
-                    <li><a href="impressum.php">Impressum</a></li>
-                    <li><a href="datenschutz.php">Datenschutz</a></li>
+                    <li><a href="/impressum">Impressum</a></li>
+                    <li><a href="/datenschutz">Datenschutz</a></li>
                 </ul>
             </div>
             
             <div class="footer-section">
                 <h4>Wichteln starten</h4>
                 <ul class="footer-links">
-                    <li><a href="create_group.php">Neue Gruppe erstellen</a></li>
-                    <li><a href="index.php">Zur Startseite</a></li>
+                    <li><a href="/create_group">Neue Gruppe erstellen</a></li>
+                    <li><a href="/admin-link">Admin-Link erneut senden</a></li>
+                    <li><a href="/">Zur Startseite</a></li>
                 </ul>
             </div>
         </div>
         
         <div class="footer-bottom">
-            <p>&copy; <?php echo date('Y'); ?> Wichteln.ch - Alle Rechte vorbehalten</p>
+            <p>&copy; <?php echo date('Y'); ?> wichtlä.ch - Alle Rechte vorbehalten</p>
             <p class="footer-heart">Mit ❤️ in der Schweiz entwickelt</p>
         </div>
     </div>

@@ -3835,3 +3835,70 @@ button.faq-question {
         animation: none;
     }
 }
+
+.admin-checklist {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0;
+}
+
+.admin-checklist-item {
+    background: #f8f9fa;
+    border: 1px solid var(--border-color);
+    border-top: 3px solid var(--border-color);
+    border-radius: 12px;
+    padding: 0.85rem 1rem;
+}
+
+.admin-checklist-item.is-done {
+    border-top-color: var(--success);
+}
+
+.admin-checklist-item.is-ready {
+    border-top-color: var(--secondary-color);
+}
+
+.admin-checklist-item.is-wait {
+    border-top-color: var(--accent-color);
+}
+
+.admin-checklist-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+}
+
+.admin-checklist-item strong {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 1.05rem;
+    color: var(--secondary-dark);
+}
+
+.status-pill.is-ready {
+    background: rgba(42, 157, 143, 0.22);
+    border-color: rgba(167, 243, 208, 0.85);
+}
+
+.calendar-link {
+    margin-top: 0.65rem;
+}
+
+.bulk-import-form,
+.reminder-block {
+    margin-top: 1.25rem;
+}
+
+.bulk-import-name {
+    margin: 0 0 0.4rem;
+}
+
+.bulk-import-result .link-box + .link-box {
+    margin-top: 0.75rem;
+}

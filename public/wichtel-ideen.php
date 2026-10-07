@@ -11,10 +11,10 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Die besten Wichtel-Geschenkideen von 10-30 CHF: Kreative, lustige und praktische Geschenke für Kollegen, Freunde und Familie. Jetzt inspirieren lassen!">
     <meta name="keywords" content="Wichtelgeschenke, Geschenkideen Wichteln, Wichteln Ideen, Schrottwichteln Ideen, Wichtelgeschenk 10 CHF, Wichtelgeschenk 20 CHF">
-    <link rel="canonical" href="https://wichtlä.ch/wichtel-ideen.php">
+    <link rel="canonical" href="https://wichtlä.ch/wichtel-ideen">
     
     <meta property="og:type" content="article">
-    <meta property="og:url" content="https://wichtlä.ch/wichtel-ideen.php">
+    <meta property="og:url" content="https://wichtlä.ch/wichtel-ideen">
     <meta property="og:title" content="100+ Wichtel-Geschenkideen für 10-30 CHF">
     <meta property="og:description" content="Kreative, lustige und praktische Wichtelgeschenke für jeden Geschmack.">
     
@@ -42,9 +42,9 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
             "name": "Wichtlä.ch",
             "url": "https://xn--wichtl-gua.ch/"
         },
-        "url": "https://xn--wichtl-gua.ch/wichtel-ideen.php",
+        "url": "https://xn--wichtl-gua.ch/wichtel-ideen",
         "inLanguage": "de",
-        "mainEntityOfPage": "https://xn--wichtl-gua.ch/wichtel-ideen.php"
+        "mainEntityOfPage": "https://xn--wichtl-gua.ch/wichtel-ideen"
     }
     </script>
 
@@ -54,7 +54,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
     
     <div class="content-page">
         <div class="breadcrumb">
-            <a href="index.php">Home</a> / Geschenkideen
+            <a href="/">Home</a> / Geschenkideen
         </div>
         
         <header class="page-header">
@@ -336,7 +336,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
             <div class="cta-section">
                 <h2>Bereit für dein Wichteln?</h2>
                 <p>Organisiere dein Wichtel-Event in unter 2 Minuten – kostenlos und unkompliziert!</p>
-                <a href="create_group.php" class="cta-button-white">Jetzt Wichtel-Gruppe erstellen →</a>
+                <a href="/create_group" class="cta-button-white">Jetzt Wichtel-Gruppe erstellen →</a>
             </div>
         </article>
     </div>
@@ -347,25 +347,26 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                 <div class="footer-section">
                     <h4>Wichteln</h4>
                     <ul class="footer-links">
-                        <li><a href="was-ist-wichteln.php">Was ist Wichteln?</a></li>
-                        <li><a href="wichtel-ideen.php">Geschenkideen</a></li>
-                        <li><a href="firmenwichteln-tipps.php">Firmenwichteln</a></li>
-                        <li><a href="faq.php">FAQ</a></li>
+                        <li><a href="/was-ist-wichteln">Was ist Wichteln?</a></li>
+                        <li><a href="/wichtel-ideen">Geschenkideen</a></li>
+                        <li><a href="/firmenwichteln-tipps">Firmenwichteln</a></li>
+                        <li><a href="/faq">FAQ</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
                     <h4>Loslegen</h4>
                     <ul class="footer-links">
-                        <li><a href="create_group.php">Gruppe erstellen</a></li>
+                        <li><a href="/create_group">Gruppe erstellen</a></li>
+                        <li><a href="/admin-link">Admin-Link erneut senden</a></li>
                         <li><a href="participant.php">Teilnehmerbereich</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
                     <h4>Rechtliches</h4>
                     <ul class="footer-links">
-                        <li><a href="ueber-uns.php">Über uns</a></li>
-                        <li><a href="impressum.php">Impressum</a></li>
-                        <li><a href="datenschutz.php">Datenschutz</a></li>
+                        <li><a href="/ueber-uns">Über uns</a></li>
+                        <li><a href="/impressum">Impressum</a></li>
+                        <li><a href="/datenschutz">Datenschutz</a></li>
                     </ul>
                 </div>
             </div>

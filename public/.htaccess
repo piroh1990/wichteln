@@ -1,0 +1,14 @@
+# Saubere URLs für öffentliche Seiten.
+# /faq liefert faq.php aus. faq.php bleibt direkt erreichbar.
+# Document Root ist public/.
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    RewriteRule ^(faq|was-ist-wichteln|impressum|datenschutz|wichtel-ideen|firmenwichteln-tipps|ueber-uns|create_group|admin-link)/$ /$1 [R=301,L]
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(faq|was-ist-wichteln|impressum|datenschutz|wichtel-ideen|firmenwichteln-tipps|ueber-uns|create_group|admin-link)$ $1.php [L,QSA]
+</IfModule>
