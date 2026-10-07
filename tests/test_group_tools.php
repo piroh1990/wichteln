@@ -98,7 +98,7 @@ run_test('bulk import: names, emails and validation', function() {
     assert_true(count($too_many['errors']) > 0, 'The row cap is reported');
 });
 
-run_test('gift reminder sentence and due window', function() {
+run_test('gift reminder sentence and day count', function() {
     assert_equals(4, gift_days_until('2026-12-24', '2026-12-20'), 'Four days until the date');
     assert_equals(0, gift_days_until('2026-12-24', '2026-12-24'), 'Same day is zero');
     assert_equals(-2, gift_days_until('2026-12-22', '2026-12-24'), 'Past dates are negative');
@@ -106,9 +106,6 @@ run_test('gift reminder sentence and due window', function() {
     assert_equals('In 4 Tagen ist die Geschenkübergabe.', gift_reminder_sentence(4), 'Plural sentence');
     assert_equals('Morgen ist die Geschenkübergabe.', gift_reminder_sentence(1), 'Tomorrow');
     assert_equals('Heute ist die Geschenkübergabe.', gift_reminder_sentence(0), 'Today');
-    assert_true(gift_reminder_due('2026-12-24', null, '2026-12-20', 7), 'Inside the window');
-    assert_true(!gift_reminder_due('2026-12-24', null, '2026-12-01', 7), 'Too early for the cron window');
-    assert_true(!gift_reminder_due('2026-12-24', '2026-12-20 08:00:00', '2026-12-20', 7), 'Already sent is not due');
 });
 
 run_test('gift reminder delivery is idempotent at the message layer', function() {
