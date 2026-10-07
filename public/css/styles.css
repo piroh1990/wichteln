@@ -3032,22 +3032,6 @@ a.button:disabled {
     text-align: center;
 }
 
-.legal-placeholder {
-    display: inline-block;
-    margin: 0.15rem 0;
-    padding: 0.1rem 0.45rem;
-    background: #fff4e5;
-    border: 1px dashed #c47b00;
-    border-radius: 4px;
-    color: #8a4b00;
-    font-weight: 600;
-}
-
-.legal-placeholder-note {
-    color: var(--text-secondary);
-    font-size: 0.95rem;
-}
-
 /* Info Icon */
 .info-icon {
     font-size: 1rem;
