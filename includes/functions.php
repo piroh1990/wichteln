@@ -253,6 +253,7 @@ function create_html_email($data) {
     $budget = $data['budget'] ?? '';
     $description = $data['description'] ?? '';
     $gift_date = $data['gift_date'] ?? '';
+    $ics_url = $data['ics_url'] ?? '';
 
     $body = '
                             <!-- Greeting -->
@@ -309,12 +310,28 @@ function create_html_email($data) {
                                 </tr>
                             </table>
                             
+                            ' . email_calendar_paragraph($ics_url) . '
+                            
                             <!-- Closing -->
                             <p style="margin: 30px 0 0 0; color: #2b2d42; font-size: 16px; line-height: 1.6;">
                                 Viel Spaß beim Wichteln! 🎄
                             </p>';
     
     return render_email_template('Dein Wichtelpartner', 'Dein Wichtelpartner wurde ausgelost!', $body);
+}
+
+/**
+ * Button «In Kalender speichern», nur wenn eine Kalender-URL mitgegeben wird.
+ */
+function email_calendar_paragraph($url) {
+    if (!is_string($url) || $url === '') {
+        return '';
+    }
+    $safe = htmlspecialchars($url, ENT_QUOTES, 'UTF-8');
+    return '
+                            <p style="margin: 0 0 20px 0;">
+                                <a href="' . $safe . '" style="display: inline-block; padding: 12px 24px; background: #264653; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px;">In Kalender speichern</a>
+                            </p>';
 }
 
 // Funktion zum Erstellen einer Registrierungs-Bestätigungs-E-Mail
@@ -325,6 +342,7 @@ function create_registration_email($data) {
     $budget = $data['budget'] ?? '';
     $description = $data['description'] ?? '';
     $gift_date = $data['gift_date'] ?? '';
+    $ics_url = $data['ics_url'] ?? '';
 
     $body = '
                             <p style="margin: 0 0 20px 0; color: #2b2d42; font-size: 16px; line-height: 1.6;">
@@ -372,6 +390,8 @@ function create_registration_email($data) {
                                 </tr>
                             </table>
                             
+                            ' . email_calendar_paragraph($ics_url) . '
+                            
                             <!-- Tip Box -->
                             <table width="100%" cellpadding="0" cellspacing="0" style="background: #fff8e1; border-left: 4px solid #f4a261; border-radius: 8px; margin: 25px 0;">
                                 <tr>
@@ -398,6 +418,7 @@ function create_admin_email($data) {
     $budget = $data['budget'] ?? '';
     $description = $data['description'] ?? '';
     $gift_date = $data['gift_date'] ?? '';
+    $ics_url = $data['ics_url'] ?? '';
 
     $body = '
                             <p style="margin: 0 0 20px 0; color: #2b2d42; font-size: 16px; line-height: 1.6;">
@@ -462,6 +483,8 @@ function create_admin_email($data) {
                                     </td>
                                 </tr>
                             </table>
+                            
+                            ' . email_calendar_paragraph($ics_url) . '
                             
                             <!-- Next Steps -->
                             <table width="100%" cellpadding="0" cellspacing="0" style="background: #f8f9fa; border-left: 4px solid #f4a261; border-radius: 8px; margin: 25px 0;">
@@ -942,8 +965,11 @@ function perform_draw($participant_ids, $exclusions_map = [], $max_attempts = 10
 
 // Funktion zur Generierung einer lesbaren Display-URL (ohne https:// und mit wichtlä.ch statt Punycode)
 function get_display_url($path = '') {
-    // Konvertiere Punycode zurück zu IDN (internationalisierte Domain)
-    $host = $_SERVER['HTTP_HOST'];
+    // Konvertiere Punycode zurück zu IDN (internationalisierte Domain).
+    // Ohne HTTP_HOST (Cron) den Live-Host verwenden.
+    $host = (isset($_SERVER['HTTP_HOST']) && is_string($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] !== '')
+        ? $_SERVER['HTTP_HOST']
+        : 'wichtlä.ch';
     
     // Wenn es xn--wichtl-gua.ch ist, zeige wichtlä.ch
     if (strpos($host, 'xn--wichtl-gua.ch') !== false) {
@@ -956,5 +982,7 @@ function get_display_url($path = '') {
     // Baue die Display-URL zusammen (mit https://)
     return 'https://' . $host . ($path ? '/' . $path : '');
 }
+
+require_once __DIR__ . '/group_tools.php';
 
 ?>

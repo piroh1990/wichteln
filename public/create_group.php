@@ -57,7 +57,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             'invite_link' => $invite_link,
             'budget' => $group_budget,
             'description' => $group_description,
-            'gift_date' => $gift_exchange_date_formatted
+            'gift_date' => $gift_exchange_date_formatted,
+            'ics_url' => $gift_exchange_date ? gift_ics_url('admin', $admin_token) : ''
         ]);
         
         $email_sent = send_email($admin_email, $subject, $html_message, true);
@@ -116,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <?php include __DIR__ . '/../includes/templates/navigation.php'; ?>
     
     <header>
-        <a href="index.php" title="Zur Startseite">
+        <a href="/" title="Zur Startseite">
             <img src="images/logo.png" alt="Wichtel Logo">
         </a>
     </header>
@@ -136,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="form-group">
                 <label for="admin_email">Deine E-Mail-Adresse (Admin):<span class="required-indicator" aria-hidden="true" title="Erforderlich">*</span></label>
                 <input type="email" id="admin_email" name="admin_email" required placeholder="admin@beispiel.ch" aria-describedby="admin_email_hint">
-                <small id="admin_email_hint" class="form-hint">Du erhältst den Admin-Link per E-Mail</small>
+                <small id="admin_email_hint" class="form-hint">Du erhältst den Admin-Link per E-Mail. Link verloren? <a href="/admin-link">Admin-Link erneut senden</a>.</small>
             </div>
             <div class="form-group">
                 <label for="budget">Budget (optional):</label>

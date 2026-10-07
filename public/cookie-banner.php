@@ -14,7 +14,7 @@
                 Matomo wertet Besuche aus. «Akzeptieren» erlaubt ein Matomo-Cookie.
                 «Ablehnen» lässt die Messung ohne Tracking-Cookies.
                 Werbeanzeigen schaltet dieser Hinweis nicht frei.
-                <a href="datenschutz.php">Datenschutz</a>
+                <a href="/datenschutz">Datenschutz</a>
             </p>
         </div>
         <div class="cookie-banner-actions">

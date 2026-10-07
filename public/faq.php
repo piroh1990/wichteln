@@ -11,10 +11,10 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Alle Antworten zu Wichtlä.ch: Kosten, Datenschutz, Funktionen, Probleme und Tipps. Finde schnell Hilfe für dein Wichtel-Event!">
     <meta name="keywords" content="Wichteln FAQ, Wichteln Hilfe, Online Wichteln Fragen, Wichteln Anleitung, Wichteln Support">
-    <link rel="canonical" href="https://wichtlä.ch/faq.php">
+    <link rel="canonical" href="https://wichtlä.ch/faq">
     
     <meta property="og:type" content="article">
-    <meta property="og:url" content="https://wichtlä.ch/faq.php">
+    <meta property="og:url" content="https://wichtlä.ch/faq">
     <meta property="og:title" content="FAQ - Häufig gestellte Fragen zum Online Wichteln">
     <meta property="og:description" content="Alle Antworten zu Wichtlä.ch: Kosten, Datenschutz, Funktionen und mehr.">
     
@@ -103,7 +103,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                 "name": "Was passiert, wenn jemand sein Los verliert?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Kein Problem! Jeder Teilnehmer kann sein Los jederzeit wieder abrufen: Auf der Startseite gibt es den Link 'Los abrufen', E-Mail-Adresse eingeben und das Los wird erneut zugeschickt."
+                    "text": "Es gibt auf der Startseite keinen Knopf Los abrufen. Jede Person hat einen persönlichen Teilnehmer-Link in der Bestätigungs-Mail und beim Admin zum Kopieren. Darüber sieht man den eigenen Wichtelpartner. Der Admin kann die Zuordnung nach der Auslosung auch erneut per E-Mail senden."
                 }
             },
             {
@@ -143,7 +143,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                 "name": "Kann jemand anders mein Los sehen?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Nein! Jedes Los ist durch einen einzigartigen, geheimen Link geschützt. Niemand kann dein Los sehen – auch nicht der Admin –, es sei denn, du teilst deinen Los-Link."
+                    "text": "Zuerst sieht jede Person nur den eigenen Wichtelpartner, und nur über den persönlichen Link. In der Verwaltung gibt es keine Liste aller Zuordnungen. Schickt der Admin die Auflösung, erhalten alle Teilnehmer mit E-Mail die komplette Liste, wer wem gewichtelt hat."
                 }
             },
             {
@@ -151,7 +151,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                 "name": "Ich habe keine E-Mail erhalten – was tun?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Prüfe bitte deinen Spam-Ordner, ob du dich bei der E-Mail-Adresse vertippt hast, und warte 1-2 Minuten. Nutze die 'Los erneut zusenden'-Funktion auf der Startseite oder kontaktiere den Admin."
+                    "text": "Prüfe den Spam-Ordner und die E-Mail-Adresse. Der Admin kann im Bereich Teilnehmer den persönlichen Link kopieren oder die Zuordnung erneut per E-Mail senden. Eine Funktion Los erneut zusenden gibt es auf der Startseite nicht."
                 }
             },
             {
@@ -159,7 +159,15 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                 "name": "Ich habe meinen Admin-Link verloren!",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Der Admin-Link wurde dir per E-Mail zugeschickt. Schau in deinem Posteingang und Spam-Ordner nach E-Mails von Wichtlä.ch. Tipp: Speichere den Admin-Link als Lesezeichen im Browser!"
+                    "text": "Auf der Seite Admin-Link erneut senden die E-Mail-Adresse eintragen, die beim Erstellen der Gruppe verwendet wurde. Wenn dazu eine Gruppe existiert, kommt der Link erneut. Ein Sicherheitscode und eine Begrenzung der Versuche schützen das Formular. Die Antwort verrät nicht, ob die Adresse gespeichert ist."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Was ist die Auflösungs-Mail?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Nach der Auslosung kann der Admin Auflösung an alle senden. Jede Person mit E-Mail bekommt dann die Liste, wer wem gewichtelt hat. Bis dahin sieht jede Person nur den eigenen Wichtelpartner. Ein zweiter Versand braucht eine ausdrückliche Bestätigung."
                 }
             },
             {
@@ -167,7 +175,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                 "name": "Die Ziehung funktioniert nicht – warum?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Mögliche Gründe: Zu viele Ausschlüsse (mathematisch unmöglich), zu wenige Teilnehmer (mindestens 3 erforderlich) oder ein technisches Problem (Browser-Cache leeren). Reduziere die Ausschlüsse oder füge mehr Teilnehmer hinzu."
+                    "text": "Mögliche Gründe: Zu viele Ausschlüsse (mathematisch unmöglich), zu wenige Teilnehmer (mindestens 2 erforderlich) oder ein technisches Problem (Browser-Cache leeren). Reduziere die Ausschlüsse oder füge mehr Teilnehmer hinzu."
                 }
             },
             {
@@ -228,7 +236,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
     
     <div class="content-page">
         <div class="breadcrumb">
-            <a href="index.php">Home</a> / FAQ
+            <a href="/">Home</a> / FAQ
         </div>
         
         <header class="page-header">
@@ -420,13 +428,15 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </h3>
                     <div id="faq-answer-9" class="faq-answer" role="region" aria-labelledby="faq-question-9">
 <p>
-                            Kein Problem! Jeder Teilnehmer kann sein Los jederzeit wieder abrufen:
+                            Es gibt auf der Startseite keinen Knopf «Los abrufen». Jede Person hat einen persönlichen Teilnehmer-Link:
                         </p>
                         <ul>
-                            <li>Auf der Startseite gibt es den Link "Los abrufen"</li>
-                            <li>E-Mail-Adresse eingeben → Los wird erneut zugeschickt</li>
-                            <li>Oder: Der Admin kann über den Admin-Bereich die Los-Links einsehen</li>
+                            <li>in der Bestätigungs-Mail nach der Anmeldung</li>
+                            <li>beim Admin zum Kopieren, unter «Teilnehmer»</li>
                         </ul>
+                        <p>
+                            Über diesen Link siehst du deinen eigenen Wichtelpartner und kannst die Wunschliste ändern. Der Admin kann die Zuordnung nach der Auslosung auch erneut per E-Mail senden.
+                        </p>
                     </div>
                 </div>
                 
@@ -476,7 +486,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                             <li>🚫 Keine Weitergabe an Dritte (ausser Google AdSense für Werbung)</li>
                         </ul>
                         <p>
-                            Mehr Details in unserer <a href="datenschutz.php">Datenschutzerklärung</a>.
+                            Mehr Details in unserer <a href="/datenschutz">Datenschutzerklärung</a>.
                         </p>
                     </div>
                 </div>
@@ -531,10 +541,10 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </h3>
                     <div id="faq-answer-14" class="faq-answer" role="region" aria-labelledby="faq-question-14">
 <p>
-                            <strong>Nein!</strong> Jedes Los ist durch einen einzigartigen, geheimen Link geschützt. Niemand kann dein Los sehen – auch nicht der Admin –, es sei denn, du teilst deinen Los-Link.
+                            Zuerst sieht jede Person nur den eigenen Wichtelpartner, und nur über den persönlichen Link. In der Verwaltung gibt es keine Liste aller Zuordnungen.
                         </p>
                         <p>
-                            Der Admin sieht nur, wer bereits sein Los abgerufen hat, aber nicht den Inhalt.
+                            Das ändert sich, wenn der Admin die <strong>Auflösung</strong> verschickt. Dann erhalten alle Teilnehmer mit E-Mail-Adresse die komplette Liste, wer wem gewichtelt hat. Vorher bleibt das geheim.
                         </p>
                     </div>
                 </div>
@@ -562,7 +572,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                             <li>🚫 <strong>E-Mail-Filter:</strong> Firmen-E-Mails blockieren manchmal externe Absender</li>
                         </ul>
                         <p>
-                            <strong>Lösung:</strong> Nutze die "Los erneut zusenden"-Funktion auf der Startseite oder kontaktiere den Admin.
+                            <strong>Lösung:</strong> Bitte den Admin, im Bereich «Teilnehmer» den persönlichen Link zu kopieren oder die Zuordnung erneut per E-Mail zu senden. Eine Funktion «Los erneut zusenden» gibt es auf der Startseite nicht.
                         </p>
                     </div>
                 </div>
@@ -576,17 +586,34 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                     </h3>
                     <div id="faq-answer-16" class="faq-answer" role="region" aria-labelledby="faq-question-16">
 <p>
-                            Der Admin-Link wurde dir per E-Mail zugeschickt. Schau in deinem Posteingang (und Spam-Ordner) nach E-Mails von Wichtlä.ch.
+                            Den Link kannst du erneut anfordern: Auf <a href="/admin-link">Admin-Link erneut senden</a> die E-Mail-Adresse eintragen, die beim Erstellen der Gruppe verwendet wurde. Wenn dazu eine Gruppe existiert, schicken wir den Admin-Link noch einmal. Ein Sicherheitscode und eine Begrenzung der Versuche schützen das Formular.
                         </p>
                         <p>
-                            Falls du die E-Mail nicht mehr findest, gibt es leider keine Wiederherstellungsmöglichkeit (keine Registrierung = keine Passwort-Reset-Funktion). Du musst eine neue Gruppe erstellen.
+                            Die Antwort ist immer gleich formuliert, damit niemand prüfen kann, ob eine Adresse bei uns gespeichert ist.
                         </p>
                         <div class="highlight-box">
-                            <strong>💡 Tipp:</strong> Speichere den Admin-Link als Lesezeichen im Browser!
+                            <strong>Tipp:</strong> Speichere den Admin-Link als Lesezeichen im Browser.
+                        </div>
                     </div>
                 </div>
-                </div>
                 
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-24" id="faq-question-24" onclick="toggleFaq(this)">
+                            <span class="faq-title">Was ist die Auflösungs-Mail?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-24" class="faq-answer" role="region" aria-labelledby="faq-question-24">
+<p>
+                            Nach der Auslosung kann der Admin <strong>«Auflösung an alle senden»</strong>. Jede Person mit E-Mail-Adresse bekommt dann die Liste, wer wem gewichtelt hat (Geber → Beschenkter).
+                        </p>
+                        <p>
+                            Bis dahin sieht jede Person nur den eigenen Wichtelpartner. Ein zweiter Versand geht nur mit ausdrücklicher Bestätigung, damit die Mail nicht aus Versehen mehrfach rausgeht.
+                        </p>
+                    </div>
+                </div>
+
                                 <div class="faq-item">
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-17" id="faq-question-17" onclick="toggleFaq(this)">
@@ -600,7 +627,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                         </p>
                         <ul>
                             <li><strong>Zu viele Ausschlüsse:</strong> Bei zu vielen Ausschlüssen ist eine gültige Ziehung mathematisch unmöglich</li>
-                            <li><strong>Zu wenige Teilnehmer:</strong> Mindestens 3 Personen erforderlich</li>
+                            <li><strong>Zu wenige Teilnehmer:</strong> Mindestens 2 Personen erforderlich</li>
                             <li><strong>Technisches Problem:</strong> Browser-Cache leeren und erneut versuchen</li>
                         </ul>
                         <p>
@@ -739,7 +766,7 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
             <div class="cta-section">
                 <h2>Noch Fragen?</h2>
                 <p>Schreib uns eine E-Mail oder starte einfach dein erstes Wichteln – es ist kinderleicht!</p>
-                <a href="create_group.php" class="cta-button-white">Jetzt Gruppe erstellen →</a>
+                <a href="/create_group" class="cta-button-white">Jetzt Gruppe erstellen →</a>
             </div>
         </article>
     </div>
@@ -757,25 +784,26 @@ if (file_exists(__DIR__ . '/../includes/config.php')) {
                 <div class="footer-section">
                     <h4>Wichteln</h4>
                     <ul class="footer-links">
-                        <li><a href="was-ist-wichteln.php">Was ist Wichteln?</a></li>
-                        <li><a href="wichtel-ideen.php">Geschenkideen</a></li>
-                        <li><a href="firmenwichteln-tipps.php">Firmenwichteln</a></li>
-                        <li><a href="faq.php">FAQ</a></li>
+                        <li><a href="/was-ist-wichteln">Was ist Wichteln?</a></li>
+                        <li><a href="/wichtel-ideen">Geschenkideen</a></li>
+                        <li><a href="/firmenwichteln-tipps">Firmenwichteln</a></li>
+                        <li><a href="/faq">FAQ</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
                     <h4>Loslegen</h4>
                     <ul class="footer-links">
-                        <li><a href="create_group.php">Gruppe erstellen</a></li>
+                        <li><a href="/create_group">Gruppe erstellen</a></li>
+                        <li><a href="/admin-link">Admin-Link erneut senden</a></li>
                         <li><a href="participant.php">Teilnehmerbereich</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
                     <h4>Rechtliches</h4>
                     <ul class="footer-links">
-                        <li><a href="ueber-uns.php">Über uns</a></li>
-                        <li><a href="impressum.php">Impressum</a></li>
-                        <li><a href="datenschutz.php">Datenschutz</a></li>
+                        <li><a href="/ueber-uns">Über uns</a></li>
+                        <li><a href="/impressum">Impressum</a></li>
+                        <li><a href="/datenschutz">Datenschutz</a></li>
                     </ul>
                 </div>
             </div>

@@ -43,7 +43,7 @@ run_test('ad slots: only homepage and was-ist-wichteln', function() {
     assert_true(strpos($home, "\$position = 1;") !== false, 'Homepage uses slot 1');
     assert_true(strpos($explainer, "\$position = 2;") !== false, 'Explainer page uses slot 2');
 
-    $blocked = array('participant.php', 'faq.php', 'impressum.php', 'datenschutz.php', 'admin.php');
+    $blocked = array('participant.php', 'faq.php', 'impressum.php', 'datenschutz.php', 'admin.php', 'admin-link.php');
     foreach ($blocked as $file) {
         $src = file_get_contents($root . $file);
         assert_true(strpos($src, 'google_ads.php') === false, $file . ' must not include ads');
