@@ -59,11 +59,12 @@ run_test('datenschutz: no absolute third-party denial and no opt-out script', fu
     assert_true(strpos($src, 'mailto:kontakt@xn--wichtl-gua.ch') !== false, 'Privacy mailto uses punycode');
 });
 
-run_test('impressum: placeholder address and punycode mailto', function() {
+run_test('impressum: postal address and punycode mailto', function() {
     $src = file_get_contents(dirname(__DIR__) . '/public/impressum.php');
     assert_true(strpos($src, 'Patrick Raths') !== false, 'Operator name is present');
-    assert_true(strpos($src, 'Platzhalter: Strasse und Hausnummer') !== false, 'Street placeholder is marked');
-    assert_true(strpos($src, 'Platzhalter: PLZ und Ort') !== false, 'City placeholder is marked');
+    assert_true(strpos($src, 'Erlenstrasse 4b') !== false, 'Street and house number are present');
+    assert_true(strpos($src, '5462 Siglistorf') !== false, 'Postal code and city are present');
+    assert_true(strpos($src, 'Platzhalter') === false, 'No address placeholder remains');
     assert_true(strpos($src, 'mailto:kontakt@xn--wichtl-gua.ch') !== false, 'Mailto uses punycode host');
     assert_true(strpos($src, 'kontakt@wichtlä.ch') !== false, 'Visible address keeps the IDN');
     assert_true(strpos($src, 'google_ads.php') === false, 'Impressum has no ad include');

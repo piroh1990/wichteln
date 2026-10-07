@@ -42,12 +42,9 @@
             <h2>Betreiber</h2>
             <p>
                 Patrick Raths<br>
-                <span class="legal-placeholder">[Platzhalter: Strasse und Hausnummer fehlen noch]</span><br>
-                <span class="legal-placeholder">[Platzhalter: PLZ und Ort fehlen noch]</span><br>
+                Erlenstrasse 4b<br>
+                5462 Siglistorf<br>
                 Schweiz
-            </p>
-            <p class="legal-placeholder-note">
-                Die ladungsfähige Postadresse ist noch nicht hinterlegt. Die markierten Zeilen sind Platzhalter und keine Anschrift.
             </p>
             
             <h2>Kontakt</h2>
