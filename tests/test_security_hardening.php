@@ -49,6 +49,33 @@ run_test('rate limit fails closed and blocks the next attempt', function () {
     assert_true(!empty($status['writable']) || !empty($status['exists']));
 });
 
+run_test('captcha field maxlength matches the generated code', function () {
+    $code = generate_captcha_code();
+    $length = strlen($code);
+    assert_equals(captcha_length(), $length);
+    $field = captcha_answer_field();
+    if (preg_match('/maxlength="(\d+)"/', $field, $match) !== 1) {
+        throw new Exception('Captcha field has no maxlength');
+    }
+    assert_equals((string) $length, $match[1]);
+    assert_true(strpos($field, 'minlength="' . $length . '"') !== false);
+    assert_true(strpos($field, 'inputmode="numeric"') === false);
+    assert_true(strpos($field, 'inputmode="text"') !== false);
+    assert_true(strpos($field, 'pattern="[0-9]') === false);
+    assert_true(strpos(captcha_hint_text(), (string) $length . ' Zeichen') !== false);
+
+    foreach (array('create_group.php', 'admin-link.php') as $file) {
+        $page = file_get_contents(dirname(__DIR__) . '/public/' . $file);
+        assert_true(strpos($page, 'captcha_answer_field()') !== false, $file);
+        assert_true(strpos($page, 'maxlength="5"') === false, $file);
+        assert_true(strpos($page, '5 Zahlen') === false, $file);
+        assert_true(strpos($page, '5-stellig') === false, $file);
+        assert_true(strpos($page, 'inputmode="numeric"') === false, $file);
+    }
+    $register = file_get_contents(dirname(__DIR__) . '/public/register.php');
+    assert_true(strpos($register, 'captcha_answer') === false, 'register has no separate captcha field');
+});
+
 run_test('captcha is single use and not only digits', function () {
     $script = tempnam(sys_get_temp_dir(), 'captcha');
     $body = <<<'PHP'
@@ -62,7 +89,7 @@ if (consume_captcha_answer('wrong') || !empty($_SESSION['captcha_code'])) {
     exit(1);
 }
 $_SESSION['captcha_code'] = 'AB23CD';
-if (!consume_captcha_answer('ab23cd') || consume_captcha_answer('AB23CD')) {
+if (!consume_captcha_answer('  ab23cd  ') || consume_captcha_answer('AB23CD')) {
     fwrite(STDERR, "code was reused\n");
     exit(1);
 }
