@@ -104,14 +104,14 @@ function authenticate_api() {
         $token = $_SERVER['HTTP_X_API_TOKEN'];
     }
     
-    // 3. GET/POST Parameter (weniger sicher, nur für Entwicklung)
-    if (!$token && isset($_REQUEST['api_token'])) {
-        $token = $_REQUEST['api_token'];
-    }
-    
-    // Token validieren
+    // Token validieren. Query-Parameter werden nicht gelesen.
     if (!api_token_matches($token)) {
-        log_api_request('UNAUTHORIZED', $_SERVER['REQUEST_URI']);
+        $client = isset($_SERVER['REMOTE_ADDR']) ? (string) $_SERVER['REMOTE_ADDR'] : 'unknown';
+        $allowed = consume_rate_limit('api-auth-fail', $client, 10, 60, false);
+        log_api_request('UNAUTHORIZED', isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '');
+        if (!$allowed) {
+            api_response(429, false, 'Zu viele Anfragen. Bitte später erneut versuchen.', null);
+        }
         api_response(401, false, 'Ungültiges oder fehlendes API-Token', null);
         exit();
     }
@@ -148,21 +148,21 @@ function check_rate_limit($identity = null) {
     $dir = api_rate_limit_dir();
     if (!is_dir($dir) && !@mkdir($dir, 0750, true) && !is_dir($dir)) {
         error_log('API rate limit directory is not writable: ' . $dir);
-        return true;
+        return false;
     }
 
     $file = $dir . '/' . hash('sha256', $identity) . '.json';
     $handle = @fopen($file, 'c+');
     if ($handle === false) {
         error_log('API rate limit file could not be opened: ' . $file);
-        return true;
+        return false;
     }
 
     $allowed = true;
     try {
         if (!flock($handle, LOCK_EX)) {
             error_log('API rate limit file could not be locked: ' . $file);
-            return true;
+            return false;
         }
 
         $raw = stream_get_contents($handle);
@@ -278,6 +278,18 @@ function get_request_body() {
 /**
  * API-Request loggen
  */
+function api_log_endpoint($endpoint) {
+    $endpoint = (string) $endpoint;
+    $parts = explode('?', $endpoint, 2);
+    if (count($parts) < 2) {
+        return $endpoint;
+    }
+    parse_str($parts[1], $query);
+    unset($query['api_token'], $query['token'], $query['master_token'], $query['admin_token'], $query['invite_token']);
+    $qs = http_build_query($query);
+    return $qs === '' ? $parts[0] : ($parts[0] . '?' . $qs);
+}
+
 function log_api_request($status, $endpoint, $message = '') {
     if (!API_LOG_REQUESTS) {
         return;
@@ -291,9 +303,9 @@ function log_api_request($status, $endpoint, $message = '') {
     $log_entry = sprintf(
         "[%s] %s %s %s - %s %s\n",
         date('Y-m-d H:i:s'),
-        $_SERVER['REMOTE_ADDR'],
-        $_SERVER['REQUEST_METHOD'],
-        $endpoint,
+        isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '',
+        isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '',
+        api_log_endpoint($endpoint),
         $status,
         $message
     );

@@ -59,7 +59,7 @@ function archive_group_into_statistics($pdo, array $group) {
     $stmt = $pdo->prepare($insert_sql);
     $stmt->execute(array(
         $group_id,
-        isset($group['name']) ? $group['name'] : null,
+        null,
         $participant_count,
         $participant_with_email_count,
         $exclusion_count,
@@ -122,19 +122,19 @@ function cleanup_old_groups($pdo) {
                 $pdo->beginTransaction();
 
                 $group_id = $group['id'];
-                $group_name = $group['name'];
                 archive_group_into_statistics($pdo, $group);
 
                 $pdo->commit();
 
-                $logs[] = "[" . date('Y-m-d H:i:s') . "] Archived and deleted group: '{$group_name}' (ID: {$group_id})";
+                $logs[] = "[" . date('Y-m-d H:i:s') . "] Archived and deleted group ID {$group_id}";
                 $archived_count++;
 
             } catch (Exception $e) {
                 if ($pdo->inTransaction()) {
                     $pdo->rollBack();
                 }
-                $logs[] = "[" . date('Y-m-d H:i:s') . "] ERROR archiving group ID {$group['id']}: " . $e->getMessage();
+                error_log('Cleanup group ID ' . (isset($group['id']) ? (int) $group['id'] : 0) . ': ' . $e->getMessage());
+                $logs[] = "[" . date('Y-m-d H:i:s') . "] ERROR archiving group ID " . (isset($group['id']) ? (int) $group['id'] : 0);
                 $error_count++;
             }
         }
@@ -144,7 +144,8 @@ function cleanup_old_groups($pdo) {
         return ['archived' => $archived_count, 'errors' => $error_count, 'logs' => $logs];
 
     } catch (Exception $e) {
-        $logs[] = "[" . date('Y-m-d H:i:s') . "] CRITICAL ERROR: " . $e->getMessage();
+        error_log('Cleanup critical: ' . $e->getMessage());
+        $logs[] = "[" . date('Y-m-d H:i:s') . "] CRITICAL ERROR";
         return ['archived' => 0, 'errors' => 1, 'logs' => $logs];
     }
 }

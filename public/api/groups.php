@@ -35,7 +35,7 @@ switch ($method) {
     case 'GET':
         if ($group_id) {
             // Einzelne Gruppe abrufen
-            $stmt = $pdo->prepare("SELECT * FROM `groups` WHERE `id` = ?");
+            $stmt = $pdo->prepare("SELECT `id`, `name`, `budget`, `description`, `gift_exchange_date`, `is_drawn`, `created_at` FROM `groups` WHERE `id` = ?");
             $stmt->execute([$group_id]);
             $group = $stmt->fetch(PDO::FETCH_ASSOC);
             
@@ -64,7 +64,7 @@ switch ($method) {
             
         } elseif ($admin_token) {
             // Gruppe per Admin-Token abrufen
-            $stmt = $pdo->prepare("SELECT * FROM `groups` WHERE `admin_token` = ?");
+            $stmt = $pdo->prepare("SELECT `id`, `name`, `budget`, `description`, `gift_exchange_date`, `is_drawn`, `created_at` FROM `groups` WHERE `admin_token` = ?");
             $stmt->execute([$admin_token]);
             $group = $stmt->fetch(PDO::FETCH_ASSOC);
             
@@ -72,8 +72,8 @@ switch ($method) {
                 api_response(404, false, 'Gruppe nicht gefunden', null);
             }
             
-            // Teilnehmer laden
-            $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `group_id` = ?");
+            // Teilnehmer ohne Zugangstoken und ohne Zuordnungen
+            $stmt = $pdo->prepare("SELECT `id`, `name`, `email`, `wishlist`, `created_at` FROM `participants` WHERE `group_id` = ?");
             $stmt->execute([$group['id']]);
             $group['participants'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
@@ -118,6 +118,15 @@ switch ($method) {
         if ($error = validate_input('name', $name, ['required'])) {
             api_response(400, false, $error, null);
         }
+        if ($error = limit_text_error($name, 255, 'name')) {
+            api_response(400, false, $error, null);
+        }
+        if ($description && ($error = limit_text_error($description, 2000, 'description'))) {
+            api_response(400, false, $error, null);
+        }
+        if ($admin_email && ($error = limit_text_error($admin_email, 255, 'admin_email'))) {
+            api_response(400, false, $error, null);
+        }
         if ($admin_email && ($error = validate_input('admin_email', $admin_email, ['email']))) {
             api_response(400, false, $error, null);
         }
@@ -159,7 +168,7 @@ switch ($method) {
             send_email($admin_email, $subject, $html_message, true);
         }
         
-        log_api_request('SUCCESS', '/api/groups.php', "Created group: $name");
+        log_api_request('SUCCESS', '/api/groups.php', 'Created group id: ' . (int) $group_id);
         api_response(201, true, 'Gruppe erfolgreich erstellt', [
             'id' => intval($group_id),
             'name' => $name,
@@ -182,6 +191,9 @@ switch ($method) {
         
         // Validierung
         if ($budget && ($error = validate_input('budget', $budget, ['numeric']))) {
+            api_response(400, false, $error, null);
+        }
+        if ($description && ($error = limit_text_error($description, 2000, 'description'))) {
             api_response(400, false, $error, null);
         }
         if ($gift_exchange_date && ($error = validate_input('gift_exchange_date', $gift_exchange_date, ['date']))) {
@@ -226,7 +238,8 @@ switch ($method) {
             
         } catch (Exception $e) {
             $pdo->rollBack();
-            api_response(500, false, 'Fehler beim Löschen der Gruppe: ' . $e->getMessage(), null);
+            error_log('API Gruppe löschen: ' . $e->getMessage());
+            api_response(500, false, 'Fehler beim Löschen der Gruppe.', null);
         }
         break;
         

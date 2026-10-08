@@ -4,50 +4,44 @@
 require_once __DIR__ . '/../../includes/functions.php';
 require_once __DIR__ . '/../../includes/master_admin.php';
 
-if (session_status() === PHP_SESSION_NONE) {
-    $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
-    session_set_cookie_params(array(
-        'lifetime' => 0,
-        'path' => '/',
-        'secure' => $secure,
-        'httponly' => true,
-        'samesite' => 'Lax',
-    ));
-    session_start();
-}
+start_secure_session();
 
 if (!headers_sent()) {
     header('X-Robots-Tag: noindex, nofollow');
 }
 
-$provided_token = '';
-if (isset($_POST['master_token']) && is_string($_POST['master_token'])) {
-    $provided_token = $_POST['master_token'];
-} elseif (isset($_GET['master_token']) && is_string($_GET['master_token'])) {
-    $provided_token = $_GET['master_token'];
-}
-
-if (master_admin_token_matches($provided_token)) {
-    if (empty($_SESSION['master_admin_authenticated'])) {
-        session_regenerate_id(true);
-    }
-    $_SESSION['master_admin_authenticated'] = true;
-}
-
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['master_token'])) {
-    $params = $_GET;
-    unset($params['master_token'], $params['action'], $params['group_id']);
-    $target = 'index.php';
-    if (!empty($params)) {
-        $target .= '?' . http_build_query($params);
-    }
-    header('Location: ' . $target);
+    header('Location: index.php');
     exit;
 }
 
+$login_error = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['master_token']) && empty($_SESSION['master_admin_authenticated'])) {
+    $posted_token = is_string($_POST['master_token']) ? $_POST['master_token'] : '';
+    $storage = rate_limit_storage_status();
+    if (!verify_csrf_token(isset($_POST['csrf_token']) ? $_POST['csrf_token'] : '')) {
+        $login_error = csrf_failure_message();
+    } elseif (empty($storage['writable'])) {
+        error_log('Master-Login abgelehnt: Rate-Limit-Verzeichnis ist nicht beschreibbar.');
+        $login_error = 'Anmeldung zurzeit nicht möglich.';
+    } elseif (!consume_rate_limit('master-login', request_client_ip(), 8, 900, false)) {
+        $login_error = 'Zu viele Anfragen. Bitte später erneut versuchen.';
+    } elseif (master_admin_token_matches($posted_token)) {
+        session_regenerate_id(true);
+        $_SESSION['master_admin_authenticated'] = true;
+        header('Location: index.php');
+        exit;
+    } else {
+        $login_error = 'Zugriff verweigert.';
+    }
+}
+
 if (empty($_SESSION['master_admin_authenticated'])) {
-    http_response_code(403);
-    die('Zugriff verweigert. Ungültiges Master-Token.');
+    if ($login_error !== '') {
+        http_response_code(403);
+    }
+    echo master_admin_login_document(csrf_input(), $login_error);
+    exit;
 }
 
 function admin_url($params = array()) {
@@ -118,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         session_destroy();
         http_response_code(200);
-        echo '<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="robots" content="noindex, nofollow"><title>Abgemeldet</title></head><body><p>Du wurdest abgemeldet. Für einen erneuten Zugriff den Master-Admin-Link verwenden.</p></body></html>';
+        echo '<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="robots" content="noindex, nofollow"><title>Abgemeldet</title></head><body><p>Du wurdest abgemeldet. Für einen erneuten Zugriff das Anmeldeformular verwenden.</p></body></html>';
         exit;
     }
 
@@ -325,6 +319,7 @@ if ($apache_modules === null && php_sapi_name() !== 'cli-server') {
     $rewrite_probe = master_admin_probe_clean_url(master_admin_clean_url_probe_target($_SERVER));
 }
 $rewrite_status = master_admin_rewrite_status($apache_modules, $rewrite_probe);
+$rate_limit_status = rate_limit_storage_status();
 
 $pending_names = array();
 if (is_array($pending_bulk)) {
@@ -753,6 +748,7 @@ function master_dashboard_page_url($filters_params, $page_key, $page_number) {
                 <span class="system-pill<?php echo $rewrite_status === 'aktiv' ? '' : ($rewrite_status === 'inaktiv' ? ' is-warn' : ' is-unknown'); ?>">Clean-URLs <?php echo htmlspecialchars($rewrite_status, ENT_QUOTES, 'UTF-8'); ?></span>
                 <span class="system-pill<?php echo ((int) $schema['missing_count'] === 0) ? '' : ' is-warn'; ?>">Spalten <?php echo ((int) $schema['missing_count'] === 0) ? 'vollständig' : ((int) $schema['missing_count'] . ' fehlen'); ?></span>
                 <span class="system-pill<?php echo $ads_status['ok'] ? '' : ' is-warn'; ?>">Anzeigen-Flags <?php echo $ads_status['ok'] ? 'unauffällig' : 'prüfen'; ?></span>
+                <span class="system-pill<?php echo !empty($rate_limit_status['writable']) ? '' : ' is-warn'; ?>">Rate-Limit <?php echo !empty($rate_limit_status['writable']) ? 'beschreibbar' : 'nicht beschreibbar'; ?></span>
             </div>
             <div class="status-list">
                 <p>Versand über PHP <code>mail()</code><?php if ($mail_status['from'] !== ''): ?> von <?php echo htmlspecialchars($mail_status['from'], ENT_QUOTES, 'UTF-8'); ?><?php endif; ?>. Sendmail-Pfad <?php echo $mail_status['sendmail'] ? 'gesetzt' : 'leer'; ?>.</p>
@@ -765,6 +761,9 @@ function master_dashboard_page_url($filters_params, $page_key, $page_number) {
                 <?php endforeach; ?>
                 <?php if (!$php_status['ok']): ?>
                     <p class="notification warning" role="status">PHP 7.4 oder neuer wird erwartet.</p>
+                <?php endif; ?>
+                <?php if (empty($rate_limit_status['writable'])): ?>
+                    <p class="notification warning" role="status">Das Verzeichnis logs/rate-limit ist nicht beschreibbar. Anmeldung, Captcha-Schutz und API-Begrenzung brauchen es.</p>
                 <?php endif; ?>
             </div>
             <?php if ((int) $schema['missing_count'] > 0): ?>
@@ -808,7 +807,7 @@ function master_dashboard_page_url($filters_params, $page_key, $page_number) {
                     <table class="master-table archive-table">
                         <thead>
                             <tr>
-                                <th>Gruppenname</th>
+                                <th>ID</th>
                                 <th>Eventdatum</th>
                                 <th>Teilnehmer</th>
                                 <th>Budget</th>
@@ -819,7 +818,7 @@ function master_dashboard_page_url($filters_params, $page_key, $page_number) {
                         <tbody>
                             <?php foreach ($archive['rows'] as $stat): ?>
                                 <tr>
-                                    <td><?php echo !empty($stat['group_name']) ? htmlspecialchars((string) $stat['group_name'], ENT_QUOTES, 'UTF-8') : 'Unbekannt'; ?></td>
+                                    <td><?php echo isset($stat['original_group_id']) ? (int) $stat['original_group_id'] : 0; ?></td>
                                     <td><?php echo htmlspecialchars(master_admin_format_date(isset($stat['gift_exchange_date']) ? $stat['gift_exchange_date'] : '', false) ?: '–', ENT_QUOTES, 'UTF-8'); ?></td>
                                     <td><?php echo (int) $stat['participant_count']; ?> <span class="cell-muted">(<?php echo (int) $stat['participant_with_email_count']; ?> mit E-Mail)</span></td>
                                     <td><?php echo (isset($stat['budget']) && $stat['budget'] !== null && $stat['budget'] !== '') ? htmlspecialchars(number_format((float) $stat['budget'], 2) . ' CHF', ENT_QUOTES, 'UTF-8') : '–'; ?></td>

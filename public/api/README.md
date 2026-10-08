@@ -18,10 +18,7 @@ Authorization: Bearer YOUR_API_TOKEN
 X-API-Token: YOUR_API_TOKEN
 ```
 
-**Option 3: Query/Body Parameter (Development only)**
-```http
-?api_token=YOUR_API_TOKEN
-```
+Der Token wird nur in diesen Headern akzeptiert.
 
 ### Configure Token
 
@@ -372,14 +369,7 @@ Content-Type: application/json
     "group_id": 1,
     "is_drawn": true,
     "participants_count": 10,
-    "attempts_needed": 3,
-    "emails_sent": 8,
-    "assignments": [
-      {
-        "giver_id": 1,
-        "receiver_id": 3
-      }
-    ]
+    "emails_sent": 8
   }
 }
 ```
@@ -700,9 +690,9 @@ interface WichtelApi {
 
 ## 🧪 Testing
 
-### Test in Browser
+### Test mit curl
 
-The API can be tested directly in the browser by passing the token as a query parameter:
+Der Token gehört in den Header.
 
 #### 1. Get API Info (no token needed)
 ```
@@ -712,29 +702,29 @@ Shows all available endpoints and API information.
 
 #### 2. Get Groups (GET)
 ```
-https://wichtlä.ch/api/groups.php?api_token=YOUR_TOKEN
+curl -H "Authorization: Bearer YOUR_TOKEN" "https://wichtlä.ch/api/groups.php"
 ```
 
 #### 3. Single Group with Details
 ```
-https://wichtlä.ch/api/groups.php?id=1&api_token=YOUR_TOKEN
-https://wichtlä.ch/api/groups.php?admin_token=ADMIN_TOKEN&api_token=YOUR_TOKEN
+curl -H "Authorization: Bearer YOUR_TOKEN" "https://wichtlä.ch/api/groups.php?id=1"
+curl -H "Authorization: Bearer YOUR_TOKEN" "https://wichtlä.ch/api/groups.php?admin_token=ADMIN_TOKEN"
 ```
 
 #### 4. Participants of a Group
 ```
-https://wichtlä.ch/api/participants.php?group_id=1&api_token=YOUR_TOKEN
+curl -H "Authorization: Bearer YOUR_TOKEN" "https://wichtlä.ch/api/participants.php?group_id=1"
 ```
 
 #### 5. Single Participant with Details
 ```
-https://wichtlä.ch/api/participants.php?id=1&api_token=YOUR_TOKEN
-https://wichtlä.ch/api/participants.php?token=PARTICIPANT_TOKEN&api_token=YOUR_TOKEN
+curl -H "Authorization: Bearer YOUR_TOKEN" "https://wichtlä.ch/api/participants.php?id=1"
+curl -H "Authorization: Bearer YOUR_TOKEN" "https://wichtlä.ch/api/participants.php?token=PARTICIPANT_TOKEN"
 ```
 
 #### 6. Exclusions of a Group
 ```
-https://wichtlä.ch/api/exclusions.php?group_id=1&api_token=YOUR_TOKEN
+curl -H "Authorization: Bearer YOUR_TOKEN" "https://wichtlä.ch/api/exclusions.php?group_id=1"
 ```
 
 **Note:** POST/PUT/DELETE requests cannot be tested directly in the browser. We recommend:

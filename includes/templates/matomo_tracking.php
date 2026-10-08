@@ -75,6 +75,21 @@ if ($consentJson === false) {
         banner.style.display = 'block';
     }
 
+    function matomoPageUrl() {
+        var url;
+        var keys = ['token', 'master_token', 'api_token', 'admin_token', 'invite_token'];
+        var i;
+        try {
+            url = new URL(window.location.href);
+        } catch (e) {
+            return window.location.pathname || '/';
+        }
+        for (i = 0; i < keys.length; i++) {
+            url.searchParams.delete(keys[i]);
+        }
+        return url.pathname + url.search + url.hash;
+    }
+
     function loadMatomo(withCookies) {
         if (!cfg.matomoUrl || !cfg.matomoSiteId) {
             return;
@@ -97,6 +112,9 @@ if ($consentJson === false) {
             _paq.push(['disableCookies']);
             _paq.push(['requireCookieConsent']);
         }
+        _paq.push(['setReferrerUrl', '']);
+        _paq.push(['setCustomUrl', matomoPageUrl()]);
+        _paq.push(['setRequestMethod', 'POST']);
         _paq.push(['trackPageView']);
         _paq.push(['enableLinkTracking']);
         _paq.push(['setTrackerUrl', cfg.matomoUrl + 'matomo.php']);

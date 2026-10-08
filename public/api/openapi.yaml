@@ -8,10 +8,12 @@ info:
     All endpoints (except `/`) require an API token:
     - **Bearer Token**: `Authorization: Bearer YOUR_TOKEN`
     - **X-API-Token Header**: `X-API-Token: YOUR_TOKEN`
-    - **Query Parameter**: `?api_token=YOUR_TOKEN` (development only)
+    
+    The token is accepted only in those headers.
     
     ## Rate Limiting
     - 60 requests per minute per IP address
+    - Failed authentication attempts are limited per IP
     - On exceed: HTTP 429 Response
     
     ## CORS
@@ -48,7 +50,6 @@ tags:
 security:
   - BearerAuth: []
   - ApiKeyHeader: []
-  - ApiKeyQuery: []
 
 paths:
   /:
@@ -445,11 +446,6 @@ components:
       in: header
       name: X-API-Token
       description: API Token in X-API-Token Header
-    ApiKeyQuery:
-      type: apiKey
-      in: query
-      name: api_token
-      description: API Token as Query Parameter (development only)
 
   schemas:
     Group:
@@ -893,15 +889,6 @@ components:
                   type: integer
                 emails_sent:
                   type: integer
-                assignments:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      giver_id:
-                        type: integer
-                      receiver_id:
-                        type: integer
 
     ResetDrawResponse:
       allOf:

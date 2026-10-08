@@ -5,11 +5,10 @@ require_once __DIR__ . '/../includes/functions.php';
 
 if (!headers_sent()) {
     header('X-Robots-Tag: noindex, nofollow');
+    header('Referrer-Policy: no-referrer');
 }
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+start_secure_session();
 
 $admin_token = $_GET['token'] ?? '';
 $pdo = db_connect();
@@ -66,7 +65,8 @@ if ($csrf_ok && isset($_POST['reset_draw'])) {
         
     } catch (Exception $e) {
         $pdo->rollBack();
-        $reset_error = "Fehler beim Zurücksetzen der Auslosung: " . $e->getMessage();
+        error_log('Auslosung zurücksetzen: ' . $e->getMessage());
+        $reset_error = 'Die Auslosung konnte nicht zurückgesetzt werden.';
     }
 }
 
@@ -100,7 +100,8 @@ if ($csrf_ok && isset($_POST['delete_group'])) {
         
     } catch (Exception $e) {
         $pdo->rollBack();
-        $delete_error = "Fehler beim Löschen der Gruppe: " . $e->getMessage();
+        error_log('Gruppe löschen: ' . $e->getMessage());
+        $delete_error = 'Die Gruppe konnte nicht gelöscht werden.';
     }
 }
 
@@ -110,7 +111,9 @@ if ($csrf_ok && isset($_POST['update_participant_email'])) {
     $new_email = trim($_POST['participant_email']);
     
     // Validierung
-    if (!empty($new_email) && !filter_var($new_email, FILTER_VALIDATE_EMAIL)) {
+    if ($new_email !== '' && ($length_error = limit_text_error($new_email, 255, 'E-Mail')) !== '') {
+        $participant_error = $length_error;
+    } elseif (!empty($new_email) && !filter_var($new_email, FILTER_VALIDATE_EMAIL)) {
         $participant_error = "Ungültige E-Mail-Adresse.";
     } else {
         // Prüfe ob Teilnehmer zur Gruppe gehört
@@ -171,7 +174,7 @@ if ($csrf_ok && isset($_POST['resend_email'])) {
                     'budget' => $group_budget,
                     'description' => $group_description,
                     'gift_date' => $gift_exchange_date,
-                    'ics_url' => !empty($group['gift_exchange_date']) ? gift_ics_url('teilnehmer', $participant['participant_token']) : ''
+                    'ics_url' => !empty($group['gift_exchange_date']) ? gift_ics_url($group) : ''
                 ]);
 
                 if (send_email($participant['email'], $subject, $html_message, true)) {
@@ -236,6 +239,8 @@ if ($csrf_ok && isset($_POST['add_exclusion'])) {
 if ($csrf_ok && isset($_POST['bulk_import'])) {
     if ($group['is_drawn']) {
         $participant_error = 'Nach der Auslosung können keine Teilnehmer mehr angelegt werden.';
+    } elseif (!bulk_import_attempt_allowed($admin_token, request_client_ip())) {
+        $participant_error = 'Zu viele Importe. Bitte später erneut versuchen.';
     } else {
         $parsed = parse_bulk_participants(isset($_POST['bulk_participants']) ? $_POST['bulk_participants'] : '');
         if (!empty($parsed['errors'])) {
@@ -287,12 +292,12 @@ if ($csrf_ok && isset($_POST['bulk_import'])) {
                         'budget' => $budget_display,
                         'description' => $description_display,
                         'gift_date' => $gift_display,
-                        'ics_url' => !empty($group['gift_exchange_date']) ? gift_ics_url('teilnehmer', $row['token']) : '',
+                        'ics_url' => !empty($group['gift_exchange_date']) ? gift_ics_url($group) : '',
                     ));
                     if (send_email($row['email'], 'Willkommen beim Wichteln! 🎁', $html_message, true)) {
                         $mailed++;
                     } else {
-                        error_log('Einladungsmail nach Sammelimport konnte nicht an ' . $row['email'] . ' gesendet werden.');
+                        error_log('Einladungsmail nach Sammelimport konnte nicht an ' . mask_email($row['email']) . ' gesendet werden.');
                     }
                 }
 
@@ -372,6 +377,8 @@ if ($csrf_ok && isset($_POST['update_group'])) {
     // Validierung (optional)
     if ($new_budget !== null && !is_numeric($new_budget)) {
         $update_error = "Budget muss eine Zahl sein.";
+    } elseif ($new_description !== null && ($length_error = limit_text_error($new_description, 2000, 'Beschreibung')) !== '') {
+        $update_error = $length_error;
     } elseif ($new_gift_exchange_date !== null && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $new_gift_exchange_date)) {
         $update_error = "Datum der Geschenkübergabe muss im Format YYYY-MM-DD sein.";
     } else {
@@ -396,7 +403,9 @@ if ($csrf_ok && isset($_POST['update_group'])) {
 
 // Auslosung durchführen
 if ($csrf_ok && isset($_POST['draw'])) {
-    if (count($participants) < 2) {
+    if (!empty($group['is_drawn'])) {
+        $draw_error = 'Die Auslosung wurde bereits durchgeführt.';
+    } elseif (count($participants) < 2) {
         $draw_error = 'Es müssen mindestens 2 Teilnehmer vorhanden sein.';
     } else {
         // Ausschlüsse laden
@@ -421,15 +430,18 @@ if ($csrf_ok && isset($_POST['draw'])) {
         if ($assigned_ids === false) {
             $draw_error = 'Es konnte keine gültige Auslosung gefunden werden. Bitte überprüfe die Ausschlüsse - möglicherweise sind zu viele Ausschlüsse definiert.';
         } else {
-            // Zuordnungen speichern
-            $stmt = $pdo->prepare("UPDATE `participants` SET `assigned_to` = ? WHERE `id` = ?");
-            for ($i = 0; $i < count($participant_ids); $i++) {
-                $stmt->execute([$assigned_ids[$i], $participant_ids[$i]]);
+            try {
+                $saved = save_draw_assignment($pdo, $group['id'], $participant_ids, $assigned_ids);
+            } catch (Exception $e) {
+                error_log('Auslosung speichern: ' . $e->getMessage());
+                $saved = false;
+                $draw_error = 'Die Auslosung konnte nicht gespeichert werden.';
             }
-
-            // Gruppe als ausgelost markieren
-            $stmt = $pdo->prepare("UPDATE `groups` SET `is_drawn` = 1 WHERE `id` = ?");
-            $stmt->execute([$group['id']]);
+            if (empty($saved)) {
+                if (!isset($draw_error)) {
+                    $draw_error = 'Die Auslosung wurde bereits durchgeführt.';
+                }
+            } else {
 
             // Teilnehmer erneut abrufen, um die aktualisierten `assigned_to`-Werte zu erhalten
             $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `group_id` = ?");
@@ -462,12 +474,12 @@ if ($csrf_ok && isset($_POST['draw'])) {
                                 'budget' => $group_budget,
                                 'description' => $group_description,
                                 'gift_date' => $gift_exchange_date,
-                                'ics_url' => !empty($group['gift_exchange_date']) ? gift_ics_url('teilnehmer', $participant['participant_token']) : ''
+                                'ics_url' => !empty($group['gift_exchange_date']) ? gift_ics_url($group) : ''
                             ]);
 
                             if (!send_email($participant['email'], $subject, $html_message, true)) {
                                 // Fehlerbehandlung, falls E-Mail nicht gesendet werden konnte
-                                error_log("E-Mail konnte nicht an {$participant['email']} gesendet werden.");
+                                error_log('E-Mail konnte nicht an ' . mask_email($participant['email']) . ' gesendet werden.');
                             }
                         } else {
                             // Fehlerprotokollierung, wenn der zugewiesene Teilnehmer nicht gefunden wird
@@ -483,6 +495,7 @@ if ($csrf_ok && isset($_POST['draw'])) {
             // Weiterleitung zum Adminbereich ohne vorherige Ausgabe
             header("Location: admin.php?token=" . urlencode($admin_token));
             exit();
+            }
         }
     }
 }
@@ -550,7 +563,7 @@ if (isset($_SESSION['bulk_import_links']) && is_array($_SESSION['bulk_import_lin
     
     <!-- Shared JavaScript -->
     <script src="js/main.js"></script>
-    <?php include __DIR__ . '/../includes/templates/matomo_tracking.php'; ?>
+    <?php echo token_page_referrer_meta(); ?>
 </head>
 <body>
     <?php include __DIR__ . '/../includes/templates/navigation.php'; ?>
@@ -979,14 +992,14 @@ if (isset($_SESSION['bulk_import_links']) && is_array($_SESSION['bulk_import_lin
                                         title="<?php echo $can_send_email ? 'E-Mail erneut senden' : 'E-Mail kann nicht gesendet werden (keine E-Mail-Adresse oder Auslosung nicht durchgeführt)'; ?>"
                                         aria-label="E-Mail senden an <?php echo htmlspecialchars($p['name']); ?>"
                                         <?php echo !$can_send_email ? 'disabled' : ''; ?>
-                                        <?php echo $can_send_email ? 'onclick="return confirm(\'E-Mail mit Wichtelpartner-Info an ' . htmlspecialchars(addslashes($p['name'])) . ' senden?\');"' : ''; ?>>
+                                        <?php echo $can_send_email ? 'onclick="' . html_onsubmit_confirm('E-Mail mit Wichtelpartner-Info an ' . $p['name'] . ' senden?') . '"' : ''; ?>>
                                     <span class="btn-icon" aria-hidden="true">📧</span>
                                     <span class="btn-text">E-Mail senden</span>
                                 </button>
                             </form>
                             
                             <?php if (!$group['is_drawn']): ?>
-                                <form method="POST" class="action-form" onsubmit="return confirm('Möchtest du <?php echo htmlspecialchars($p['name']); ?> wirklich löschen?');">
+                                <form method="POST" class="action-form" onsubmit="<?php echo html_onsubmit_confirm('Möchtest du ' . $p['name'] . ' wirklich löschen?'); ?>">
                                     <?php echo csrf_input(); ?>
                                     <input type="hidden" name="delete_participant" value="<?php echo (int) $p['id']; ?>">
                                     <button type="submit"
@@ -1094,7 +1107,7 @@ if (isset($_SESSION['bulk_import_links']) && is_array($_SESSION['bulk_import_lin
                                 <td data-label="Person"><?php echo htmlspecialchars($ex['participant_name']); ?></td>
                                 <td data-label="kann nicht wichteln"><?php echo htmlspecialchars($ex['excluded_name']); ?></td>
                                 <td data-label="Aktion">
-                                    <form method="POST" class="inline-action-form" onsubmit="return confirm('Möchtest du diesen Ausschluss wirklich löschen?');">
+                                    <form method="POST" class="inline-action-form" onsubmit="<?php echo html_onsubmit_confirm('Möchtest du diesen Ausschluss wirklich löschen?'); ?>">
                                         <?php echo csrf_input(); ?>
                                         <input type="hidden" name="delete_exclusion" value="<?php echo (int) $ex['id']; ?>">
                                         <button type="submit"
@@ -1164,7 +1177,7 @@ if (isset($_SESSION['bulk_import_links']) && is_array($_SESSION['bulk_import_lin
                     <p class="empty-hint">Für eine Auslosung braucht es mindestens zwei Personen.</p>
                 </div>
             <?php endif; ?>
-            <form method="POST" id="draw-form" onsubmit="return confirm('Möchtest du die Auslosung wirklich durchführen? Alle Teilnehmer mit hinterlegter E-Mail-Adresse werden sofort benachrichtigt.');">
+            <form method="POST" id="draw-form" onsubmit="<?php echo html_onsubmit_confirm('Möchtest du die Auslosung wirklich durchführen? Alle Teilnehmer mit hinterlegter E-Mail-Adresse werden sofort benachrichtigt.'); ?>">
                 <?php echo csrf_input(); ?>
                 <input type="hidden" name="draw" value="1">
                 <button type="submit" class="button primary">Jetzt auslosen</button>
@@ -1253,7 +1266,7 @@ if (isset($_SESSION['bulk_import_links']) && is_array($_SESSION['bulk_import_lin
                 <div class="danger-block">
                     <h3>Auslosung zurücksetzen</h3>
                     <p class="text-muted">Du kannst die Auslosung zurücksetzen, um sie erneut durchzuführen. Dies löscht alle aktuellen Zuordnungen, und du kannst danach neue Teilnehmer hinzufügen oder Ausschlüsse ändern.</p>
-                    <form method="POST" id="reset-draw-form" onsubmit="return confirm('Möchtest du die Auslosung wirklich zurücksetzen? Alle aktuellen Zuordnungen werden gelöscht.');">
+                    <form method="POST" id="reset-draw-form" onsubmit="<?php echo html_onsubmit_confirm('Möchtest du die Auslosung wirklich zurücksetzen? Alle aktuellen Zuordnungen werden gelöscht.'); ?>">
                         <?php echo csrf_input(); ?>
                         <input type="hidden" name="reset_draw" value="1">
                         <button type="submit" class="button error">Auslosung zurücksetzen</button>
@@ -1263,7 +1276,7 @@ if (isset($_SESSION['bulk_import_links']) && is_array($_SESSION['bulk_import_lin
             <div class="danger-block">
                 <h3>Gruppe löschen</h3>
                 <p class="text-muted">Das Löschen der Gruppe kann nicht rückgängig gemacht werden. Alle Teilnehmer, Ausschlüsse und die Auslosung werden permanent gelöscht.</p>
-                <form method="POST" id="delete-group-form" onsubmit="return confirm('⚠️ ACHTUNG: Möchtest du die Gruppe \"<?php echo htmlspecialchars($group['name']); ?>\" wirklich PERMANENT löschen?\n\nAlle Teilnehmer, Ausschlüsse und die Auslosung werden unwiderruflich gelöscht!\n\nDiese Aktion kann NICHT rückgängig gemacht werden.');">
+                <form method="POST" id="delete-group-form" onsubmit="<?php echo html_onsubmit_confirm('Möchtest du die Gruppe «' . $group['name'] . '» wirklich permanent löschen? Alle Teilnehmer, Ausschlüsse und die Auslosung werden unwiderruflich gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.'); ?>">
                     <?php echo csrf_input(); ?>
                     <input type="hidden" name="delete_group" value="1">
                     <button type="submit" class="button error">

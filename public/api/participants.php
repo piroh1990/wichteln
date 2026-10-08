@@ -68,8 +68,9 @@ switch ($method) {
             $stmt->execute([$participant['group_id']]);
             $participant['group'] = $stmt->fetch(PDO::FETCH_ASSOC);
             
+            unset($participant['participant_token'], $participant['token']);
             log_api_request('SUCCESS', '/api/participants.php', "Participant ID: $participant_id");
-            api_response(200, true, 'Teilnehmer erfolgreich abgerufen', sanitize_for_api(with_participant_token_alias($participant)));
+            api_response(200, true, 'Teilnehmer erfolgreich abgerufen', sanitize_for_api($participant));
             
         } elseif ($token) {
             // Teilnehmer per Token abrufen
@@ -93,8 +94,9 @@ switch ($method) {
             $stmt->execute([$participant['group_id']]);
             $participant['group'] = $stmt->fetch(PDO::FETCH_ASSOC);
             
+            unset($participant['participant_token'], $participant['token']);
             log_api_request('SUCCESS', '/api/participants.php', "Participant Token");
-            api_response(200, true, 'Teilnehmer erfolgreich abgerufen', sanitize_for_api(with_participant_token_alias($participant)));
+            api_response(200, true, 'Teilnehmer erfolgreich abgerufen', sanitize_for_api($participant));
             
         } elseif ($group_id) {
             // Alle Teilnehmer einer Gruppe
@@ -130,6 +132,15 @@ switch ($method) {
             api_response(400, false, 'group_id ist erforderlich', null);
         }
         if ($error = validate_input('name', $name, ['required'])) {
+            api_response(400, false, $error, null);
+        }
+        if ($error = limit_text_error($name, 255, 'name')) {
+            api_response(400, false, $error, null);
+        }
+        if ($email && ($error = limit_text_error($email, 255, 'email'))) {
+            api_response(400, false, $error, null);
+        }
+        if ($wishlist && ($error = limit_text_error($wishlist, 5000, 'wishlist'))) {
             api_response(400, false, $error, null);
         }
         if ($email && ($error = validate_input('email', $email, ['email']))) {
@@ -175,12 +186,12 @@ switch ($method) {
                 'budget' => $group_budget,
                 'description' => $group_description,
                 'gift_date' => $gift_date,
-                'ics_url' => !empty($group['gift_exchange_date']) ? gift_ics_url('teilnehmer', $participant_token) : ''
+                'ics_url' => !empty($group['gift_exchange_date']) ? gift_ics_url($group) : ''
             ]);
             send_email($email, $subject, $html_message, true);
         }
         
-        log_api_request('SUCCESS', '/api/participants.php', "Created participant: $name");
+        log_api_request('SUCCESS', '/api/participants.php', 'Created participant id: ' . (int) $participant_id);
         api_response(201, true, 'Teilnehmer erfolgreich erstellt', [
             'id' => intval($participant_id),
             'name' => $name,
@@ -218,6 +229,9 @@ switch ($method) {
         // Nach der Auslosung nur die Wunschliste, davor auch Name und E-Mail.
         $wishlist = array_key_exists('wishlist', $input) ? $input['wishlist'] : $participant['wishlist'];
         $wishlist = normalize_wishlist_text($wishlist);
+        if ($error = limit_text_error($wishlist, 5000, 'wishlist')) {
+            api_response(400, false, $error, null);
+        }
         
         if ($group['is_drawn']) {
             $stmt = $pdo->prepare("UPDATE `participants` SET `wishlist` = ? WHERE `id` = ?");
@@ -234,6 +248,12 @@ switch ($method) {
             $name = $input['name'] ?? $participant['name'];
             $email = $input['email'] ?? $participant['email'];
             
+            if ($error = limit_text_error($name, 255, 'name')) {
+                api_response(400, false, $error, null);
+            }
+            if ($email && ($error = limit_text_error($email, 255, 'email'))) {
+                api_response(400, false, $error, null);
+            }
             if ($email && ($error = validate_input('email', $email, ['email']))) {
                 api_response(400, false, $error, null);
             }

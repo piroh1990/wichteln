@@ -153,9 +153,11 @@ run_test('ics download contains the gift date and escapes commas', function() {
     assert_true(strpos($ics, "\r\n") !== false, 'ICS uses CRLF');
     assert_equals('', build_gift_ics(array('name' => 'Leer', 'gift_exchange_date' => '')), 'No date yields no file');
 
-    $url = gift_ics_url('teilnehmer', str_repeat('ab', 16));
-    assert_true(strpos($url, 'kalender.php?rolle=teilnehmer&token=') !== false, 'Calendar URL carries the role');
-    assert_equals('', gift_ics_url('gast', str_repeat('ab', 16)), 'Unknown role has no URL');
+    $url = gift_ics_url(array('id' => 9, 'gift_exchange_date' => '2026-12-24'));
+    assert_true(strpos($url, 'kalender.php?g=9&d=2026-12-24&s=') !== false, 'Calendar URL is signed');
+    assert_true(strpos($url, 'token=') === false, 'Calendar URL has no access token');
+    assert_true(gift_ics_signature_valid(9, '2026-12-24', substr($url, strrpos($url, 's=') + 2)), 'Signature matches');
+    assert_equals('', gift_ics_url('teilnehmer'), 'A role string is not a calendar link');
 });
 
 run_test('clean urls, sitemap and robots', function() {
