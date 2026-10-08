@@ -169,8 +169,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         </svg>
                     </button>
                 </div>
-                <input type="text" id="captcha_answer" name="captcha_answer" required placeholder="Gib die Zahlen aus dem Bild ein" maxlength="5" autocomplete="off" aria-describedby="captcha_hint">
-                <small id="captcha_hint" class="form-hint">Bitte gib die 5 Zahlen aus dem Bild ein.</small>
+                <?php echo captcha_answer_field(); ?>
+                <small id="captcha_hint" class="form-hint"><?php echo htmlspecialchars(captcha_hint_text(), ENT_QUOTES, 'UTF-8'); ?></small>
             </div>
             <button type="submit" class="button primary">Gruppe erstellen</button>
         </form>

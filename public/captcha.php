@@ -6,7 +6,7 @@ start_secure_session();
 $captcha_code = generate_captcha_code();
 $_SESSION['captcha_code'] = $captcha_code;
 
-$width = 220;
+$width = 16 + (captcha_length() * 34);
 $height = 56;
 $image = imagecreatetruecolor($width, $height);
 
