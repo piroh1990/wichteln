@@ -28,9 +28,10 @@ require_once __DIR__ . '/../includes/functions.php';
 
 if (!headers_sent()) {
     header('X-Robots-Tag: noindex, nofollow');
+    header('Referrer-Policy: no-referrer');
 }
 
-session_start();
+start_secure_session();
 
 $pdo = db_connect();
 
@@ -184,7 +185,7 @@ if (!empty($participant_token)) {
     <meta name="msapplication-TileImage" content="/images/favicon/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="css/styles.css">
-    <?php include __DIR__ . '/../includes/templates/matomo_tracking.php'; ?>
+    <?php echo token_page_referrer_meta(); ?>
 </head>
 <body>
     <!-- Navigation -->
@@ -295,7 +296,11 @@ if ($participant) {
         }
 
         $wishlist = normalize_wishlist_text(isset($_POST['wishlist']) ? $_POST['wishlist'] : '');
+        $wishlist_length_error = limit_text_error($wishlist, 5000, 'Wunschliste');
         $old_wishlist = $participant['wishlist'] ?? '';
+        if ($wishlist_length_error !== '') {
+            $wishlist_error = $wishlist_length_error;
+        } else {
         
         $stmt = $pdo->prepare("UPDATE `participants` SET `wishlist` = ? WHERE `id` = ?");
         $stmt->execute([$wishlist, $participant['id']]);
@@ -314,6 +319,7 @@ if ($participant) {
         $participant = $stmt->fetch(PDO::FETCH_ASSOC);
         
         $wishlist_success = wishlist_update_notice($wishlist_status);
+        }
     }
 }
 
@@ -345,7 +351,7 @@ if ($show_group_selector) {
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="/images/favicon/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
-    <?php include __DIR__ . '/../includes/templates/matomo_tracking.php'; ?>
+    <?php echo token_page_referrer_meta(); ?>
 </head>
 <body>
     <!-- Navigation -->
@@ -453,7 +459,7 @@ if ($show_group_selector) {
     <link rel="stylesheet" href="css/styles.css">
     <!-- Shared JavaScript -->
     <script src="js/main.js"></script>
-    <?php include __DIR__ . '/../includes/templates/matomo_tracking.php'; ?>
+    <?php echo token_page_referrer_meta(); ?>
 </head>
 <body>
     <!-- Navigation -->
@@ -475,6 +481,11 @@ if ($show_group_selector) {
             </div>
         <?php endif; ?>
         
+        <?php if (isset($wishlist_error)): ?>
+            <div class="notification error" role="alert" aria-live="assertive">
+                <?php echo htmlspecialchars($wishlist_error); ?>
+            </div>
+        <?php endif; ?>
         <?php if (isset($wishlist_success)): ?>
             <div class="notification success" role="status" aria-live="polite">
                 <span aria-hidden="true">✓</span> <?php echo htmlspecialchars($wishlist_success); ?>

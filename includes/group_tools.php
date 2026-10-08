@@ -15,11 +15,12 @@ function wishlist_has_real_change($old_wishlist, $new_wishlist) {
 
 /**
  * Zähler unter logs/rate-limit, getrennt vom API-Zähler durch den Bucket.
- * $fail_open: bei nicht beschreibbarem Verzeichnis die Aktion zulassen.
+ * $fail_open bleibt nur für Tests. Produktiv ist der Standard geschlossen:
+ * ohne beschreibbaren Zähler wird die Aktion abgelehnt.
  *
  * @return bool true, wenn der Versuch noch im Limit liegt
  */
-function consume_rate_limit($bucket, $identity, $max_attempts, $window_seconds, $fail_open = true) {
+function consume_rate_limit($bucket, $identity, $max_attempts, $window_seconds, $fail_open = false) {
     $bucket = (string) $bucket;
     $identity = (string) $identity;
     $max_attempts = (int) $max_attempts;
@@ -28,7 +29,7 @@ function consume_rate_limit($bucket, $identity, $max_attempts, $window_seconds, 
         return false;
     }
 
-    $dir = dirname(__DIR__) . '/logs/rate-limit';
+    $dir = rate_limit_directory();
     if (!is_dir($dir) && !@mkdir($dir, 0750, true) && !is_dir($dir)) {
         error_log('Rate-Limit-Verzeichnis ist nicht beschreibbar: ' . $dir);
         return (bool) $fail_open;
@@ -73,8 +74,55 @@ function consume_rate_limit($bucket, $identity, $max_attempts, $window_seconds, 
     return $allowed;
 }
 
+function rate_limit_directory() {
+    return dirname(__DIR__) . '/logs/rate-limit';
+}
+
+/**
+ * @return array directory, exists, writable
+ */
+function rate_limit_storage_status() {
+    $dir = rate_limit_directory();
+    $exists = is_dir($dir);
+    if ($exists) {
+        $writable = is_writable($dir);
+    } else {
+        $parent = dirname($dir);
+        $writable = is_dir($parent) && is_writable($parent);
+    }
+    return array(
+        'directory' => $dir,
+        'exists' => $exists,
+        'writable' => $writable,
+    );
+}
+
+function request_client_ip() {
+    $ip = isset($_SERVER['REMOTE_ADDR']) ? (string) $_SERVER['REMOTE_ADDR'] : 'unknown';
+    if ($ip === '' || strlen($ip) > 64) {
+        return 'unknown';
+    }
+    return $ip;
+}
+
+function create_group_attempt_allowed($ip) {
+    return consume_rate_limit('create-group', (string) $ip, 5, 900, false);
+}
+
+function registration_attempt_allowed($invite_token, $ip) {
+    $by_token = consume_rate_limit('register-token', (string) $invite_token, 10, 3600, false);
+    $by_ip = consume_rate_limit('register-ip', (string) $ip, 20, 3600, false);
+    return $by_token && $by_ip;
+}
+
+function bulk_import_attempt_allowed($admin_token, $ip) {
+    $by_token = consume_rate_limit('bulk-import-token', (string) $admin_token, 5, 3600, false);
+    $by_ip = consume_rate_limit('bulk-import-ip', (string) $ip, 10, 3600, false);
+    return $by_token && $by_ip;
+}
+
 function admin_link_recovery_allowed($identity) {
-    return consume_rate_limit('admin-link', (string) $identity, 5, 900, true);
+    return consume_rate_limit('admin-link', (string) $identity, 5, 900, false);
 }
 
 /**
@@ -108,7 +156,7 @@ function dispatch_wishlist_giver_mail($pdo, $participant, $is_drawn, $old_wishli
         'participant:' . (int) $participant['id'],
         1,
         1800,
-        true
+        false
     );
     if (!$allowed) {
         return 'rate_limited';
@@ -135,7 +183,7 @@ function dispatch_wishlist_giver_mail($pdo, $participant, $is_drawn, $old_wishli
     }
 
     if (!$ok) {
-        error_log('Wunschliste konnte nicht an ' . $email . ' gesendet werden.');
+        error_log('Wunschliste konnte nicht an ' . mask_email($email) . ' gesendet werden.');
         return 'failed';
     }
 
@@ -367,6 +415,13 @@ function parse_bulk_participants($raw, $max_rows = 100) {
             $seen_emails[$email_key] = true;
         }
 
+        $name_error = limit_text_error($parsed['name'], 255, 'Name');
+        $email_error = ($parsed['email'] !== null) ? limit_text_error($parsed['email'], 255, 'E-Mail') : '';
+        if ($name_error !== '' || $email_error !== '') {
+            $errors[] = 'Zeile ' . $line_no . ': ' . trim($name_error . ' ' . $email_error);
+            continue;
+        }
+
         $rows[] = array(
             'name' => $parsed['name'],
             'email' => $parsed['email'],
@@ -538,7 +593,7 @@ function deliver_gift_reminders($participants, $group, $sender = null, $today = 
             'sentence' => $sentence,
             'gift_date' => $gift_label,
             'participant_link' => ($token !== '') ? get_display_url('/participant.php?token=' . rawurlencode($token)) : '',
-            'ics_url' => ($token !== '') ? gift_ics_url('teilnehmer', $token) : '',
+            'ics_url' => gift_ics_url($group),
         );
 
         $ok = false;
@@ -558,7 +613,7 @@ function deliver_gift_reminders($participants, $group, $sender = null, $today = 
             $sent++;
         } else {
             $failed++;
-            error_log('Erinnerung konnte nicht an ' . $email . ' gesendet werden.');
+            error_log('Erinnerung konnte nicht an ' . mask_email($email) . ' gesendet werden.');
         }
     }
 
@@ -777,14 +832,47 @@ function build_gift_ics($group, $dtstamp = null) {
     return implode("\r\n", $folded) . "\r\n";
 }
 
-function gift_ics_url($rolle, $token) {
-    if ($rolle !== 'admin' && $rolle !== 'teilnehmer') {
+function ics_signing_key() {
+    if (defined('ICS_SIGNING_KEY') && is_string(ICS_SIGNING_KEY) && ICS_SIGNING_KEY !== '') {
+        return ICS_SIGNING_KEY;
+    }
+    $material = 'ics-link';
+    if (defined('MASTER_ADMIN_TOKEN') && is_string(MASTER_ADMIN_TOKEN) && MASTER_ADMIN_TOKEN !== '') {
+        $material .= '|' . MASTER_ADMIN_TOKEN;
+    }
+    return hash('sha256', $material);
+}
+
+function gift_ics_signature($group_id, $gift_date) {
+    $payload = (int) $group_id . '|' . (string) $gift_date;
+    return hash_hmac('sha256', $payload, ics_signing_key());
+}
+
+function gift_ics_signature_valid($group_id, $gift_date, $signature) {
+    if (!is_string($signature) || preg_match('/^[a-f0-9]{64}$/', $signature) !== 1) {
+        return false;
+    }
+    if ((int) $group_id < 1 || preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) $gift_date) !== 1) {
+        return false;
+    }
+    return hash_equals(gift_ics_signature($group_id, $gift_date), $signature);
+}
+
+/**
+ * Kalenderlink, der nur den ICS-Eintrag freigibt.
+ * Erwartet id und gift_exchange_date der Gruppe.
+ */
+function gift_ics_url($group) {
+    if (!is_array($group)) {
         return '';
     }
-    if (!is_string($token) || $token === '' || !preg_match('/^[a-f0-9]{16,128}$/i', $token)) {
+    $group_id = isset($group['id']) ? (int) $group['id'] : 0;
+    $date = isset($group['gift_exchange_date']) ? (string) $group['gift_exchange_date'] : '';
+    if ($group_id < 1 || preg_match('/^\d{4}-\d{2}-\d{2}$/', $date) !== 1) {
         return '';
     }
-    return get_display_url('/kalender.php?rolle=' . rawurlencode($rolle) . '&token=' . rawurlencode($token));
+    $signature = gift_ics_signature($group_id, $date);
+    return get_display_url('/kalender.php?g=' . $group_id . '&d=' . rawurlencode($date) . '&s=' . rawurlencode($signature));
 }
 
 function public_clean_slugs() {

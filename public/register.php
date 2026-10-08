@@ -5,10 +5,10 @@ require_once __DIR__ . '/../includes/functions.php';
 
 if (!headers_sent()) {
     header('X-Robots-Tag: noindex, nofollow');
+    header('Referrer-Policy: no-referrer');
 }
 
-// Session starten für CSRF-Token
-session_start();
+start_secure_session();
 
 $invite_token = $_GET['token'] ?? '';
 $pdo = db_connect();
@@ -28,13 +28,19 @@ if ($group['is_drawn']) {
 
 // Teilnehmer registrieren
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $name = trim($_POST['name']);
-    $email = trim($_POST['email']) ?: null;
+    $name = trim(isset($_POST['name']) ? $_POST['name'] : '');
+    $email = trim(isset($_POST['email']) ? $_POST['email'] : '') ?: null;
 
-    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+    if (!verify_csrf_token(isset($_POST['csrf_token']) ? $_POST['csrf_token'] : '')) {
         $error = csrf_failure_message();
+    } elseif (!registration_attempt_allowed($invite_token, request_client_ip())) {
+        $error = 'Zu viele Anmeldungen. Bitte später erneut versuchen.';
     } elseif (empty($name)) {
         $error = "Name darf nicht leer sein.";
+    } elseif (($length_error = limit_text_error($name, 255, 'Name')) !== '') {
+        $error = $length_error;
+    } elseif ($email !== null && ($length_error = limit_text_error($email, 255, 'E-Mail')) !== '') {
+        $error = $length_error;
     } elseif ($email !== null && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = "Ungültige E-Mail-Adresse.";
     } else {
@@ -58,12 +64,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 'budget' => $budget_display,
                 'description' => $description_display,
                 'gift_date' => $gift_exchange_date_display,
-                'ics_url' => !empty($group['gift_exchange_date']) ? gift_ics_url('teilnehmer', $participant_token) : ''
+                'ics_url' => !empty($group['gift_exchange_date']) ? gift_ics_url($group) : ''
             ]);
 
             if (!send_email($email, $subject, $html_message, true)) {
                 // Fehlerbehandlung, falls E-Mail nicht gesendet werden konnte
-                error_log("E-Mail konnte nicht an $email gesendet werden.");
+                error_log('E-Mail konnte nicht an ' . mask_email($email) . ' gesendet werden.');
                 $email_error = "E-Mail konnte nicht gesendet werden. Bitte überprüfe deine E-Mail-Adresse.";
             }
         }
@@ -104,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link rel="stylesheet" href="css/styles.css">
     <!-- Shared JavaScript -->
     <script src="js/main.js"></script>
-    <?php include __DIR__ . '/../includes/templates/matomo_tracking.php'; ?>
+    <?php echo token_page_referrer_meta(); ?>
 </head>
 <body>
     <?php include __DIR__ . '/../includes/templates/navigation.php'; ?>

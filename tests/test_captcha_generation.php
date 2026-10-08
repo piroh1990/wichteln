@@ -16,8 +16,8 @@ if (!isset($_SESSION['captcha_code'])) {
     exit(1);
 }
 
-if (!preg_match('/^\d{5}$/', $_SESSION['captcha_code'])) {
-    echo "FAIL: captcha_code is not 5 digits: " . $_SESSION['captcha_code'] . "\n";
+if (!preg_match('/^[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{6}$/', $_SESSION['captcha_code'])) {
+    echo "FAIL: captcha_code has an unexpected shape: " . $_SESSION['captcha_code'] . "\n";
     exit(1);
 }
 

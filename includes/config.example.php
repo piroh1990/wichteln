@@ -1,4 +1,12 @@
 <?php
+// Feste Basis-URL für Links. Der Host-Header der Anfrage wird nicht verwendet.
+define('CANONICAL_BASE_URL', 'https://xn--wichtl-gua.ch');
+
+// Optionaler Schlüssel für Kalenderlinks. Wenn die Zeile auskommentiert bleibt,
+// wird der Schlüssel aus MASTER_ADMIN_TOKEN abgeleitet. Ein späterer Wechsel
+// macht bestehende Kalenderlinks ungültig.
+// define('ICS_SIGNING_KEY', 'generate_a_separate_random_secret');
+
 // Datenbankeinstellungen
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'wichtel_db');

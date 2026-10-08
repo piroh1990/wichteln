@@ -1,88 +1,68 @@
 <?php
-// captcha.php - Generates captcha image
+require_once __DIR__ . '/../includes/session.php';
+require_once __DIR__ . '/../includes/captcha_lib.php';
 
-session_start();
-
-// Generate random 5-digit code
-$captcha_code = '';
-for ($i = 0; $i < 5; $i++) {
-    $captcha_code .= random_int(0, 9);
-}
-
-// Store in session
+start_secure_session();
+$captcha_code = generate_captcha_code();
 $_SESSION['captcha_code'] = $captcha_code;
 
-// Create image
-$width = 150;
-$height = 50;
+$width = 220;
+$height = 56;
 $image = imagecreatetruecolor($width, $height);
 
-// Colors
 $bg_color = imagecolorallocate($image, 240, 240, 240);
-$text_color = imagecolorallocate($image, 43, 45, 66); // --text-primary
-$line_color = imagecolorallocate($image, 42, 157, 143); // --secondary-color
+$text_color = imagecolorallocate($image, 43, 45, 66);
+$line_color = imagecolorallocate($image, 42, 157, 143);
 $noise_color = imagecolorallocate($image, 200, 200, 200);
 
-// Fill background
 imagefilledrectangle($image, 0, 0, $width, $height, $bg_color);
 
-// Add noise (dots)
-for ($i = 0; $i < 100; $i++) {
-    imagesetpixel($image, random_int(0, $width), random_int(0, $height), $noise_color);
+for ($i = 0; $i < 140; $i++) {
+    imagesetpixel($image, random_int(0, $width - 1), random_int(0, $height - 1), $noise_color);
 }
 
-// Add lines
-for ($i = 0; $i < 3; $i++) {
-    imageline($image, random_int(0, $width), random_int(0, $height), random_int(0, $width), random_int(0, $height), $line_color);
+for ($i = 0; $i < 4; $i++) {
+    imageline(
+        $image,
+        random_int(0, $width - 1),
+        random_int(0, $height - 1),
+        random_int(0, $width - 1),
+        random_int(0, $height - 1),
+        $line_color
+    );
 }
 
-// Add captcha text
-$font_size = 20;
-$angle = 0;
-$x = 15;
-$y = 35;
-
-// Use built-in font if TTF not available
+$font_size = 22;
+$x = 16;
+$y = 38;
 $code_length = strlen($captcha_code);
+$fonts = array(
+    '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',
+    '/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf',
+    '/System/Library/Fonts/Helvetica.ttc',
+    '/Library/Fonts/Arial.ttf',
+    '/Windows/Fonts/arial.ttf',
+);
+$font_file = null;
+foreach ($fonts as $font) {
+    if (file_exists($font)) {
+        $font_file = $font;
+        break;
+    }
+}
+
 for ($i = 0; $i < $code_length; $i++) {
     $char = $captcha_code[$i];
-    $char_angle = random_int(-15, 15);
-    $char_y = $y + random_int(-5, 5);
-    
-    // Try to use TTF font, fallback to built-in
-    if (function_exists('imagettftext')) {
-        // Use system font if available
-        $fonts = [
-            '/System/Library/Fonts/Helvetica.ttc',
-            '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',
-            '/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf',
-            '/Windows/Fonts/arial.ttf',
-            '/Library/Fonts/Arial.ttf'
-        ];
-        
-        $font_file = null;
-        foreach ($fonts as $font) {
-            if (file_exists($font)) {
-                $font_file = $font;
-                break;
-            }
-        }
-        
-        if ($font_file) {
-            imagettftext($image, $font_size, $char_angle, $x, $char_y, $text_color, $font_file, $char);
-        } else {
-            // Fallback to built-in font
-            imagestring($image, 5, $x, $char_y - 20, $char, $text_color);
-        }
+    $char_angle = random_int(-18, 18);
+    $char_y = $y + random_int(-4, 4);
+    if ($font_file !== null && function_exists('imagettftext')) {
+        imagettftext($image, $font_size, $char_angle, $x, $char_y, $text_color, $font_file, $char);
     } else {
-        // Fallback to built-in font
-        imagestring($image, 5, $x, $char_y - 20, $char, $text_color);
+        imagestring($image, 5, $x, 18, $char, $text_color);
     }
-    
-    $x += 25;
+    $x += 32;
 }
 
-// Output image
 header('Content-Type: image/png');
 header('Cache-Control: no-cache, no-store, must-revalidate');
 header('Pragma: no-cache');
@@ -90,4 +70,3 @@ header('Expires: 0');
 
 imagepng($image);
 imagedestroy($image);
-?>

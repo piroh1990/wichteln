@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../includes/functions.php';
 
-session_start();
+start_secure_session();
 
 $success = false;
 
@@ -10,16 +10,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $captcha_answer = trim(isset($_POST['captcha_answer']) ? $_POST['captcha_answer'] : '');
     $client = isset($_SERVER['REMOTE_ADDR']) ? (string) $_SERVER['REMOTE_ADDR'] : 'unknown';
 
+    $captcha_ok = consume_captcha_answer($captcha_answer);
+
     if (!verify_csrf_token(isset($_POST['csrf_token']) ? $_POST['csrf_token'] : '')) {
         $error = csrf_failure_message();
     } elseif (!admin_link_recovery_allowed($client)) {
         $error = 'Zu viele Anfragen. Bitte später erneut versuchen.';
-    } elseif ($admin_email === '' || !filter_var($admin_email, FILTER_VALIDATE_EMAIL)) {
+    } elseif ($admin_email === '' || ($length_error = limit_text_error($admin_email, 255, 'E-Mail')) !== '') {
+        $error = ($admin_email === '') ? 'Ungültige E-Mail-Adresse.' : $length_error;
+    } elseif (!filter_var($admin_email, FILTER_VALIDATE_EMAIL)) {
         $error = 'Ungültige E-Mail-Adresse.';
-    } elseif ($captcha_answer === '' || !isset($_SESSION['captcha_code']) || $captcha_answer !== $_SESSION['captcha_code']) {
+    } elseif (!$captcha_ok) {
         $error = 'Der Sicherheitscode ist falsch. Bitte versuche es erneut.';
     } else {
-        unset($_SESSION['captcha_code']);
         $success = true;
 
         try {

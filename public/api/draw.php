@@ -72,7 +72,8 @@ if ($action === 'reset') {
         
     } catch (Exception $e) {
         $pdo->rollBack();
-        api_response(500, false, 'Fehler beim Zurücksetzen: ' . $e->getMessage(), null);
+        error_log('API Auslosung zurücksetzen: ' . $e->getMessage());
+        api_response(500, false, 'Fehler beim Zurücksetzen.', null);
     }
     
 } else {
@@ -117,25 +118,25 @@ if ($action === 'reset') {
         ]);
     }
     
-    $pdo->beginTransaction();
+    $assignments = [];
+    for ($i = 0; $i < count($participant_ids); $i++) {
+        $assignments[] = [
+            'giver_id' => $participant_ids[$i],
+            'receiver_id' => $assigned_ids[$i]
+        ];
+    }
+
     try {
-        // Zuordnungen speichern
-        $assignments = [];
-        $stmt = $pdo->prepare("UPDATE `participants` SET `assigned_to` = ? WHERE `id` = ?");
-        for ($i = 0; $i < count($participant_ids); $i++) {
-            $stmt->execute([$assigned_ids[$i], $participant_ids[$i]]);
-            
-            $assignments[] = [
-                'giver_id' => $participant_ids[$i],
-                'receiver_id' => $assigned_ids[$i]
-            ];
+        $saved = save_draw_assignment($pdo, $group_id, $participant_ids, $assigned_ids);
+        if (!$saved) {
+            api_response(400, false, 'Gruppe wurde bereits ausgelost', null);
         }
-        
-        // Gruppe als ausgelost markieren
-        $stmt = $pdo->prepare("UPDATE `groups` SET `is_drawn` = 1 WHERE `id` = ?");
-        $stmt->execute([$group_id]);
-        
-        $pdo->commit();
+    } catch (Exception $e) {
+        error_log('API Auslosung: ' . $e->getMessage());
+        api_response(500, false, 'Fehler bei der Auslosung.', null);
+    }
+
+    try {
         
         // E-Mails versenden (optional, falls send_emails=true)
         $send_emails = isset($input['send_emails']) && $input['send_emails'] === true;
@@ -168,7 +169,7 @@ if ($action === 'reset') {
                                 'budget' => $group_budget,
                                 'description' => $group_description,
                                 'gift_date' => $gift_date,
-                                'ics_url' => !empty($group['gift_exchange_date']) ? gift_ics_url('teilnehmer', isset($participant['participant_token']) ? $participant['participant_token'] : '') : ''
+                                'ics_url' => !empty($group['gift_exchange_date']) ? gift_ics_url($group) : ''
                             ]);
                             
                             if (send_email($participant['email'], $subject, $html_message, true)) {
@@ -185,12 +186,11 @@ if ($action === 'reset') {
             'group_id' => $group_id,
             'is_drawn' => true,
             'participants_count' => count($participants),
-            'emails_sent' => $emails_sent,
-            'assignments' => $assignments
+            'emails_sent' => $emails_sent
         ]);
         
     } catch (Exception $e) {
-        $pdo->rollBack();
-        api_response(500, false, 'Fehler bei der Auslosung: ' . $e->getMessage(), null);
+        error_log('API Auslosung Mail: ' . $e->getMessage());
+        api_response(500, false, 'Fehler bei der Auslosung.', null);
     }
 }

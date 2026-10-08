@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/cleanup.php';
+require_once __DIR__ . '/urls.php';
 
 /**
  * Master-Dashboard: Filter, Sortierung, Kennzahlen, CSV und Systemstatus.
@@ -697,9 +698,11 @@ function master_admin_group_names(PDO $pdo, array $ids) {
 }
 
 function master_admin_csv_cell($value) {
-    $value = str_replace(array("\r", "\n"), ' ', (string) $value);
-    $looks_like_number = preg_match('/^-?\d+(,\d+)?$/', $value) === 1;
-    if ($value !== '' && !$looks_like_number && preg_match('/^[=+\-@\t]/', $value) === 1) {
+    $value = (string) $value;
+    $first = ($value === '') ? '' : substr($value, 0, 1);
+    $dangerous = ($first !== '' && strpos("=+-@\t\r", $first) !== false);
+    $value = str_replace(array("\r", "\n"), ' ', $value);
+    if ($dangerous) {
         $value = "'" . $value;
     }
     return $value;
@@ -1229,17 +1232,14 @@ function master_admin_rewrite_status($apache_modules, $probe) {
     return 'unbekannt';
 }
 
-function master_admin_clean_url_probe_target(array $server) {
-    $host = isset($server['HTTP_HOST']) ? (string) $server['HTTP_HOST'] : '';
-    if ($host === '' || preg_match('/^[A-Za-z0-9.\-:\[\]]+$/', $host) !== 1) {
-        return '';
-    }
-    $https = !empty($server['HTTPS']) && $server['HTTPS'] !== 'off';
-    return ($https ? 'https' : 'http') . '://' . $host . '/faq';
+function master_admin_clean_url_probe_target(array $server = array()) {
+    unset($server);
+    return canonical_base_url() . '/faq';
 }
 
 function master_admin_probe_clean_url($url) {
-    if (!is_string($url) || preg_match('#^https?://#', $url) !== 1) {
+    $allowed = master_admin_clean_url_probe_target();
+    if (!is_string($url) || $url !== $allowed) {
         return null;
     }
     $context = stream_context_create(array(
@@ -1272,4 +1272,25 @@ function master_admin_php_status() {
         'version' => PHP_VERSION,
         'ok' => version_compare(PHP_VERSION, '7.4.0', '>='),
     );
+}
+
+function master_admin_login_document($csrf_html, $error) {
+    $error_html = '';
+    if (is_string($error) && $error !== '') {
+        $error_html = '<p class="notification error" role="alert">' . htmlspecialchars($error, ENT_QUOTES, 'UTF-8') . '</p>';
+    }
+    return '<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8">'
+        . '<meta name="viewport" content="width=device-width, initial-scale=1.0">'
+        . '<meta name="robots" content="noindex, nofollow">'
+        . '<title>Master-Admin</title>'
+        . '<link rel="stylesheet" href="/css/styles.css">'
+        . '</head><body><div class="container"><h1>Master-Admin</h1>'
+        . '<p>Melde dich mit dem Master-Token an. Der Token gehört ins Formular, nicht in die Adresszeile.</p>'
+        . $error_html
+        . '<form method="POST" action="index.php">'
+        . $csrf_html
+        . '<div class="form-group"><label for="master_token">Master-Token</label>'
+        . '<input type="password" id="master_token" name="master_token" required autocomplete="current-password"></div>'
+        . '<button type="submit" class="button primary">Anmelden</button>'
+        . '</form></div></body></html>';
 }

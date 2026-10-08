@@ -7,10 +7,11 @@ if (!headers_sent()) {
     header('Referrer-Policy: no-referrer');
 }
 
-$rolle = isset($_GET['rolle']) ? (string) $_GET['rolle'] : '';
-$token = isset($_GET['token']) ? (string) $_GET['token'] : '';
+$group_id = isset($_GET['g']) ? (int) $_GET['g'] : 0;
+$date = isset($_GET['d']) ? (string) $_GET['d'] : '';
+$signature = isset($_GET['s']) ? (string) $_GET['s'] : '';
 
-if (($rolle !== 'admin' && $rolle !== 'teilnehmer') || !preg_match('/^[a-f0-9]{16,128}$/i', $token)) {
+if (!gift_ics_signature_valid($group_id, $date, $signature)) {
     http_response_code(404);
     header('Content-Type: text/plain; charset=utf-8');
     echo 'Kalendereintrag nicht gefunden.';
@@ -18,17 +19,19 @@ if (($rolle !== 'admin' && $rolle !== 'teilnehmer') || !preg_match('/^[a-f0-9]{1
 }
 
 $pdo = db_connect();
-if ($rolle === 'admin') {
-    $stmt = $pdo->prepare('SELECT * FROM `groups` WHERE `admin_token` = ?');
-    $stmt->execute(array($token));
-    $group = $stmt->fetch(PDO::FETCH_ASSOC);
-} else {
-    $stmt = $pdo->prepare('SELECT g.* FROM `groups` g INNER JOIN `participants` p ON p.group_id = g.id WHERE p.participant_token = ?');
-    $stmt->execute(array($token));
-    $group = $stmt->fetch(PDO::FETCH_ASSOC);
+$stmt = $pdo->prepare('SELECT * FROM `groups` WHERE `id` = ?');
+$stmt->execute(array($group_id));
+$group = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$stored_date = (is_array($group) && isset($group['gift_exchange_date'])) ? (string) $group['gift_exchange_date'] : '';
+if (!is_array($group) || $stored_date !== $date) {
+    http_response_code(404);
+    header('Content-Type: text/plain; charset=utf-8');
+    echo 'Kalendereintrag nicht gefunden.';
+    exit;
 }
 
-$ics = $group ? build_gift_ics($group) : '';
+$ics = build_gift_ics($group);
 if ($ics === '') {
     http_response_code(404);
     header('Content-Type: text/plain; charset=utf-8');

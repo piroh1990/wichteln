@@ -108,23 +108,19 @@ Produktiv erst nach diesen Schritten:
 
 Ohne diesen Schalter und ohne echte Publisher-ID lädt die Seite kein AdSense-Skript. Der eigene Hinweis fragt nur, ob Matomo ein Cookie setzen darf. «Ablehnen» lässt Matomo ohne Tracking-Cookies und schaltet keine Anzeigen frei. Matomo und AdSense laden nicht, bevor eine Entscheidung vorliegt.
 
-Neue Konstanten in eine bestehende `includes/config.php` übernehmen: `GOOGLE_ADS_TESTING` (Default `false`), `GOOGLE_CMP_ENABLED`, die Slot-Kommentare zu Startseite und `was-ist-wichteln.php`, `GOOGLE_ADS_SHOW_OPTION3` = `false`.
+Neue Konstanten in eine bestehende `includes/config.php` übernehmen: `CANONICAL_BASE_URL` (Default `https://xn--wichtl-gua.ch`), optional `ICS_SIGNING_KEY`, `GOOGLE_ADS_TESTING` (Default `false`), `GOOGLE_CMP_ENABLED`, die Slot-Kommentare zu Startseite und `was-ist-wichteln.php`, `GOOGLE_ADS_SHOW_OPTION3` = `false`.
+
+`logs/rate-limit/` muss für den PHP-Benutzer beschreibbar sein. Ohne dieses Verzeichnis lehnen Captcha, Anmeldung und API weitere Versuche ab.
 
 ```bash
 php -r "echo bin2hex(random_bytes(32)), PHP_EOL;"
 ```
 
-Den Master-Admin erreichst du einmalig über:
-
-```text
-https://example.ch/admin/index.php?master_token=DEIN_TOKEN
-```
-
-Der Token wird in der Session gespeichert und aus der Adresszeile entfernt. Alte Links mit `master_token` funktionieren weiter. Abmelden steht im Kopf des Master-Admins. Reset und Löschen laufen nur noch als Formular mit CSRF-Token, nicht mehr über GET.
+Den Master-Admin erreichst du über das Formular unter `/admin/`. Das Master-Token wird per POST gesendet. Ein Token in der Adresszeile wird nicht mehr angenommen. Abmelden steht im Kopf des Master-Admins. Reset und Löschen laufen nur noch als Formular mit CSRF-Token, nicht mehr über GET.
 
 In `includes/api_config.php`, falls die API genutzt wird:
 
-- `API_TOKEN` setzen (ebenfalls `bin2hex(random_bytes(32))`)
+- `API_TOKEN` setzen (ebenfalls `bin2hex(random_bytes(32))`). Der Token gilt nur im Header `Authorization: Bearer` oder `X-API-Token`.
 - `API_ALLOW_ORIGINS` als Liste konkreter Origins. `*` wird ignoriert.
 - Browser senden IDN-Hosts als Punycode, also `https://xn--wichtl-gua.ch`.
 - Schema, Host und Port müssen exakt passen, ohne Slash am Ende.

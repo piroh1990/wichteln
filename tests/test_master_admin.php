@@ -350,8 +350,9 @@ run_test('Sammelaktionen bestätigen, archivieren, löschen und rollen zurück',
     assert_equals('done', $done['status']);
     assert_equals(2, $done['count']);
     assert_equals(0, (int) $pdo->query('SELECT COUNT(*) FROM `groups` WHERE id IN (' . $gamma . ',' . $zeta . ')')->fetchColumn());
-    $stats = $pdo->query("SELECT * FROM `group_statistics` WHERE group_name = 'Gamma'")->fetch(PDO::FETCH_ASSOC);
+    $stats = $pdo->query('SELECT * FROM `group_statistics` WHERE original_group_id = ' . (int) $gamma)->fetch(PDO::FETCH_ASSOC);
     assert_true(is_array($stats));
+    assert_true($stats['group_name'] === null || $stats['group_name'] === '', 'Archiv speichert keinen Gruppennamen');
     assert_equals(0, (int) $stats['participant_count']);
     assert_equals(1, (int) $pdo->query("SELECT COUNT(*) FROM `groups` WHERE name = 'Alpha'")->fetchColumn());
 
@@ -482,8 +483,9 @@ run_test('Systemstatus, Saison und Tageschart', function () {
     assert_equals('unbekannt', master_admin_rewrite_status(null, null));
     assert_equals('aktiv', master_admin_rewrite_status(null, true));
     assert_equals('inaktiv', master_admin_rewrite_status(null, false));
-    assert_equals('http://localhost/faq', master_admin_clean_url_probe_target(array('HTTP_HOST' => 'localhost')));
-    assert_equals('', master_admin_clean_url_probe_target(array('HTTP_HOST' => 'bad host')));
+    assert_equals(canonical_base_url() . '/faq', master_admin_clean_url_probe_target(array('HTTP_HOST' => 'localhost')));
+    assert_equals(canonical_base_url() . '/faq', master_admin_clean_url_probe_target(array('HTTP_HOST' => 'bad host')));
+    assert_equals(null, master_admin_probe_clean_url('http://localhost/faq'));
 
     $mail_ok = master_admin_mail_status('noreply@example.com', 'Wichtel', '/usr/sbin/sendmail -t -i', true);
     assert_true($mail_ok['ok']);

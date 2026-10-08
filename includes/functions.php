@@ -1,5 +1,8 @@
 <?php
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/session.php';
+require_once __DIR__ . '/urls.php';
+require_once __DIR__ . '/captcha_lib.php';
 
 // Setze den korrekten Sendmail-Pfad
 ini_set('sendmail_path', '/usr/sbin/sendmail -t -i'); // Passe den Pfad an
@@ -16,7 +19,8 @@ function db_connect() {
         $pdo = new PDO($dsn, DB_USER, DB_PASS);
         return $pdo;
     } catch (PDOException $e) {
-        die('Datenbankverbindung fehlgeschlagen: ' . $e->getMessage());
+        error_log('Datenbankverbindung fehlgeschlagen: ' . $e->getMessage());
+        die('Datenbankverbindung fehlgeschlagen.');
     }
 }
 
@@ -29,9 +33,7 @@ function generate_token($length = 32) {
  * CSRF-Token generieren und in Session speichern
  */
 function get_csrf_token() {
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
+    start_secure_session();
     if (empty($_SESSION['csrf_token'])) {
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
     }
@@ -42,9 +44,7 @@ function get_csrf_token() {
  * CSRF-Token validieren
  */
 function verify_csrf_token($token) {
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
+    start_secure_session();
     if (!is_string($token) || $token === '' || empty($_SESSION['csrf_token']) || !is_string($_SESSION['csrf_token'])) {
         return false;
     }
@@ -835,7 +835,7 @@ function deliver_group_reveal($participants, $group, $sender = null) {
             $sent++;
         } else {
             $failed++;
-            error_log('Auflösung konnte nicht an ' . $email . ' gesendet werden.');
+            error_log('Auflösung konnte nicht an ' . mask_email($email) . ' gesendet werden.');
         }
     }
 
@@ -912,11 +912,38 @@ function reveal_result_message($result) {
     );
 }
 
-// Funktion zur Generierung der Basis-URL
+function text_length($value) {
+    $value = (string) $value;
+    if (function_exists('mb_strlen')) {
+        return mb_strlen($value, 'UTF-8');
+    }
+    return strlen($value);
+}
+
+function limit_text_error($value, $max, $label) {
+    $max = (int) $max;
+    if (text_length($value) > $max) {
+        return $label . ' ist zu lang (höchstens ' . $max . ' Zeichen).';
+    }
+    return '';
+}
+
+function mask_email($email) {
+    $email = (string) $email;
+    $at = strrpos($email, '@');
+    if ($at === false || $at < 1) {
+        return '***';
+    }
+    return substr($email, 0, 1) . '***@' . substr($email, $at + 1);
+}
+
+function token_page_referrer_meta() {
+    return '<meta name="referrer" content="no-referrer">';
+}
+
+// Feste Basis-URL aus der Konfiguration, unabhängig vom Host-Header.
 function get_base_url() {
-    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || 
-                $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-    return $protocol . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/');
+    return canonical_base_url();
 }
 
 /**
@@ -932,13 +959,13 @@ function perform_draw($participant_ids, $exclusions_map = [], $max_attempts = 10
         return false;
     }
 
-    $assigned_ids = $participant_ids;
+    $assigned_ids = array_values($participant_ids);
     $attempt = 0;
     $valid_assignment = false;
     $count = count($participant_ids);
 
     while (!$valid_assignment && $attempt < $max_attempts) {
-        shuffle($assigned_ids);
+        $assigned_ids = secure_shuffle_values($assigned_ids);
         $valid_assignment = true;
 
         for ($i = 0; $i < $count; $i++) {
@@ -963,15 +990,69 @@ function perform_draw($participant_ids, $exclusions_map = [], $max_attempts = 10
     return $valid_assignment ? $assigned_ids : false;
 }
 
-// Funktion zur Generierung einer lesbaren Display-URL (ohne https:// und mit wichtlä.ch statt Punycode)
+/**
+ * Fisher-Yates mit random_int.
+ *
+ * @param array $values
+ * @return array
+ */
+function secure_shuffle_values(array $values) {
+    $items = array_values($values);
+    $last = count($items) - 1;
+    for ($i = $last; $i > 0; $i--) {
+        $j = random_int(0, $i);
+        $swap = $items[$i];
+        $items[$i] = $items[$j];
+        $items[$j] = $swap;
+    }
+    return $items;
+}
+
+/**
+ * Speichert eine Auslosung nur, wenn die Gruppe noch nicht ausgelost ist.
+ *
+ * @param PDO $pdo
+ * @param int $group_id
+ * @param array $participant_ids
+ * @param array $assigned_ids
+ * @return bool
+ */
+function save_draw_assignment(PDO $pdo, $group_id, array $participant_ids, array $assigned_ids) {
+    $group_id = (int) $group_id;
+    if ($group_id < 1 || count($participant_ids) < 2 || count($participant_ids) !== count($assigned_ids)) {
+        return false;
+    }
+
+    $pdo->beginTransaction();
+    try {
+        $mark = $pdo->prepare('UPDATE `groups` SET `is_drawn` = 1 WHERE `id` = ? AND (`is_drawn` = 0 OR `is_drawn` IS NULL)');
+        $mark->execute(array($group_id));
+        if ($mark->rowCount() !== 1) {
+            $pdo->rollBack();
+            return false;
+        }
+
+        $stmt = $pdo->prepare('UPDATE `participants` SET `assigned_to` = ? WHERE `id` = ? AND `group_id` = ?');
+        $count = count($participant_ids);
+        for ($i = 0; $i < $count; $i++) {
+            $stmt->execute(array($assigned_ids[$i], $participant_ids[$i], $group_id));
+        }
+        $pdo->commit();
+        return true;
+    } catch (Exception $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        throw $e;
+    }
+}
+
+// Lesbare Display-URL auf Basis der festen Basis-URL.
 function get_display_url($path = '') {
-    // Konvertiere Punycode zurück zu IDN (internationalisierte Domain).
-    // Ohne HTTP_HOST (Cron) den Live-Host verwenden.
-    $host = (isset($_SERVER['HTTP_HOST']) && is_string($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] !== '')
-        ? $_SERVER['HTTP_HOST']
-        : 'wichtlä.ch';
-    
-    // Wenn es xn--wichtl-gua.ch ist, zeige wichtlä.ch
+    $host = parse_url(canonical_base_url(), PHP_URL_HOST);
+    if (!is_string($host) || $host === '') {
+        $host = 'xn--wichtl-gua.ch';
+    }
     if (strpos($host, 'xn--wichtl-gua.ch') !== false) {
         $host = str_replace('xn--wichtl-gua.ch', 'wichtlä.ch', $host);
     }

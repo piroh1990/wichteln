@@ -3,31 +3,38 @@
 
 require_once __DIR__ . '/../includes/functions.php';
 
-// Session starten für Captcha
-session_start();
+start_secure_session();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $group_name = trim($_POST['group_name']);
-    $admin_email = trim($_POST['admin_email']);
-    $budget = trim($_POST['budget']) ?: null;
-    $description = trim($_POST['description']) ?: null;
-    $gift_exchange_date = trim($_POST['gift_exchange_date']) ?: null;
-    $captcha_answer = trim($_POST['captcha_answer']);
+    $group_name = trim(isset($_POST['group_name']) ? $_POST['group_name'] : '');
+    $admin_email = trim(isset($_POST['admin_email']) ? $_POST['admin_email'] : '');
+    $budget = trim(isset($_POST['budget']) ? $_POST['budget'] : '') ?: null;
+    $description = trim(isset($_POST['description']) ? $_POST['description'] : '') ?: null;
+    $gift_exchange_date = trim(isset($_POST['gift_exchange_date']) ? $_POST['gift_exchange_date'] : '') ?: null;
+    $captcha_answer = trim(isset($_POST['captcha_answer']) ? $_POST['captcha_answer'] : '');
+    $captcha_ok = consume_captcha_answer($captcha_answer);
     
-    // Validierung (optional)
-    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+    if (!verify_csrf_token(isset($_POST['csrf_token']) ? $_POST['csrf_token'] : '')) {
         $error = csrf_failure_message();
+    } elseif (!create_group_attempt_allowed(request_client_ip())) {
+        $error = 'Zu viele Versuche. Bitte später erneut versuchen.';
     } elseif (empty($group_name)) {
         $error = "Gruppenname darf nicht leer sein.";
+    } elseif (($length_error = limit_text_error($group_name, 255, 'Gruppenname')) !== '') {
+        $error = $length_error;
     } elseif (empty($admin_email)) {
         $error = "Admin-E-Mail darf nicht leer sein.";
+    } elseif (($length_error = limit_text_error($admin_email, 255, 'E-Mail')) !== '') {
+        $error = $length_error;
     } elseif (!filter_var($admin_email, FILTER_VALIDATE_EMAIL)) {
         $error = "Ungültige E-Mail-Adresse.";
+    } elseif ($description !== null && ($length_error = limit_text_error($description, 2000, 'Beschreibung')) !== '') {
+        $error = $length_error;
     } elseif ($budget !== null && !is_numeric($budget)) {
         $error = "Budget muss eine Zahl sein.";
     } elseif ($gift_exchange_date !== null && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $gift_exchange_date)) {
         $error = "Datum der Geschenkübergabe muss im Format YYYY-MM-DD sein.";
-    } elseif (empty($captcha_answer) || $captcha_answer !== $_SESSION['captcha_code']) {
+    } elseif (!$captcha_ok) {
         $error = "Der Sicherheitscode ist falsch. Bitte versuche es erneut.";
     } else {
         $pdo = db_connect();
@@ -39,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Gruppe einfügen
         $stmt = $pdo->prepare("INSERT INTO `groups` (`name`, `admin_token`, `invite_token`, `admin_email`, `budget`, `description`, `gift_exchange_date`) VALUES (?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([$group_name, $admin_token, $invite_token, $admin_email, $budget, $description, $gift_exchange_date]);
+        $created_group_id = (int) $pdo->lastInsertId();
 
         // Erstelle die Links
         $admin_link = get_display_url('/admin.php?token=' . urlencode($admin_token));
@@ -58,17 +66,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             'budget' => $group_budget,
             'description' => $group_description,
             'gift_date' => $gift_exchange_date_formatted,
-            'ics_url' => $gift_exchange_date ? gift_ics_url('admin', $admin_token) : ''
+            'ics_url' => $gift_exchange_date ? gift_ics_url(array('id' => $created_group_id, 'gift_exchange_date' => $gift_exchange_date)) : ''
         ]);
         
         $email_sent = send_email($admin_email, $subject, $html_message, true);
 
         if (!$email_sent) {
-            error_log("E-Mail mit Admin-Link konnte nicht an $admin_email gesendet werden.");
+            error_log('E-Mail mit Admin-Link konnte nicht an ' . mask_email($admin_email) . ' gesendet werden.');
         }
-
-        // Captcha zurücksetzen
-        unset($_SESSION['captcha_code']);
 
         // Weiterleitung zum Adminbereich
         $redirect_url = "admin.php?token=" . urlencode($admin_token);
