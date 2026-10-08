@@ -1094,6 +1094,12 @@ a.button:disabled {
     transform: translateX(5px);
 }
 
+.cta-button:focus-visible,
+.cta-button-white:focus-visible {
+    outline: 3px solid var(--secondary-color);
+    outline-offset: 2px;
+}
+
 .cta-subtext {
     margin-top: 1rem;
     font-size: 0.9rem;
