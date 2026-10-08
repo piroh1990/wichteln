@@ -2,7 +2,7 @@
 <nav class="main-nav">
     <div class="nav-container">
         <a href="/" class="nav-logo">
-            <img src="images/logo.png" alt="Wichtlä.ch Logo" height="40">
+            <img src="/images/logo.png" alt="Wichtlä.ch Logo" height="40">
         </a>
         
         <button class="nav-toggle" id="navToggle" aria-label="Menü öffnen" aria-expanded="false" aria-controls="navMenu">
@@ -11,7 +11,13 @@
             <span></span>
         </button>
         
-        <?php $current_page = basename($_SERVER['PHP_SELF']); ?>
+        <?php
+        $current_script = isset($_SERVER['SCRIPT_NAME']) ? (string) $_SERVER['SCRIPT_NAME'] : '';
+        $current_page = basename($current_script !== '' ? $current_script : (isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : ''));
+        if (strpos($current_script, '/admin/') !== false) {
+            $current_page = '';
+        }
+        ?>
         <ul class="nav-menu" id="navMenu">
             <li><a href="/" class="nav-link"<?php echo $current_page === 'index.php' ? ' aria-current="page"' : ''; ?>>Home</a></li>
             <li><a href="/was-ist-wichteln" class="nav-link"<?php echo $current_page === 'was-ist-wichteln.php' ? ' aria-current="page"' : ''; ?>>Was ist Wichteln?</a></li>
