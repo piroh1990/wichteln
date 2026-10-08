@@ -1,6 +1,78 @@
 <?php
 
 /**
+ * Löscht Teilnehmer, Ausschlüsse und die Gruppe.
+ * Die Reihenfolge hält Fremdschlüssel ein, auch ohne ON DELETE CASCADE.
+ *
+ * @param PDO $pdo
+ * @param int $group_id
+ */
+function delete_group_with_members($pdo, $group_id) {
+    $group_id = (int) $group_id;
+
+    $stmt = $pdo->prepare('DELETE FROM `exclusions` WHERE `group_id` = ?');
+    $stmt->execute(array($group_id));
+
+    $stmt = $pdo->prepare('UPDATE `participants` SET `assigned_to` = NULL WHERE `group_id` = ?');
+    $stmt->execute(array($group_id));
+
+    $stmt = $pdo->prepare('DELETE FROM `participants` WHERE `group_id` = ?');
+    $stmt->execute(array($group_id));
+
+    $stmt = $pdo->prepare('DELETE FROM `groups` WHERE `id` = ?');
+    $stmt->execute(array($group_id));
+}
+
+/**
+ * Schreibt die aggregierte Statistik nach group_statistics und löscht die Gruppe.
+ * Der Aufrufer hält die Transaktion, damit Cleanup und Master-Dashboard dieselbe Logik nutzen.
+ *
+ * @param PDO $pdo
+ * @param array $group Zeile aus groups, mindestens id und name
+ */
+function archive_group_into_statistics($pdo, array $group) {
+    if (!isset($group['id'])) {
+        throw new InvalidArgumentException('Gruppe ohne ID kann nicht archiviert werden.');
+    }
+
+    $group_id = (int) $group['id'];
+    $driver = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+
+    $stmt = $pdo->prepare('SELECT COUNT(*) FROM `participants` WHERE `group_id` = ?');
+    $stmt->execute(array($group_id));
+    $participant_count = (int) $stmt->fetchColumn();
+
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM `participants` WHERE `group_id` = ? AND `email` IS NOT NULL AND `email` != ''");
+    $stmt->execute(array($group_id));
+    $participant_with_email_count = (int) $stmt->fetchColumn();
+
+    $stmt = $pdo->prepare('SELECT COUNT(*) FROM `exclusions` WHERE `group_id` = ?');
+    $stmt->execute(array($group_id));
+    $exclusion_count = (int) $stmt->fetchColumn();
+
+    $now_sql = ($driver === 'sqlite') ? "datetime('now')" : 'NOW()';
+    $insert_sql = 'INSERT INTO `group_statistics`
+        (original_group_id, group_name, participant_count, participant_with_email_count, exclusion_count,
+         budget, gift_exchange_date, is_drawn, created_at, archived_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ' . $now_sql . ')';
+
+    $stmt = $pdo->prepare($insert_sql);
+    $stmt->execute(array(
+        $group_id,
+        isset($group['name']) ? $group['name'] : null,
+        $participant_count,
+        $participant_with_email_count,
+        $exclusion_count,
+        array_key_exists('budget', $group) ? $group['budget'] : null,
+        array_key_exists('gift_exchange_date', $group) ? $group['gift_exchange_date'] : null,
+        array_key_exists('is_drawn', $group) ? $group['is_drawn'] : 0,
+        array_key_exists('created_at', $group) ? $group['created_at'] : null,
+    ));
+
+    delete_group_with_members($pdo, $group_id);
+}
+
+/**
  * Cleans up old groups by archiving their statistics and deleting the original data.
  *
  * @param PDO $pdo The database connection
@@ -51,60 +123,7 @@ function cleanup_old_groups($pdo) {
 
                 $group_id = $group['id'];
                 $group_name = $group['name'];
-
-                // 1. Gather Statistics
-
-                // Count participants
-                $stmt = $pdo->prepare("SELECT COUNT(*) FROM `participants` WHERE `group_id` = ?");
-                $stmt->execute([$group_id]);
-                $participant_count = $stmt->fetchColumn();
-
-                // Count participants with email
-                $stmt = $pdo->prepare("SELECT COUNT(*) FROM `participants` WHERE `group_id` = ? AND `email` IS NOT NULL AND `email` != ''");
-                $stmt->execute([$group_id]);
-                $participant_with_email_count = $stmt->fetchColumn();
-
-                // Count exclusions
-                $stmt = $pdo->prepare("SELECT COUNT(*) FROM `exclusions` WHERE `group_id` = ?");
-                $stmt->execute([$group_id]);
-                $exclusion_count = $stmt->fetchColumn();
-
-                // 2. Archive Statistics
-                $insert_sql = "INSERT INTO `group_statistics`
-                               (original_group_id, group_name, participant_count, participant_with_email_count, exclusion_count,
-                                budget, gift_exchange_date, is_drawn, created_at, archived_at)
-                               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, " . ($driver === 'sqlite' ? "datetime('now')" : "NOW()") . ")";
-
-                $stmt = $pdo->prepare($insert_sql);
-                $stmt->execute([
-                    $group_id,
-                    $group_name,
-                    $participant_count,
-                    $participant_with_email_count,
-                    $exclusion_count,
-                    $group['budget'],
-                    $group['gift_exchange_date'],
-                    $group['is_drawn'],
-                    $group['created_at']
-                ]);
-
-                // 3. Delete Group (Manual cleanup to ensure FK constraints are respected)
-
-                // First delete exclusions (referencing participants and group)
-                $stmt = $pdo->prepare("DELETE FROM `exclusions` WHERE `group_id` = ?");
-                $stmt->execute([$group_id]);
-
-                // Unset assignments to break self-referencing loops in participants
-                $stmt = $pdo->prepare("UPDATE `participants` SET `assigned_to` = NULL WHERE `group_id` = ?");
-                $stmt->execute([$group_id]);
-
-                // Delete participants (referencing group)
-                $stmt = $pdo->prepare("DELETE FROM `participants` WHERE `group_id` = ?");
-                $stmt->execute([$group_id]);
-
-                // Finally delete the group
-                $stmt = $pdo->prepare("DELETE FROM `groups` WHERE `id` = ?");
-                $stmt->execute([$group_id]);
+                archive_group_into_statistics($pdo, $group);
 
                 $pdo->commit();
 
