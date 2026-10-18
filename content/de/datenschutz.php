@@ -155,14 +155,14 @@
             <h2>7. Wie lange speichern wir deine Daten?</h2>
             
             <ul>
-                <li><strong>Gruppendaten:</strong> Solange die Gruppe existiert</li>
+                <li><strong>Gruppendaten:</strong> drei Monate nach dem Event (ohne Eventdatum: drei Monate nach dem Erstellen der Gruppe)</li>
                 <li><strong>Teilnehmerdaten:</strong> Solange du Mitglied der Gruppe bist</li>
                 <li><strong>Cookies:</strong> 180 Tage oder bis zur manuellen Löschung</li>
             </ul>
             
             <h3>Löschung deiner Daten</h3>
             <p>
-                Der Gruppenadministrator kann die gesamte Gruppe jederzeit löschen. Dabei werden automatisch alle Teilnehmerdaten, Zuordnungen und Wunschlisten permanent gelöscht.
+                Gruppendaten werden drei Monate nach dem Event automatisch gelöscht. Ohne Eventdatum gilt die Frist ab dem Erstellen der Gruppe. Der Admin kann die gesamte Gruppe jederzeit selbst löschen. Dabei werden alle Teilnehmerdaten, Zuordnungen und Wunschlisten dauerhaft entfernt.
             </p>
             
             <h2>8. deine Rechte (gemäss Schweizer Datenschutzgesetz)</h2>

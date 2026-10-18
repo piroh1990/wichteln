@@ -32,7 +32,7 @@
                 "name": "Wie viele Personen können mitmachen?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Mindestens 3 Personen werden empfohlen für ein funktionierendes Wichteln. Nach oben gibt es praktisch keine Grenze – ob 5, 20 oder 100 Teilnehmer, das System funktioniert für alle Gruppengrössen."
+                    "text": "Empfohlen: mindestens 3 Personen; technisch möglich ab 2. Nach oben gibt es praktisch keine Grenze – ob 5, 20 oder 100 Teilnehmer, das System funktioniert für alle Gruppengrössen."
                 }
             },
             {
@@ -104,7 +104,7 @@
                 "name": "Wie lange werden meine Daten aufbewahrt?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Gruppen und alle zugehörigen Daten werden automatisch nach 90 Tagen gelöscht. Als Admin kannst du deine Gruppe auch jederzeit manuell löschen."
+                    "text": "Gruppen und alle zugehörigen Daten werden drei Monate nach dem Event automatisch gelöscht. Ohne Eventdatum gilt die Frist ab dem Erstellen der Gruppe. Als Admin kannst du die Gruppe jederzeit selbst löschen."
                 }
             },
             {
@@ -144,7 +144,7 @@
                 "name": "Die Ziehung funktioniert nicht – warum?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Mögliche Gründe: Zu viele Ausschlüsse (mathematisch unmöglich), zu wenige Teilnehmer (mindestens 2 erforderlich) oder ein technisches Problem (Browser-Cache leeren). Reduziere die Ausschlüsse oder füge mehr Teilnehmer hinzu."
+                    "text": "Mögliche Gründe: Zu viele Ausschlüsse (mathematisch unmöglich), zu wenige Teilnehmer (empfohlen: mindestens 3 Personen; technisch möglich ab 2) oder ein technisches Problem (Browser-Cache leeren). Reduziere die Ausschlüsse oder füge mehr Teilnehmer hinzu."
                 }
             },
             {
@@ -280,7 +280,7 @@
                     </h3>
                     <div id="faq-answer-4" class="faq-answer" role="region" aria-labelledby="faq-question-4">
 <p>
-                            <strong>Mindestens 3 Personen</strong> werden empfohlen für ein funktionierendes Wichteln. Nach oben gibt es praktisch keine Grenze – ob 5, 20 oder 100 Teilnehmer, das System funktioniert für alle Gruppengrössen.
+                            <strong>Empfohlen: mindestens 3 Personen; technisch möglich ab 2.</strong> Nach oben gibt es praktisch keine Grenze – ob 5, 20 oder 100 Teilnehmer, das System funktioniert für alle Gruppengrössen.
                         </p>
                         <p>
                             Besonders beliebt sind Gruppen von 5-30 Personen (z.B. für Familien, Freundeskreise oder Teams).
@@ -488,7 +488,7 @@
                     </h3>
                     <div id="faq-answer-13" class="faq-answer" role="region" aria-labelledby="faq-question-13">
 <p>
-                            Gruppen und alle zugehörigen Daten werden <strong>automatisch nach 90 Tagen gelöscht</strong>.
+                            Gruppen und alle zugehörigen Daten werden <strong>drei Monate nach dem Event automatisch gelöscht</strong>. Ohne Eventdatum gilt die Frist ab dem Erstellen der Gruppe.
                         </p>
                         <p>
                             Als Admin kannst du deine Gruppe auch jederzeit manuell löschen – alle Daten werden dann sofort entfernt.
@@ -591,7 +591,7 @@
                         </p>
                         <ul>
                             <li><strong>Zu viele Ausschlüsse:</strong> Bei zu vielen Ausschlüssen ist eine gültige Ziehung mathematisch unmöglich</li>
-                            <li><strong>Zu wenige Teilnehmer:</strong> Mindestens 2 Personen erforderlich</li>
+                            <li><strong>Zu wenige Teilnehmer:</strong> Empfohlen sind mindestens 3 Personen, technisch möglich ab 2</li>
                             <li><strong>Technisches Problem:</strong> Browser-Cache leeren und erneut versuchen</li>
                         </ul>
                         <p>

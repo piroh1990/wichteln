@@ -58,7 +58,7 @@
                 <p>Voici comment se déroule un Secret Santa traditionnel, en 5 étapes simples :</p>
                 
                 <ol>
-                    <li><strong>Former le groupe :</strong> rassemble toutes les personnes qui veulent participer (au moins 3)</li>
+                    <li><strong>Former le groupe :</strong> rassemble toutes les personnes qui veulent participer (recommandé : au moins 3 personnes ; techniquement possible à partir de 2)</li>
                     <li><strong>Fixer le budget :</strong> mets-toi d’accord avec le groupe sur un montant maximum (par exemple 10 à 20 CHF)</li>
                     <li><strong>Tirer les noms :</strong> chacun tire un nom au sort et le garde secret</li>
                     <li><strong>Trouver le cadeau :</strong> achète ou fabrique un cadeau qui convient à la personne tirée</li>

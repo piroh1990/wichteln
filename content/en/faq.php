@@ -32,7 +32,7 @@
                 "name": "How many people can take part?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "At least 3 people are recommended for a Secret Santa that works well. There is practically no upper limit: whether you are 5, 20 or 100, the system works for every group size."
+                    "text": "Recommended: at least 3 people; technically possible from 2. There is practically no upper limit: whether you are 5, 20 or 100, the system works for every group size."
                 }
             },
             {
@@ -104,7 +104,7 @@
                 "name": "How long is my data kept?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Groups and all related data are deleted automatically after 90 days. As the admin, you can also delete your group manually at any time."
+                    "text": "Groups and all related data are deleted automatically three months after the event. If there is no event date, the period starts when the group is created. As the admin, you can also delete your group at any time."
                 }
             },
             {
@@ -144,7 +144,7 @@
                 "name": "The draw doesn’t work. Why?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Possible reasons: too many exclusions (mathematically impossible), too few participants (at least 2 are required) or a technical problem (clear the browser cache). Reduce the exclusions or add more participants."
+                    "text": "Possible reasons: too many exclusions (mathematically impossible), too few participants (recommended: at least 3 people; technically possible from 2) or a technical problem (clear the browser cache). Reduce the exclusions or add more participants."
                 }
             },
             {
@@ -280,7 +280,7 @@
                     </h3>
                     <div id="faq-answer-4" class="faq-answer" role="region" aria-labelledby="faq-question-4">
 <p>
-                            <strong>At least 3 people</strong> are recommended for a Secret Santa that works well. There is practically no upper limit: whether you are 5, 20 or 100, the system works for every group size.
+                            <strong>Recommended: at least 3 people; technically possible from 2.</strong> There is practically no upper limit: whether you are 5, 20 or 100, the system works for every group size.
                         </p>
                         <p>
                             Groups of 5 to 30 people are especially popular, for example for families, friends or teams.
@@ -488,7 +488,7 @@
                     </h3>
                     <div id="faq-answer-13" class="faq-answer" role="region" aria-labelledby="faq-question-13">
 <p>
-                            Groups and all related data are <strong>deleted automatically after 90 days</strong>.
+                            Groups and all related data are <strong>deleted automatically three months after the event</strong>. If there is no event date, the period starts when the group is created.
                         </p>
                         <p>
                             As the admin, you can also delete your group manually at any time. All data is then removed immediately.
@@ -591,7 +591,7 @@
                         </p>
                         <ul>
                             <li><strong>Too many exclusions:</strong> with too many exclusions, a valid draw is mathematically impossible</li>
-                            <li><strong>Too few participants:</strong> at least 2 people are required</li>
+                            <li><strong>Too few participants:</strong> at least 3 people are recommended; technically possible from 2</li>
                             <li><strong>A technical problem:</strong> clear the browser cache and try again</li>
                         </ul>
                         <p>

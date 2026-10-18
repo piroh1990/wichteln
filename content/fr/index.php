@@ -197,7 +197,7 @@
                         </button>
                     </h3>
                     <div id="faq-answer-6" class="faq-answer" role="region" aria-labelledby="faq-question-6">
-                        <p>En théorie, il n’y a pas de limite ! Le tirage fonctionne à partir de 2 participants et passe sans problème avec des groupes plus grands, de 20, 30 personnes ou plus.</p>
+                        <p>En théorie, il n’y a pas de limite ! Recommandé : au moins 3 personnes ; techniquement possible à partir de 2. Le tirage passe aussi sans problème avec des groupes plus grands, de 20, 30 personnes ou plus.</p>
                     </div>
                 </div>
             </div>

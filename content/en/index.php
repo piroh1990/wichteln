@@ -197,7 +197,7 @@
                         </button>
                     </h3>
                     <div id="faq-answer-6" class="faq-answer" role="region" aria-labelledby="faq-question-6">
-                        <p>In theory, there is no limit! The draw works from 2 participants and also handles larger groups of 20, 30 or more without trouble.</p>
+                        <p>In theory, there is no limit! At least 3 people are recommended; the draw is technically possible from 2. Larger groups of 20, 30 or more also work without trouble.</p>
                     </div>
                 </div>
             </div>

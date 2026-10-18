@@ -197,7 +197,7 @@
                         </button>
                     </h3>
                     <div id="faq-answer-6" class="faq-answer" role="region" aria-labelledby="faq-question-6">
-                        <p>Theoretisch unbegrenzt! Die Auslosung funktioniert ab 2 Teilnehmern und kann problemlos auch mit grösseren Gruppen von 20, 30 oder mehr Personen durchgeführt werden.</p>
+                        <p>Theoretisch unbegrenzt! Empfohlen sind mindestens 3 Personen, technisch möglich ist die Auslosung ab 2. Auch grössere Gruppen von 20, 30 oder mehr Personen funktionieren problemlos.</p>
                     </div>
                 </div>
             </div>

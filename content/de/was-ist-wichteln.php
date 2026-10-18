@@ -58,7 +58,7 @@
                 <p>So funktioniert das traditionelle Wichteln in 5 einfachen Schritten:</p>
                 
                 <ol>
-                    <li><strong>Gruppe bilden:</strong> Sammle alle Teilnehmer, die mitmachen möchten (mindestens 3 Personen)</li>
+                    <li><strong>Gruppe bilden:</strong> Sammle alle Teilnehmer, die mitmachen möchten (empfohlen: mindestens 3 Personen; technisch möglich ab 2)</li>
                     <li><strong>Budget festlegen:</strong> Einigt euch auf einen Höchstbetrag (z.B. 10-20 CHF)</li>
                     <li><strong>Namen ziehen:</strong> Jeder zieht einen Namen per Los und behält ihn geheim</li>
                     <li><strong>Geschenk besorgen:</strong> Kaufe oder bastle ein passendes Geschenk für deine gezogene Person</li>

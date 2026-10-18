@@ -32,7 +32,7 @@
                 "name": "Combien de personnes peuvent participer ?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Au moins 3 personnes sont recommandées pour un Secret Santa qui fonctionne bien. Il n’y a pratiquement pas de limite maximale : 5, 20 ou 100 participants, le système convient à toutes les tailles de groupe."
+                    "text": "Recommandé : au moins 3 personnes ; techniquement possible à partir de 2. Il n’y a pratiquement pas de limite maximale : 5, 20 ou 100 participants, le système convient à toutes les tailles de groupe."
                 }
             },
             {
@@ -104,7 +104,7 @@
                 "name": "Combien de temps mes données sont-elles conservées ?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Les groupes et toutes les données associées sont supprimés automatiquement après 90 jours. En tant qu’admin, tu peux aussi supprimer ton groupe à tout moment, à la main."
+                    "text": "Les groupes et toutes les données associées sont supprimés automatiquement trois mois après l’événement. Sans date d’événement, le délai part de la création du groupe. En tant qu’admin, tu peux aussi supprimer ton groupe à tout moment."
                 }
             },
             {
@@ -144,7 +144,7 @@
                 "name": "Le tirage ne fonctionne pas. Pourquoi ?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Causes possibles : trop d’exclusions (mathématiquement impossible), trop peu de participants (au moins 2 sont nécessaires) ou un problème technique (vide le cache du navigateur). Réduis les exclusions ou ajoute des participants."
+                    "text": "Causes possibles : trop d’exclusions (mathématiquement impossible), trop peu de participants (recommandé : au moins 3 personnes ; techniquement possible à partir de 2) ou un problème technique (vide le cache du navigateur). Réduis les exclusions ou ajoute des participants."
                 }
             },
             {
@@ -280,7 +280,7 @@
                     </h3>
                     <div id="faq-answer-4" class="faq-answer" role="region" aria-labelledby="faq-question-4">
 <p>
-                            <strong>Au moins 3 personnes</strong> sont recommandées pour un Secret Santa qui fonctionne bien. Il n’y a pratiquement pas de limite maximale : 5, 20 ou 100 participants, le système convient à toutes les tailles de groupe.
+                            <strong>Recommandé : au moins 3 personnes ; techniquement possible à partir de 2.</strong> Il n’y a pratiquement pas de limite maximale : 5, 20 ou 100 participants, le système convient à toutes les tailles de groupe.
                         </p>
                         <p>
                             Les groupes de 5 à 30 personnes sont particulièrement appréciés, par exemple en famille, entre amis ou en équipe.
@@ -488,7 +488,7 @@
                     </h3>
                     <div id="faq-answer-13" class="faq-answer" role="region" aria-labelledby="faq-question-13">
 <p>
-                            Les groupes et toutes les données associées sont <strong>supprimés automatiquement après 90 jours</strong>.
+                            Les groupes et toutes les données associées sont <strong>supprimés automatiquement trois mois après l’événement</strong>. Sans date d’événement, le délai part de la création du groupe.
                         </p>
                         <p>
                             En tant qu’admin, tu peux aussi supprimer ton groupe à tout moment, à la main. Toutes les données sont alors retirées immédiatement.
@@ -591,7 +591,7 @@
                         </p>
                         <ul>
                             <li><strong>Trop d’exclusions :</strong> avec trop d’exclusions, un tirage valable est mathématiquement impossible</li>
-                            <li><strong>Trop peu de participants :</strong> au moins 2 personnes sont nécessaires</li>
+                            <li><strong>Trop peu de participants :</strong> recommandé, au moins 3 personnes ; techniquement possible à partir de 2</li>
                             <li><strong>Problème technique :</strong> vide le cache du navigateur et réessaie</li>
                         </ul>
                         <p>

@@ -156,14 +156,14 @@
             <h2>7. How long do we keep your data?</h2>
             
             <ul>
-                <li><strong>Group data:</strong> for as long as the group exists</li>
+                <li><strong>Group data:</strong> three months after the event (if there is no date: three months after the group is created)</li>
                 <li><strong>Participant data:</strong> for as long as you are a member of the group</li>
                 <li><strong>Cookies:</strong> 180 days, or until you delete them</li>
             </ul>
             
             <h3>Deleting your data</h3>
             <p>
-                The group administrator can delete the whole group at any time. All participant data, matches and wishlists are then permanently deleted.
+                Group data is deleted automatically three months after the event. If there is no date, the period starts when the group is created. The admin can delete the whole group at any time. All participant data, matches and wishlists are then permanently deleted.
             </p>
             
             <h2>8. Your rights (under the Swiss Federal Act on Data Protection (FADP))</h2>

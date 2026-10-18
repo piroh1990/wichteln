@@ -156,14 +156,14 @@
             <h2>7. Combien de temps conservons-nous tes données ?</h2>
             
             <ul>
-                <li><strong>Données du groupe :</strong> tant que le groupe existe</li>
+                <li><strong>Données du groupe :</strong> trois mois après l’événement (sans date : trois mois après la création du groupe)</li>
                 <li><strong>Données des participants :</strong> tant que tu es membre du groupe</li>
                 <li><strong>Cookies :</strong> 180 jours, ou jusqu’à une suppression manuelle</li>
             </ul>
             
             <h3>Suppression de tes données</h3>
             <p>
-                L’administrateur du groupe peut supprimer tout le groupe à tout moment. Toutes les données des participants, les attributions et les listes de souhaits sont alors effacées définitivement.
+                Les données du groupe sont supprimées automatiquement trois mois après l’événement. Sans date, le délai part de la création du groupe. L’admin peut supprimer tout le groupe à tout moment. Toutes les données des participants, les attributions et les listes de souhaits sont alors effacées définitivement.
             </p>
             
             <h2>8. Tes droits (selon la loi suisse sur la protection des données)</h2>

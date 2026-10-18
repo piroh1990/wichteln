@@ -58,7 +58,7 @@
                 <p>This is how a traditional Secret Santa works, in 5 simple steps:</p>
                 
                 <ol>
-                    <li><strong>Form a group:</strong> gather everyone who wants to take part (at least 3 people)</li>
+                    <li><strong>Form a group:</strong> gather everyone who wants to take part (recommended: at least 3 people; technically possible from 2)</li>
                     <li><strong>Set a budget:</strong> agree a maximum amount (for example 10–20 CHF)</li>
                     <li><strong>Draw names:</strong> each person draws a name and keeps it secret</li>
                     <li><strong>Get the gift:</strong> buy or make a suitable gift for the person you drew</li>
