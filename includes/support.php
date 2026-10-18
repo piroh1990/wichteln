@@ -67,7 +67,7 @@ function support_provider_is_stripe() {
 }
 
 function support_places() {
-    return array('reveal', 'footer', 'about', 'page');
+    return array('reveal', 'footer', 'about', 'page', 'admin');
 }
 
 function support_place($place) {
@@ -103,11 +103,13 @@ function support_card_html($place, $raw = null) {
     if ($url === '') {
         return '';
     }
+    $place = support_place($place);
+    $copy_key = ($place === 'admin') ? 'support.admin' : 'support.card';
     $button = support_external_anchor($place, t('support.button'), 'button support-button', $url);
     return '<section class="support-card" aria-label="' . h(t('support.about.heading')) . '">'
         . '<span class="support-card-icon" aria-hidden="true">' . support_heart_svg() . '</span>'
         . '<div class="support-card-body">'
-        . '<p class="support-card-text">' . h(t('support.card')) . '</p>'
+        . '<p class="support-card-text">' . h(t($copy_key)) . '</p>'
         . '<p class="support-card-actions">' . $button . '</p>'
         . '<p class="support-note">' . h(t('support.fineprint')) . '</p>'
         . '</div>'

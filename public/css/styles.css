@@ -4182,7 +4182,18 @@ a.button.support-button:focus-visible,
 
 @media (max-width: 700px) {
     .support-card {
+        display: block;
         padding: 1rem;
+    }
+
+    .support-card-icon {
+        float: left;
+        margin: 0.15rem 0.75rem 0.35rem 0;
+    }
+
+    .support-card-actions {
+        clear: both;
+        padding-top: 0.15rem;
     }
 
     a.button.support-button,

@@ -5,27 +5,30 @@
 
         <header class="page-header">
             <h1 class="page-title">Freiwillig unterstützen</h1>
-            <p class="page-subtitle">Gratis, ohne Werbung und ohne Anmeldung</p>
+            <p class="page-subtitle">Ein Hobby aus der Schweiz</p>
         </header>
 
         <article>
             <section class="content-section">
-                <h2>Die Seite bleibt gratis</h2>
+                <h2>Warum ich die Seite gebaut habe</h2>
                 <p>
-                    <strong>wichtlä.ch</strong> ist gratis, ohne Werbung und ohne Anmeldung. Das soll so bleiben.
+                    wichtlä.ch ist mein Hobby. Ich habe die Seite selbst gebaut, weil mir keine der bestehenden Wichtelseiten richtig gefallen hat: zu viel Werbung, zu kompliziert, oft mit Anmeldung. Ich wollte etwas Einfaches und Sauberes.
                 </p>
                 <p>
-                    Ein Beitrag ist freiwillig. Er ist keine Voraussetzung, um eine Funktion zu nutzen, und es gibt keine Gegenleistung. Ob du etwas beiträgst oder nicht, ändert nichts am Wichteln.
+                    Server und Betrieb kosten etwas Geld und viel Freizeit. Wenn du magst, hilft ein freiwilliger Beitrag dabei, dass die Seite gratis und werbefrei bleibt.
                 </p>
             </section>
 
             <section class="content-section">
                 <h2>Wohin die Zahlung geht</h2>
                 <p>
-                    Wenn du magst, kannst du freiwillig etwas zum Betrieb der Seite beitragen. Die Zahlung geht an <strong>Raths IT</strong>, die Einzelfirma von Patrick Raths. Abgewickelt wird sie über <?php echo h(support_provider_name()); ?>, zum Beispiel mit TWINT oder Karte. Den Betrag legst du dort selbst fest.
+                    Die Zahlung geht an <strong>Raths IT</strong>, meine Einzelfirma. Abgewickelt wird sie über <?php echo h(support_provider_name()); ?>, zum Beispiel mit TWINT oder Karte. Den Betrag legst du dort selbst fest.
                 </p>
                 <p>
-                    Mit dem Klick verlässt du wichtlä.ch. wichtlä.ch erhält keine Zahlungsdaten und gibt keine Daten aus Wichtelgruppen weiter.
+                    Ein Beitrag ist freiwillig und keine Voraussetzung, um eine Funktion zu nutzen.
+                </p>
+                <p>
+                    Mit dem Klick verlässt du wichtlä.ch. Ich erhalte keine Zahlungsdaten, und es gehen keine Daten aus Wichtelgruppen an den Zahlungsdienst.
                 </p>
                 <p class="support-page-action"><?php echo support_external_anchor('page', t('support.button'), 'button support-button'); ?></p>
                 <p class="support-note"><?php echo h(t('support.fineprint')); ?></p>

@@ -88,6 +88,7 @@ return array(
     'support.button' => 'Chip in (voluntary)',
     'support.fineprint' => 'Voluntary, with nothing in return.',
     'support.card' => 'Do you like wichtlä.ch? The site is free and ad-free, and we want it to stay that way. If you like, you can voluntarily contribute to running it, for example with TWINT. Thank you!',
+    'support.admin' => 'Do you like wichtlä.ch? The site stays free and ad-free. If you like, you can voluntarily contribute to running it.',
     'support.about.heading' => 'Voluntary support',
     'support.about.text' => 'The site is free and ad-free, and we want it to stay that way. If you like, you can voluntarily contribute to running it, for example with TWINT.',
     'meta.privacy.title' => 'Privacy policy - Wichtlä.ch',

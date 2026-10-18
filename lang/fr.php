@@ -88,6 +88,7 @@ return array(
     'support.button' => 'Soutenir librement',
     'support.fineprint' => 'Volontaire, sans contrepartie.',
     'support.card' => 'Tu aimes wichtlä.ch ? Le site est gratuit et sans publicité, et cela doit rester ainsi. Si tu veux, tu peux contribuer librement à son fonctionnement, par exemple avec TWINT. Merci !',
+    'support.admin' => 'Tu aimes wichtlä.ch ? Le site reste gratuit et sans publicité. Si tu veux, tu peux contribuer librement à son fonctionnement.',
     'support.about.heading' => 'Soutien libre',
     'support.about.text' => 'Le site est gratuit et sans publicité, et cela doit rester ainsi. Si tu veux, tu peux contribuer librement à son fonctionnement, par exemple avec TWINT.',
     'meta.privacy.title' => 'Déclaration de protection des données - Wichtlä.ch',

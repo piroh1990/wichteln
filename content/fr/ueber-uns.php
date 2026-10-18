@@ -5,7 +5,7 @@
 
         <header class="page-header">
             <h1 class="page-title">À propos</h1>
-            <p class="page-subtitle">Découvre qui est derrière Wichtlä.ch et pourquoi nous avons lancé ce projet</p>
+            <p class="page-subtitle">Qui est derrière Wichtlä.ch</p>
         </header>
 
         <article>
@@ -22,7 +22,7 @@
             <section class="content-section">
                 <h2>Qui est derrière ?</h2>
                 <p>
-                    Wichtlä.ch a été lancé par <a href="https://raths-it.ch"><strong>Raths-IT</strong></a> et est exploité depuis la <strong>Suisse</strong>. L’idée est née d’un problème tout simple : chaque année, avant Noël, le même rituel. Écrire des noms, les mettre dans un chapeau, espérer que personne ne tire son propre nom, puis faire parvenir les papiers à tout le monde. Dès que les gens ne sont pas au même endroit, ça se complique vite.
+                    Wichtlä.ch est le passe-temps de Patrick Raths. Il a construit le site lui-même et l’exploite via <a href="https://raths-it.ch"><strong>Raths IT</strong></a> depuis la <strong>Suisse</strong>. L’idée est née d’un problème tout simple : chaque année, avant Noël, le même rituel. Écrire des noms, les mettre dans un chapeau, espérer que personne ne tire son propre nom, puis faire parvenir les papiers à tout le monde. Dès que les gens ne sont pas au même endroit, ça se complique vite.
                 </p>
                 <p>
                     Wichtlä.ch est né de ce besoin : un outil en ligne léger et rapide, qui règle exactement ce problème. Sans fioritures, sans collecte de données inutile, sans obligation de créer un compte. Juste un Secret Santa, comme il devrait l’être.

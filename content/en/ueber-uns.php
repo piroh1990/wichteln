@@ -5,7 +5,7 @@
 
         <header class="page-header">
             <h1 class="page-title">About us</h1>
-            <p class="page-subtitle">Find out who is behind Wichtlä.ch and why we started this project</p>
+            <p class="page-subtitle">Who is behind Wichtlä.ch</p>
         </header>
 
         <article>
@@ -22,7 +22,7 @@
             <section class="content-section">
                 <h2>Who is behind it?</h2>
                 <p>
-                    Wichtlä.ch was started by <a href="https://raths-it.ch"><strong>Raths-IT</strong></a> and is run from <strong>Switzerland</strong>. The idea came from an everyday problem: every year, in the run-up to Christmas, the same routine. Write names, put them in a hat, hope nobody draws themselves, then somehow get the slips to everyone. As soon as people are not in the same place, it quickly gets complicated.
+                    Wichtlä.ch is Patrick Raths’s hobby. He built the site himself and runs it through <a href="https://raths-it.ch"><strong>Raths IT</strong></a> from <strong>Switzerland</strong>. The idea came from an everyday problem: every year, in the run-up to Christmas, the same routine. Write names, put them in a hat, hope nobody draws themselves, then somehow get the slips to everyone. As soon as people are not in the same place, it quickly gets complicated.
                 </p>
                 <p>
                     Wichtlä.ch grew out of that need: a lean, fast online tool that solves exactly this problem. No unnecessary extras, no data hoarding, no forced account. Just a Secret Santa, the way it should be.

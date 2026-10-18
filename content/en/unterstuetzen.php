@@ -5,27 +5,30 @@
 
         <header class="page-header">
             <h1 class="page-title">Chip in (voluntary)</h1>
-            <p class="page-subtitle">Free, with no ads and no account</p>
+            <p class="page-subtitle">A hobby from Switzerland</p>
         </header>
 
         <article>
             <section class="content-section">
-                <h2>The site stays free</h2>
+                <h2>Why I built this site</h2>
                 <p>
-                    <strong>wichtlä.ch</strong> is free, with no ads and no account. We want it to stay that way.
+                    wichtlä.ch is my hobby. I built the site myself, because none of the existing Secret Santa sites really suited me: too many ads, too complicated, often with an account to create. I wanted something simple and clean.
                 </p>
                 <p>
-                    A contribution is voluntary. It is not required in order to use any feature, and there is nothing in return. Whether you contribute or not changes nothing about the Secret Santa.
+                    The server and running the site cost some money and a lot of free time. If you like, a voluntary contribution helps keep the site free and ad-free.
                 </p>
             </section>
 
             <section class="content-section">
                 <h2>Where the payment goes</h2>
                 <p>
-                    If you like, you can voluntarily contribute to running the site. The payment goes to <strong>Raths IT</strong>, Patrick Raths’s sole proprietorship. It is handled by <?php echo h(support_provider_name()); ?>, for example with TWINT or by card. You choose the amount yourself on the payment service’s page.
+                    The payment goes to <strong>Raths IT</strong>, my sole proprietorship. It is handled by <?php echo h(support_provider_name()); ?>, for example with TWINT or by card. You choose the amount yourself on the payment service’s page.
                 </p>
                 <p>
-                    When you click, you leave wichtlä.ch. wichtlä.ch does not receive any payment data and does not pass on any Secret Santa group data.
+                    A contribution is voluntary and is not required in order to use any feature.
+                </p>
+                <p>
+                    When you click, you leave wichtlä.ch. I do not receive any payment data, and no Secret Santa group data is passed on to the payment service.
                 </p>
                 <p class="support-page-action"><?php echo support_external_anchor('page', t('support.button'), 'button support-button'); ?></p>
                 <p class="support-note"><?php echo h(t('support.fineprint')); ?></p>

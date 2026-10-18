@@ -57,8 +57,14 @@ run_test('support card only after reveal and payment links stay plain anchors', 
     $waiting = strpos($participant, 'participant.waiting_title');
     assert_true($reveal !== false && $card !== false && $card > $reveal, 'card is under the reveal result');
     assert_true($waiting !== false && $card < $waiting, 'card is not on the waiting state');
-    assert_equals(1, substr_count($participant, 'support_card_html'), 'card is rendered once');
+    assert_equals(1, substr_count($participant, 'support_card_html'), 'participant card is rendered once');
     assert_true(strpos($participant, "if (!empty(\$group['reveal_sent_at']))") !== false, 'card waits for the reveal');
+
+    $admin = support_read('public/admin.php');
+    $danger = strpos($admin, 'id="gefahrenzone"');
+    $admin_card = strpos($admin, "support_card_html('admin')");
+    assert_true($danger !== false && $admin_card !== false && $admin_card > $danger, 'admin card sits below the management tools');
+    assert_equals(1, substr_count($admin, 'support_card_html'), 'admin card is rendered once');
 
     foreach (array('public/index.php', 'public/create_group.php', 'public/register.php', 'content/de/index.php') as $relative) {
         $text = support_read($relative);
@@ -86,6 +92,17 @@ run_test('support card only after reveal and payment links stay plain anchors', 
         assert_true(strpos($html, 'stripe.js') === false, $lang . ' card loads no stripe script');
         assert_true(strpos($html, h(t('support.button'))) !== false, $lang . ' button label');
         assert_true(strpos($html, h(t('support.fineprint'))) !== false, $lang . ' fine print');
+
+        $admin_html = support_card_html('admin', $url);
+        assert_true(strpos($admin_html, "trackEvent','Support','Click','admin'") !== false, $lang . ' admin event');
+        assert_true(strpos($admin_html, 'target="_blank"') !== false, $lang . ' admin target');
+        assert_true(strpos($admin_html, 'rel="noopener noreferrer"') !== false, $lang . ' admin rel');
+        assert_true(strpos($admin_html, 'window._paq') !== false, $lang . ' admin checks _paq');
+        assert_true(strpos($admin_html, h(t('support.admin'))) !== false, $lang . ' admin copy');
+        assert_true(strpos($admin_html, 'TWINT') === false, $lang . ' admin card stays short');
+        assert_true(strpos($admin_html, '<iframe') === false, $lang . ' admin card has no iframe');
+        assert_true(strpos($admin_html, 'stripe.js') === false, $lang . ' admin card loads no stripe script');
+        assert_equals('', support_card_html('admin', ''), $lang . ' admin card hidden without url');
 
         $about = support_about_html($url);
         assert_true(strpos($about, "trackEvent','Support','Click','about'") !== false, $lang . ' about event');
@@ -136,4 +153,23 @@ run_test('support page is routed like the other public pages', function () {
     assert_true(strpos($german, 'ß') === false, 'new German copy uses ss');
     assert_true(strpos($german, 'Spendenabzug') === false, 'no tax deduction wording');
     assert_true(strpos($german, 'Spende an') === false, 'not phrased as a gift to a private person');
+
+    $stories = array(
+        'de' => array('wichtlä.ch ist mein Hobby', 'Wohin die Zahlung geht', '<h2>Die Seite bleibt gratis</h2>', 'zu viel Werbung'),
+        'fr' => array('wichtlä.ch est mon passe-temps', 'Où va le paiement', '<h2>Le site reste gratuit</h2>', 'trop de publicité'),
+        'en' => array('wichtlä.ch is my hobby', 'Where the payment goes', '<h2>The site stays free</h2>', 'too many ads'),
+    );
+    foreach ($stories as $lang => $pieces) {
+        $page = support_read('content/' . $lang . '/unterstuetzen.php');
+        $story = strpos($page, $pieces[0]);
+        $payment = strpos($page, $pieces[1]);
+        assert_true($story !== false && $payment !== false && $story < $payment, $lang . ' story comes before the payment section');
+        assert_true(strpos($page, $pieces[2]) === false, $lang . ' old free-site section is gone');
+        assert_true(strpos($page, $pieces[3]) !== false, $lang . ' story names why the other sites did not fit');
+        $about = support_read('content/' . $lang . '/ueber-uns.php');
+        assert_true(stripos($about, 'Hobby') !== false || stripos($about, 'passe-temps') !== false || stripos($about, 'hobby') !== false, $lang . ' about page names the hobby');
+        assert_true(strpos($about, $pieces[3]) === false, $lang . ' about page does not repeat the support story');
+    }
+    $de_page = support_read('content/de/unterstuetzen.php');
+    assert_true(strpos($de_page, ' wir ') === false && strpos($de_page, 'Wir ') === false, 'support page speaks as Patrick, not as we');
 });

@@ -1060,6 +1060,8 @@ token_page_open(t('meta.admin.title', array('{group}' => $group['name'])));
                 </form>
             </div>
         </section>
+
+        <?php echo support_card_html('admin'); ?>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {

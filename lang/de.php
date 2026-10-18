@@ -95,6 +95,7 @@ return array(
     'support.button' => 'Freiwillig unterstützen',
     'support.fineprint' => 'Freiwillig, ohne Gegenleistung.',
     'support.card' => 'Gefällt dir wichtlä.ch? Die Seite ist gratis und werbefrei, und das soll so bleiben. Wenn du magst, kannst du freiwillig etwas zum Betrieb beitragen, zum Beispiel mit TWINT. Danke!',
+    'support.admin' => 'Gefällt dir wichtlä.ch? Die Seite bleibt gratis und werbefrei. Wenn du magst, kannst du freiwillig etwas zum Betrieb beitragen.',
     'support.about.heading' => 'Freiwillige Unterstützung',
     'support.about.text' => 'Die Seite ist gratis und werbefrei, und das soll so bleiben. Wenn du magst, kannst du freiwillig etwas zum Betrieb beitragen, zum Beispiel mit TWINT.',
     'meta.privacy.title' => 'Datenschutzerklärung - Wichtlä.ch',
