@@ -5,7 +5,7 @@
 
         <header class="page-header">
             <h1 class="page-title">Über uns</h1>
-            <p class="page-subtitle">Erfahre, wer hinter Wichtlä.ch steckt und warum wir dieses Projekt gestartet haben</p>
+            <p class="page-subtitle">Wer hinter Wichtlä.ch steckt</p>
         </header>
 
         <article>
@@ -22,7 +22,7 @@
             <section class="content-section">
                 <h2>Wer steckt dahinter?</h2>
                 <p>
-                    Wichtlä.ch wurde von <a href="https://raths-it.ch"><strong>Raths-IT</strong></a> ins Leben gerufen und wird aus der <strong>Schweiz</strong> betrieben. Die Idee entstand aus einem ganz alltäglichen Problem: Jedes Jahr in der Vorweihnachtszeit das gleiche Spiel – Zettel schreiben, in einen Hut werfen, hoffen, dass niemand sich selbst zieht, und dann die Lose irgendwie an alle verteilen. Besonders wenn nicht alle am selben Ort sind, wird das schnell kompliziert.
+                    Wichtlä.ch ist das Hobby von Patrick Raths. Er hat die Seite selbst gebaut und betreibt sie über <a href="https://raths-it.ch"><strong>Raths IT</strong></a> aus der <strong>Schweiz</strong>. Die Idee entstand aus einem ganz alltäglichen Problem: Jedes Jahr in der Vorweihnachtszeit das gleiche Spiel – Zettel schreiben, in einen Hut werfen, hoffen, dass niemand sich selbst zieht, und dann die Lose irgendwie an alle verteilen. Besonders wenn nicht alle am selben Ort sind, wird das schnell kompliziert.
                 </p>
                 <p>
                     Aus diesem Bedarf heraus wurde Wichtlä.ch entwickelt: ein schlankes, schnelles Online-Tool, das genau dieses Problem löst. Ohne unnötigen Schnickschnack, ohne Datensammelei, ohne Konto – einfach Wichteln, wie es sein sollte.
@@ -43,6 +43,11 @@
                     <li><strong>Für alle Geräte:</strong> Funktioniert auf Smartphone, Tablet und Desktop – ohne App-Download</li>
                 </ul>
             </section>
+
+            <?php
+            require_once dirname(__DIR__, 2) . '/includes/support.php';
+            echo support_about_html();
+            ?>
 
             <section class="content-section">
                 <h2>Kontakt</h2>

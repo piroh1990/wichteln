@@ -8,14 +8,14 @@
 
     RewriteRule ^(en|fr)/?$ index.php?lang=$1 [L,QSA]
     RewriteRule ^(en|fr)/admin-link/?$ /admin-link [R=301,L]
-    RewriteRule ^(en|fr)/(faq|was-ist-wichteln|impressum|datenschutz|wichtel-ideen|firmenwichteln-tipps|ueber-uns|create_group)/$ /$1/$2 [R=301,L]
+    RewriteRule ^(en|fr)/(faq|was-ist-wichteln|impressum|datenschutz|wichtel-ideen|firmenwichteln-tipps|ueber-uns|unterstuetzen|create_group)/$ /$1/$2 [R=301,L]
 
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^(en|fr)/([a-z0-9_-]+)$ $2?lang=$1 [L,QSA]
 
-    RewriteRule ^(faq|was-ist-wichteln|impressum|datenschutz|wichtel-ideen|firmenwichteln-tipps|ueber-uns|create_group|admin-link)/$ /$1 [R=301,L]
+    RewriteRule ^(faq|was-ist-wichteln|impressum|datenschutz|wichtel-ideen|firmenwichteln-tipps|ueber-uns|unterstuetzen|create_group|admin-link)/$ /$1 [R=301,L]
 
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(faq|was-ist-wichteln|impressum|datenschutz|wichtel-ideen|firmenwichteln-tipps|ueber-uns|create_group|admin-link)$ $1.php [L,QSA]
+    RewriteRule ^(faq|was-ist-wichteln|impressum|datenschutz|wichtel-ideen|firmenwichteln-tipps|ueber-uns|unterstuetzen|create_group|admin-link)$ $1.php [L,QSA]
 </IfModule>

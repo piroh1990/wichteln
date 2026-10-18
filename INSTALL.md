@@ -99,6 +99,8 @@ Der Hinweis auf der Seite fragt, ob Matomo ein Cookie setzen darf. «Akzeptieren
 
 `CANONICAL_BASE_URL` (Default `https://xn--wichtl-gua.ch`) und optional `ICS_SIGNING_KEY` in eine bestehende `includes/config.php` übernehmen. Die früheren Konstanten `GOOGLE_ADS_*` und `GOOGLE_CMP_ENABLED` werden nicht mehr gelesen. Sie können aus der Konfiguration entfernt werden.
 
+Freiwillige Unterstützung: `SUPPORT_URL` in `includes/config.php` auf den öffentlichen Stripe-Zahlungslink setzen (Payment Link, den Betrag wählt die zahlende Person, TWINT und Karte). `SUPPORT_PROVIDER_NAME` bleibt `Stripe`, ausser der angezeigte Name des Zahlungsdienstes soll anders lauten. Der Link ist kein Geheimnis. Ist `SUPPORT_URL` leer oder fehlt die Konstante, bleiben Footer-Link, Karte und Absatz unsichtbar, und `/unterstuetzen` antwortet mit 404.
+
 `logs/rate-limit/` muss für den PHP-Benutzer beschreibbar sein. Ohne dieses Verzeichnis lehnen Captcha, Anmeldung und API weitere Versuche ab.
 
 ```bash
@@ -174,7 +176,7 @@ git pull
 
 1. Diese Datei und `database/migrations/` auf neue SQL-Dateien prüfen.
 2. Neue Migrationen wie oben gegen die Live-Datenbank ausführen, nach einem Backup.
-3. Neue Konstanten aus den `*.example.php` in die echten Konfigurationsdateien übernehmen. Aktuell dazu: `API_ALLOW_ORIGINS` in `includes/api_config.php`, falls die API von einem Browser aus einer anderen Origin aufgerufen wird. Alte Konstanten `GOOGLE_ADS_*` und `GOOGLE_CMP_ENABLED` werden nicht mehr gelesen und können entfallen.
+3. Neue Konstanten aus den `*.example.php` in die echten Konfigurationsdateien übernehmen. Aktuell dazu: `API_ALLOW_ORIGINS` in `includes/api_config.php`, falls die API von einem Browser aus einer anderen Origin aufgerufen wird. Alte Konstanten `GOOGLE_ADS_*` und `GOOGLE_CMP_ENABLED` werden nicht mehr gelesen und können entfallen. Für die freiwillige Unterstützung: `SUPPORT_URL` (Stripe-Zahlungslink) und `SUPPORT_PROVIDER_NAME` (`Stripe`). Ohne `SUPPORT_URL` bleibt die Unterstützung unsichtbar.
 4. Den PHP-Benutzer auf Schreibrecht für `logs/` prüfen.
 
 Ein Deploy der CSRF-Härtung ändert das Aussehen der Seiten nicht. Geändert haben sich dabei Schutzmechanismen (CSRF, Master-Admin-Session, CORS-Allowlist) und die einheitliche Spalte `participant_token`.

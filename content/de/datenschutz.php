@@ -211,6 +211,9 @@
                 <li>Herkunftsseite (Referrer)</li>
                 <li>Datum und Uhrzeit des Zugriffs</li>
             </ul>
+            <p>
+                Klicks auf den Link zur freiwilligen Unterstützung können wir als Ereignis zählen (Kategorie «Support»), ohne Zahlungsdaten und ohne Daten aus Wichtelgruppen. Das geschieht nur, wenn die Reichweitenmessung läuft.
+            </p>
 
             <h3>Cookies</h3>
             <p>
@@ -285,6 +288,23 @@
             <p>
                 Wir behalten uns vor, diese Datenschutzerklärung anzupassen, damit sie stets den aktuellen rechtlichen Anforderungen entspricht oder um Änderungen unserer Leistungen in der Datenschutzerklärung umzusetzen. Für deinen erneuten Besuch gilt dann die neue Datenschutzerklärung.
             </p>
+
+            <?php require_once dirname(__DIR__, 2) . '/includes/support.php'; ?>
+            <h2 id="freiwillige-unterstuetzung">14. Freiwillige Unterstützung</h2>
+            <p>
+                wichtlä.ch lässt sich gratis und werbefrei nutzen. Eine Unterstützung ist freiwillig. Sie ist keine Voraussetzung für eine Funktion, und es gibt keine Gegenleistung.
+            </p>
+            <p>
+                Der Link «Freiwillig unterstützen» führt zu <?php echo h(support_provider_name()); ?>, einem Zahlungsdienst. Dort werden Zahlungs- und Kontaktdaten von <?php echo h(support_provider_name()); ?> bearbeitet. Bezahlst du mit TWINT, bearbeitet auch TWINT diese Daten. Empfänger der Zahlung ist Raths IT.
+            </p>
+            <p>
+                Mit dem Klick verlässt du wichtlä.ch. wichtlä.ch selbst erhält keine Zahlungsdaten und gibt keine Daten aus Wichtelgruppen weiter.
+            </p>
+            <?php if (support_provider_is_stripe()): ?>
+            <p>
+                Weitere Informationen stehen in der <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer">Datenschutzerklärung von Stripe</a>.
+            </p>
+            <?php endif; ?>
             
             <hr>
             

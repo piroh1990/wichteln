@@ -29,4 +29,15 @@ define('MATOMO_SITE_ID', '1'); // Deine Matomo Site ID
 // Master Admin Token (Generiere ein sicheres, zufälliges Token)
 define('MASTER_ADMIN_TOKEN', 'generate_a_secure_random_token_here');
 
+// Freiwillige Unterstützung über einen öffentlichen Stripe-Zahlungslink.
+// Payment Link, Betrag wählt die zahlende Person, TWINT und Karte. Kein Geheimnis.
+// In der Server-Datei includes/config.php setzen, diese Beispieldatei bleibt leer:
+// define('SUPPORT_URL', 'https://buy.stripe.com/...');
+// Ist der Wert leer oder fehlt die Konstante, gibt es keinen Footer-Link,
+// keine Karte und keinen Absatz. /unterstuetzen antwortet dann mit 404.
+define('SUPPORT_URL', '');
+
+// Angezeigter Name des Zahlungsdienstes.
+define('SUPPORT_PROVIDER_NAME', 'Stripe');
+
 ?>

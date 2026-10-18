@@ -4054,3 +4054,113 @@ button.faq-question {
 .bulk-import-result .link-box + .link-box {
     margin-top: 0.75rem;
 }
+
+/* Freiwillige Unterstützung: ruhige Karte, Outline-Button */
+.support-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    background: var(--surface);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1.15rem 1.25rem;
+    margin: 0 0 2rem;
+    box-shadow: none;
+    max-width: 100%;
+}
+
+.support-card-icon {
+    flex: 0 0 auto;
+    width: 2rem;
+    height: 2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+    margin-top: 0.15rem;
+}
+
+.support-card-icon svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    display: block;
+}
+
+.support-card-body {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.support-card-text {
+    margin: 0 0 0.9rem;
+    color: var(--text-primary);
+    line-height: 1.55;
+}
+
+.support-card-actions,
+.support-page-action {
+    margin: 0;
+}
+
+.support-note {
+    margin: 0.55rem 0 0;
+    font-size: 0.82rem;
+    line-height: 1.4;
+    color: var(--text-secondary);
+}
+
+a.button.support-button,
+.app-page a.button.support-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    background: transparent;
+    color: var(--secondary-dark);
+    border: 1px solid var(--secondary-color);
+    box-shadow: none;
+    min-height: 44px;
+    padding: 0.55rem 1.15rem;
+    font-size: 0.95rem;
+    line-height: 1.2;
+    text-decoration: none;
+}
+
+a.button.support-button:hover,
+a.button.support-button:focus-visible,
+.app-page a.button.support-button:hover,
+.app-page a.button.support-button:focus-visible {
+    background: rgba(42, 157, 143, 0.08);
+    color: var(--secondary-dark);
+    box-shadow: none;
+    transform: none;
+}
+
+.support-about .support-page-action,
+.support-page-action {
+    margin-top: 0.35rem;
+}
+
+@media (max-width: 700px) {
+    .support-card {
+        display: block;
+        padding: 1rem;
+    }
+
+    .support-card-icon {
+        float: left;
+        margin: 0.15rem 0.75rem 0.35rem 0;
+    }
+
+    .support-card-actions {
+        clear: both;
+        padding-top: 0.15rem;
+    }
+
+    a.button.support-button,
+    .app-page a.button.support-button {
+        display: flex;
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
