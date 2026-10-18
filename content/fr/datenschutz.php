@@ -14,7 +14,7 @@
             
             <h3>Notre approche de la protection des données</h3>
             <div class="privacy-highlight">
-                <p><strong>Nous ne transmettons pas à des tiers les données des groupes Secret Santa ni les attributions.</strong> Nous utilisons les noms, les adresses e-mail, les listes de souhaits et les attributions uniquement pour le Secret Santa de ton groupe. La publicité et la mesure d’audience en sont séparées et sont décrites à la section 10.</p>
+                <p><strong>Nous ne transmettons pas à des tiers les données des groupes Secret Santa ni les attributions.</strong> Nous utilisons les noms, les adresses e-mail, les listes de souhaits et les attributions uniquement pour le Secret Santa de ton groupe. La mesure d’audience en est séparée et est décrite à la section 10.</p>
             </div>
             
             <h2>2. Collecte de données sur ce site</h2>
@@ -55,7 +55,7 @@
             
             <h3>Notre utilisation des cookies</h3>
             <div class="privacy-highlight">
-                <p><strong>Cookies fonctionnels pour la connexion automatique :</strong> pour la participation, nous enregistrons des cookies afin que tu n’aies pas à saisir le lien participant à chaque fois. Les cookies de Matomo et de Google AdSense sont décrits à la section 10. Sans consentement, ces services ne déposent pas de cookies de suivi.</p>
+                <p><strong>Cookies fonctionnels pour la connexion automatique :</strong> pour la participation, nous enregistrons des cookies afin que tu n’aies pas à saisir le lien participant à chaque fois. Les cookies de Matomo sont décrits à la section 10. Sans consentement, Matomo ne dépose pas de cookies de suivi.</p>
             </div>
             
             <h3>Cookie de langue</h3>
@@ -136,9 +136,9 @@
                 <p><strong>Tes données Secret Santa restent privées :</strong> en principe, nous ne transmettons pas à des tiers les données de ton groupe (noms, adresses e-mail, listes de souhaits). La seule exception est l’envoi d’e-mails via notre prestataire de messagerie.</p>
             </div>
             
-            <h3>Publicité et mesure d’audience</h3>
+            <h3>Mesure d’audience</h3>
             <p>
-                Google AdSense et Matomo ne reçoivent aucune donnée de groupe Secret Santa ni aucune attribution. Les données techniques qu’ils traitent après un consentement sont décrites uniquement à la section 10.
+                Matomo ne reçoit aucune donnée de groupe Secret Santa ni aucune attribution. Les données techniques qu’il traite après un consentement sont décrites uniquement à la section 10.
             </p>
             
             <h3>Au sein du groupe Secret Santa</h3>
@@ -193,21 +193,10 @@
                 <li><strong>Contrôle d’accès :</strong> seules les personnes autorisées peuvent accéder aux données du groupe</li>
             </ul>
             
-            <h2>10. Publicité, cookies et mesure d’audience</h2>
+            <h2>10. Cookies et mesure d’audience</h2>
 
             <p>
-                Cette section décrit Google AdSense, Matomo, les cookies associés, la base juridique et le retrait du consentement. Le cookie fonctionnel de connexion de la section 4 en reste séparé.
-            </p>
-
-            <h3>Google AdSense</h3>
-            <p>
-                Pour financer l’offre gratuite, nous pouvons utiliser Google AdSense, un service publicitaire de Google Ireland Limited (« Google »), Gordon House, Barrow Street, Dublin 4, Irlande. Les annonces n’apparaissent que sur les pages publiques, elles sont marquées « Publicité » et n’apparaissent pas dans l’espace participant.
-            </p>
-            <p>
-                Nous ne chargeons le script <code>adsbygoogle.js</code> qu’après ton consentement, via une plateforme de gestion du consentement (Google Funding Choices, Privacy &amp; messaging). Tant que cette CMP n’est pas configurée avec un véritable identifiant d’éditeur, aucun script AdSense n’est chargé. Si tu refuses, aucune annonce n’apparaît.
-            </p>
-            <p>
-                Après le consentement, Google peut traiter des données techniques, en particulier l’adresse IP, des informations sur le navigateur et l’appareil, les pages consultées, les annonces affichées, les clics ainsi que la date et l’heure. Ces indications ne sont pas reliées aux données de ton groupe Secret Santa ni à tes attributions. Google peut les associer à d’autres services Google. Plus d’informations : <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">règles de confidentialité de Google</a> et <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener">comment Google utilise les données dans la publicité</a>.
+                Cette section décrit Matomo, les cookies associés, la base juridique et le retrait du consentement. Le cookie fonctionnel de connexion de la section 4 en reste séparé.
             </p>
 
             <h3>Matomo</h3>
@@ -229,7 +218,7 @@
 
             <h3>Cookies</h3>
             <p>
-                Sans consentement, AdSense et Matomo ne déposent pas de cookies de suivi. L’avis propre au site retient ton choix pour Matomo dans le cookie <code>wichteln_consent</code> (accepté ou refusé, 180 jours). Ce cookie n’active aucune publicité. Après un consentement, ces cookies peuvent en plus apparaître :
+                Sans consentement, Matomo ne dépose pas de cookies de suivi. L’avis sur le site retient ton choix pour Matomo dans le cookie <code>wichteln_consent</code> (accepté ou refusé, 180 jours). Après un consentement, ces cookies peuvent en plus apparaître :
             </p>
             <table>
                 <thead>
@@ -253,41 +242,20 @@
                         <td>Reconnaissance et session, uniquement après consentement</td>
                         <td>jusqu’à 13 mois</td>
                     </tr>
-                    <tr>
-                        <td><code>__gads</code></td>
-                        <td>Google AdSense</td>
-                        <td>Diffusion et mesure des annonces, uniquement après consentement</td>
-                        <td>13 mois</td>
-                    </tr>
-                    <tr>
-                        <td><code>__gac</code></td>
-                        <td>Google AdSense</td>
-                        <td>Indications liées aux campagnes, uniquement après consentement</td>
-                        <td>90 jours</td>
-                    </tr>
-                    <tr>
-                        <td><code>IDE</code></td>
-                        <td>Google</td>
-                        <td>Personnalisation des annonces, uniquement après consentement</td>
-                        <td>13 mois</td>
-                    </tr>
                 </tbody>
             </table>
 
             <h3>Base juridique</h3>
             <p>
-                Le traitement à des fins de publicité et d’analyse repose sur ton consentement selon la loi suisse sur la protection des données. Pour les personnes dans l’EEE et au Royaume-Uni, l’art. 6, par. 1, let. a du RGPD s’ajoute. Nous demandons le consentement pour les annonces via la CMP de Google (Funding Choices / Privacy &amp; messaging, TCF pour l’EEE et le Royaume-Uni, y compris un message pour la Suisse). L’avis de ce site, sans CMP Google active, ne donne que le choix d’autoriser ou non les cookies Matomo.
+                Le traitement à des fins de mesure d’audience repose sur ton consentement selon la loi suisse sur la protection des données. Pour les personnes dans l’EEE et au Royaume-Uni, l’art. 6, par. 1, let. a du RGPD s’ajoute. L’avis sur ce site donne le choix d’autoriser ou non les cookies Matomo.
             </p>
 
             <h3>Retrait</h3>
             <p>
-                Tu peux retirer ton consentement à tout moment, avec effet pour l’avenir. Ensuite, nous ne chargeons plus d’annonces, et Matomo fonctionne sans cookies de suivi. La licéité du traitement effectué jusqu’au retrait n’est pas affectée. Si la CMP Google est active, le bouton rouvre le message de consentement de Google.
+                Tu peux retirer ton consentement à tout moment, avec effet pour l’avenir. Ensuite, Matomo fonctionne sans cookies de suivi. La licéité du traitement effectué jusqu’au retrait n’est pas affectée.
             </p>
             <p>
                 <button type="button" id="consent-revoke" class="button secondary">Retirer le consentement</button>
-            </p>
-            <p>
-                Tu peux aussi limiter la publicité personnalisée dans les <a href="https://adssettings.google.com/" target="_blank" rel="noopener">paramètres des annonces Google</a> et via <a href="https://www.youronlinechoices.com/ch-fr/" target="_blank" rel="noopener">Your Online Choices</a>. Si tu supprimes les cookies dans le navigateur, tu devras refaire ton choix.
             </p>
             
             <h2>11. Fichiers journaux du serveur</h2>

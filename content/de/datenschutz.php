@@ -13,7 +13,7 @@
             
             <h3>Unsere Datenschutzphilosophie</h3>
             <div class="privacy-highlight">
-                <p><strong>Wichtel-Gruppen- und Zuteilungsdaten geben wir nicht an Dritte weiter.</strong> Namen, E-Mail-Adressen, Wunschlisten und Zuordnungen nutzen wir nur für das Wichteln in deiner Gruppe. Werbung und Reichweitenmessung sind davon getrennt und stehen in Abschnitt 10.</p>
+                <p><strong>Wichtel-Gruppen- und Zuteilungsdaten geben wir nicht an Dritte weiter.</strong> Namen, E-Mail-Adressen, Wunschlisten und Zuordnungen nutzen wir nur für das Wichteln in deiner Gruppe. Die Reichweitenmessung ist davon getrennt und steht in Abschnitt 10.</p>
             </div>
             
             <h2>2. Datenerfassung auf dieser Website</h2>
@@ -54,7 +54,7 @@
             
             <h3>Unsere Cookie-Verwendung</h3>
             <div class="privacy-highlight">
-                <p><strong>Funktionale Cookies für automatisches Login:</strong> Für die Teilnahme speichern wir Cookies, damit du nicht jedes Mal den Teilnehmer-Link eingeben müssen. Cookies von Matomo und Google AdSense beschreiben wir in Abschnitt 10. Ohne Einwilligung setzen diese Dienste keine Tracking-Cookies.</p>
+                <p><strong>Funktionale Cookies für automatisches Login:</strong> Für die Teilnahme speichern wir Cookies, damit du nicht jedes Mal den Teilnehmer-Link eingeben müssen. Cookies von Matomo beschreiben wir in Abschnitt 10. Ohne Einwilligung setzt Matomo keine Tracking-Cookies.</p>
             </div>
             
             <h3>Sprach-Cookie</h3>
@@ -135,9 +135,9 @@
                 <p><strong>deine Wichtel-Daten bleiben privat:</strong> Wir geben deine Wichtel-Gruppendaten (Namen, E-Mail-Adressen, Wunschlisten) grundsätzlich nicht an Dritte weiter. Die einzige Ausnahme ist der Versand von E-Mails über unseren E-Mail-Provider.</p>
             </div>
             
-            <h3>Werbung und Reichweitenmessung</h3>
+            <h3>Reichweitenmessung</h3>
             <p>
-                Google AdSense und Matomo erhalten keine Wichtel-Gruppen- oder Zuteilungsdaten. Welche technischen Daten sie nach einer Einwilligung verarbeiten, steht nur in Abschnitt 10.
+                Matomo erhält keine Wichtel-Gruppen- oder Zuteilungsdaten. Welche technischen Daten Matomo nach einer Einwilligung verarbeitet, steht nur in Abschnitt 10.
             </p>
             
             <h3>Innerhalb der Wichtel-Gruppe</h3>
@@ -192,21 +192,10 @@
                 <li><strong>Zugriffskontrolle:</strong> Nur autorisierte Personen können auf Gruppendaten zugreifen</li>
             </ul>
             
-            <h2>10. Werbung, Cookies und Reichweitenmessung</h2>
+            <h2>10. Cookies und Reichweitenmessung</h2>
 
             <p>
-                In diesem Abschnitt stehen Google AdSense, Matomo, die zugehörigen Cookies, die Rechtsgrundlage und der Widerruf. Das funktionale Login-Cookie aus Abschnitt 4 bleibt davon getrennt.
-            </p>
-
-            <h3>Google AdSense</h3>
-            <p>
-                Zur Finanzierung des kostenlosen Angebots können wir Google AdSense einsetzen, einen Werbedienst der Google Ireland Limited («Google»), Gordon House, Barrow Street, Dublin 4, Irland. Anzeigen stehen nur auf öffentlichen Seiten, sind mit «Anzeige» gekennzeichnet und erscheinen nicht im Teilnehmerbereich.
-            </p>
-            <p>
-                Das Skript <code>adsbygoogle.js</code> laden wir erst nach deiner Einwilligung über eine Consent-Management-Plattform (Google Funding Choices, Privacy &amp; messaging). Solange diese CMP nicht mit einer echten Publisher-ID eingerichtet ist, wird kein AdSense-Skript geladen. Lehnen du ab, erscheinen keine Anzeigen.
-            </p>
-            <p>
-                Nach der Einwilligung kann Google technische Daten verarbeiten, insbesondere IP-Adresse, Browser- und Geräteinformationen, aufgerufene Seiten, angezeigte Anzeigen, Klicks sowie Datum und Uhrzeit. Diese Angaben sind nicht mit deinen Wichtel-Gruppen- oder Zuteilungsdaten verknüpft. Google kann sie mit anderen Google-Diensten verbinden. Weitere Informationen: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Datenschutzerklärung von Google</a> und <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener">Wie Google Daten bei Werbung verwendet</a>.
+                In diesem Abschnitt stehen Matomo, die zugehörigen Cookies, die Rechtsgrundlage und der Widerruf. Das funktionale Login-Cookie aus Abschnitt 4 bleibt davon getrennt.
             </p>
 
             <h3>Matomo</h3>
@@ -228,7 +217,7 @@
 
             <h3>Cookies</h3>
             <p>
-                Ohne Einwilligung setzen AdSense und Matomo keine Tracking-Cookies. Der eigene Hinweis auf der Seite merkt sich deine Wahl für Matomo im Cookie <code>wichteln_consent</code> (angenommen oder abgelehnt, 180 Tage). Dieses Cookie schaltet keine Werbung frei. Nach einer Einwilligung können zusätzlich diese Cookies entstehen:
+                Ohne Einwilligung setzt Matomo keine Tracking-Cookies. Der Hinweis auf der Seite merkt sich deine Wahl für Matomo im Cookie <code>wichteln_consent</code> (angenommen oder abgelehnt, 180 Tage). Nach einer Einwilligung können zusätzlich diese Cookies entstehen:
             </p>
             <table>
                 <thead>
@@ -252,41 +241,20 @@
                         <td>Wiedererkennung und Sitzung, nur nach Einwilligung</td>
                         <td>bis 13 Monate</td>
                     </tr>
-                    <tr>
-                        <td><code>__gads</code></td>
-                        <td>Google AdSense</td>
-                        <td>Auslieferung und Messung von Anzeigen, nur nach Einwilligung</td>
-                        <td>13 Monate</td>
-                    </tr>
-                    <tr>
-                        <td><code>__gac</code></td>
-                        <td>Google AdSense</td>
-                        <td>Kampagnenbezogene Angaben, nur nach Einwilligung</td>
-                        <td>90 Tage</td>
-                    </tr>
-                    <tr>
-                        <td><code>IDE</code></td>
-                        <td>Google</td>
-                        <td>Anzeigenpersonalisierung, nur nach Einwilligung</td>
-                        <td>13 Monate</td>
-                    </tr>
                 </tbody>
             </table>
 
             <h3>Rechtsgrundlage</h3>
             <p>
-                Die Verarbeitung zu Werbe- und Analysezwecken stützt sich auf deine Einwilligung nach dem Schweizer Datenschutzgesetz. Für Personen im EWR und im Vereinigten Königreich kommt zusätzlich Art. 6 Abs. 1 lit. a DSGVO dazu. Anzeigen fragen wir über die Google-CMP ab (Funding Choices / Privacy &amp; messaging, TCF für EWR und UK, einschliesslich einer Nachricht für die Schweiz). Der Hinweis auf dieser Website ohne aktive Google-CMP gibt nur die Wahl, ob Matomo Cookies setzen darf.
+                Die Verarbeitung zur Reichweitenmessung stützt sich auf deine Einwilligung nach dem Schweizer Datenschutzgesetz. Für Personen im EWR und im Vereinigten Königreich kommt zusätzlich Art. 6 Abs. 1 lit. a DSGVO dazu. Der Hinweis auf dieser Website gibt die Wahl, ob Matomo Cookies setzen darf.
             </p>
 
             <h3>Widerruf</h3>
             <p>
-                Du kannst die Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen. Danach laden wir keine Anzeigen, und Matomo arbeitet ohne Tracking-Cookies. Die Rechtmässigkeit der Verarbeitung bis zum Widerruf bleibt unberührt. Ist die Google-CMP aktiv, öffnet die Schaltfläche die Einwilligungsnachricht von Google erneut.
+                Du kannst die Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen. Danach arbeitet Matomo ohne Tracking-Cookies. Die Rechtmässigkeit der Verarbeitung bis zum Widerruf bleibt unberührt.
             </p>
             <p>
                 <button type="button" id="consent-revoke" class="button secondary">Einwilligung widerrufen</button>
-            </p>
-            <p>
-                Personalisierte Werbung kannst du ausserdem in den <a href="https://adssettings.google.com/" target="_blank" rel="noopener">Google-Anzeigeneinstellungen</a> und über <a href="https://www.youronlinechoices.com/ch-de/" target="_blank" rel="noopener">Your Online Choices</a> einschränken. Wenn du Cookies im Browser löschst, musst du die Wahl erneut treffen.
             </p>
             
             <h2>11. Server-Log-Dateien</h2>

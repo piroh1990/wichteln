@@ -42,11 +42,6 @@ return array(
     'js.saving' => 'Wird gespeichert...',
     'js.wishlist_copied' => 'Wunschliste kopiert! 📋',
 
-    'ads.word' => 'Anzeige',
-    'ads.test' => 'Anzeige (Testmodus)',
-    'ads.home' => 'Startseite, unter dem Hero',
-    'ads.explainer' => 'Was ist Wichteln, nach dem Text',
-
     'captcha.label' => 'Sicherheitscode:',
     'captcha.required' => 'Erforderlich',
     'captcha.hint' => 'Bitte gib die {count} Zeichen aus dem Bild ein.',
@@ -392,7 +387,7 @@ return array(
     'reveal.flash.sent.other' => 'Die Auflösung wurde an {count} Teilnehmer gesendet.',
 
     'cookie.title' => 'Einwilligung zur Reichweitenmessung',
-    'cookie.text' => 'Matomo wertet Besuche aus. «Akzeptieren» erlaubt ein Matomo-Cookie. «Ablehnen» lässt die Messung ohne Tracking-Cookies. Werbeanzeigen schaltet dieser Hinweis nicht frei.',
+    'cookie.text' => 'Matomo wertet Besuche aus. Mit «Akzeptieren» darf Matomo ein Cookie setzen. Mit «Ablehnen» läuft die Messung ohne Tracking-Cookies weiter.',
     'cookie.privacy' => 'Datenschutz',
     'cookie.reject' => 'Ablehnen',
     'cookie.accept' => 'Akzeptieren',

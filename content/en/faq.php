@@ -249,7 +249,7 @@
                             <strong>No, Wichtlä.ch is 100% free!</strong>
                         </p>
                         <p>
-                            There are no hidden costs, no premium accounts and no limits. The service is funded by small ads, placed quietly so they do not get in the way.
+                            There are no hidden costs, no premium accounts and no limits.
                         </p>
                     </div>
                 </div>
@@ -447,7 +447,7 @@
                             <li>🇨🇭 server located in Switzerland</li>
                             <li>📜 compliance with the Swiss Federal Act on Data Protection (FADP)</li>
                             <li>🗑️ automatic deletion when the group expires</li>
-                            <li>🚫 no sharing with third parties (except Google AdSense for advertising)</li>
+                            <li>🚫 no sharing with third parties</li>
                         </ul>
                         <p>
                             More detail is in our <a href="<?php echo h(i18n_href('datenschutz')); ?>">privacy policy</a>.

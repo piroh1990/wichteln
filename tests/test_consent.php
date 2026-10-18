@@ -7,47 +7,66 @@ if (!defined('DB_HOST')) {
 }
 require_once __DIR__ . '/../includes/consent.php';
 
-run_test('google_ads_client_is_real: placeholder and real id', function() {
-    assert_true(!google_ads_client_is_real('ca-pub-XXXXXXXXXXXXXXXXX'), 'Placeholder is not a real client id');
-    assert_true(!google_ads_client_is_real(''), 'Empty client id is not real');
-    assert_true(!google_ads_client_is_real('pub-1234567890123456'), 'Publisher id without ca- prefix is not a client id');
-    assert_true(google_ads_client_is_real('ca-pub-1234567890123456'), 'Numeric ca-pub id is real');
+run_test('consent config: matomo only', function() {
+    assert_true(!function_exists('google_ads_client_is_real'), 'AdSense client helper is gone');
+    assert_true(!function_exists('google_ads_slot_active'), 'Ad slot helper is gone');
+    assert_true(!function_exists('google_cmp_is_configured'), 'Google CMP helper is gone');
+    $config = consent_client_config();
+    assert_true(isset($config['matomoUrl']), 'Matomo URL is present');
+    assert_true(isset($config['matomoSiteId']), 'Matomo site id is present');
+    assert_true(!isset($config['adsEnabled']), 'Ads flag is not sent to the browser');
+    assert_true(!isset($config['client']), 'AdSense client is not sent to the browser');
+    assert_true(!isset($config['publisherId']), 'Publisher id is not sent to the browser');
+    assert_true(!isset($config['cmpConfigured']), 'CMP flag is not sent to the browser');
 });
 
-run_test('google_ads_publisher_id: strips ca- prefix only for real ids', function() {
-    assert_equals('pub-1234567890123456', google_ads_publisher_id('ca-pub-1234567890123456'));
-    assert_equals('', google_ads_publisher_id('ca-pub-XXXXXXXXXXXXXXXXX'));
-});
-
-run_test('google_cmp_would_run: needs flag and real client', function() {
-    assert_true(!google_cmp_would_run(false, 'ca-pub-1234567890123456'), 'Disabled CMP does not run');
-    assert_true(!google_cmp_would_run(true, 'ca-pub-XXXXXXXXXXXXXXXXX'), 'Placeholder client does not enable CMP');
-    assert_true(google_cmp_would_run(true, 'ca-pub-1234567890123456'), 'Real client with flag enables CMP');
-});
-
-run_test('example config: testing off, option 3 off, cmp not configured', function() {
+run_test('example config: no ad constants', function() {
     $example = file_get_contents(dirname(__DIR__) . '/includes/config.example.php');
-    assert_true(strpos($example, "define('GOOGLE_ADS_TESTING', false);") !== false, 'Testing default is false');
-    assert_true(strpos($example, "define('GOOGLE_ADS_SHOW_OPTION3', false);") !== false, 'Option 3 stays off');
-    assert_true(strpos($example, "define('GOOGLE_CMP_ENABLED', false);") !== false, 'CMP default is false');
-    assert_true(strpos($example, "define('GOOGLE_ADS_ENABLED', false);") !== false, 'Ads stay off until approval');
-    assert_true(!google_cmp_would_run(false, 'ca-pub-XXXXXXXXXXXXXXXXX'), 'Example values do not enable the CMP');
+    assert_true(strpos($example, 'GOOGLE_ADS_') === false, 'Example config has no ad constants');
+    assert_true(strpos($example, 'GOOGLE_CMP_') === false, 'Example config has no CMP constant');
+    assert_true(strpos($example, "define('MATOMO_URL'") !== false, 'Matomo URL stays');
+    assert_true(strpos($example, "define('MATOMO_SITE_ID'") !== false, 'Matomo site id stays');
 });
 
-run_test('ad slots: only homepage and was-ist-wichteln', function() {
+run_test('no public page includes the ad template', function() {
     $root = dirname(__DIR__) . '/public/';
-    $home = file_get_contents($root . 'index.php');
-    $explainer = file_get_contents($root . 'was-ist-wichteln.php');
-    assert_true(strpos($home, 'google_ads.php') !== false, 'Homepage includes the ad template');
-    assert_true(strpos($explainer, 'google_ads.php') !== false, 'Explainer page includes the ad template');
-    assert_true(strpos($home, "\$position = 1;") !== false, 'Homepage uses slot 1');
-    assert_true(strpos($explainer, "\$position = 2;") !== false, 'Explainer page uses slot 2');
-
-    $blocked = array('participant.php', 'faq.php', 'impressum.php', 'datenschutz.php', 'admin.php', 'admin-link.php');
-    foreach ($blocked as $file) {
+    $files = array(
+        'index.php',
+        'was-ist-wichteln.php',
+        'participant.php',
+        'faq.php',
+        'impressum.php',
+        'datenschutz.php',
+        'admin.php',
+        'admin-link.php',
+    );
+    foreach ($files as $file) {
         $src = file_get_contents($root . $file);
         assert_true(strpos($src, 'google_ads.php') === false, $file . ' must not include ads');
     }
+    assert_true(!file_exists(dirname(__DIR__) . '/includes/templates/google_ads.php'), 'Ad template is removed');
+    $tracking = file_get_contents(dirname(__DIR__) . '/includes/templates/matomo_tracking.php');
+    assert_true(strpos($tracking, 'adsbygoogle') === false, 'Tracking script does not load AdSense');
+    assert_true(strpos($tracking, 'pagead') === false, 'Tracking script does not load pagead');
+    assert_true(strpos($tracking, 'loadMatomo') !== false, 'Matomo loader stays');
+});
+
+run_test('cookie texts keep matomo and drop ads', function() {
+    $de = require dirname(__DIR__) . '/lang/de.php';
+    $fr = require dirname(__DIR__) . '/lang/fr.php';
+    $en = require dirname(__DIR__) . '/lang/en.php';
+    assert_true(strpos($de['cookie.text'], 'Matomo') !== false, 'German banner names Matomo');
+    assert_true(strpos($de['cookie.text'], 'Akzeptieren') !== false, 'German banner explains accept');
+    assert_true(strpos($de['cookie.text'], 'Ablehnen') !== false, 'German banner explains decline');
+    assert_true(strpos($de['cookie.text'], 'Werbung') === false, 'German banner does not mention ads');
+    assert_true(!isset($de['ads.word']), 'German ad label is gone');
+    assert_true(strpos($fr['cookie.text'], 'Matomo') !== false, 'French banner names Matomo');
+    assert_true(stripos($fr['cookie.text'], 'publicit') === false, 'French banner does not mention ads');
+    assert_true(!isset($fr['ads.word']), 'French ad label is gone');
+    assert_true(strpos($en['cookie.text'], 'Matomo') !== false, 'English banner names Matomo');
+    assert_true(stripos($en['cookie.text'], 'advert') === false, 'English banner does not mention ads');
+    assert_true(stripos($en['cookie.text'], 'ads') === false, 'English banner does not mention ads');
+    assert_true(!isset($en['ads.word']), 'English ad label is gone');
 });
 
 run_test('datenschutz: no absolute third-party denial and no opt-out script', function() {
@@ -57,6 +76,11 @@ run_test('datenschutz: no absolute third-party denial and no opt-out script', fu
     assert_true(strpos($src, 'optOutJS') === false, 'Matomo opt-out script is not embedded');
     assert_true(strpos($src, 'id="consent-revoke"') !== false, 'Revoke control is present');
     assert_true(strpos($src, 'mailto:kontakt@xn--wichtl-gua.ch') !== false, 'Privacy mailto uses punycode');
+    assert_true(stripos($src, 'AdSense') === false, 'Privacy policy does not mention AdSense');
+    assert_true(strpos($src, 'Werbung') === false, 'Privacy policy does not mention advertising');
+    assert_true(strpos($src, '__gac') === false, 'Google conversion cookie is not listed');
+    assert_true(strpos($src, '__gads') === false, 'AdSense cookie is not listed');
+    assert_true(strpos($src, '_pk_id') !== false, 'Matomo cookies stay listed');
 });
 
 run_test('impressum: postal address and punycode mailto', function() {

@@ -1199,26 +1199,6 @@ function master_admin_mail_status($from_email, $from_name, $sendmail_path, $mail
     );
 }
 
-function master_admin_ads_status($cmp_enabled, $ads_testing) {
-    $warnings = array();
-    if ($cmp_enabled === null) {
-        $warnings[] = 'GOOGLE_CMP_ENABLED ist nicht gesetzt.';
-    } elseif ($cmp_enabled) {
-        $warnings[] = 'GOOGLE_CMP_ENABLED ist aktiv. Live sollte der Wert false sein.';
-    }
-    if ($ads_testing === null) {
-        $warnings[] = 'GOOGLE_ADS_TESTING ist nicht gesetzt.';
-    } elseif ($ads_testing) {
-        $warnings[] = 'GOOGLE_ADS_TESTING ist aktiv. Live sollte der Wert false sein.';
-    }
-    return array(
-        'cmp_enabled' => $cmp_enabled,
-        'ads_testing' => $ads_testing,
-        'warnings' => $warnings,
-        'ok' => count($warnings) === 0,
-    );
-}
-
 function master_admin_rewrite_status($apache_modules, $probe) {
     if (is_array($apache_modules)) {
         return in_array('mod_rewrite', $apache_modules, true) ? 'aktiv' : 'inaktiv';

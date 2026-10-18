@@ -91,24 +91,13 @@ In `includes/config.php`:
 - `DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASS`
 - `SMTP_FROM_EMAIL` und `SMTP_FROM_NAME` (Absender von `mail()`)
 - `MASTER_ADMIN_TOKEN`: lange Zufallszeichenkette, nicht leer
-- Anzeigen und Einwilligung, siehe unten
+- `MATOMO_URL` und `MATOMO_SITE_ID` für die Reichweitenmessung
 
-### Anzeigen und Einwilligung
+### Einwilligung für Matomo
 
-Es gibt genau zwei Slots, beide öffentlich: Slot 1 auf der Startseite unter dem Hero, Slot 2 am Ende von `was-ist-wichteln.php`. Im Teilnehmerbereich gibt es keine Anzeigen. `GOOGLE_ADS_SHOW_OPTION3` bleibt `false`.
+Der Hinweis auf der Seite fragt, ob Matomo ein Cookie setzen darf. «Akzeptieren» erlaubt das Cookie. «Ablehnen» lässt die Messung ohne Tracking-Cookies. Die Wahl liegt im Cookie `wichteln_consent` für 180 Tage. Auf der Datenschutzerklärung kann man sie widerrufen.
 
-`GOOGLE_ADS_TESTING` steht in der Beispielkonfiguration auf `false`. `true` zeigt nur die Markierung «Anzeige» und einen blauen Platzhalter und lädt kein `adsbygoogle.js`. Dafür müssen `GOOGLE_ADS_ENABLED` und `GOOGLE_ADS_TESTING` beide `true` sein.
-
-Produktiv erst nach diesen Schritten:
-
-1. AdSense-Konto freigeben lassen und echte `ca-pub-` sowie Slot-IDs in `includes/config.php` eintragen. Platzhalter wie `ca-pub-XXXXXXXXXXXXXXXXX` gelten nicht.
-2. In der AdSense-Konsole **Privacy & messaging** öffnen.
-3. Eine europäische Einwilligungsnachricht (Funding Choices / TCF) anlegen, die die Schweiz, den EWR und das UK abdeckt, und sie veröffentlichen. Consent Mode für Werbung aktivieren.
-4. Erst danach `GOOGLE_CMP_ENABLED` auf `true` setzen und `GOOGLE_ADS_TESTING` auf `false` lassen.
-
-Ohne diesen Schalter und ohne echte Publisher-ID lädt die Seite kein AdSense-Skript. Der eigene Hinweis fragt nur, ob Matomo ein Cookie setzen darf. «Ablehnen» lässt Matomo ohne Tracking-Cookies und schaltet keine Anzeigen frei. Matomo und AdSense laden nicht, bevor eine Entscheidung vorliegt.
-
-Neue Konstanten in eine bestehende `includes/config.php` übernehmen: `CANONICAL_BASE_URL` (Default `https://xn--wichtl-gua.ch`), optional `ICS_SIGNING_KEY`, `GOOGLE_ADS_TESTING` (Default `false`), `GOOGLE_CMP_ENABLED`, die Slot-Kommentare zu Startseite und `was-ist-wichteln.php`, `GOOGLE_ADS_SHOW_OPTION3` = `false`.
+`CANONICAL_BASE_URL` (Default `https://xn--wichtl-gua.ch`) und optional `ICS_SIGNING_KEY` in eine bestehende `includes/config.php` übernehmen. Die früheren Konstanten `GOOGLE_ADS_*` und `GOOGLE_CMP_ENABLED` werden nicht mehr gelesen. Sie können aus der Konfiguration entfernt werden.
 
 Freiwillige Unterstützung: `SUPPORT_URL` in `includes/config.php` auf den öffentlichen Stripe-Zahlungslink setzen (Payment Link, den Betrag wählt die zahlende Person, TWINT und Karte). `SUPPORT_PROVIDER_NAME` bleibt `Stripe`, ausser der angezeigte Name des Zahlungsdienstes soll anders lauten. Der Link ist kein Geheimnis. Ist `SUPPORT_URL` leer oder fehlt die Konstante, bleiben Footer-Link, Karte und Absatz unsichtbar, und `/unterstuetzen` antwortet mit 404.
 
@@ -187,7 +176,7 @@ git pull
 
 1. Diese Datei und `database/migrations/` auf neue SQL-Dateien prüfen.
 2. Neue Migrationen wie oben gegen die Live-Datenbank ausführen, nach einem Backup.
-3. Neue Konstanten aus den `*.example.php` in die echten Konfigurationsdateien übernehmen. Aktuell dazu: `API_ALLOW_ORIGINS` in `includes/api_config.php`, falls die API von einem Browser aus einer anderen Origin aufgerufen wird. Für Anzeigen: `GOOGLE_CMP_ENABLED`, `GOOGLE_ADS_TESTING` auf `false`, `GOOGLE_ADS_SHOW_OPTION3` auf `false`, Slot 1 Startseite und Slot 2 `was-ist-wichteln.php`. Für die freiwillige Unterstützung: `SUPPORT_URL` (Stripe-Zahlungslink) und `SUPPORT_PROVIDER_NAME` (`Stripe`). Ohne `SUPPORT_URL` bleibt die Unterstützung unsichtbar.
+3. Neue Konstanten aus den `*.example.php` in die echten Konfigurationsdateien übernehmen. Aktuell dazu: `API_ALLOW_ORIGINS` in `includes/api_config.php`, falls die API von einem Browser aus einer anderen Origin aufgerufen wird. Alte Konstanten `GOOGLE_ADS_*` und `GOOGLE_CMP_ENABLED` werden nicht mehr gelesen und können entfallen. Für die freiwillige Unterstützung: `SUPPORT_URL` (Stripe-Zahlungslink) und `SUPPORT_PROVIDER_NAME` (`Stripe`). Ohne `SUPPORT_URL` bleibt die Unterstützung unsichtbar.
 4. Den PHP-Benutzer auf Schreibrecht für `logs/` prüfen.
 
 Ein Deploy der CSRF-Härtung ändert das Aussehen der Seiten nicht. Geändert haben sich dabei Schutzmechanismen (CSRF, Master-Admin-Session, CORS-Allowlist) und die einheitliche Spalte `participant_token`.

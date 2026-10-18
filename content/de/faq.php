@@ -249,7 +249,7 @@
                             <strong>Nein, Wichtlä.ch ist 100% kostenlos!</strong>
                         </p>
                         <p>
-                            Es gibt keine versteckten Kosten, keine Premium-Accounts und keine Einschränkungen. Der Service wird durch kleine Werbeanzeigen finanziert, die dezent platziert sind und nicht stören.
+                            Es gibt keine versteckten Kosten, keine Premium-Accounts und keine Einschränkungen.
                         </p>
                     </div>
                 </div>
@@ -447,7 +447,7 @@
                             <li>🇨🇭 Server-Standort in der Schweiz</li>
                             <li>📜 Einhaltung des Schweizer Datenschutzgesetzes (DSG)</li>
                             <li>🗑️ Automatische Löschung nach Ablauf der Gruppe</li>
-                            <li>🚫 Keine Weitergabe an Dritte (ausser Google AdSense für Werbung)</li>
+                            <li>🚫 Keine Weitergabe an Dritte</li>
                         </ul>
                         <p>
                             Mehr Details in unserer <a href="<?php echo h(i18n_href('datenschutz')); ?>">Datenschutzerklärung</a>.

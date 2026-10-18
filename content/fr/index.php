@@ -45,8 +45,6 @@
         </div>
     </section>
 
-    <?php if (function_exists('wichteln_render_home_ad')) { wichteln_render_home_ad(); } ?>
-
     <!-- Comment ça marche -->
     <section class="how-it-works">
         <div class="container">
