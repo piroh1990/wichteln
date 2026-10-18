@@ -223,6 +223,9 @@
                 <li>page d’origine (referrer)</li>
                 <li>date et heure de l’accès</li>
             </ul>
+            <p>
+                Les clics sur le lien du soutien libre peuvent être comptés comme événement (catégorie «Support»), sans données de paiement et sans données des groupes Secret Santa. Cela n’a lieu que lorsque la mesure d’audience est active.
+            </p>
 
             <h3>Cookies</h3>
             <p>
@@ -318,6 +321,23 @@
             <p>
                 Nous nous réservons le droit d’adapter cette politique de confidentialité, afin qu’elle corresponde toujours aux exigences juridiques en vigueur, ou pour y refléter des changements de nos prestations. Lors de ta prochaine visite, la nouvelle politique de confidentialité s’applique.
             </p>
+
+            <?php require_once dirname(__DIR__, 2) . '/includes/support.php'; ?>
+            <h2 id="freiwillige-unterstuetzung">14. Soutien libre</h2>
+            <p>
+                wichtlä.ch peut s’utiliser gratuitement et sans publicité. Un soutien est libre. Il n’est pas une condition pour utiliser une fonction, et il n’y a pas de contrepartie.
+            </p>
+            <p>
+                Le lien «Soutenir librement» mène à <?php echo h(support_provider_name()); ?>, un service de paiement. Là, les données de paiement et de contact sont traitées par <?php echo h(support_provider_name()); ?>. Si tu paies avec TWINT, TWINT traite aussi ces données. Le destinataire du paiement est Raths IT.
+            </p>
+            <p>
+                En cliquant, tu quittes wichtlä.ch. wichtlä.ch lui-même ne reçoit aucune donnée de paiement et ne transmet aucune donnée des groupes Secret Santa au service de paiement ni à TWINT.
+            </p>
+            <?php if (support_provider_is_stripe()): ?>
+            <p>
+                Plus d’informations dans la <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer">déclaration de confidentialité de Stripe</a>.
+            </p>
+            <?php endif; ?>
             
             <hr>
             

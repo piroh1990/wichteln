@@ -386,6 +386,10 @@ token_page_open(t('meta.participant.title', array('{name}' => $participant['name
                     </ul>
                 </section>
             <?php endif; ?>
+
+            <?php if (!empty($group['reveal_sent_at'])): ?>
+                <?php echo support_card_html('reveal'); ?>
+            <?php endif; ?>
         <?php else: ?>
             <div class="section-card waiting-card">
                 <div class="waiting-icon" aria-hidden="true">⏳</div>

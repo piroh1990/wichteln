@@ -192,6 +192,7 @@ function i18n_public_slugs() {
         'wichtel-ideen',
         'firmenwichteln-tipps',
         'ueber-uns',
+        'unterstuetzen',
         'create_group',
     );
 }

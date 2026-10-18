@@ -44,6 +44,11 @@
                 </ul>
             </section>
 
+            <?php
+            require_once dirname(__DIR__, 2) . '/includes/support.php';
+            echo support_about_html();
+            ?>
+
             <section class="content-section">
                 <h2>Contact</h2>
                 <p>

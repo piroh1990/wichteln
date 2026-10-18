@@ -223,6 +223,9 @@
                 <li>referring page (referrer)</li>
                 <li>date and time of the visit</li>
             </ul>
+            <p>
+                Clicks on the voluntary support link can be counted as an event (category “Support”), without payment data and without Secret Santa group data. That only happens while analytics is running.
+            </p>
 
             <h3>Cookies</h3>
             <p>
@@ -318,6 +321,23 @@
             <p>
                 We reserve the right to update this privacy policy so that it always meets current legal requirements, or to reflect changes to our services. The new privacy policy then applies the next time you visit.
             </p>
+
+            <?php require_once dirname(__DIR__, 2) . '/includes/support.php'; ?>
+            <h2 id="freiwillige-unterstuetzung">14. Voluntary support</h2>
+            <p>
+                wichtlä.ch can be used for free and without advertising. Support is voluntary. It is not required in order to use any feature, and there is nothing in return.
+            </p>
+            <p>
+                The “Chip in (voluntary)” link goes to <?php echo h(support_provider_name()); ?>, a payment service. There, payment and contact details are processed by <?php echo h(support_provider_name()); ?>. If you pay with TWINT, TWINT also processes this data. The recipient of the payment is Raths IT.
+            </p>
+            <p>
+                When you click, you leave wichtlä.ch. wichtlä.ch itself does not receive payment data and does not pass on any Secret Santa group data to the payment service or to TWINT.
+            </p>
+            <?php if (support_provider_is_stripe()): ?>
+            <p>
+                Further information is in <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer">Stripe’s privacy policy</a>.
+            </p>
+            <?php endif; ?>
             
             <hr>
             
