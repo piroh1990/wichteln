@@ -1510,6 +1510,11 @@ a.button:disabled {
     padding: 0;
 }
 
+/* Content lists keep the decorative marker. Header nav items do not. */
+.main-nav li::before {
+    content: none;
+}
+
 .nav-link {
     color: white;
     text-decoration: none;
