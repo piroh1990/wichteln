@@ -1,0 +1,328 @@
+<div class="container">
+        <div class="content-card">
+            <div class="legal-notice"><p>Cette traduction sert à t’orienter. Seule la version allemande fait foi.</p></div>
+            <h1>Politique de confidentialité</h1>
+            
+            <p><strong>Mise à jour : <?php echo date('d.m.Y'); ?></strong></p>
+            
+            <h2>1. La protection des données en bref</h2>
+            
+            <h3>Informations générales</h3>
+            <p>
+                Les indications suivantes donnent un aperçu simple de ce qui arrive à tes données personnelles lorsque tu visites ce site. Les données personnelles sont toutes les données qui permettent de t’identifier.
+            </p>
+            
+            <h3>Notre approche de la protection des données</h3>
+            <div class="privacy-highlight">
+                <p><strong>Nous ne transmettons pas à des tiers les données des groupes Secret Santa ni les attributions.</strong> Nous utilisons les noms, les adresses e-mail, les listes de souhaits et les attributions uniquement pour le Secret Santa de ton groupe. La publicité et la mesure d’audience en sont séparées et sont décrites à la section 10.</p>
+            </div>
+            
+            <h2>2. Collecte de données sur ce site</h2>
+            
+            <h3>Qui est responsable de la collecte de données sur ce site ?</h3>
+            <p>
+                Le traitement des données sur ce site est effectué par l’exploitant du site wichtlä.ch. Tu trouves les coordonnées dans les mentions légales de ce site.
+            </p>
+            
+            <h3>Comment collectons-nous tes données ?</h3>
+            <p>
+                Tes données sont d’abord collectées parce que tu nous les communiques. Il peut s’agir, par exemple, de données que tu saisis dans un formulaire de contact ou lors de ton inscription à un groupe Secret Santa.
+            </p>
+            
+            <h2>3. Quelles données collectons-nous ?</h2>
+            
+            <h3>Lors de la création d’un groupe</h3>
+            <ul>
+                <li><strong>Nom du groupe :</strong> le nom de ton groupe Secret Santa</li>
+                <li><strong>Budget :</strong> le budget cadeau fixé (facultatif)</li>
+                <li><strong>Description :</strong> des informations supplémentaires sur le groupe (facultatif)</li>
+                <li><strong>Date :</strong> la date de la remise des cadeaux (facultatif)</li>
+            </ul>
+            
+            <h3>Lors de l’inscription d’un participant</h3>
+            <ul>
+                <li><strong>Nom :</strong> ton prénom et ton nom</li>
+                <li><strong>Adresse e-mail :</strong> ton adresse e-mail (facultative, mais recommandée pour les notifications)</li>
+                <li><strong>Liste de souhaits :</strong> tes envies de cadeaux (facultatif)</li>
+            </ul>
+            
+            <h2>4. Cookies et connexion automatique</h2>
+            
+            <h3>Que sont les cookies ?</h3>
+            <p>
+                Les cookies sont de petits fichiers texte enregistrés sur ton ordinateur et conservés par ton navigateur. Les cookies n’endommagent pas ton appareil et ne contiennent pas de virus.
+            </p>
+            
+            <h3>Notre utilisation des cookies</h3>
+            <div class="privacy-highlight">
+                <p><strong>Cookies fonctionnels pour la connexion automatique :</strong> pour la participation, nous enregistrons des cookies afin que tu n’aies pas à saisir le lien participant à chaque fois. Les cookies de Matomo et de Google AdSense sont décrits à la section 10. Sans consentement, ces services ne déposent pas de cookies de suivi.</p>
+            </div>
+            
+            <h3>Cookie de langue</h3>
+            <p>
+                Le cookie <code>lang</code> n’est enregistré que si tu choisis toi-même la langue avec DE, FR ou EN. Il retient <code>de</code>, <code>fr</code> ou <code>en</code> pendant un an, il est HttpOnly et vaut pour tout le site. Une simple visite de <code>/fr/...</code> ou <code>/en/...</code> ne pose pas ce cookie.
+            </p>
+
+            <h3>Quelles informations enregistrons-nous dans le cookie ?</h3>
+            <ul>
+                <li><strong>Jetons participant :</strong> des identifiants uniques pour tes participations aux groupes</li>
+                <li><strong>Nombre :</strong> 10 groupes au maximum sont enregistrés</li>
+                <li><strong>Durée :</strong> 180 jours</li>
+            </ul>
+            
+            <h3>Détails du cookie</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Propriété</th>
+                        <th>Valeur</th>
+                        <th>But</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Nom</strong></td>
+                        <td>wichteln_tokens</td>
+                        <td>Identification du cookie</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Type</strong></td>
+                        <td>Fonctionnel</td>
+                        <td>Nécessaire au fonctionnement du site</td>
+                    </tr>
+                    <tr>
+                        <td><strong>HttpOnly</strong></td>
+                        <td>Oui</td>
+                        <td>Protection contre l’accès par JavaScript (XSS)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Secure</strong></td>
+                        <td>Oui (en HTTPS)</td>
+                        <td>Transmission uniquement par une connexion sécurisée</td>
+                    </tr>
+                    <tr>
+                        <td><strong>SameSite</strong></td>
+                        <td>Lax</td>
+                        <td>Protection contre les attaques CSRF</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Durée de vie</strong></td>
+                        <td>180 jours</td>
+                        <td>Connexion automatique pendant 6 mois</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3>Gérer et supprimer les cookies</h3>
+            <p>
+                Tu peux à tout moment supprimer ou bloquer les cookies dans les réglages de ton navigateur. Sans cookies, la connexion automatique ne fonctionne pas et tu dois saisir ton lien participant à la main.
+            </p>
+            
+            <h2>5. Comment utilisons-nous tes données ?</h2>
+            
+            <h3>But du traitement</h3>
+            <ul>
+                <li><strong>Tirage Secret Santa :</strong> attribuer, dans ton groupe, la personne à qui chacun offre un cadeau</li>
+                <li><strong>Notifications par e-mail :</strong> envoi d’informations sur ton attribution (uniquement si tu as indiqué une adresse e-mail)</li>
+                <li><strong>Listes de souhaits :</strong> affichage de tes envies pour la personne qui t’offre un cadeau</li>
+                <li><strong>Gestion du groupe :</strong> gestion des participants et des exclusions</li>
+            </ul>
+            
+            <h2>6. Transmission des données</h2>
+            
+            <h3>Données des groupes Secret Santa et des attributions</h3>
+            <div class="privacy-highlight">
+                <span class="privacy-icon" aria-hidden="true">🔒</span>
+                <p><strong>Tes données Secret Santa restent privées :</strong> en principe, nous ne transmettons pas à des tiers les données de ton groupe (noms, adresses e-mail, listes de souhaits). La seule exception est l’envoi d’e-mails via notre prestataire de messagerie.</p>
+            </div>
+            
+            <h3>Publicité et mesure d’audience</h3>
+            <p>
+                Google AdSense et Matomo ne reçoivent aucune donnée de groupe Secret Santa ni aucune attribution. Les données techniques qu’ils traitent après un consentement sont décrites uniquement à la section 10.
+            </p>
+            
+            <h3>Au sein du groupe Secret Santa</h3>
+            <p> 
+                Les informations suivantes sont visibles pour les autres membres du groupe :
+            </p>
+            <ul>
+                <li>Ton nom (pour tous les membres du groupe)</li>
+                <li>Ta liste de souhaits (uniquement pour la personne qui t’offre un cadeau, après le tirage)</li>
+            </ul>
+            <p>
+                Ton adresse e-mail reste <strong>toujours privée</strong> et n’est pas visible pour les autres participants.
+            </p>
+            
+            <h2>7. Combien de temps conservons-nous tes données ?</h2>
+            
+            <ul>
+                <li><strong>Données du groupe :</strong> tant que le groupe existe</li>
+                <li><strong>Données des participants :</strong> tant que tu es membre du groupe</li>
+                <li><strong>Cookies :</strong> 180 jours, ou jusqu’à une suppression manuelle</li>
+            </ul>
+            
+            <h3>Suppression de tes données</h3>
+            <p>
+                L’administrateur du groupe peut supprimer tout le groupe à tout moment. Toutes les données des participants, les attributions et les listes de souhaits sont alors effacées définitivement.
+            </p>
+            
+            <h2>8. Tes droits (selon la loi suisse sur la protection des données)</h2>
+            
+            <p>Tu as les droits suivants concernant tes données personnelles :</p>
+            
+            <ul>
+                <li><strong>Droit d’accès :</strong> tu peux demander des informations sur tes données enregistrées</li>
+                <li><strong>Droit de rectification :</strong> tu peux demander la correction de données inexactes</li>
+                <li><strong>Droit à l’effacement :</strong> tu peux demander la suppression de tes données</li>
+                <li><strong>Droit d’opposition :</strong> tu peux t’opposer au traitement de tes données</li>
+                <li><strong>Portabilité des données :</strong> tu peux recevoir tes données dans un format structuré</li>
+            </ul>
+            
+            <p>
+                Pour exercer ces droits, contacte l’administrateur du groupe ou écris-nous aux coordonnées indiquées dans les mentions légales.
+            </p>
+            
+            <h2>9. Sécurité des données</h2>
+            
+            <h3>Nos mesures de sécurité</h3>
+            <ul>
+                <li><strong>Chiffrement HTTPS :</strong> toutes les transmissions de données sont chiffrées</li>
+                <li><strong>Jetons sûrs :</strong> utilisation de jetons aléatoires sûrs sur le plan cryptographique</li>
+                <li><strong>Requêtes préparées :</strong> protection contre les attaques par injection SQL</li>
+                <li><strong>Sécurité des cookies :</strong> indicateurs HttpOnly, Secure et SameSite</li>
+                <li><strong>Contrôle d’accès :</strong> seules les personnes autorisées peuvent accéder aux données du groupe</li>
+            </ul>
+            
+            <h2>10. Publicité, cookies et mesure d’audience</h2>
+
+            <p>
+                Cette section décrit Google AdSense, Matomo, les cookies associés, la base juridique et le retrait du consentement. Le cookie fonctionnel de connexion de la section 4 en reste séparé.
+            </p>
+
+            <h3>Google AdSense</h3>
+            <p>
+                Pour financer l’offre gratuite, nous pouvons utiliser Google AdSense, un service publicitaire de Google Ireland Limited (« Google »), Gordon House, Barrow Street, Dublin 4, Irlande. Les annonces n’apparaissent que sur les pages publiques, elles sont marquées « Publicité » et n’apparaissent pas dans l’espace participant.
+            </p>
+            <p>
+                Nous ne chargeons le script <code>adsbygoogle.js</code> qu’après ton consentement, via une plateforme de gestion du consentement (Google Funding Choices, Privacy &amp; messaging). Tant que cette CMP n’est pas configurée avec un véritable identifiant d’éditeur, aucun script AdSense n’est chargé. Si tu refuses, aucune annonce n’apparaît.
+            </p>
+            <p>
+                Après le consentement, Google peut traiter des données techniques, en particulier l’adresse IP, des informations sur le navigateur et l’appareil, les pages consultées, les annonces affichées, les clics ainsi que la date et l’heure. Ces indications ne sont pas reliées aux données de ton groupe Secret Santa ni à tes attributions. Google peut les associer à d’autres services Google. Plus d’informations : <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">règles de confidentialité de Google</a> et <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener">comment Google utilise les données dans la publicité</a>.
+            </p>
+
+            <h3>Matomo</h3>
+            <p>
+                Pour la mesure d’audience, nous utilisons Matomo sur un serveur de l’exploitant (<code>analytics.patrick-raths.ch</code>). Jusqu’à ton consentement, nous ne déposons pas de cookies de suivi. Si tu refuses, la mesure continue sans cookies de suivi. Ce n’est qu’après « Accepter » que Matomo peut déposer des cookies pour reconnaître les visites répétées.
+            </p>
+            <p>Lorsque la mesure est active, il peut s’agir en particulier de :</p>
+            <ul>
+                <li>adresse IP tronquée</li>
+                <li>pages consultées et durée de visite</li>
+                <li>type de navigateur et système d’exploitation</li>
+                <li>résolution d’écran</li>
+                <li>page d’origine (referrer)</li>
+                <li>date et heure de l’accès</li>
+            </ul>
+
+            <h3>Cookies</h3>
+            <p>
+                Sans consentement, AdSense et Matomo ne déposent pas de cookies de suivi. L’avis propre au site retient ton choix pour Matomo dans le cookie <code>wichteln_consent</code> (accepté ou refusé, 180 jours). Ce cookie n’active aucune publicité. Après un consentement, ces cookies peuvent en plus apparaître :
+            </p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Cookie</th>
+                        <th>Service</th>
+                        <th>But</th>
+                        <th>Durée de vie</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>wichteln_consent</code></td>
+                        <td>wichtlä.ch</td>
+                        <td>Enregistre si tu autorises les cookies Matomo</td>
+                        <td>180 jours</td>
+                    </tr>
+                    <tr>
+                        <td><code>_pk_id</code>, <code>_pk_ses</code></td>
+                        <td>Matomo</td>
+                        <td>Reconnaissance et session, uniquement après consentement</td>
+                        <td>jusqu’à 13 mois</td>
+                    </tr>
+                    <tr>
+                        <td><code>__gads</code></td>
+                        <td>Google AdSense</td>
+                        <td>Diffusion et mesure des annonces, uniquement après consentement</td>
+                        <td>13 mois</td>
+                    </tr>
+                    <tr>
+                        <td><code>__gac</code></td>
+                        <td>Google AdSense</td>
+                        <td>Indications liées aux campagnes, uniquement après consentement</td>
+                        <td>90 jours</td>
+                    </tr>
+                    <tr>
+                        <td><code>IDE</code></td>
+                        <td>Google</td>
+                        <td>Personnalisation des annonces, uniquement après consentement</td>
+                        <td>13 mois</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Base juridique</h3>
+            <p>
+                Le traitement à des fins de publicité et d’analyse repose sur ton consentement selon la loi suisse sur la protection des données. Pour les personnes dans l’EEE et au Royaume-Uni, l’art. 6, par. 1, let. a du RGPD s’ajoute. Nous demandons le consentement pour les annonces via la CMP de Google (Funding Choices / Privacy &amp; messaging, TCF pour l’EEE et le Royaume-Uni, y compris un message pour la Suisse). L’avis de ce site, sans CMP Google active, ne donne que le choix d’autoriser ou non les cookies Matomo.
+            </p>
+
+            <h3>Retrait</h3>
+            <p>
+                Tu peux retirer ton consentement à tout moment, avec effet pour l’avenir. Ensuite, nous ne chargeons plus d’annonces, et Matomo fonctionne sans cookies de suivi. La licéité du traitement effectué jusqu’au retrait n’est pas affectée. Si la CMP Google est active, le bouton rouvre le message de consentement de Google.
+            </p>
+            <p>
+                <button type="button" id="consent-revoke" class="button secondary">Retirer le consentement</button>
+            </p>
+            <p>
+                Tu peux aussi limiter la publicité personnalisée dans les <a href="https://adssettings.google.com/" target="_blank" rel="noopener">paramètres des annonces Google</a> et via <a href="https://www.youronlinechoices.com/ch-fr/" target="_blank" rel="noopener">Your Online Choices</a>. Si tu supprimes les cookies dans le navigateur, tu devras refaire ton choix.
+            </p>
+            
+            <h2>11. Fichiers journaux du serveur</h2>
+            
+            <p>
+                Le fournisseur des pages collecte et enregistre automatiquement des informations dans des fichiers journaux du serveur, que ton navigateur nous transmet de lui-même. Il s’agit de :
+            </p>
+            <ul>
+                <li>type et version du navigateur</li>
+                <li>système d’exploitation utilisé</li>
+                <li>URL de référence (referrer)</li>
+                <li>nom d’hôte de l’ordinateur qui accède au site</li>
+                <li>heure de la requête serveur</li>
+                <li>adresse IP</li>
+            </ul>
+            <p>
+                Ces données ne sont pas recoupées avec d’autres sources. Elles servent uniquement à la sécurité du système et à l’analyse des erreurs.
+            </p>
+            
+            <h2>12. Contact</h2>
+            
+            <p>
+                Pour toute question sur la protection des données ou pour exercer tes droits, tu peux nous joindre aux coordonnées indiquées dans les mentions légales :
+            </p>
+            <p>
+                <strong>E-mail :</strong> <a href="mailto:kontakt@xn--wichtl-gua.ch">kontakt@wichtlä.ch</a>
+            </p>
+            
+            <h2>13. Modifications de cette politique de confidentialité</h2>
+            
+            <p>
+                Nous nous réservons le droit d’adapter cette politique de confidentialité, afin qu’elle corresponde toujours aux exigences juridiques en vigueur, ou pour y refléter des changements de nos prestations. Lors de ta prochaine visite, la nouvelle politique de confidentialité s’applique.
+            </p>
+            
+            <hr>
+            
+            <div style="text-align: center; margin-top: 3rem;">
+                <a href="<?php echo h(i18n_href('index')); ?>" class="button secondary">🏠 Retour à l’accueil</a>
+            </div>
+        </div>
+    </div>
