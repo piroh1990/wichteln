@@ -1,9 +1,8 @@
 <?php
 /**
  * Hinweis zur Matomo-Einwilligung.
- * Schaltet kein AdSense frei. Dafür ist die Google-CMP nötig
- * (GOOGLE_CMP_ENABLED und echte ca-pub-ID). Solange die CMP aktiv ist,
- * bleibt dieser Hinweis aus; die Nachricht kommt von Funding Choices.
+ * «Akzeptieren» erlaubt ein Matomo-Cookie.
+ * «Ablehnen» lässt die Messung ohne Tracking-Cookies.
  */
 ?>
 <div id="cookie-banner" class="cookie-banner" hidden style="display: none;" role="dialog" aria-labelledby="cookie-banner-title" aria-describedby="cookie-banner-text">

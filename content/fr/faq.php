@@ -249,7 +249,7 @@
                             <strong>Non, Wichtlä.ch est 100 % gratuit !</strong>
                         </p>
                         <p>
-                            Il n’y a pas de frais cachés, pas de comptes premium et pas de limitations. Le service est financé par de petites publicités, placées discrètement pour ne pas gêner.
+                            Il n’y a pas de frais cachés, pas de comptes premium et pas de limitations.
                         </p>
                     </div>
                 </div>
@@ -447,7 +447,7 @@
                             <li>🇨🇭 serveur situé en Suisse</li>
                             <li>📜 respect de la loi suisse sur la protection des données (LPD)</li>
                             <li>🗑️ suppression automatique à l’échéance du groupe</li>
-                            <li>🚫 aucune transmission à des tiers (sauf Google AdSense pour la publicité)</li>
+                            <li>🚫 aucune transmission à des tiers</li>
                         </ul>
                         <p>
                             Plus de détails dans notre <a href="<?php echo h(i18n_href('datenschutz')); ?>">politique de confidentialité</a>.
