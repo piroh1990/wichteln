@@ -31,7 +31,26 @@ function showToast(message, type = 'success') {
  * @param {string} elementId - The ID of the element containing the text/URL
  * @param {string} successMessage - Optional custom success message
  */
-function copyToClipboard(elementId, successMessage = "Link erfolgreich kopiert! 📋") {
+function i18nText(key, fallback) {
+    if (window.I18N && typeof window.I18N[key] === 'string' && window.I18N[key] !== '') {
+        return window.I18N[key];
+    }
+    return fallback;
+}
+
+function i18nFormat(template, vars) {
+    if (!vars) {
+        return template;
+    }
+    return String(template).replace(/\{[a-z0-9_]+\}/gi, function(token) {
+        return Object.prototype.hasOwnProperty.call(vars, token) ? String(vars[token]) : token;
+    });
+}
+
+function copyToClipboard(elementId, successMessage) {
+    if (!successMessage) {
+        successMessage = i18nText('js.copied', 'Link erfolgreich kopiert! 📋');
+    }
     var element = document.getElementById(elementId);
     if (!element) return;
 
@@ -66,7 +85,7 @@ function fallbackCopy(text, successMessage) {
         document.execCommand("copy");
         showToast(successMessage);
     } catch (err) {
-        showToast("Fehler beim Kopieren. Bitte manuell kopieren.", "error");
+        showToast(i18nText('js.copy_fail', 'Fehler beim Kopieren. Bitte manuell kopieren.'), 'error');
     }
     document.body.removeChild(tempInput);
 }
@@ -106,8 +125,12 @@ function toggleFAQ(button, closeOthers = false) {
  * @param {HTMLFormElement} form - The form being submitted
  * @param {string} loadingText - Text to show during loading
  */
-function handleFormSubmit(form, loadingText = 'Wird geladen...') {
+function handleFormSubmit(form, loadingText) {
     if (!form) return;
+    if (!loadingText) {
+        var loadingKey = form.getAttribute('data-i18n-loading');
+        loadingText = loadingKey ? i18nText(loadingKey, i18nText('js.loading', 'Wird geladen...')) : i18nText('js.loading', 'Wird geladen...');
+    }
 
     form.addEventListener('submit', function(e) {
         if (e.defaultPrevented) return;
@@ -130,3 +153,26 @@ function handleFormSubmit(form, loadingText = 'Wird geladen...') {
         }
     });
 }
+
+document.addEventListener('submit', function(event) {
+    var form = event.target;
+    if (!form || !form.getAttribute) {
+        return;
+    }
+    var key = form.getAttribute('data-i18n-confirm');
+    if (!key) {
+        return;
+    }
+    var vars = {};
+    var raw = form.getAttribute('data-i18n-confirm-vars');
+    if (raw) {
+        try {
+            vars = JSON.parse(raw);
+        } catch (error) {
+            vars = {};
+        }
+    }
+    if (!window.confirm(i18nFormat(i18nText(key, ''), vars))) {
+        event.preventDefault();
+    }
+});

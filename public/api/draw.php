@@ -89,7 +89,7 @@ if ($action === 'reset') {
     $participants = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     if (count($participants) < 2) {
-        api_response(400, false, 'Mindestens 2 Teilnehmer erforderlich', null);
+        api_response(400, false, 'Empfohlen sind mindestens 3 Personen. Technisch möglich ist die Ziehung ab 2 Teilnehmern.', null);
     }
     
     // Ausschlüsse laden

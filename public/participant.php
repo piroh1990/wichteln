@@ -1,30 +1,13 @@
 <?php
 /**
  * participant.php
- * 
- * Teilnehmerbereich für Wichtel-Gruppen
- * 
- * Features:
- * - Cookie-basiertes Token-Management für automatisches Login
- * - Unterstützung für mehrere Gruppen pro Benutzer
- * - Gruppenauswahl-Interface wenn mehrere Gruppen vorhanden
- * - Token in URL hat Vorrang vor Cookie-Daten
- * - Sichere Cookie-Verwaltung (httpOnly, SameSite, begrenzte Speicherung)
- * 
- * Konfiguration:
- * - COOKIE_NAME: Name des Cookies (config.php)
- * - COOKIE_LIFETIME: Lebensdauer des Cookies in Sekunden (config.php)
- * - COOKIE_MAX_TOKENS: Max. Anzahl gespeicherter Tokens (config.php)
- * 
- * Sicherheit:
- * - Token-Validierung (nur alphanumerische Zeichen)
- * - Maximale Anzahl gespeicherter Tokens (konfigurierbar)
- * - Secure-Flag bei HTTPS
- * - SameSite=Lax zur CSRF-Prävention
- * - HttpOnly-Flag gegen XSS-Angriffe
+ *
+ * Teilnehmerbereich für Wichtel-Gruppen.
+ * Token in der URL hat Vorrang vor dem Cookie. Die Seite hat kein Sprachpräfix.
  */
 
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/templates/public_shell.php';
 
 if (!headers_sent()) {
     header('X-Robots-Tag: noindex, nofollow');
@@ -35,332 +18,219 @@ start_secure_session();
 
 $pdo = db_connect();
 
-/**
- * Speichert einen Token im Cookie (fügt ihn zur Liste hinzu, falls noch nicht vorhanden)
- */
 function save_token_to_cookie($token) {
     $tokens = get_tokens_from_cookie();
-    
-    // Token validieren (nur alphanumerische Zeichen)
     if (!preg_match('/^[a-zA-Z0-9]+$/', $token)) {
         return false;
     }
-    
-    // Token zur Liste hinzufügen, wenn noch nicht vorhanden
     if (!in_array($token, $tokens)) {
         $tokens[] = $token;
     }
-    
-    // Nur die letzten X Tokens behalten (konfigurierbar in config.php)
     $tokens = array_slice($tokens, -COOKIE_MAX_TOKENS);
-    
-    // Cookie mit Sicherheitseinstellungen setzen
-    $cookie_options = [
+    $cookie_options = array(
         'expires' => time() + COOKIE_LIFETIME,
         'path' => '/',
         'domain' => '',
         'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
         'httponly' => true,
-        'samesite' => 'Lax'
-    ];
-    
+        'samesite' => 'Lax',
+    );
     return setcookie(COOKIE_NAME, json_encode($tokens), $cookie_options);
 }
 
-/**
- * Liest alle gespeicherten Tokens aus dem Cookie
- */
 function get_tokens_from_cookie() {
     if (!isset($_COOKIE[COOKIE_NAME])) {
-        return [];
+        return array();
     }
-    
     $tokens = json_decode($_COOKIE[COOKIE_NAME], true);
-    
     if (!is_array($tokens)) {
-        return [];
+        return array();
     }
-    
-    // Nur gültige Tokens zurückgeben
-    return array_filter($tokens, function($token) {
+    return array_filter($tokens, function ($token) {
         return preg_match('/^[a-zA-Z0-9]+$/', $token);
     });
 }
 
-/**
- * Lädt alle Teilnehmerdaten für die gespeicherten Tokens
- */
 function load_participants_from_tokens($pdo, $tokens) {
     if (empty($tokens)) {
-        return [];
+        return array();
     }
-    
     $placeholders = str_repeat('?,', count($tokens) - 1) . '?';
-    $stmt = $pdo->prepare("SELECT p.*, g.name as group_name, g.is_drawn 
-                           FROM `participants` p 
-                           JOIN `groups` g ON p.group_id = g.id 
+    $stmt = $pdo->prepare("SELECT p.*, g.name as group_name, g.is_drawn
+                           FROM `participants` p
+                           JOIN `groups` g ON p.group_id = g.id
                            WHERE p.participant_token IN ($placeholders)
                            ORDER BY g.name, p.name");
     $stmt->execute($tokens);
-    
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// Token aus URL hat Vorrang
-$participant_token = $_GET['token'] ?? '';
+$participant_token = isset($_GET['token']) ? (string) $_GET['token'] : '';
 $show_group_selector = false;
 $participant = null;
 $group = null;
 $assigned = null;
 $reveal_pairs = array();
 
-// Wenn Token in URL vorhanden ist
 if (!empty($participant_token)) {
-    // Token validieren
     if (!preg_match('/^[a-zA-Z0-9]+$/', $participant_token)) {
-        die('Ungültiger Token.');
+        i18n_boot_token(null);
+        die(h(t('error.token')));
     }
-    
-    // Teilnehmer abrufen
     $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `participant_token` = ?");
-    $stmt->execute([$participant_token]);
+    $stmt->execute(array($participant_token));
     $participant = $stmt->fetch(PDO::FETCH_ASSOC);
-    
     if (!$participant) {
-        die('Ungültiger Token.');
+        i18n_boot_token(null);
+        die(h(t('error.token')));
     }
-    
-    // Token im Cookie speichern
     save_token_to_cookie($participant_token);
-    
 } else {
-    // Kein Token in URL - versuche aus Cookie zu laden
     $saved_tokens = get_tokens_from_cookie();
-    
-    $participants = [];
-
+    $participants = array();
     if (!empty($saved_tokens)) {
         $participants = load_participants_from_tokens($pdo, $saved_tokens);
-
-        // Wenn gespeicherte Tokens keine gültigen Teilnehmer liefern (z.B. gelöschte Gruppen)
         if (empty($participants)) {
-            // Cookie löschen
-            $cookie_options = [
+            $cookie_options = array(
                 'expires' => time() - 3600,
                 'path' => '/',
                 'domain' => '',
                 'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
                 'httponly' => true,
-                'samesite' => 'Lax'
-            ];
+                'samesite' => 'Lax',
+            );
             setcookie(COOKIE_NAME, '', $cookie_options);
         }
     }
 
     if (empty($participants)) {
-        // Keine gültigen Teilnahmen gefunden - zeige schöne Fehlerseite
+        i18n_apply_explicit_choice();
+        i18n_boot_token(null);
+        token_page_open(t('meta.participant.missing'));
         ?>
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>Keine Gruppe gefunden - Wichteln</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="apple-touch-icon" sizes="57x57" href="/images/favicon/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="/images/favicon/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/images/favicon/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="/images/favicon/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/images/favicon/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/images/favicon/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/images/favicon/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/images/favicon/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192"  href="/images/favicon/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
-    <link rel="manifest" href="/images/favicon/manifest.json">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="/images/favicon/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
-    <link rel="stylesheet" href="css/styles.css">
-    <?php echo token_page_referrer_meta(); ?>
-</head>
-<body>
-    <!-- Navigation -->
-    <?php include __DIR__ . '/../includes/templates/navigation.php'; ?>
-
     <div class="container app-page">
         <header class="app-hero">
-            <p class="app-kicker">Teilnehmerbereich</p>
-            <h1>Keine Gruppe gefunden</h1>
-            <p class="app-hero-lead">Du hast noch keine Wichtel-Gruppe besucht oder dein Link ist nicht mehr gültig.</p>
+            <p class="app-kicker"><?php echo h(t('participant.kicker')); ?></p>
+            <h1><?php echo h(t('participant.missing_title')); ?></h1>
+            <p class="app-hero-lead"><?php echo h(t('participant.missing_lead')); ?></p>
         </header>
-
         <div class="section-card waiting-card">
             <div class="waiting-icon" aria-hidden="true">🏠</div>
-            <h2>Was möchtest du tun?</h2>
+            <h2><?php echo h(t('participant.missing_next')); ?></h2>
             <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem; flex-wrap: wrap;">
-                <a href="/" class="cta-button cta-button-secondary">
-                    <span>Zur Startseite</span>
+                <a href="<?php echo h(i18n_href('index')); ?>" class="cta-button cta-button-secondary">
+                    <span><?php echo h(t('participant.missing_home')); ?></span>
                 </a>
-                <a href="/create_group" class="cta-button cta-button-primary">
-                    <span>Neue Gruppe erstellen</span>
+                <a href="<?php echo h(i18n_href('create_group')); ?>" class="cta-button cta-button-primary">
+                    <span><?php echo h(t('participant.missing_create')); ?></span>
                 </a>
             </div>
         </div>
-
         <div class="section-card">
             <div class="section-card-header">
                 <span class="section-icon" aria-hidden="true">💡</span>
-                <h2>So kommst du zu deinem Teilnehmerbereich</h2>
+                <h2><?php echo h(t('participant.missing_how')); ?></h2>
             </div>
             <ul>
-                <li><strong>Einladungslink erhalten?</strong> Benutze den Link, den dir der Gruppenadmin geschickt hat</li>
-                <li><strong>Bereits angemeldet?</strong> Verwende deinen persönlichen Teilnehmer-Link aus der Bestätigungs-E-Mail</li>
-                <li><strong>Link verloren?</strong> Kontaktiere den Gruppenadmin für einen neuen Link</li>
+                <li><?php echo h(t('participant.missing_invite')); ?></li>
+                <li><?php echo h(t('participant.missing_mail')); ?></li>
+                <li><?php echo h(t('participant.missing_lost')); ?></li>
             </ul>
         </div>
     </div>
-
-    <!-- Cookie Banner -->
-    <?php include __DIR__ . '/cookie-banner.php'; ?>
-
-    <!-- Footer -->
-    <?php include __DIR__ . '/../includes/templates/footer.php'; ?>
-</body>
-</html>
         <?php
+        token_page_close();
         exit;
     }
-    
-    // Wenn Gruppenauswahl per POST gesendet wurde
+
     if (isset($_POST['select_group']) && isset($_POST['selected_token'])) {
-        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+        if (!verify_csrf_token(isset($_POST['csrf_token']) ? $_POST['csrf_token'] : '')) {
             abort_invalid_csrf();
         }
-
         $selected_token = $_POST['selected_token'];
-        
-        // Token validieren
         if (!preg_match('/^[a-zA-Z0-9]+$/', $selected_token) || !in_array($selected_token, $saved_tokens)) {
-            die('Ungültiger Token.');
+            i18n_boot_token(null);
+            die(h(t('error.token')));
         }
-        
         $participant_token = $selected_token;
-        
-        // Teilnehmer laden
         $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `participant_token` = ?");
-        $stmt->execute([$participant_token]);
+        $stmt->execute(array($participant_token));
         $participant = $stmt->fetch(PDO::FETCH_ASSOC);
-        
         if (!$participant) {
-            die('Ungültiger Token.');
+            i18n_boot_token(null);
+            die(h(t('error.token')));
         }
     } elseif (count($participants) > 1) {
-        // Mehrere Gruppen - zeige Auswahlseite
         $show_group_selector = true;
     } else {
-        // Nur eine Gruppe - direkt laden
         $participant = $participants[0];
         $participant_token = $participant['participant_token'];
     }
 }
 
-// Wenn Teilnehmer geladen wurde, lade Gruppendaten
 if ($participant) {
-    // Gruppe abrufen
     $stmt = $pdo->prepare("SELECT * FROM `groups` WHERE `id` = ?");
-    $stmt->execute([$participant['group_id']]);
+    $stmt->execute(array($participant['group_id']));
     $group = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-    // Zugewiesenen Teilnehmer abrufen, falls ausgelost
-    if ($group['is_drawn'] && !empty($participant['assigned_to'])) {
+
+    i18n_apply_explicit_choice($pdo, 'participants', (int) $participant['id']);
+    $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `id` = ?");
+    $stmt->execute(array($participant['id']));
+    $reloaded = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($reloaded) {
+        $participant = $reloaded;
+    }
+    i18n_boot_token(i18n_row_language($participant));
+
+    if ($group && $group['is_drawn'] && !empty($participant['assigned_to'])) {
         $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `id` = ?");
-        $stmt->execute([$participant['assigned_to']]);
+        $stmt->execute(array($participant['assigned_to']));
         $assigned = $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // Volle Auflösung nur, nachdem der Admin sie an alle verschickt hat
     if ($group && !empty($group['is_drawn']) && !empty($group['reveal_sent_at'])) {
         $stmt = $pdo->prepare("SELECT `id`, `name`, `assigned_to` FROM `participants` WHERE `group_id` = ?");
-        $stmt->execute([$group['id']]);
+        $stmt->execute(array($group['id']));
         $reveal_pairs = build_reveal_pairs($stmt->fetchAll(PDO::FETCH_ASSOC));
     }
-    
-    // Wunschliste aktualisieren
+
     if (isset($_POST['update_wishlist'])) {
-        if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+        if (!verify_csrf_token(isset($_POST['csrf_token']) ? $_POST['csrf_token'] : '')) {
             abort_invalid_csrf();
         }
-
         $wishlist = normalize_wishlist_text(isset($_POST['wishlist']) ? $_POST['wishlist'] : '');
-        $wishlist_length_error = limit_text_error($wishlist, 5000, 'Wunschliste');
-        $old_wishlist = $participant['wishlist'] ?? '';
+        $wishlist_length_error = limit_text_error($wishlist, 5000, t('field.wishlist'));
+        $old_wishlist = isset($participant['wishlist']) ? $participant['wishlist'] : '';
         if ($wishlist_length_error !== '') {
             $wishlist_error = $wishlist_length_error;
         } else {
-        
-        $stmt = $pdo->prepare("UPDATE `participants` SET `wishlist` = ? WHERE `id` = ?");
-        $stmt->execute([$wishlist, $participant['id']]);
-
-        $wishlist_status = dispatch_wishlist_giver_mail(
-            $pdo,
-            $participant,
-            !empty($group['is_drawn']),
-            $old_wishlist,
-            $wishlist
-        );
-        
-        // Teilnehmer neu abrufen
-        $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `participant_token` = ?");
-        $stmt->execute([$participant_token]);
-        $participant = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        $wishlist_success = wishlist_update_notice($wishlist_status);
+            $stmt = $pdo->prepare("UPDATE `participants` SET `wishlist` = ? WHERE `id` = ?");
+            $stmt->execute(array($wishlist, $participant['id']));
+            $wishlist_status = dispatch_wishlist_giver_mail(
+                $pdo,
+                $participant,
+                !empty($group['is_drawn']),
+                $old_wishlist,
+                $wishlist
+            );
+            $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `participant_token` = ?");
+            $stmt->execute(array($participant_token));
+            $participant = $stmt->fetch(PDO::FETCH_ASSOC);
+            $wishlist_success = wishlist_update_notice($wishlist_status);
         }
     }
 }
 
-// Wenn Gruppenauswahl angezeigt werden soll
 if ($show_group_selector) {
+    i18n_apply_explicit_choice();
+    i18n_boot_token(null);
+    token_page_open(t('meta.participant.choose'));
     ?>
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>Gruppe auswählen - Wichteln</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="apple-touch-icon" sizes="57x57" href="/images/favicon/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="/images/favicon/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/images/favicon/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="/images/favicon/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/images/favicon/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/images/favicon/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/images/favicon/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/images/favicon/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192"  href="/images/favicon/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
-    <link rel="manifest" href="/images/favicon/manifest.json">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="/images/favicon/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
-    <?php echo token_page_referrer_meta(); ?>
-</head>
-<body>
-    <!-- Navigation -->
-    <?php include __DIR__ . '/../includes/templates/navigation.php'; ?>
     <div class="container app-page">
         <header class="app-hero">
-            <p class="app-kicker">Teilnehmerbereich</p>
-            <h1>Willkommen zurück!</h1>
-            <p class="app-hero-lead">Du nimmst an mehreren Wichtel-Gruppen teil. Wähle die Gruppe, die du ansehen möchtest.</p>
+            <p class="app-kicker"><?php echo h(t('participant.kicker')); ?></p>
+            <h1><?php echo h(t('participant.choose_title')); ?></h1>
+            <p class="app-hero-lead"><?php echo h(t('participant.choose_lead')); ?></p>
         </header>
         <div class="group-selector app-selector">
             <form method="POST" id="group-selector-form">
@@ -368,326 +238,250 @@ if ($show_group_selector) {
                 <input type="hidden" name="select_group" value="1">
                 <?php foreach ($participants as $p): ?>
                 <label class="group-card">
-                    <input type="radio" name="selected_token" value="<?php echo htmlspecialchars($p['participant_token']); ?>" required aria-label="Gruppe: <?php echo htmlspecialchars($p['group_name']); ?> (als <?php echo htmlspecialchars($p['name']); ?>)">
+                    <input type="radio" name="selected_token" value="<?php echo h($p['participant_token']); ?>" required aria-label="<?php echo h(t('participant.choose_label', array('{group}' => $p['group_name'], '{name}' => $p['name']))); ?>">
                     <div class="group-card-content">
                         <div class="group-card-header">
                             <div>
-                                <h2 class="group-name"><?php echo htmlspecialchars($p['group_name']); ?></h2>
-                                <p class="group-participant">Als: <strong><?php echo htmlspecialchars($p['name']); ?></strong></p>
+                                <h2 class="group-name"><?php echo h($p['group_name']); ?></h2>
+                                <p class="group-participant"><?php echo h(t('participant.as', array('{name}' => $p['name']))); ?></p>
                             </div>
                             <span class="group-status <?php echo $p['is_drawn'] ? 'status-drawn' : 'status-pending'; ?>">
-                                <?php echo $p['is_drawn'] ? '✓ Ausgelost' : 'Ausstehend'; ?>
+                                <?php echo $p['is_drawn'] ? h(t('participant.status_drawn')) : h(t('participant.status_pending')); ?>
                             </span>
                         </div>
                     </div>
                 </label>
                 <?php endforeach; ?>
-                
                 <div class="submit-container">
-                    <button type="submit" name="select_group" class="group-submit-button" id="submit-button" disabled>Gruppe öffnen</button>
+                    <button type="submit" name="select_group" class="group-submit-button" id="submit-button" disabled><?php echo h(t('participant.choose_submit')); ?></button>
                 </div>
             </form>
         </div>
     </div>
-    
-    <script src="js/main.js"></script>
     <script>
-        // Bei Klick auf die Card auch das Radio-Button aktivieren
-        document.querySelectorAll('.group-card').forEach(card => {
+        document.querySelectorAll('.group-card').forEach(function(card) {
             card.addEventListener('click', function() {
-                const radio = this.querySelector('input[type="radio"]');
+                var radio = this.querySelector('input[type="radio"]');
                 radio.checked = true;
-                
-                // Button aktivieren
-                const submitButton = document.getElementById('submit-button');
+                var submitButton = document.getElementById('submit-button');
                 submitButton.disabled = false;
                 submitButton.classList.add('enabled');
             });
         });
-        
-        // Button aktivieren wenn Radio-Button geändert wird
-        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+        document.querySelectorAll('input[type="radio"]').forEach(function(radio) {
             radio.addEventListener('change', function() {
-                const submitButton = document.getElementById('submit-button');
+                var submitButton = document.getElementById('submit-button');
                 submitButton.disabled = false;
                 submitButton.classList.add('enabled');
             });
         });
-
         document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('group-selector-form');
+            var form = document.getElementById('group-selector-form');
             if (form) {
-                handleFormSubmit(form, 'Wird geöffnet...');
+                handleFormSubmit(form, <?php echo json_encode(t('js.opening'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>);
             }
         });
     </script>
-    <?php include __DIR__ . '/cookie-banner.php'; ?>
-    <?php include __DIR__ . '/../includes/templates/footer.php'; ?>
-</body>
-</html>
     <?php
+    token_page_close();
     exit;
 }
-?>
 
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>Teilnehmerbereich - <?php echo htmlspecialchars($participant['name']); ?></title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="apple-touch-icon" sizes="57x57" href="/images/favicon/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="/images/favicon/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/images/favicon/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="/images/favicon/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/images/favicon/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/images/favicon/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/images/favicon/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/images/favicon/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192"  href="/images/favicon/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
-    <link rel="manifest" href="/images/favicon/manifest.json">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="/images/favicon/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- CSS Stylesheet -->
-    <link rel="stylesheet" href="css/styles.css">
-    <!-- Shared JavaScript -->
-    <script src="js/main.js"></script>
-    <?php echo token_page_referrer_meta(); ?>
-</head>
-<body>
-    <!-- Navigation -->
-    <?php include __DIR__ . '/../includes/templates/navigation.php'; ?>
-    
+$presented = mail_present_group($group, i18n_current());
+$calendar_url = !empty($group['gift_exchange_date']) ? gift_ics_url($group, i18n_current()) : '';
+$personal_url = get_display_url('/participant.php?token=' . urlencode($participant_token));
+token_page_open(t('meta.participant.title', array('{name}' => $participant['name'])));
+?>
     <div class="container app-page">
         <header class="app-hero">
-            <p class="app-kicker">Teilnehmerbereich</p>
-            <h1>Willkommen, <?php echo htmlspecialchars($participant['name']); ?>!</h1>
-            <p class="app-hero-lead">Gruppe <?php echo htmlspecialchars($group['name']); ?></p>
+            <p class="app-kicker"><?php echo h(t('participant.kicker')); ?></p>
+            <h1><?php echo h(t('participant.welcome', array('{name}' => $participant['name']))); ?></h1>
+            <p class="app-hero-lead"><?php echo h(t('participant.group', array('{group}' => $group['name']))); ?></p>
         </header>
-        
+
         <?php if (empty($participant['email'])): ?>
             <div class="notification warning" role="alert">
                 <span aria-hidden="true">⚠️</span>
-                <div>
-                    <strong>Kein E-Mail hinterlegt:</strong> Speichere dir unbedingt deinen persönlichen Link (unten auf dieser Seite), damit du später wieder auf deinen Teilnehmerbereich zugreifen kannst!
-                </div>
+                <div><?php echo h(t('participant.no_email')); ?></div>
             </div>
         <?php endif; ?>
-        
+
         <?php if (isset($wishlist_error)): ?>
-            <div class="notification error" role="alert" aria-live="assertive">
-                <?php echo htmlspecialchars($wishlist_error); ?>
-            </div>
+            <div class="notification error" role="alert" aria-live="assertive"><?php echo h($wishlist_error); ?></div>
         <?php endif; ?>
         <?php if (isset($wishlist_success)): ?>
             <div class="notification success" role="status" aria-live="polite">
-                <span aria-hidden="true">✓</span> <?php echo htmlspecialchars($wishlist_success); ?>
+                <span aria-hidden="true">✓</span> <?php echo h($wishlist_success); ?>
             </div>
         <?php endif; ?>
-        
-        <!-- Partner Reveal Card -->
+
         <?php if ($group['is_drawn']): ?>
             <div class="partner-reveal-card">
                 <?php if ($assigned): ?>
                     <div class="partner-name-container">
-                        <p class="partner-kicker"><span aria-hidden="true">🎁</span> Du beschenkst</p>
-                        <p class="partner-name"><?php echo htmlspecialchars($assigned['name']); ?></p>
-                        <p class="partner-spotlight-note">Behalte den Namen für dich, bis ihr die Geschenke tauscht.</p>
+                        <p class="partner-kicker"><span aria-hidden="true">🎁</span> <?php echo h(t('participant.you_give')); ?></p>
+                        <p class="partner-name"><?php echo h($assigned['name']); ?></p>
+                        <p class="partner-spotlight-note"><?php echo h(t('participant.keep_secret')); ?></p>
                     </div>
                     <div class="partner-reveal-body">
-                    
                     <?php if (!empty($assigned['wishlist'])): ?>
                         <div class="partner-wishlist-section">
                             <div class="wishlist-header">
                                 <h3 class="wishlist-heading">
                                     <span class="wishlist-icon" aria-hidden="true">📝</span>
-                                    Wunschliste von <?php echo htmlspecialchars($assigned['name']); ?>
+                                    <?php echo h(t('participant.wishlist_of', array('{name}' => $assigned['name']))); ?>
                                 </h3>
-                                <button type="button" class="button secondary small copy-button" onclick="copyToClipboard('partner-wishlist', 'Wunschliste kopiert! 📋')" aria-label="Wunschliste von <?php echo htmlspecialchars($assigned['name']); ?> kopieren">
-                                    <span aria-hidden="true">📋</span> Kopieren
+                                <button type="button" class="button secondary small copy-button" onclick="copyToClipboard('partner-wishlist', <?php echo json_encode(t('js.wishlist_copied'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)" aria-label="<?php echo h(t('participant.copy_wishlist', array('{name}' => $assigned['name']))); ?>">
+                                    <span aria-hidden="true">📋</span> <?php echo h(t('participant.copy')); ?>
                                 </button>
                             </div>
                             <div class="wishlist-display" id="partner-wishlist">
-                                <p><?php echo nl2br(htmlspecialchars($assigned['wishlist'])); ?></p>
+                                <p><?php echo nl2br(h($assigned['wishlist'])); ?></p>
                             </div>
                         </div>
                     <?php else: ?>
                         <div class="empty-wishlist">
                             <span class="empty-wishlist-icon" aria-hidden="true">📋</span>
-                            <p><?php echo htmlspecialchars($assigned['name']); ?> hat noch keine Wunschliste hinterlegt.</p>
+                            <p><?php echo h(t('participant.no_wishlist', array('{name}' => $assigned['name']))); ?></p>
                         </div>
                     <?php endif; ?>
                     </div>
                 <?php else: ?>
                     <div class="notification error" role="alert" aria-live="assertive">
-                        <span aria-hidden="true">⚠️</span> Dein Wichtelpartner konnte nicht gefunden werden.
+                        <span aria-hidden="true">⚠️</span> <?php echo h(t('participant.partner_missing')); ?>
                     </div>
                 <?php endif; ?>
             </div>
 
             <?php if (!empty($reveal_pairs)): ?>
-                    <?php $reveal_sent_label = format_reveal_sent_at($group['reveal_sent_at']); ?>
-                    <section class="section-card group-reveal" aria-labelledby="reveal-list-heading">
-                        <div class="section-card-header">
-                            <span class="section-icon" aria-hidden="true">✨</span>
-                            <h2 id="reveal-list-heading" class="group-reveal-title">Auflösung</h2>
-                        </div>
-                        <p class="section-description">
-                            <?php if ($reveal_sent_label !== ''): ?>
-                                Auflösung versendet am <?php echo htmlspecialchars($reveal_sent_label); ?>.
-                            <?php else: ?>
-                                Die Auflösung wurde an alle Teilnehmer gesendet.
-                            <?php endif; ?>
-                            So lief die Runde (Geber → Beschenkter):
-                        </p>
-                        <ul class="reveal-pair-list">
-                            <?php foreach ($reveal_pairs as $pair): ?>
-                                <?php $is_you = ((string) $pair['giver_id'] === (string) $participant['id']); ?>
-                                <li class="reveal-pair<?php echo $is_you ? ' is-you' : ''; ?>">
-                                    <span class="reveal-pair-person">
-                                        <span class="reveal-pair-role">Geber<?php echo $is_you ? ' (du)' : ''; ?></span>
-                                        <span class="reveal-pair-name"><?php echo htmlspecialchars($pair['giver_name']); ?></span>
-                                    </span>
-                                    <span class="reveal-pair-arrow" aria-hidden="true">→</span>
-                                    <span class="reveal-pair-person">
-                                        <span class="reveal-pair-role">Beschenkter</span>
-                                        <span class="reveal-pair-name"><?php echo htmlspecialchars($pair['receiver_name']); ?></span>
-                                    </span>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
-                    </section>
-                <?php endif; ?>
+                <?php $reveal_sent_label = format_reveal_sent_at($group['reveal_sent_at']); ?>
+                <section class="section-card group-reveal" aria-labelledby="reveal-list-heading">
+                    <div class="section-card-header">
+                        <span class="section-icon" aria-hidden="true">✨</span>
+                        <h2 id="reveal-list-heading" class="group-reveal-title"><?php echo h(t('participant.reveal')); ?></h2>
+                    </div>
+                    <p class="section-description">
+                        <?php if ($reveal_sent_label !== ''): ?>
+                            <?php echo h(t('participant.reveal_sent', array('{when}' => $reveal_sent_label))); ?>
+                        <?php else: ?>
+                            <?php echo h(t('participant.reveal_sent_plain')); ?>
+                        <?php endif; ?>
+                        <?php echo h(t('participant.reveal_legend')); ?>
+                    </p>
+                    <ul class="reveal-pair-list">
+                        <?php foreach ($reveal_pairs as $pair): ?>
+                            <?php $is_you = ((string) $pair['giver_id'] === (string) $participant['id']); ?>
+                            <li class="reveal-pair<?php echo $is_you ? ' is-you' : ''; ?>">
+                                <span class="reveal-pair-person">
+                                    <span class="reveal-pair-role"><?php echo h($is_you ? t('participant.giver_you') : t('participant.giver')); ?></span>
+                                    <span class="reveal-pair-name"><?php echo h($pair['giver_name']); ?></span>
+                                </span>
+                                <span class="reveal-pair-arrow" aria-hidden="true">→</span>
+                                <span class="reveal-pair-person">
+                                    <span class="reveal-pair-role"><?php echo h(t('participant.receiver')); ?></span>
+                                    <span class="reveal-pair-name"><?php echo h($pair['receiver_name']); ?></span>
+                                </span>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </section>
+            <?php endif; ?>
         <?php else: ?>
             <div class="section-card waiting-card">
                 <div class="waiting-icon" aria-hidden="true">⏳</div>
-                <h2>Auslosung ausstehend</h2>
-                <p>Die Auslosung wurde noch nicht durchgeführt. Bitte schaue später wieder vorbei!</p>
+                <h2><?php echo h(t('participant.waiting_title')); ?></h2>
+                <p><?php echo h(t('participant.waiting')); ?></p>
             </div>
         <?php endif; ?>
-        
-        <!-- Wunschliste Section -->
-        <!-- Wunschliste Section -->
+
         <div class="section-card">
             <div class="section-card-header">
                 <span class="section-icon" aria-hidden="true">📝</span>
-                <h2>Deine Wunschliste</h2>
+                <h2><?php echo h(t('participant.your_wishlist')); ?></h2>
             </div>
-            
             <?php if (!$group['is_drawn']): ?>
-                <p class="section-description">Trage hier deine Wünsche ein. Dein Wichtelpartner wird diese nach der Auslosung sehen können.</p>
+                <p class="section-description"><?php echo h(t('participant.wishlist_before')); ?></p>
             <?php else: ?>
-                <p class="section-description">Du kannst deine Wunschliste jederzeit anpassen. Dein Wichtelpartner wird per E-Mail über Änderungen informiert.</p>
+                <p class="section-description"><?php echo h(t('participant.wishlist_after')); ?></p>
             <?php endif; ?>
-                <form method="POST" class="wishlist-form">
-                    <?php echo csrf_input(); ?>
-                    <div class="form-group">
-                        <label for="wishlist" class="form-label">
-                            <span>Deine Wünsche</span>
-                            <span id="wishlist-hint" class="form-hint">z.B. Bücher, Schokolade, Selbstgemachtes...</span>
-                        </label>
-                        <textarea id="wishlist" 
-                                  name="wishlist" 
-                                  rows="6" 
-                                  class="form-textarea"
-                                  aria-describedby="wishlist-hint"
-                                  placeholder="- Bücher über...&#10;- Schokolade&#10;- Etwas Selbstgemachtes&#10;- Überraschung!"><?php echo htmlspecialchars($participant['wishlist'] ?? ''); ?></textarea>
-                    </div>
-                    <input type="hidden" name="update_wishlist" value="1">
-                    <button type="submit" class="button primary" aria-label="Wunschliste speichern">
-                        <span aria-hidden="true">💾</span>
-                        Wunschliste speichern
-                    </button>
-                </form>
+            <form method="POST" class="wishlist-form">
+                <?php echo csrf_input(); ?>
+                <div class="form-group">
+                    <label for="wishlist" class="form-label">
+                        <span><?php echo h(t('participant.wishes')); ?></span>
+                        <span id="wishlist-hint" class="form-hint"><?php echo h(t('participant.wishes_hint')); ?></span>
+                    </label>
+                    <textarea id="wishlist" name="wishlist" rows="6" class="form-textarea" aria-describedby="wishlist-hint" placeholder="<?php echo h(t('participant.wishes_ph')); ?>"><?php echo h(isset($participant['wishlist']) ? $participant['wishlist'] : ''); ?></textarea>
+                </div>
+                <input type="hidden" name="update_wishlist" value="1">
+                <button type="submit" class="button primary" aria-label="<?php echo h(t('participant.save_wishlist')); ?>">
+                    <span aria-hidden="true">💾</span>
+                    <?php echo h(t('participant.save_wishlist')); ?>
+                </button>
+            </form>
         </div>
-        
-        <!-- Gruppendetails Section -->
+
         <div class="section-card">
             <div class="section-card-header">
                 <span class="section-icon" aria-hidden="true">ℹ️</span>
-                <h2>Gruppendetails</h2>
+                <h2><?php echo h(t('participant.details')); ?></h2>
             </div>
-            
             <div class="group-info-grid">
                 <div class="group-info-item">
-                    <span class="info-label"><span aria-hidden="true">💰</span> Budget</span>
-                    <span class="info-value">
-                        <?php echo $group['budget'] !== null ? number_format($group['budget'], 2) . " CHF" : "Nicht festgelegt"; ?>
-                    </span>
+                    <span class="info-label"><span aria-hidden="true">💰</span> <?php echo h(t('participant.budget')); ?></span>
+                    <span class="info-value"><?php echo h($presented['budget']); ?></span>
                 </div>
                 <div class="group-info-item">
-                    <span class="info-label"><span aria-hidden="true">📅</span> Geschenkübergabe</span>
-                    <span class="info-value">
-                        <?php echo $group['gift_exchange_date'] ? date('d.m.Y', strtotime($group['gift_exchange_date'])) : "Nicht festgelegt"; ?>
-                    </span>
-                    <?php if (!empty($group['gift_exchange_date']) && !empty($participant_token)): ?>
-                        <a class="button secondary small calendar-link" href="kalender.php?rolle=teilnehmer&amp;token=<?php echo urlencode($participant_token); ?>">In Kalender speichern</a>
+                    <span class="info-label"><span aria-hidden="true">📅</span> <?php echo h(t('participant.date')); ?></span>
+                    <span class="info-value"><?php echo h($presented['gift_date']); ?></span>
+                    <?php if ($calendar_url !== ''): ?>
+                        <a class="button secondary small calendar-link" href="<?php echo h($calendar_url); ?>"><?php echo h(t('mail.calendar')); ?></a>
                     <?php endif; ?>
                 </div>
                 <?php if (!empty($group['description'])): ?>
                 <div class="group-info-item full-width">
-                    <span class="info-label"><span aria-hidden="true">📄</span> Beschreibung</span>
-                    <span class="info-value"><?php echo htmlspecialchars($group['description']); ?></span>
+                    <span class="info-label"><span aria-hidden="true">📄</span> <?php echo h(t('participant.description')); ?></span>
+                    <span class="info-value"><?php echo h($group['description']); ?></span>
                 </div>
                 <?php endif; ?>
             </div>
         </div>
 
-        <!-- Teilnehmer-Link Section -->
         <div class="section-card">
             <div class="section-card-header">
                 <span class="section-icon" aria-hidden="true">🔗</span>
-                <h2>Dein persönlicher Link</h2>
+                <h2><?php echo h(t('participant.your_link')); ?></h2>
             </div>
-            
-            <p class="section-description">Du kannst diesen Link verwenden, um später wieder auf deine Teilnahme zuzugreifen.</p>
-            
+            <p class="section-description"><?php echo h(t('participant.your_link_help')); ?></p>
             <div class="link-box">
-                <pre id="participant-link" class="link-display" data-url="<?php echo htmlspecialchars(get_display_url('/participant.php?token=' . urlencode($participant_token))); ?>"><?php echo htmlspecialchars(get_display_url('/participant.php?token=' . urlencode($participant_token))); ?></pre>
+                <pre id="participant-link" class="link-display" data-url="<?php echo h($personal_url); ?>"><?php echo h($personal_url); ?></pre>
                 <div class="link-actions">
-                    <button type="button" class="button secondary copy-btn" onclick="copyToClipboard('participant-link')" aria-label="Deinen persönlichen Teilnehmer-Link kopieren">
+                    <button type="button" class="button secondary copy-btn" onclick="copyToClipboard('participant-link')" aria-label="<?php echo h(t('participant.copy_link_label')); ?>">
                         <span aria-hidden="true">📋</span>
-                        Link kopieren
+                        <?php echo h(t('participant.copy_link')); ?>
                     </button>
                 </div>
             </div>
         </div>
 
         <?php
-        // Prüfen ob mehrere Gruppen im Cookie gespeichert sind
         $saved_tokens = get_tokens_from_cookie();
         if (count($saved_tokens) > 1):
         ?>
-        <!-- Multi-Group Navigation -->
         <div class="multi-group-nav">
             <p class="multi-group-text">
                 <span class="multi-group-icon" aria-hidden="true">🎁</span>
-                Du nimmst an mehreren Wichtel-Gruppen teil
+                <?php echo h(t('participant.multi')); ?>
             </p>
-            <a href="participant.php" class="button secondary">
-                <span aria-hidden="true">🔄</span> Gruppe wechseln
+            <a href="/participant.php" class="button secondary">
+                <span aria-hidden="true">🔄</span> <?php echo h(t('participant.switch')); ?>
             </a>
         </div>
         <?php endif; ?>
     </div>
-    
-    <!-- Cookie Banner -->
-    <?php include __DIR__ . '/cookie-banner.php'; ?>
-    
-    <!-- Footer -->
-    <?php include __DIR__ . '/../includes/templates/footer.php'; ?>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            handleFormSubmit(document.querySelector('.wishlist-form'), 'Wird gespeichert...');
+            handleFormSubmit(document.querySelector('.wishlist-form'), <?php echo json_encode(t('js.saving'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>);
         });
     </script>
-</body>
-</html>
+<?php token_page_close(); ?>

@@ -1503,6 +1503,42 @@ a.button:disabled {
     box-shadow: 0 6px 20px rgba(230, 57, 70, 0.4);
 }
 
+.lang-switch-item {
+    list-style: none;
+}
+
+.lang-switch {
+    display: flex;
+    gap: 0.15rem;
+    align-items: center;
+    margin: 0;
+    padding: 0.35rem 0.4rem;
+    list-style: none;
+}
+
+.lang-switch a {
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 0.35rem 0.45rem;
+    border-radius: 4px;
+}
+
+.lang-switch a[aria-current="true"] {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.16);
+}
+
+.legal-notice {
+    background: #fff8e7;
+    border-left: 4px solid #e9c46a;
+    padding: 1rem 1.2rem;
+    border-radius: 8px;
+    margin: 0 0 1.5rem 0;
+}
+
 .nav-toggle {
     display: none;
     flex-direction: column;
@@ -2128,7 +2164,7 @@ a.button:disabled {
     }
     
     .nav-menu.active {
-        max-height: 500px;
+        max-height: 800px;
     }
     
     .nav-link {

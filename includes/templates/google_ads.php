@@ -37,12 +37,12 @@ $slot_const = 'GOOGLE_ADS_SLOT_OPTION' . $position;
 $slot_id = defined($slot_const) ? (string) constant($slot_const) : '';
 $place_label = isset($label) ? (string) $label : '';
 ?>
-<aside class="public-ad-slot" aria-label="Anzeige" data-ad-position="<?php echo $position; ?>">
+<aside class="public-ad-slot" aria-label="<?php echo function_exists('h') ? h(t('ads.word')) : 'Anzeige'; ?>" data-ad-position="<?php echo $position; ?>">
     <div class="ad-container">
-        <div class="ad-label">Anzeige</div>
+        <div class="ad-label"><?php echo function_exists('h') ? h(t('ads.word')) : 'Anzeige'; ?></div>
         <?php if ($is_testing): ?>
             <div class="ad-test-placeholder">
-                Anzeige (Testmodus)<br>
+                <?php echo function_exists('h') ? h(t('ads.test')) : 'Anzeige (Testmodus)'; ?><br>
                 <?php if ($place_label !== ''): ?>
                     <?php echo htmlspecialchars($place_label, ENT_QUOTES, 'UTF-8'); ?><br>
                 <?php endif; ?>

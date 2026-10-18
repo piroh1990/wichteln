@@ -1,7 +1,6 @@
 <?php
-// admin.php
-
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/templates/public_shell.php';
 
 if (!headers_sent()) {
     header('X-Robots-Tag: noindex, nofollow');
@@ -10,26 +9,27 @@ if (!headers_sent()) {
 
 start_secure_session();
 
-$admin_token = $_GET['token'] ?? '';
+$admin_token = isset($_GET['token']) ? (string) $_GET['token'] : '';
 $pdo = db_connect();
 
-// Gruppe abrufen
 $stmt = $pdo->prepare("SELECT * FROM `groups` WHERE `admin_token` = ?");
-$stmt->execute([$admin_token]);
+$stmt->execute(array($admin_token));
 $group = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$group) {
-    die('Ungültiger Token.');
+    i18n_boot_token(null);
+    die(h(t('error.token')));
 }
 
-// Check for email error from creation
+i18n_apply_explicit_choice($pdo, 'groups', (int) $group['id']);
+i18n_boot_token(i18n_row_language($group));
+
 if (isset($_GET['email_error'])) {
-    $email_error = "Die E-Mail mit dem Admin-Link konnte nicht gesendet werden. Bitte speichere diese Seite als Lesezeichen, da du den Link sonst verlierst!";
+    $email_error = t('admin.email_error_banner');
 }
 
-// Teilnehmer abrufen
 $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `group_id` = ?");
-$stmt->execute([$group['id']]);
+$stmt->execute(array($group['id']));
 $participants = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $csrf_error = null;
@@ -39,169 +39,124 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !verify_csrf_token(isset($_POST['cs
     $csrf_error = csrf_failure_message();
 }
 
-// Auslosung zurücksetzen
 if ($csrf_ok && isset($_POST['reset_draw'])) {
     $clear_reveal = mysql_column_exists($pdo, 'groups', 'reveal_sent_at')
         ? ', `reveal_sent_at` = NULL'
         : '';
     $pdo->beginTransaction();
     try {
-        // Setze is_drawn auf 0 und verwerfe eine frühere Auflösung.
-        // Die Spaltenprüfung steht vor der Transaktion, weil SHOW COLUMNS in MySQL implizit committed.
         $stmt = $pdo->prepare("UPDATE `groups` SET `is_drawn` = 0" . $clear_reveal . " WHERE `id` = ?");
-        $stmt->execute([$group['id']]);
-        
-        // Setze assigned_to auf NULL für alle Teilnehmer der Gruppe
+        $stmt->execute(array($group['id']));
         $stmt = $pdo->prepare("UPDATE `participants` SET `assigned_to` = NULL WHERE `group_id` = ?");
-        $stmt->execute([$group['id']]);
-        
+        $stmt->execute(array($group['id']));
         $pdo->commit();
-        $reset_success = "Auslosung erfolgreich zurückgesetzt. Du kannst nun erneut auslosen.";
-        
-        // Gruppe neu abrufen
+        $reset_success = t('admin.reset_ok');
         $stmt = $pdo->prepare("SELECT * FROM `groups` WHERE `admin_token` = ?");
-        $stmt->execute([$admin_token]);
+        $stmt->execute(array($admin_token));
         $group = $stmt->fetch(PDO::FETCH_ASSOC);
-        
     } catch (Exception $e) {
         $pdo->rollBack();
         error_log('Auslosung zurücksetzen: ' . $e->getMessage());
-        $reset_error = 'Die Auslosung konnte nicht zurückgesetzt werden.';
+        $reset_error = t('admin.reset_fail');
     }
 }
 
-// Gruppe löschen
 if ($csrf_ok && isset($_POST['delete_group'])) {
     $pdo->beginTransaction();
     try {
         $group_id = $group['id'];
-        
-        // Setze assigned_to auf NULL für alle Teilnehmer
         $stmt = $pdo->prepare("UPDATE `participants` SET `assigned_to` = NULL WHERE `group_id` = ?");
-        $stmt->execute([$group_id]);
-        
-        // Lösche alle Ausschlüsse
+        $stmt->execute(array($group_id));
         $stmt = $pdo->prepare("DELETE FROM `exclusions` WHERE `group_id` = ?");
-        $stmt->execute([$group_id]);
-        
-        // Lösche alle Teilnehmer
+        $stmt->execute(array($group_id));
         $stmt = $pdo->prepare("DELETE FROM `participants` WHERE `group_id` = ?");
-        $stmt->execute([$group_id]);
-        
-        // Lösche die Gruppe
+        $stmt->execute(array($group_id));
         $stmt = $pdo->prepare("DELETE FROM `groups` WHERE `id` = ?");
-        $stmt->execute([$group_id]);
-        
+        $stmt->execute(array($group_id));
         $pdo->commit();
-        
-        // Weiterleitung zur Hauptseite mit Erfolgsmeldung
-        header("Location: index.php?deleted=1");
+        $home = i18n_public_url('index');
+        $separator = (strpos($home, '?') === false) ? '?' : '&';
+        header('Location: ' . $home . $separator . 'deleted=1');
         exit();
-        
     } catch (Exception $e) {
         $pdo->rollBack();
         error_log('Gruppe löschen: ' . $e->getMessage());
-        $delete_error = 'Die Gruppe konnte nicht gelöscht werden.';
+        $delete_error = t('admin.delete_fail');
     }
 }
 
-// Teilnehmer E-Mail aktualisieren
 if ($csrf_ok && isset($_POST['update_participant_email'])) {
     $participant_id = intval($_POST['participant_id']);
     $new_email = trim($_POST['participant_email']);
-    
-    // Validierung
-    if ($new_email !== '' && ($length_error = limit_text_error($new_email, 255, 'E-Mail')) !== '') {
+    if ($new_email !== '' && ($length_error = limit_text_error($new_email, 255, t('field.email'))) !== '') {
         $participant_error = $length_error;
     } elseif (!empty($new_email) && !filter_var($new_email, FILTER_VALIDATE_EMAIL)) {
-        $participant_error = "Ungültige E-Mail-Adresse.";
+        $participant_error = t('error.email_invalid');
     } else {
-        // Prüfe ob Teilnehmer zur Gruppe gehört
         $stmt = $pdo->prepare("SELECT id FROM `participants` WHERE `id` = ? AND `group_id` = ?");
-        $stmt->execute([$participant_id, $group['id']]);
-        
+        $stmt->execute(array($participant_id, $group['id']));
         if ($stmt->fetch()) {
             $stmt = $pdo->prepare("UPDATE `participants` SET `email` = ? WHERE `id` = ?");
-            $stmt->execute([$new_email ?: null, $participant_id]);
-            $participant_success = "E-Mail-Adresse erfolgreich aktualisiert.";
-            
-            // Teilnehmer neu laden
+            $stmt->execute(array($new_email ?: null, $participant_id));
+            $participant_success = t('admin.email_updated');
             $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `group_id` = ?");
-            $stmt->execute([$group['id']]);
+            $stmt->execute(array($group['id']));
             $participants = $stmt->fetchAll(PDO::FETCH_ASSOC);
         } else {
-            $participant_error = "Teilnehmer nicht gefunden.";
+            $participant_error = t('admin.person_missing');
         }
     }
 }
 
-// E-Mail erneut senden
 if ($csrf_ok && isset($_POST['resend_email'])) {
     $participant_id = intval($_POST['participant_id']);
-    
-    // Prüfe ob Gruppe ausgelost wurde und Teilnehmer zur Gruppe gehört
     if (!$group['is_drawn']) {
-        $email_error = "Die Auslosung wurde noch nicht durchgeführt.";
+        $email_error = t('admin.not_drawn');
     } else {
         $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `id` = ? AND `group_id` = ?");
-        $stmt->execute([$participant_id, $group['id']]);
+        $stmt->execute(array($participant_id, $group['id']));
         $participant = $stmt->fetch(PDO::FETCH_ASSOC);
-        
         if (!$participant) {
-            $email_error = "Teilnehmer nicht gefunden.";
+            $email_error = t('admin.person_missing');
         } elseif (empty($participant['email'])) {
-            $email_error = "Teilnehmer hat keine E-Mail-Adresse hinterlegt.";
+            $email_error = t('admin.no_email');
         } elseif (empty($participant['assigned_to'])) {
-            $email_error = "Diesem Teilnehmer wurde noch keine Person zugewiesen.";
+            $email_error = t('admin.no_assignment');
         } else {
-            // Zugewiesenen Teilnehmer abrufen
             $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `id` = ?");
-            $stmt->execute([$participant['assigned_to']]);
+            $stmt->execute(array($participant['assigned_to']));
             $assigned = $stmt->fetch(PDO::FETCH_ASSOC);
-            
             if ($assigned) {
-                // Gruppendetails abrufen
-                $group_budget = $group['budget'] !== null ? number_format($group['budget'], 2) . " CHF" : "Nicht festgelegt";
-                $group_description = $group['description'] ?: "Keine Beschreibung.";
-                $gift_exchange_date = $group['gift_exchange_date'] ? date('d.m.Y', strtotime($group['gift_exchange_date'])) : "Nicht festgelegt";
-
-                // Erstelle HTML-E-Mail
-                $subject = 'Dein Wichtelpartner 🎁';
-                $html_message = create_html_email([
-                    'name' => $participant['name'],
-                    'assigned_name' => $assigned['name'],
-                    'wishlist' => $assigned['wishlist'] ?? '',
-                    'budget' => $group_budget,
-                    'description' => $group_description,
-                    'gift_date' => $gift_exchange_date,
-                    'ics_url' => !empty($group['gift_exchange_date']) ? gift_ics_url($group) : ''
-                ]);
-
-                if (send_email($participant['email'], $subject, $html_message, true)) {
-                    $email_success = "E-Mail erfolgreich an " . htmlspecialchars($participant['name']) . " gesendet.";
+                $lang = mail_recipient_lang($participant);
+                if (send_partner_mail(
+                    $participant['email'],
+                    $participant['name'],
+                    $assigned['name'],
+                    isset($assigned['wishlist']) ? $assigned['wishlist'] : '',
+                    $group,
+                    $lang
+                )) {
+                    $email_success = t('admin.mail_sent', array('{name}' => $participant['name']));
                 } else {
-                    $email_error = "Fehler beim Versenden der E-Mail an " . htmlspecialchars($participant['name']) . ".";
+                    $email_error = t('admin.mail_fail', array('{name}' => $participant['name']));
                 }
             } else {
-                $email_error = "Zugewiesener Teilnehmer nicht gefunden.";
+                $email_error = t('admin.assigned_missing');
             }
         }
     }
 }
 
-// Teilnehmer löschen
 if ($csrf_ok && isset($_POST['delete_participant'])) {
     $participant_id = intval($_POST['delete_participant']);
-    // Sicherstellen, dass die Gruppe noch nicht ausgelost wurde und der Teilnehmer zur Gruppe gehört
     if (!$group['is_drawn']) {
         $stmt = $pdo->prepare("DELETE FROM `participants` WHERE `id` = ? AND `group_id` = ?");
-        $stmt->execute([$participant_id, $group['id']]);
+        $stmt->execute(array($participant_id, $group['id']));
     }
-    header("Location: admin.php?token=" . urlencode($admin_token));
+    header('Location: /admin.php?token=' . urlencode($admin_token));
     exit();
 }
 
-// Ausschluss hinzufügen. Ohne «beidseitig» nur eine Richtung.
 if ($csrf_ok && isset($_POST['add_exclusion'])) {
     $participant_id = intval($_POST['participant_id']);
     $excluded_id = intval($_POST['excluded_participant_id']);
@@ -212,9 +167,9 @@ if ($csrf_ok && isset($_POST['add_exclusion'])) {
     }
 
     if ($group['is_drawn']) {
-        $exclusion_error = 'Nach der Auslosung können Ausschlüsse nicht mehr geändert werden.';
+        $exclusion_error = t('admin.exclusion_locked');
     } elseif (!isset($member_ids[$participant_id]) || !isset($member_ids[$excluded_id])) {
-        $exclusion_error = 'Ungültige Auswahl.';
+        $exclusion_error = t('admin.exclusion_invalid');
     } else {
         try {
             $forward = insert_group_exclusion($pdo, $group['id'], $participant_id, $excluded_id);
@@ -230,36 +185,30 @@ if ($csrf_ok && isset($_POST['add_exclusion'])) {
             }
         } catch (PDOException $e) {
             error_log('Ausschluss konnte nicht gespeichert werden: ' . $e->getMessage());
-            $exclusion_error = 'Fehler beim Hinzufügen des Ausschlusses.';
+            $exclusion_error = t('admin.exclusion_fail');
         }
     }
 }
 
-// Teilnehmer aus einer Liste anlegen
 if ($csrf_ok && isset($_POST['bulk_import'])) {
     if ($group['is_drawn']) {
-        $participant_error = 'Nach der Auslosung können keine Teilnehmer mehr angelegt werden.';
+        $participant_error = t('admin.import_locked');
     } elseif (!bulk_import_attempt_allowed($admin_token, request_client_ip())) {
-        $participant_error = 'Zu viele Importe. Bitte später erneut versuchen.';
+        $participant_error = t('error.rate_import');
     } else {
         $parsed = parse_bulk_participants(isset($_POST['bulk_participants']) ? $_POST['bulk_participants'] : '');
         if (!empty($parsed['errors'])) {
             $participant_error = implode(' ', $parsed['errors']);
         } elseif (empty($parsed['rows'])) {
-            $participant_error = 'Keine Teilnehmerzeilen erkannt.';
+            $participant_error = t('admin.import_none');
         } else {
             $created = array();
+            $import_lang = mail_recipient_lang($group);
             $pdo->beginTransaction();
             try {
-                $insert = $pdo->prepare('INSERT INTO `participants` (`group_id`, `name`, `email`, `participant_token`) VALUES (?, ?, ?, ?)');
                 foreach ($parsed['rows'] as $row) {
                     $participant_token = generate_token();
-                    $insert->execute(array(
-                        $group['id'],
-                        $row['name'],
-                        $row['email'],
-                        $participant_token,
-                    ));
+                    i18n_insert_participant($pdo, $group['id'], $row['name'], $row['email'], $participant_token, $import_lang);
                     $created[] = array(
                         'name' => $row['name'],
                         'email' => $row['email'],
@@ -271,7 +220,7 @@ if ($csrf_ok && isset($_POST['bulk_import'])) {
             } catch (Exception $e) {
                 $pdo->rollBack();
                 error_log('Sammelimport fehlgeschlagen: ' . $e->getMessage());
-                $participant_error = 'Die Teilnehmer konnten nicht angelegt werden.';
+                $participant_error = t('admin.import_fail');
                 $created = array();
             }
 
@@ -281,37 +230,21 @@ if ($csrf_ok && isset($_POST['bulk_import'])) {
                     if (empty($row['email'])) {
                         continue;
                     }
-                    $participant_link = $row['url'];
-                    $budget_display = $group['budget'] !== null ? number_format($group['budget'], 2) . ' CHF' : 'Nicht festgelegt';
-                    $description_display = $group['description'] ?: 'Keine Beschreibung.';
-                    $gift_display = $group['gift_exchange_date'] ? date('d.m.Y', strtotime($group['gift_exchange_date'])) : 'Nicht festgelegt';
-                    $html_message = create_registration_email(array(
-                        'name' => $row['name'],
-                        'group_name' => $group['name'],
-                        'participant_link' => $participant_link,
-                        'budget' => $budget_display,
-                        'description' => $description_display,
-                        'gift_date' => $gift_display,
-                        'ics_url' => !empty($group['gift_exchange_date']) ? gift_ics_url($group) : '',
-                    ));
-                    if (send_email($row['email'], 'Willkommen beim Wichteln! 🎁', $html_message, true)) {
+                    if (send_registration_mail($row['email'], $row['name'], $group, $row['url'], $import_lang)) {
                         $mailed++;
                     } else {
                         error_log('Einladungsmail nach Sammelimport konnte nicht an ' . mask_email($row['email']) . ' gesendet werden.');
                     }
                 }
-
                 $count = count($created);
-                $text = ($count === 1) ? '1 Teilnehmer wurde angelegt.' : ($count . ' Teilnehmer wurden angelegt.');
-                if ($mailed === 1) {
-                    $text .= ' 1 E-Mail wurde gesendet.';
-                } elseif ($mailed > 1) {
-                    $text .= ' ' . $mailed . ' E-Mails wurden gesendet.';
+                $text = tn('admin.import_created', $count);
+                if ($mailed > 0) {
+                    $text .= ' ' . tn('admin.import_mailed', $mailed);
                 }
-                $text .= ' Die persönlichen Links stehen unten zum Kopieren.';
+                $text .= ' ' . t('admin.import_links');
                 $_SESSION['admin_flash'] = array('type' => 'success', 'text' => $text);
                 $_SESSION['bulk_import_links'] = $created;
-                header('Location: admin.php?token=' . urlencode($admin_token) . '#teilnehmer');
+                header('Location: /admin.php?token=' . urlencode($admin_token) . '#teilnehmer');
                 exit();
             }
         }
@@ -321,11 +254,11 @@ if ($csrf_ok && isset($_POST['bulk_import'])) {
 $reminder_error = null;
 if ($csrf_ok && isset($_POST['send_reminder'])) {
     if (!array_key_exists('reminder_sent_at', $group)) {
-        $reminder_error = 'Die Erinnerung kann noch nicht gespeichert werden. Bitte die Migration für groups.reminder_sent_at ausführen.';
+        $reminder_error = t('admin.reminder_migration');
     } elseif (empty($group['gift_exchange_date'])) {
-        $reminder_error = 'Lege zuerst ein Datum der Geschenkübergabe fest.';
+        $reminder_error = t('admin.reminder_need_date');
     } elseif (!empty($group['reminder_sent_at']) && (!isset($_POST['confirm_reminder_resend']) || $_POST['confirm_reminder_resend'] !== '1')) {
-        $reminder_error = 'Die Erinnerung wurde bereits versendet. Bitte bestätige den erneuten Versand ausdrücklich.';
+        $reminder_error = t('admin.reminder_need_confirm');
     } else {
         $reminder_result = deliver_gift_reminders($participants, $group);
         if ($reminder_result['status'] === 'ok') {
@@ -333,190 +266,167 @@ if ($csrf_ok && isset($_POST['send_reminder'])) {
             $stmt->execute(array($group['id']));
         }
         $_SESSION['admin_flash'] = gift_reminder_result_message($reminder_result);
-        header('Location: admin.php?token=' . urlencode($admin_token) . '#erinnerung');
+        header('Location: /admin.php?token=' . urlencode($admin_token) . '#erinnerung');
         exit();
     }
 }
 
-// Ausschluss löschen
 if ($csrf_ok && isset($_POST['delete_exclusion'])) {
     $exclusion_id = intval($_POST['delete_exclusion']);
-    // Sicherstellen, dass die Gruppe noch nicht ausgelost wurde
     if (!$group['is_drawn']) {
         $stmt = $pdo->prepare("DELETE FROM `exclusions` WHERE `id` = ? AND `group_id` = ?");
-        $stmt->execute([$exclusion_id, $group['id']]);
+        $stmt->execute(array($exclusion_id, $group['id']));
     }
-    header("Location: admin.php?token=" . urlencode($admin_token));
+    header('Location: /admin.php?token=' . urlencode($admin_token));
     exit();
 }
 
-// Alle Ausschlüsse für diese Gruppe abrufen
 $stmt = $pdo->prepare("
-    SELECT e.*, 
-           p1.name as participant_name, 
-           p2.name as excluded_name 
+    SELECT e.*,
+           p1.name as participant_name,
+           p2.name as excluded_name
     FROM `exclusions` e
     JOIN `participants` p1 ON e.participant_id = p1.id
     JOIN `participants` p2 ON e.excluded_participant_id = p2.id
     WHERE e.group_id = ?
     ORDER BY p1.name, p2.name
 ");
-$stmt->execute([$group['id']]);
+$stmt->execute(array($group['id']));
 $exclusions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Löschdatum berechnen (3 Monate nach Event oder Erstellung)
 $base_date = $group['gift_exchange_date'] ? $group['gift_exchange_date'] : date('Y-m-d', strtotime($group['created_at']));
-$deletion_date = date('d.m.Y', strtotime($base_date . ' + 3 months'));
+$deletion_date = fmt_date(date('Y-m-d', strtotime($base_date . ' + 3 months')));
 
-// Gruppe bearbeiten
 if ($csrf_ok && isset($_POST['update_group'])) {
     $new_budget = trim($_POST['budget']) ?: null;
     $new_description = trim($_POST['description']) ?: null;
     $new_gift_exchange_date = trim($_POST['gift_exchange_date']) ?: null;
-    
-    // Validierung (optional)
+    $new_language = null;
+    if (i18n_has_language_column($pdo, 'groups') && isset($_POST['group_language']) && i18n_is_allowed($_POST['group_language'])) {
+        $new_language = i18n_allow($_POST['group_language']);
+    }
+
     if ($new_budget !== null && !is_numeric($new_budget)) {
-        $update_error = "Budget muss eine Zahl sein.";
-    } elseif ($new_description !== null && ($length_error = limit_text_error($new_description, 2000, 'Beschreibung')) !== '') {
+        $update_error = t('error.budget_number');
+    } elseif ($new_description !== null && ($length_error = limit_text_error($new_description, 2000, t('field.description'))) !== '') {
         $update_error = $length_error;
     } elseif ($new_gift_exchange_date !== null && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $new_gift_exchange_date)) {
-        $update_error = "Datum der Geschenkübergabe muss im Format YYYY-MM-DD sein.";
+        $update_error = t('error.date_format');
     } else {
         $date_changed = (string) $group['gift_exchange_date'] !== (string) $new_gift_exchange_date;
         $clear_reminder = ($date_changed && array_key_exists('reminder_sent_at', $group))
             ? ', `reminder_sent_at` = NULL'
             : '';
-        $stmt = $pdo->prepare("UPDATE `groups` SET `budget` = ?, `description` = ?, `gift_exchange_date` = ?" . $clear_reminder . " WHERE `id` = ?");
-        $stmt->execute([$new_budget, $new_description, $new_gift_exchange_date, $group['id']]);
-        
-        // Aktualisiere das $group-Array
+        $sql = "UPDATE `groups` SET `budget` = ?, `description` = ?, `gift_exchange_date` = ?";
+        $params = array($new_budget, $new_description, $new_gift_exchange_date);
+        if ($new_language !== null) {
+            $sql .= ', `language` = ?';
+            $params[] = $new_language;
+        }
+        $sql .= $clear_reminder . " WHERE `id` = ?";
+        $params[] = $group['id'];
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+
         $group['budget'] = $new_budget;
         $group['description'] = $new_description;
         $group['gift_exchange_date'] = $new_gift_exchange_date;
         if ($clear_reminder !== '') {
             $group['reminder_sent_at'] = null;
         }
-        
-        $update_success = "Gruppeninformationen erfolgreich aktualisiert.";
+        if ($new_language !== null) {
+            $group['language'] = $new_language;
+            i18n_activate($new_language);
+            $deletion_date = fmt_date(date('Y-m-d', strtotime($base_date . ' + 3 months')));
+        }
+        $update_success = t('admin.updated');
     }
 }
 
-// Auslosung durchführen
 if ($csrf_ok && isset($_POST['draw'])) {
     if (!empty($group['is_drawn'])) {
-        $draw_error = 'Die Auslosung wurde bereits durchgeführt.';
+        $draw_error = t('admin.draw_already');
     } elseif (count($participants) < 2) {
-        $draw_error = 'Es müssen mindestens 2 Teilnehmer vorhanden sein.';
+        $draw_error = t('admin.draw_need_two');
     } else {
-        // Ausschlüsse laden
         $stmt = $pdo->prepare("SELECT participant_id, excluded_participant_id FROM `exclusions` WHERE `group_id` = ?");
-        $stmt->execute([$group['id']]);
+        $stmt->execute(array($group['id']));
         $exclusion_rules = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        // Exclusions-Map erstellen
-        $exclusions_map = [];
+        $exclusions_map = array();
         foreach ($exclusion_rules as $rule) {
             if (!isset($exclusions_map[$rule['participant_id']])) {
-                $exclusions_map[$rule['participant_id']] = [];
+                $exclusions_map[$rule['participant_id']] = array();
             }
             $exclusions_map[$rule['participant_id']][] = $rule['excluded_participant_id'];
         }
-        
         $participant_ids = array_column($participants, 'id');
-        
-        // Versuche eine gültige Zuteilung zu finden
         $assigned_ids = perform_draw($participant_ids, $exclusions_map);
-        
         if ($assigned_ids === false) {
-            $draw_error = 'Es konnte keine gültige Auslosung gefunden werden. Bitte überprüfe die Ausschlüsse - möglicherweise sind zu viele Ausschlüsse definiert.';
+            $draw_error = t('admin.draw_impossible');
         } else {
             try {
                 $saved = save_draw_assignment($pdo, $group['id'], $participant_ids, $assigned_ids);
             } catch (Exception $e) {
                 error_log('Auslosung speichern: ' . $e->getMessage());
                 $saved = false;
-                $draw_error = 'Die Auslosung konnte nicht gespeichert werden.';
+                $draw_error = t('admin.draw_save_fail');
             }
             if (empty($saved)) {
                 if (!isset($draw_error)) {
-                    $draw_error = 'Die Auslosung wurde bereits durchgeführt.';
+                    $draw_error = t('admin.draw_already');
                 }
             } else {
-
-            // Teilnehmer erneut abrufen, um die aktualisierten `assigned_to`-Werte zu erhalten
-            $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `group_id` = ?");
-            $stmt->execute([$group['id']]);
-            $participants = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            // Pre-load participants for O(1) lookup to avoid N+1 query problem
-            $participants_by_id = array_column($participants, null, 'id');
-
-            // E-Mails versenden
-            foreach ($participants as $participant) {
-                if (!empty($participant['email'])) {
-                    // Zugewiesenen Teilnehmer abrufen
-                    if (!empty($participant['assigned_to'])) {
-                        // Use pre-loaded array instead of database query
-                        $assigned = $participants_by_id[$participant['assigned_to']] ?? null;
-
-                        if ($assigned) {
-                            // Gruppendetails abrufen
-                            $group_budget = $group['budget'] !== null ? number_format($group['budget'], 2) . " CHF" : "Nicht festgelegt";
-                            $group_description = $group['description'] ?: "Keine Beschreibung.";
-                            $gift_exchange_date = $group['gift_exchange_date'] ? date('d.m.Y', strtotime($group['gift_exchange_date'])) : "Nicht festgelegt";
-
-                            // Erstelle HTML-E-Mail
-                            $subject = 'Dein Wichtelpartner 🎁';
-                            $html_message = create_html_email([
-                                'name' => $participant['name'],
-                                'assigned_name' => $assigned['name'],
-                                'wishlist' => $assigned['wishlist'] ?? '',
-                                'budget' => $group_budget,
-                                'description' => $group_description,
-                                'gift_date' => $gift_exchange_date,
-                                'ics_url' => !empty($group['gift_exchange_date']) ? gift_ics_url($group) : ''
-                            ]);
-
-                            if (!send_email($participant['email'], $subject, $html_message, true)) {
-                                // Fehlerbehandlung, falls E-Mail nicht gesendet werden konnte
-                                error_log('E-Mail konnte nicht an ' . mask_email($participant['email']) . ' gesendet werden.');
-                            }
-                        } else {
-                            // Fehlerprotokollierung, wenn der zugewiesene Teilnehmer nicht gefunden wird
-                            error_log("Zugewiesener Teilnehmer mit ID {$participant['assigned_to']} nicht gefunden.");
+                $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `group_id` = ?");
+                $stmt->execute(array($group['id']));
+                $participants = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $participants_by_id = array_column($participants, null, 'id');
+                foreach ($participants as $participant) {
+                    if (empty($participant['email']) || empty($participant['assigned_to'])) {
+                        if (empty($participant['assigned_to'])) {
+                            error_log("Teilnehmer mit ID {$participant['id']} hat keinen zugewiesenen Teilnehmer.");
                         }
-                    } else {
-                        // Fehlerprotokollierung, wenn `assigned_to` leer ist
-                        error_log("Teilnehmer mit ID {$participant['id']} hat keinen zugewiesenen Teilnehmer.");
+                        continue;
+                    }
+                    $assigned = isset($participants_by_id[$participant['assigned_to']]) ? $participants_by_id[$participant['assigned_to']] : null;
+                    if (!$assigned) {
+                        error_log("Zugewiesener Teilnehmer mit ID {$participant['assigned_to']} nicht gefunden.");
+                        continue;
+                    }
+                    $lang = mail_recipient_lang($participant);
+                    if (!send_partner_mail(
+                        $participant['email'],
+                        $participant['name'],
+                        $assigned['name'],
+                        isset($assigned['wishlist']) ? $assigned['wishlist'] : '',
+                        $group,
+                        $lang
+                    )) {
+                        error_log('E-Mail konnte nicht an ' . mask_email($participant['email']) . ' gesendet werden.');
                     }
                 }
-            }
-
-            // Weiterleitung zum Adminbereich ohne vorherige Ausgabe
-            header("Location: admin.php?token=" . urlencode($admin_token));
-            exit();
+                header('Location: /admin.php?token=' . urlencode($admin_token));
+                exit();
             }
         }
     }
 }
 
-// Auflösung an alle Teilnehmer senden
 $reveal_error = null;
 if ($csrf_ok && isset($_POST['send_reveal'])) {
     if (!$group['is_drawn']) {
-        $reveal_error = 'Die Auslosung wurde noch nicht durchgeführt.';
+        $reveal_error = t('admin.reveal_need_draw');
     } elseif (!mysql_column_exists($pdo, 'groups', 'reveal_sent_at')) {
-        $reveal_error = 'Die Auflösung kann noch nicht gespeichert werden. Bitte die Migration für groups.reveal_sent_at ausführen.';
+        $reveal_error = t('admin.reveal_need_migration');
     } elseif (!empty($group['reveal_sent_at']) && (!isset($_POST['confirm_resend']) || $_POST['confirm_resend'] !== '1')) {
-        $reveal_error = 'Die Auflösung wurde bereits versendet. Bitte bestätige den erneuten Versand ausdrücklich.';
+        $reveal_error = t('admin.reveal_need_confirm');
     } else {
         $reveal_result = deliver_group_reveal($participants, $group);
         if ($reveal_result['status'] === 'ok') {
             $stmt = $pdo->prepare("UPDATE `groups` SET `reveal_sent_at` = NOW() WHERE `id` = ?");
-            $stmt->execute([$group['id']]);
+            $stmt->execute(array($group['id']));
         }
         $_SESSION['admin_flash'] = reveal_result_message($reveal_result);
-        header("Location: admin.php?token=" . urlencode($admin_token));
+        header('Location: /admin.php?token=' . urlencode($admin_token));
         exit();
     }
 }
@@ -531,42 +441,16 @@ if (isset($_SESSION['bulk_import_links']) && is_array($_SESSION['bulk_import_lin
     $bulk_links = $_SESSION['bulk_import_links'];
     unset($_SESSION['bulk_import_links']);
 }
+
+$group_language_editable = i18n_has_language_column($pdo, 'groups');
+$invite_url = get_display_url('/register.php?token=' . urlencode($group['invite_token']));
+$admin_url = get_display_url('/admin.php?token=' . urlencode($admin_token));
+$whatsapp_text = t('admin.whatsapp_intro') . "\n\n"
+    . t('admin.whatsapp_group', array('{name}' => $group['name'])) . "\n\n"
+    . t('admin.whatsapp_join', array('{url}' => $invite_url));
+
+token_page_open(t('meta.admin.title', array('{group}' => $group['name'])));
 ?>
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>Admin Bereich - <?php echo htmlspecialchars($group['name']); ?></title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="robots" content="noindex, nofollow">
-    <link rel="apple-touch-icon" sizes="57x57" href="/images/favicon/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="/images/favicon/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/images/favicon/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="/images/favicon/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/images/favicon/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/images/favicon/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/images/favicon/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/images/favicon/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192"  href="/images/favicon/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
-    <link rel="manifest" href="/images/favicon/manifest.json">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="/images/favicon/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <!-- CSS Stylesheet -->
-    <link rel="stylesheet" href="css/styles.css">
-    
-    <!-- Shared JavaScript -->
-    <script src="js/main.js"></script>
-    <?php echo token_page_referrer_meta(); ?>
-</head>
-<body>
-    <?php include __DIR__ . '/../includes/templates/navigation.php'; ?>
     <div class="container app-page">
         <?php
         $reveal_already_sent = !empty($group['reveal_sent_at']);
@@ -575,11 +459,11 @@ if (isset($_SESSION['bulk_import_links']) && is_array($_SESSION['bulk_import_lin
             $reveal_sent_label = (string) $group['reveal_sent_at'];
         }
         $budget_label = ($group['budget'] !== null && $group['budget'] !== '')
-            ? number_format((float) $group['budget'], 2) . ' CHF'
-            : 'Nicht festgelegt';
+            ? fmt_money($group['budget'])
+            : t('value.unset');
         $exchange_label = !empty($group['gift_exchange_date'])
-            ? date('d.m.Y', strtotime($group['gift_exchange_date']))
-            : 'Nicht festgelegt';
+            ? fmt_date($group['gift_exchange_date'])
+            : t('value.unset');
         $mail_stats = reveal_recipient_stats($participants);
         $checklist = admin_group_checklist($participants, $group);
         $draw_label = admin_checklist_draw_label($checklist['draw']);
@@ -588,112 +472,64 @@ if (isset($_SESSION['bulk_import_links']) && is_array($_SESSION['bulk_import_lin
         $reminder_column = array_key_exists('reminder_sent_at', $group);
         $reminder_already_sent = $reminder_column && !empty($group['reminder_sent_at']);
         $reminder_sent_label = $reminder_already_sent ? format_reveal_sent_at($group['reminder_sent_at']) : '';
+        $calendar_url = !empty($group['gift_exchange_date']) ? gift_ics_url($group, i18n_current()) : '';
         ?>
         <header class="app-hero">
-            <p class="app-kicker">Gruppenverwaltung</p>
-            <h1><?php echo htmlspecialchars($group['name']); ?></h1>
-            <p class="app-hero-lead">Einladungen, Teilnehmer, Auslosung und Auflösung an einem Ort.</p>
+            <p class="app-kicker"><?php echo h(t('admin.kicker')); ?></p>
+            <h1><?php echo h($group['name']); ?></h1>
+            <p class="app-hero-lead"><?php echo h(t('admin.lead')); ?></p>
             <div class="status-row" id="admin-status-strip">
-                <span class="status-pill"><?php echo (int) $checklist['participants']; ?> Teilnehmer</span>
+                <span class="status-pill"><?php echo h(tn('admin.participants', (int) $checklist['participants'])); ?></span>
                 <span class="status-pill <?php echo ($checklist['with_email'] === $checklist['participants'] && $checklist['participants'] > 0) ? 'is-done' : 'is-wait'; ?>">
-                    <?php echo (int) $checklist['with_email']; ?> mit E-Mail
+                    <?php echo h(t('admin.with_email', array('{count}' => (string) (int) $checklist['with_email']))); ?>
                 </span>
                 <span class="status-pill <?php echo ($checklist['with_wishlist'] > 0) ? 'is-done' : 'is-wait'; ?>">
-                    <?php echo (int) $checklist['with_wishlist']; ?> mit Wunschliste
+                    <?php echo h(t('admin.with_wishlist', array('{count}' => (string) (int) $checklist['with_wishlist']))); ?>
                 </span>
-                <span class="status-pill <?php echo $draw_class; ?>"><?php echo htmlspecialchars($draw_label); ?></span>
-                <span class="status-pill <?php echo ($checklist['reveal'] === 'sent') ? 'is-done' : 'is-wait'; ?>"><?php echo htmlspecialchars($reveal_label); ?></span>
+                <span class="status-pill <?php echo $draw_class; ?>"><?php echo h($draw_label); ?></span>
+                <span class="status-pill <?php echo ($checklist['reveal'] === 'sent') ? 'is-done' : 'is-wait'; ?>"><?php echo h($reveal_label); ?></span>
             </div>
-            <nav class="app-toc" aria-label="Bereiche dieser Seite">
-                <a href="#checkliste">Checkliste</a>
-                <a href="#ueberblick">Überblick</a>
-                <a href="#gruppendetails">Details</a>
-                <a href="#einladung">Einladung</a>
-                <a href="#teilnehmer">Teilnehmer</a>
-                <a href="#ausschluesse">Ausschlüsse</a>
-                <a href="#auslosung">Auslosung</a>
-                <a href="#aufloesung">Auflösung</a>
-                <a href="#gefahrenzone">Gefahrenzone</a>
+            <nav class="app-toc" aria-label="<?php echo h(t('admin.toc')); ?>">
+                <a href="#checkliste"><?php echo h(t('admin.toc.checklist')); ?></a>
+                <a href="#ueberblick"><?php echo h(t('admin.toc.overview')); ?></a>
+                <a href="#gruppendetails"><?php echo h(t('admin.toc.details')); ?></a>
+                <a href="#erinnerung"><?php echo h(t('admin.toc.reminder')); ?></a>
+                <a href="#einladung"><?php echo h(t('admin.toc.invite')); ?></a>
+                <a href="#teilnehmer"><?php echo h(t('admin.toc.people')); ?></a>
+                <a href="#ausschluesse"><?php echo h(t('admin.toc.exclusions')); ?></a>
+                <a href="#auslosung"><?php echo h(t('admin.toc.draw')); ?></a>
+                <a href="#aufloesung"><?php echo h(t('admin.toc.reveal')); ?></a>
+                <a href="#gefahrenzone"><?php echo h(t('admin.toc.danger')); ?></a>
             </nav>
         </header>
-        
-        <?php if (!empty($csrf_error)): ?>
-            <div class="notification error" role="alert" aria-live="assertive">
-                <?php echo htmlspecialchars($csrf_error); ?>
-            </div>
-        <?php endif; ?>
 
-        <?php if (isset($update_error)): ?>
-            <div class="notification error" role="alert" aria-live="assertive">
-                <?php echo htmlspecialchars($update_error); ?>
-            </div>
-        <?php endif; ?>
-        
-        <?php if (isset($update_success)): ?>
-            <div class="notification success" role="status" aria-live="polite">
-                <?php echo htmlspecialchars($update_success); ?>
-            </div>
-        <?php endif; ?>
-        
-        <?php if (isset($draw_error)): ?>
-            <div class="notification error" role="alert" aria-live="assertive">
-                <?php echo htmlspecialchars($draw_error); ?>
-            </div>
-        <?php endif; ?>
-        
-        <?php if (isset($exclusion_success)): ?>
-            <div class="notification success" role="status" aria-live="polite">
-                <?php echo htmlspecialchars($exclusion_success); ?>
-            </div>
-        <?php endif; ?>
-        
-        <?php if (isset($exclusion_error)): ?>
-            <div class="notification error" role="alert" aria-live="assertive">
-                <?php echo htmlspecialchars($exclusion_error); ?>
-            </div>
-        <?php endif; ?>
-        
-        <?php if (isset($reset_success)): ?>
-            <div class="notification success" role="status" aria-live="polite">
-                <?php echo htmlspecialchars($reset_success); ?>
-            </div>
-        <?php endif; ?>
-        
-        <?php if (isset($reset_error)): ?>
-            <div class="notification error" role="alert" aria-live="assertive">
-                <?php echo htmlspecialchars($reset_error); ?>
-            </div>
-        <?php endif; ?>
-        
-        <?php if (isset($delete_error)): ?>
-            <div class="notification error" role="alert" aria-live="assertive">
-                <?php echo htmlspecialchars($delete_error); ?>
-            </div>
-        <?php endif; ?>
-        
-        <?php if (isset($participant_success)): ?>
-            <div class="notification success" role="status" aria-live="polite">
-                <?php echo htmlspecialchars($participant_success); ?>
-            </div>
-        <?php endif; ?>
-        
-        <?php if (isset($participant_error)): ?>
-            <div class="notification error" role="alert" aria-live="assertive">
-                <?php echo htmlspecialchars($participant_error); ?>
-            </div>
-        <?php endif; ?>
-        
-        <?php if (isset($email_success)): ?>
-            <div class="notification success" role="status" aria-live="polite">
-                <?php echo $email_success; ?>
-            </div>
-        <?php endif; ?>
-        
-        <?php if (isset($email_error)): ?>
-            <div class="notification error" role="alert" aria-live="assertive">
-                <?php echo htmlspecialchars($email_error); ?>
-            </div>
-        <?php endif; ?>
+        <?php
+        $notices = array(
+            array('error', isset($csrf_error) ? $csrf_error : ''),
+            array('error', isset($update_error) ? $update_error : ''),
+            array('success', isset($update_success) ? $update_success : ''),
+            array('error', isset($draw_error) ? $draw_error : ''),
+            array('success', isset($exclusion_success) ? $exclusion_success : ''),
+            array('error', isset($exclusion_error) ? $exclusion_error : ''),
+            array('success', isset($reset_success) ? $reset_success : ''),
+            array('error', isset($reset_error) ? $reset_error : ''),
+            array('error', isset($delete_error) ? $delete_error : ''),
+            array('success', isset($participant_success) ? $participant_success : ''),
+            array('error', isset($participant_error) ? $participant_error : ''),
+            array('success', isset($email_success) ? $email_success : ''),
+            array('error', isset($email_error) ? $email_error : ''),
+            array('error', !empty($reveal_error) ? $reveal_error : ''),
+            array('error', !empty($reminder_error) ? $reminder_error : ''),
+        );
+        foreach ($notices as $notice) {
+            if ($notice[1] === '' || $notice[1] === null) {
+                continue;
+            }
+            $role = ($notice[0] === 'error') ? 'alert' : 'status';
+            $live = ($notice[0] === 'error') ? 'assertive' : 'polite';
+            echo '<div class="notification ' . h($notice[0]) . '" role="' . $role . '" aria-live="' . $live . '">' . h($notice[1]) . '</div>';
+        }
+        ?>
 
         <?php if (is_array($admin_flash) && !empty($admin_flash['text'])): ?>
             <?php
@@ -703,49 +539,37 @@ if (isset($_SESSION['bulk_import_links']) && is_array($_SESSION['bulk_import_lin
             }
             $flash_role = ($flash_type === 'error') ? 'alert' : 'status';
             ?>
-            <div class="notification <?php echo htmlspecialchars($flash_type); ?>" role="<?php echo $flash_role; ?>" aria-live="<?php echo ($flash_type === 'error') ? 'assertive' : 'polite'; ?>">
-                <?php echo htmlspecialchars($admin_flash['text']); ?>
-            </div>
-        <?php endif; ?>
-
-        <?php if (!empty($reveal_error)): ?>
-            <div class="notification error" role="alert" aria-live="assertive">
-                <?php echo htmlspecialchars($reveal_error); ?>
-            </div>
-        <?php endif; ?>
-
-        <?php if (!empty($reminder_error)): ?>
-            <div class="notification error" role="alert" aria-live="assertive">
-                <?php echo htmlspecialchars($reminder_error); ?>
+            <div class="notification <?php echo h($flash_type); ?>" role="<?php echo $flash_role; ?>" aria-live="<?php echo ($flash_type === 'error') ? 'assertive' : 'polite'; ?>">
+                <?php echo h($admin_flash['text']); ?>
             </div>
         <?php endif; ?>
 
         <section class="section-card" id="checkliste" aria-labelledby="checklist-heading">
             <div class="section-card-header">
                 <span class="section-icon" aria-hidden="true">✅</span>
-                <h2 id="checklist-heading">Checkliste</h2>
+                <h2 id="checklist-heading"><?php echo h(t('admin.checklist')); ?></h2>
             </div>
-            <p class="section-description">So weit ist die Gruppe. Auslosung bereit heisst: mindestens zwei Teilnehmer und noch nicht ausgelost.</p>
+            <p class="section-description"><?php echo h(t('admin.checklist_lead')); ?></p>
             <ul class="admin-checklist" id="admin-checklist">
                 <li class="admin-checklist-item">
-                    <span class="admin-checklist-label">Teilnehmer</span>
+                    <span class="admin-checklist-label"><?php echo h(t('admin.check.people')); ?></span>
                     <strong><?php echo (int) $checklist['participants']; ?></strong>
                 </li>
                 <li class="admin-checklist-item <?php echo ($checklist['participants'] > 0 && $checklist['with_email'] === $checklist['participants']) ? 'is-done' : 'is-wait'; ?>">
-                    <span class="admin-checklist-label">Mit E-Mail</span>
-                    <strong><?php echo (int) $checklist['with_email']; ?> von <?php echo (int) $checklist['participants']; ?></strong>
+                    <span class="admin-checklist-label"><?php echo h(t('admin.check.email')); ?></span>
+                    <strong><?php echo h(t('admin.check.of', array('{done}' => (string) (int) $checklist['with_email'], '{total}' => (string) (int) $checklist['participants']))); ?></strong>
                 </li>
                 <li class="admin-checklist-item <?php echo ($checklist['with_wishlist'] > 0) ? 'is-done' : 'is-wait'; ?>">
-                    <span class="admin-checklist-label">Mit Wunschliste</span>
-                    <strong><?php echo (int) $checklist['with_wishlist']; ?> von <?php echo (int) $checklist['participants']; ?></strong>
+                    <span class="admin-checklist-label"><?php echo h(t('admin.check.wishlist')); ?></span>
+                    <strong><?php echo h(t('admin.check.of', array('{done}' => (string) (int) $checklist['with_wishlist'], '{total}' => (string) (int) $checklist['participants']))); ?></strong>
                 </li>
                 <li class="admin-checklist-item <?php echo $draw_class; ?>">
-                    <span class="admin-checklist-label">Auslosung</span>
-                    <strong><?php echo htmlspecialchars($draw_label); ?></strong>
+                    <span class="admin-checklist-label"><?php echo h(t('admin.check.draw')); ?></span>
+                    <strong><?php echo h($draw_label); ?></strong>
                 </li>
                 <li class="admin-checklist-item <?php echo ($checklist['reveal'] === 'sent') ? 'is-done' : 'is-wait'; ?>">
-                    <span class="admin-checklist-label">Auflösung</span>
-                    <strong><?php echo htmlspecialchars($reveal_label); ?></strong>
+                    <span class="admin-checklist-label"><?php echo h(t('admin.check.reveal')); ?></span>
+                    <strong><?php echo h($reveal_label); ?></strong>
                 </li>
             </ul>
         </section>
@@ -753,37 +577,34 @@ if (isset($_SESSION['bulk_import_links']) && is_array($_SESSION['bulk_import_lin
         <section class="section-card" id="ueberblick" aria-labelledby="overview-heading">
             <div class="section-card-header">
                 <span class="section-icon" aria-hidden="true">📌</span>
-                <h2 id="overview-heading">Überblick</h2>
+                <h2 id="overview-heading"><?php echo h(t('admin.overview')); ?></h2>
             </div>
             <div class="status-grid">
                 <div class="status-tile">
-                    <span class="status-tile-label">Budget</span>
-                    <span class="status-tile-value"><?php echo htmlspecialchars($budget_label); ?></span>
+                    <span class="status-tile-label"><?php echo h(t('admin.budget')); ?></span>
+                    <span class="status-tile-value"><?php echo h($budget_label); ?></span>
                 </div>
                 <div class="status-tile">
-                    <span class="status-tile-label">Geschenkübergabe</span>
-                    <span class="status-tile-value"><?php echo htmlspecialchars($exchange_label); ?></span>
-                    <?php if (!empty($group['gift_exchange_date'])): ?>
-                        <a class="button secondary small calendar-link" href="kalender.php?rolle=admin&amp;token=<?php echo urlencode($admin_token); ?>">In Kalender speichern</a>
+                    <span class="status-tile-label"><?php echo h(t('admin.exchange')); ?></span>
+                    <span class="status-tile-value"><?php echo h($exchange_label); ?></span>
+                    <?php if ($calendar_url !== ''): ?>
+                        <a class="button secondary small calendar-link" href="<?php echo h($calendar_url); ?>"><?php echo h(t('mail.calendar')); ?></a>
                     <?php endif; ?>
                 </div>
                 <div class="status-tile">
-                    <span class="status-tile-label">Mit E-Mail</span>
-                    <span class="status-tile-value"><?php echo (int) $mail_stats['with_email']; ?> von <?php echo (int) count($participants); ?></span>
+                    <span class="status-tile-label"><?php echo h(t('admin.with_email_label')); ?></span>
+                    <span class="status-tile-value"><?php echo h(t('admin.check.of', array('{done}' => (string) (int) $mail_stats['with_email'], '{total}' => (string) count($participants)))); ?></span>
                 </div>
                 <div class="status-tile">
-                    <span class="status-tile-label">Auflösung</span>
-                    <span class="status-tile-value"><?php echo $reveal_already_sent ? htmlspecialchars($reveal_sent_label) : 'Noch nicht gesendet'; ?></span>
+                    <span class="status-tile-label"><?php echo h(t('admin.reveal')); ?></span>
+                    <span class="status-tile-value"><?php echo $reveal_already_sent ? h($reveal_sent_label) : h(t('admin.reveal_pending')); ?></span>
                 </div>
             </div>
             <div class="admin-info-box warning">
                 <div class="admin-info-icon" aria-hidden="true">ℹ️</div>
                 <div class="admin-info-content">
-                    <h3 class="admin-info-title">Wichtiger Hinweis zum Datenschutz</h3>
-                    <p class="admin-info-text">
-                        Diese Gruppe und alle personenbezogenen Daten werden automatisch am <strong><?php echo htmlspecialchars($deletion_date); ?></strong> gelöscht (3 Monate nach dem Event).
-                        Anonymisierte Statistiken bleiben erhalten.
-                    </p>
+                    <h3 class="admin-info-title"><?php echo h(t('admin.privacy_title')); ?></h3>
+                    <p class="admin-info-text"><?php echo t('admin.privacy_text', array('{date}' => '<strong>' . h($deletion_date) . '</strong>')); ?></p>
                 </div>
             </div>
         </section>
@@ -791,108 +612,109 @@ if (isset($_SESSION['bulk_import_links']) && is_array($_SESSION['bulk_import_lin
         <section class="section-card" id="gruppendetails" aria-labelledby="details-heading">
             <div class="section-card-header">
                 <span class="section-icon" aria-hidden="true">✏️</span>
-                <h2 id="details-heading">Gruppendetails</h2>
+                <h2 id="details-heading"><?php echo h(t('admin.details')); ?></h2>
             </div>
-            <p class="section-description">Budget, Datum und Beschreibung sehen alle Teilnehmer in ihrem Bereich.</p>
-        <form method="POST" id="update-group-form">
-            <?php echo csrf_input(); ?>
-            <div class="form-group">
-                <label for="budget">Budget (optional):</label>
-                <input type="number" step="0.01" id="budget" name="budget" value="<?php echo htmlspecialchars($group['budget'] ?? ''); ?>" placeholder="z.B. 20.00" aria-describedby="budget_hint">
-                <small id="budget_hint" class="form-hint">Lege einen Richtwert für die Geschenke fest.</small>
-            </div>
-            <div class="form-group">
-                <label for="description">Beschreibung (optional):</label>
-                <textarea id="description" name="description" rows="4" aria-describedby="description_hint"><?php echo htmlspecialchars($group['description'] ?? ''); ?></textarea>
-                <small id="description_hint" class="form-hint">Zusätzliche Infos, z.B. Treffpunkt oder Motto.</small>
-            </div>
-            <div class="form-group">
-                <label for="gift_exchange_date">Datum der Geschenkübergabe (optional):</label>
-                <input type="date" id="gift_exchange_date" name="gift_exchange_date" value="<?php echo htmlspecialchars($group['gift_exchange_date'] ?? ''); ?>" min="<?php echo date('Y-m-d'); ?>" aria-describedby="gift_exchange_date_hint">
-                <small id="gift_exchange_date_hint" class="form-hint">Wann werden die Geschenke ausgetauscht?</small>
-            </div>
-            <input type="hidden" name="update_group" value="1">
-            <button type="submit" class="button primary">
-                <span aria-hidden="true">💾</span> Gruppendetails aktualisieren
-            </button>
-        </form>
-
-        <div class="reminder-block" id="erinnerung">
-            <h3>Erinnerung an die Geschenkübergabe</h3>
-            <?php if (!$reminder_column): ?>
-                <p class="form-hint">Die Erinnerung kann gespeichert werden, sobald die Migration für <code>groups.reminder_sent_at</code> ausgeführt wurde.</p>
-            <?php elseif (empty($group['gift_exchange_date'])): ?>
-                <p class="form-hint">Ohne Datum gibt es keine Erinnerung. Trage oben das Datum ein und speichere die Gruppendetails.</p>
-            <?php else: ?>
-                <?php
-                $reminder_days = gift_days_until($group['gift_exchange_date']);
-                $reminder_sentence = gift_reminder_sentence($reminder_days);
-                $reminder_confirm = $reminder_already_sent
-                    ? "Die Erinnerung wurde bereits versendet.\n\nWirklich erneut an alle Teilnehmer mit E-Mail senden?"
-                    : "Erinnerung jetzt an alle Teilnehmer mit E-Mail senden?\n\n" . $reminder_sentence;
-                ?>
-                <p class="section-description"><?php echo htmlspecialchars($reminder_sentence); ?> Die Mail geht an alle Teilnehmer mit E-Mail-Adresse. Ein zweiter Versand braucht eine Bestätigung.</p>
-                <?php if ($reminder_already_sent): ?>
-                    <p class="reveal-sent-note">
-                        <span aria-hidden="true">✓</span>
-                        Erinnerung versendet am <?php echo htmlspecialchars($reminder_sent_label !== '' ? $reminder_sent_label : (string) $group['reminder_sent_at']); ?>.
-                    </p>
+            <p class="section-description"><?php echo h(t('admin.details_help')); ?></p>
+            <form method="POST" id="update-group-form">
+                <?php echo csrf_input(); ?>
+                <div class="form-group">
+                    <label for="budget"><?php echo h(t('create.budget')); ?></label>
+                    <input type="number" step="0.01" id="budget" name="budget" value="<?php echo h(isset($group['budget']) ? $group['budget'] : ''); ?>" placeholder="<?php echo h(t('create.budget_ph')); ?>" aria-describedby="budget_hint">
+                    <small id="budget_hint" class="form-hint"><?php echo h(t('create.budget_hint')); ?></small>
+                </div>
+                <div class="form-group">
+                    <label for="description"><?php echo h(t('create.description')); ?></label>
+                    <textarea id="description" name="description" rows="4" aria-describedby="description_hint"><?php echo h(isset($group['description']) ? $group['description'] : ''); ?></textarea>
+                    <small id="description_hint" class="form-hint"><?php echo h(t('create.description_hint')); ?></small>
+                </div>
+                <div class="form-group">
+                    <label for="gift_exchange_date"><?php echo h(t('create.date')); ?></label>
+                    <input type="date" id="gift_exchange_date" name="gift_exchange_date" value="<?php echo h(isset($group['gift_exchange_date']) ? $group['gift_exchange_date'] : ''); ?>" min="<?php echo h(date('Y-m-d')); ?>" aria-describedby="gift_exchange_date_hint">
+                    <small id="gift_exchange_date_hint" class="form-hint"><?php echo h(t('create.date_hint')); ?></small>
+                </div>
+                <?php if ($group_language_editable): ?>
+                <div class="form-group">
+                    <label for="group_language"><?php echo h(t('admin.language')); ?></label>
+                    <?php echo i18n_language_select('group_language', i18n_row_language($group), 'group_language'); ?>
+                    <small class="form-hint"><?php echo h(t('admin.language_hint')); ?></small>
+                </div>
                 <?php endif; ?>
-                <form method="POST" id="reminder-form" onsubmit="<?php echo html_onsubmit_confirm($reminder_confirm); ?>">
-                    <?php echo csrf_input(); ?>
-                    <input type="hidden" name="send_reminder" value="1">
+                <input type="hidden" name="update_group" value="1">
+                <button type="submit" class="button primary">
+                    <span aria-hidden="true">💾</span> <?php echo h(t('admin.save_details')); ?>
+                </button>
+            </form>
+
+            <div class="reminder-block" id="erinnerung">
+                <h3><?php echo h(t('admin.reminder_title')); ?></h3>
+                <?php if (!$reminder_column): ?>
+                    <p class="form-hint"><?php echo h(t('admin.reminder_migration_hint')); ?></p>
+                <?php elseif (empty($group['gift_exchange_date'])): ?>
+                    <p class="form-hint"><?php echo h(t('admin.reminder_no_date_hint')); ?></p>
+                <?php else: ?>
+                    <?php
+                    $reminder_days = gift_days_until($group['gift_exchange_date']);
+                    $reminder_sentence = gift_reminder_sentence($reminder_days);
+                    $reminder_confirm_key = $reminder_already_sent ? 'admin.confirm.reminder_again' : 'admin.confirm.reminder';
+                    $reminder_confirm_vars = $reminder_already_sent ? array() : array('{sentence}' => $reminder_sentence);
+                    ?>
+                    <p class="section-description"><?php echo h($reminder_sentence); ?> <?php echo h(t('admin.reminder_help')); ?></p>
                     <?php if ($reminder_already_sent): ?>
-                        <label class="reveal-confirm-label" for="confirm-reminder-resend">
-                            <input type="checkbox" id="confirm-reminder-resend" name="confirm_reminder_resend" value="1" required>
-                            <span>Ich möchte die Erinnerung erneut senden. Sie wurde bereits verschickt.</span>
-                        </label>
+                        <p class="reveal-sent-note">
+                            <span aria-hidden="true">✓</span>
+                            <?php echo h(t('admin.reminder_sent_note', array('{when}' => $reminder_sent_label !== '' ? $reminder_sent_label : (string) $group['reminder_sent_at']))); ?>
+                        </p>
                     <?php endif; ?>
-                    <button type="submit" class="button secondary">
-                        <?php echo $reminder_already_sent ? 'Erinnerung erneut senden' : 'Erinnerung senden'; ?>
-                    </button>
-                </form>
-            <?php endif; ?>
-        </div>
+                    <form method="POST" id="reminder-form"<?php echo i18n_confirm_attrs($reminder_confirm_key, $reminder_confirm_vars); ?>>
+                        <?php echo csrf_input(); ?>
+                        <input type="hidden" name="send_reminder" value="1">
+                        <?php if ($reminder_already_sent): ?>
+                            <label class="reveal-confirm-label" for="confirm-reminder-resend">
+                                <input type="checkbox" id="confirm-reminder-resend" name="confirm_reminder_resend" value="1" required>
+                                <span><?php echo h(t('admin.reminder_resend')); ?></span>
+                            </label>
+                        <?php endif; ?>
+                        <button type="submit" class="button secondary">
+                            <?php echo h($reminder_already_sent ? t('admin.reminder_again') : t('admin.reminder_send')); ?>
+                        </button>
+                    </form>
+                <?php endif; ?>
+            </div>
         </section>
 
         <section class="section-card" id="einladung" aria-labelledby="invite-heading">
             <div class="section-card-header">
                 <span class="section-icon" aria-hidden="true">🔗</span>
-                <h2 id="invite-heading">Einladung</h2>
+                <h2 id="invite-heading"><?php echo h(t('admin.invite')); ?></h2>
             </div>
-            <p class="section-description">Teile diesen Link, damit sich alle selbst eintragen können.</p>
+            <p class="section-description"><?php echo h(t('admin.invite_help')); ?></p>
             <div class="link-box">
-                <pre id="participant-link" class="link-display"><?php echo htmlspecialchars(get_display_url('/register.php?token=' . urlencode($group['invite_token']))); ?></pre>
+                <pre id="participant-link" class="link-display"><?php echo h($invite_url); ?></pre>
                 <div class="link-actions">
-                    <button type="button" class="button secondary small copy-button" onclick="copyToClipboard('participant-link')" aria-label="Einladungslink kopieren">Link kopieren</button>
-                    <a href="https://api.whatsapp.com/send?text=<?php echo urlencode('Hallo! Du bist eingeladen, beim Wichteln mitzumachen. 🎁') . '%0A%0A' . urlencode('Gruppe: ' . $group['name']) . '%0A%0A' . urlencode('Melde dich hier an: ' . get_display_url('/register.php?token=' . urlencode($group['invite_token']))); ?>"
+                    <button type="button" class="button secondary small copy-button" onclick="copyToClipboard('participant-link')" aria-label="<?php echo h(t('admin.copy_invite')); ?>"><?php echo h(t('admin.copy')); ?></button>
+                    <a href="https://api.whatsapp.com/send?text=<?php echo rawurlencode($whatsapp_text); ?>"
                        target="_blank"
                        rel="noopener noreferrer"
                        class="button secondary small share-whatsapp"
-                       aria-label="Einladungslink per WhatsApp teilen">
-                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-                            <path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/>
-                        </svg>
-                        Via WhatsApp teilen
+                       aria-label="<?php echo h(t('admin.whatsapp')); ?>">
+                        <?php echo h(t('admin.whatsapp')); ?>
                     </a>
                 </div>
             </div>
-
             <div class="admin-info-box">
                 <div class="admin-info-icon" aria-hidden="true">💡</div>
                 <div class="admin-info-content">
-                    <h3 class="admin-info-title">Hinweis für dich als Administrator</h3>
-                    <p class="admin-info-text">Wenn du selbst beim Wichteln mitmachen möchtest, musst du dich ebenfalls über den obigen Einladungslink als Teilnehmer registrieren. Der Admin-Link dient nur zur Verwaltung der Gruppe.</p>
+                    <h3 class="admin-info-title"><?php echo h(t('admin.self_title')); ?></h3>
+                    <p class="admin-info-text"><?php echo h(t('admin.self_text')); ?></p>
                 </div>
             </div>
-
             <div class="admin-link-block">
-                <h3>Dein Admin-Link</h3>
-                <p class="section-description">Speichere diesen Link. Nur damit kommst du wieder in die Verwaltung.</p>
+                <h3><?php echo h(t('admin.admin_link')); ?></h3>
+                <p class="section-description"><?php echo h(t('admin.admin_link_help')); ?></p>
                 <div class="link-box">
-                    <pre id="admin-link" class="link-display"><?php echo htmlspecialchars(get_display_url('/admin.php?token=' . urlencode($admin_token))); ?></pre>
+                    <pre id="admin-link" class="link-display"><?php echo h($admin_url); ?></pre>
                     <div class="link-actions">
-                        <button type="button" class="button secondary small copy-button" onclick="copyToClipboard('admin-link')" aria-label="Admin-Link kopieren">Link kopieren</button>
+                        <button type="button" class="button secondary small copy-button" onclick="copyToClipboard('admin-link')" aria-label="<?php echo h(t('admin.copy_admin')); ?>"><?php echo h(t('admin.copy')); ?></button>
                     </div>
                 </div>
             </div>
@@ -901,25 +723,25 @@ if (isset($_SESSION['bulk_import_links']) && is_array($_SESSION['bulk_import_lin
         <section class="section-card" id="teilnehmer" aria-labelledby="participants-heading">
             <div class="section-card-header">
                 <span class="section-icon" aria-hidden="true">👥</span>
-                <h2 id="participants-heading">Teilnehmer und Mails (<?php echo count($participants); ?>)</h2>
+                <h2 id="participants-heading"><?php echo h(t('admin.people_heading', array('{count}' => (string) count($participants)))); ?></h2>
             </div>
-            <p class="section-description">Persönliche Links und E-Mail-Adressen pflegst du direkt bei jeder Person. Nach der Auslosung kannst du die Zuordnung erneut per E-Mail senden.</p>
+            <p class="section-description"><?php echo h(t('admin.people_help')); ?></p>
 
             <?php if (!empty($bulk_links)): ?>
                 <div class="bulk-import-result" id="bulk-import-result">
-                    <h3>Persönliche Links</h3>
-                    <p class="section-description">Diese Links gelten nur für die gerade angelegten Personen. Kopiere sie, bevor du die Seite verlässt.</p>
+                    <h3><?php echo h(t('admin.links_title')); ?></h3>
+                    <p class="section-description"><?php echo h(t('admin.links_help')); ?></p>
                     <?php foreach ($bulk_links as $index => $created): ?>
                         <div class="link-box">
                             <p class="bulk-import-name">
-                                <strong><?php echo htmlspecialchars($created['name']); ?></strong>
+                                <strong><?php echo h($created['name']); ?></strong>
                                 <?php if (!empty($created['email'])): ?>
-                                    <span><?php echo htmlspecialchars($created['email']); ?></span>
+                                    <span><?php echo h($created['email']); ?></span>
                                 <?php endif; ?>
                             </p>
-                            <pre id="bulk-link-<?php echo (int) $index; ?>" class="link-display"><?php echo htmlspecialchars($created['url']); ?></pre>
+                            <pre id="bulk-link-<?php echo (int) $index; ?>" class="link-display"><?php echo h($created['url']); ?></pre>
                             <div class="link-actions">
-                                <button type="button" class="button secondary small copy-button" onclick="copyToClipboard('bulk-link-<?php echo (int) $index; ?>')" aria-label="Teilnehmer-Link kopieren für <?php echo htmlspecialchars($created['name']); ?>">Link kopieren</button>
+                                <button type="button" class="button secondary small copy-button" onclick="copyToClipboard('bulk-link-<?php echo (int) $index; ?>')" aria-label="<?php echo h(t('admin.copy_person', array('{name}' => $created['name']))); ?>"><?php echo h(t('admin.copy')); ?></button>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -930,387 +752,332 @@ if (isset($_SESSION['bulk_import_links']) && is_array($_SESSION['bulk_import_lin
                 <form method="POST" id="bulk-import-form" class="bulk-import-form">
                     <?php echo csrf_input(); ?>
                     <div class="form-group">
-                        <label for="bulk_participants">Mehrere Teilnehmer einfügen</label>
-                        <textarea id="bulk_participants" name="bulk_participants" rows="8" placeholder="Anna&#10;Peter, peter@example.ch&#10;Maria; maria@example.ch" aria-describedby="bulk_participants_hint"></textarea>
-                        <small id="bulk_participants_hint" class="form-hint">Eine Person pro Zeile. Die E-Mail ist optional und steht nach Komma, Semikolon, Tab oder senkrechtem Strich. Beispiel: «Anna &lt;anna@example.ch».</small>
+                        <label for="bulk_participants"><?php echo h(t('admin.bulk_label')); ?></label>
+                        <textarea id="bulk_participants" name="bulk_participants" rows="8" placeholder="<?php echo h(t('admin.bulk_ph')); ?>" aria-describedby="bulk_participants_hint"></textarea>
+                        <small id="bulk_participants_hint" class="form-hint"><?php echo h(t('admin.bulk_help')); ?></small>
                     </div>
                     <input type="hidden" name="bulk_import" value="1">
-                    <button type="submit" class="button secondary">Teilnehmer anlegen</button>
+                    <button type="submit" class="button secondary"><?php echo h(t('admin.bulk_submit')); ?></button>
                 </form>
             <?php endif; ?>
 
-        <?php if ($participants): ?>
-            <div class="participants-grid">
-                <?php foreach ($participants as $p): ?>
-                    <div class="participant-card">
-                        <div class="participant-header">
-                            <?php
-                            $avatar_name = (string) ($p['name'] ?? '');
-                            if (function_exists('mb_substr')) {
-                                $avatar_initial = mb_strtoupper(mb_substr($avatar_name, 0, 1, 'UTF-8'), 'UTF-8');
-                            } else {
-                                $avatar_initial = strtoupper(substr($avatar_name, 0, 1));
-                            }
-                            ?>
-                            <span class="participant-avatar" aria-hidden="true"><?php echo htmlspecialchars($avatar_initial); ?></span>
-                            <div class="participant-info">
-                                <h3 class="participant-name"><?php echo htmlspecialchars($p['name'] ?? ''); ?></h3>
-                                <div class="participant-email">
-                                    <?php if (!empty($p['email'])): ?>
-                                        <span class="email-display"><span aria-hidden="true">✉️</span> <?php echo htmlspecialchars($p['email']); ?></span>
-                                    <?php else: ?>
-                                        <span class="email-missing"><span aria-hidden="true">⚠️</span> Keine E-Mail</span>
-                                    <?php endif; ?>
+            <?php if ($participants): ?>
+                <div class="participants-grid">
+                    <?php foreach ($participants as $p): ?>
+                        <div class="participant-card">
+                            <div class="participant-header">
+                                <?php
+                                $avatar_name = (string) (isset($p['name']) ? $p['name'] : '');
+                                if (function_exists('mb_substr')) {
+                                    $avatar_initial = mb_strtoupper(mb_substr($avatar_name, 0, 1, 'UTF-8'), 'UTF-8');
+                                } else {
+                                    $avatar_initial = strtoupper(substr($avatar_name, 0, 1));
+                                }
+                                ?>
+                                <span class="participant-avatar" aria-hidden="true"><?php echo h($avatar_initial); ?></span>
+                                <div class="participant-info">
+                                    <h3 class="participant-name"><?php echo h(isset($p['name']) ? $p['name'] : ''); ?></h3>
+                                    <div class="participant-email">
+                                        <?php if (!empty($p['email'])): ?>
+                                            <span class="email-display"><span aria-hidden="true">✉️</span> <?php echo h($p['email']); ?></span>
+                                        <?php else: ?>
+                                            <span class="email-missing"><span aria-hidden="true">⚠️</span> <?php echo h(t('admin.email_missing')); ?></span>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <div class="participant-actions">
-                            <?php if (!empty($p['participant_token'])): ?>
-                                <button type="button"
-                                        class="action-btn copy-btn" 
-                                        onclick="copyToClipboard('participant-link-<?php echo $p['id']; ?>')"
-                                        title="Teilnehmer-Link kopieren"
-                                        aria-label="Teilnehmer-Link kopieren für <?php echo htmlspecialchars($p['name']); ?>">
-                                    <span class="btn-icon" aria-hidden="true">📋</span>
-                                    <span class="btn-text">Link kopieren</span>
-                                </button>
-                                <span id="participant-link-<?php echo $p['id']; ?>" 
-                                      data-url="<?php echo htmlspecialchars(get_display_url('/participant.php?token=' . urlencode($p['participant_token']))); ?>"
-                                      style="display: none;"></span>
-                            <?php endif; ?>
-                            
-                            <?php 
-                            $can_send_email = $group['is_drawn'] && !empty($p['email']) && !empty($p['assigned_to']);
-                            ?>
-                            <form method="POST" class="action-form resend-email-form">
-                                <?php echo csrf_input(); ?>
-                                <input type="hidden" name="participant_id" value="<?php echo $p['id']; ?>">
-                                <input type="hidden" name="resend_email" value="1">
-                                <button type="submit" 
-                                        class="action-btn email-btn <?php echo !$can_send_email ? 'disabled' : ''; ?>"
-                                        title="<?php echo $can_send_email ? 'E-Mail erneut senden' : 'E-Mail kann nicht gesendet werden (keine E-Mail-Adresse oder Auslosung nicht durchgeführt)'; ?>"
-                                        aria-label="E-Mail senden an <?php echo htmlspecialchars($p['name']); ?>"
-                                        <?php echo !$can_send_email ? 'disabled' : ''; ?>
-                                        <?php echo $can_send_email ? 'onclick="' . html_onsubmit_confirm('E-Mail mit Wichtelpartner-Info an ' . $p['name'] . ' senden?') . '"' : ''; ?>>
-                                    <span class="btn-icon" aria-hidden="true">📧</span>
-                                    <span class="btn-text">E-Mail senden</span>
-                                </button>
-                            </form>
-                            
-                            <?php if (!$group['is_drawn']): ?>
-                                <form method="POST" class="action-form" onsubmit="<?php echo html_onsubmit_confirm('Möchtest du ' . $p['name'] . ' wirklich löschen?'); ?>">
+                            <div class="participant-actions">
+                                <?php if (!empty($p['participant_token'])): ?>
+                                    <button type="button" class="action-btn copy-btn" onclick="copyToClipboard('participant-link-<?php echo (int) $p['id']; ?>')" title="<?php echo h(t('admin.copy_title')); ?>" aria-label="<?php echo h(t('admin.copy_person', array('{name}' => $p['name']))); ?>">
+                                        <span class="btn-icon" aria-hidden="true">📋</span>
+                                        <span class="btn-text"><?php echo h(t('admin.copy')); ?></span>
+                                    </button>
+                                    <span id="participant-link-<?php echo (int) $p['id']; ?>" data-url="<?php echo h(get_display_url('/participant.php?token=' . urlencode($p['participant_token']))); ?>" style="display: none;"></span>
+                                <?php endif; ?>
+                                <?php $can_send_email = $group['is_drawn'] && !empty($p['email']) && !empty($p['assigned_to']); ?>
+                                <form method="POST" class="action-form resend-email-form"<?php echo $can_send_email ? i18n_confirm_attrs('admin.confirm.resend_partner', array('{name}' => $p['name'])) : ''; ?>>
                                     <?php echo csrf_input(); ?>
-                                    <input type="hidden" name="delete_participant" value="<?php echo (int) $p['id']; ?>">
+                                    <input type="hidden" name="participant_id" value="<?php echo (int) $p['id']; ?>">
+                                    <input type="hidden" name="resend_email" value="1">
                                     <button type="submit"
-                                            class="action-btn delete-btn"
-                                            aria-label="<?php echo htmlspecialchars($p['name']); ?> löschen">
-                                        <span class="btn-icon" aria-hidden="true">🗑️</span>
-                                        <span class="btn-text">Löschen</span>
+                                            class="action-btn email-btn <?php echo !$can_send_email ? 'disabled' : ''; ?>"
+                                            title="<?php echo h($can_send_email ? t('admin.resend') : t('admin.email_cannot')); ?>"
+                                            aria-label="<?php echo h(t('admin.resend_label', array('{name}' => $p['name']))); ?>"
+                                            <?php echo !$can_send_email ? 'disabled' : ''; ?>>
+                                        <span class="btn-icon" aria-hidden="true">📧</span>
+                                        <span class="btn-text"><?php echo h(t('admin.email_send')); ?></span>
                                     </button>
                                 </form>
-                            <?php endif; ?>
+                                <?php if (!$group['is_drawn']): ?>
+                                    <form method="POST" class="action-form"<?php echo i18n_confirm_attrs('admin.confirm.delete_participant', array('{name}' => $p['name'])); ?>>
+                                        <?php echo csrf_input(); ?>
+                                        <input type="hidden" name="delete_participant" value="<?php echo (int) $p['id']; ?>">
+                                        <button type="submit" class="action-btn delete-btn" aria-label="<?php echo h(t('admin.delete_label', array('{name}' => $p['name']))); ?>">
+                                            <span class="btn-icon" aria-hidden="true">🗑️</span>
+                                            <span class="btn-text"><?php echo h(t('admin.delete')); ?></span>
+                                        </button>
+                                    </form>
+                                <?php endif; ?>
+                            </div>
+                            <div class="participant-email-edit">
+                                <form method="POST" class="email-edit-form">
+                                    <?php echo csrf_input(); ?>
+                                    <input type="hidden" name="participant_id" value="<?php echo (int) $p['id']; ?>">
+                                    <input type="hidden" name="update_participant_email" value="1">
+                                    <div class="email-edit-group">
+                                        <input type="email" name="participant_email" value="<?php echo h(isset($p['email']) ? $p['email'] : ''); ?>" placeholder="<?php echo h(t('admin.email_ph')); ?>" class="email-edit-input" aria-label="<?php echo h(t('admin.email_for', array('{name}' => $p['name']))); ?>">
+                                        <button type="submit" class="email-edit-btn" title="<?php echo h(t('admin.email_save')); ?>" aria-label="<?php echo h(t('admin.email_save_label', array('{name}' => $p['name']))); ?>">
+                                            <span aria-hidden="true">💾</span> <?php echo h(t('admin.save')); ?>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                        
-                        <div class="participant-email-edit">
-                            <form method="POST" class="email-edit-form">
-                                <?php echo csrf_input(); ?>
-                                <input type="hidden" name="participant_id" value="<?php echo $p['id']; ?>">
-                                <input type="hidden" name="update_participant_email" value="1">
-                                <div class="email-edit-group">
-                                    <input type="email" 
-                                           name="participant_email" 
-                                           value="<?php echo htmlspecialchars($p['email'] ?? ''); ?>" 
-                                           placeholder="E-Mail hinzufügen..."
-                                           class="email-edit-input"
-                                           aria-label="E-Mail-Adresse für <?php echo htmlspecialchars($p['name']); ?>">
-                                    <button type="submit" 
-                                            class="email-edit-btn"
-                                            title="E-Mail speichern"
-                                            aria-label="E-Mail für <?php echo htmlspecialchars($p['name']); ?> speichern">
-                                        <span aria-hidden="true">💾</span> Speichern
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        <?php else: ?>
-            <div class="empty-state">
-                <div class="empty-icon" aria-hidden="true">👥</div>
-                <p class="empty-text">Noch keine Teilnehmer registriert.</p>
-                <p class="empty-hint" style="margin-bottom: 1rem;">Teile den Einladungslink, damit sich Teilnehmer anmelden können.</p>
-                <button type="button" class="button primary copy-button" onclick="copyToClipboard('participant-link')" aria-label="Einladungslink für Teilnehmer kopieren">
-                    <span class="btn-icon" aria-hidden="true">📋</span> Einladungslink kopieren
-                </button>
-            </div>
-        <?php endif; ?>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <div class="empty-state">
+                    <div class="empty-icon" aria-hidden="true">👥</div>
+                    <p class="empty-text"><?php echo h(t('admin.people_empty_text')); ?></p>
+                    <p class="empty-hint" style="margin-bottom: 1rem;"><?php echo h(t('admin.people_empty_hint')); ?></p>
+                    <button type="button" class="button primary copy-button" onclick="copyToClipboard('participant-link')" aria-label="<?php echo h(t('admin.copy_invite')); ?>">
+                        <span class="btn-icon" aria-hidden="true">📋</span> <?php echo h(t('admin.copy_invite')); ?>
+                    </button>
+                </div>
+            <?php endif; ?>
         </section>
 
         <section class="section-card" id="ausschluesse" aria-labelledby="exclusions-heading">
             <div class="section-card-header">
                 <span class="section-icon" aria-hidden="true">🤝</span>
-                <h2 id="exclusions-heading">Ausschlüsse</h2>
+                <h2 id="exclusions-heading"><?php echo h(t('admin.exclusions')); ?></h2>
             </div>
-        <?php if (!$group['is_drawn'] && count($participants) >= 2): ?>
-            <p class="section-description">Lege fest, wer wem nicht wichteln kann. Das ist nützlich, wenn sich zum Beispiel Paare nicht gegenseitig beschenken sollen.</p>
-            
-            <form method="POST" class="exclusion-form">
-                <?php echo csrf_input(); ?>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="participant_id">Person:<span class="required-indicator" aria-hidden="true" title="Erforderlich">*</span></label>
-                        <select id="participant_id" name="participant_id" required>
-                            <option value="">-- Person auswählen --</option>
-                            <?php foreach ($participants as $p): ?>
-                                <option value="<?php echo $p['id']; ?>"><?php echo htmlspecialchars($p['name']); ?></option>
-                            <?php endforeach; ?>
-                        </select>
+            <?php if (!$group['is_drawn'] && count($participants) >= 2): ?>
+                <p class="section-description"><?php echo h(t('admin.exclusions_help')); ?></p>
+                <form method="POST" class="exclusion-form">
+                    <?php echo csrf_input(); ?>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="participant_id"><?php echo h(t('admin.person')); ?><span class="required-indicator" aria-hidden="true" title="<?php echo h(t('captcha.required')); ?>">*</span></label>
+                            <select id="participant_id" name="participant_id" required>
+                                <option value=""><?php echo h(t('admin.select_person')); ?></option>
+                                <?php foreach ($participants as $p): ?>
+                                    <option value="<?php echo (int) $p['id']; ?>"><?php echo h($p['name']); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="excluded_participant_id"><?php echo h(t('admin.cannot')); ?><span class="required-indicator" aria-hidden="true" title="<?php echo h(t('captcha.required')); ?>">*</span></label>
+                            <select id="excluded_participant_id" name="excluded_participant_id" required>
+                                <option value=""><?php echo h(t('admin.select_person')); ?></option>
+                                <?php foreach ($participants as $p): ?>
+                                    <option value="<?php echo (int) $p['id']; ?>"><?php echo h($p['name']); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="button-align-label" aria-hidden="true"><?php echo h(t('admin.add_exclusion')); ?></label>
+                            <input type="hidden" name="add_exclusion" value="1">
+                            <button type="submit" class="button primary"><?php echo h(t('admin.add_exclusion')); ?></button>
+                        </div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="excluded_participant_id">kann nicht wichteln:<span class="required-indicator" aria-hidden="true" title="Erforderlich">*</span></label>
-                        <select id="excluded_participant_id" name="excluded_participant_id" required>
-                            <option value="">-- Person auswählen --</option>
-                            <?php foreach ($participants as $p): ?>
-                                <option value="<?php echo $p['id']; ?>"><?php echo htmlspecialchars($p['name']); ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="button-align-label" aria-hidden="true">Hinzufügen</label>
-                        <input type="hidden" name="add_exclusion" value="1">
-                        <button type="submit" class="button primary">Ausschluss hinzufügen</button>
-                    </div>
-                </div>
-                <label class="reveal-confirm-label" for="exclusion-bidirectional">
-                    <input type="checkbox" id="exclusion-bidirectional" name="bidirectional" value="1">
-                    <span>beidseitig <span class="form-hint">Legt auch die Gegenrichtung an. Ohne Häkchen gilt der Ausschluss nur in eine Richtung.</span></span>
-                </label>
-            </form>
-            
-            <?php if ($exclusions): ?>
-                <h3>Aktive Ausschlüsse</h3>
-                <table class="app-table">
-                    <thead>
-                        <tr>
-                            <th>Person</th>
-                            <th>kann nicht wichteln</th>
-                            <th>Aktion</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($exclusions as $ex): ?>
+                    <label class="reveal-confirm-label" for="exclusion-bidirectional">
+                        <input type="checkbox" id="exclusion-bidirectional" name="bidirectional" value="1">
+                        <span><?php echo h(t('admin.both')); ?> <span class="form-hint"><?php echo h(t('admin.both_hint')); ?></span></span>
+                    </label>
+                </form>
+                <?php if ($exclusions): ?>
+                    <h3><?php echo h(t('admin.exclusions_active')); ?></h3>
+                    <table class="app-table">
+                        <thead>
                             <tr>
-                                <td data-label="Person"><?php echo htmlspecialchars($ex['participant_name']); ?></td>
-                                <td data-label="kann nicht wichteln"><?php echo htmlspecialchars($ex['excluded_name']); ?></td>
-                                <td data-label="Aktion">
-                                    <form method="POST" class="inline-action-form" onsubmit="<?php echo html_onsubmit_confirm('Möchtest du diesen Ausschluss wirklich löschen?'); ?>">
-                                        <?php echo csrf_input(); ?>
-                                        <input type="hidden" name="delete_exclusion" value="<?php echo (int) $ex['id']; ?>">
-                                        <button type="submit"
-                                                class="button error small"
-                                                aria-label="Ausschluss löschen: <?php echo htmlspecialchars($ex['participant_name']); ?> darf nicht <?php echo htmlspecialchars($ex['excluded_name']); ?> wichteln">
-                                            Löschen
-                                        </button>
-                                    </form>
-                                </td>
+                                <th><?php echo h(t('admin.person')); ?></th>
+                                <th><?php echo h(t('admin.cannot')); ?></th>
+                                <th><?php echo h(t('admin.col.actions')); ?></th>
                             </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            <?php else: ?>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($exclusions as $ex): ?>
+                                <tr>
+                                    <td data-label="<?php echo h(t('admin.person')); ?>"><?php echo h($ex['participant_name']); ?></td>
+                                    <td data-label="<?php echo h(t('admin.cannot')); ?>"><?php echo h($ex['excluded_name']); ?></td>
+                                    <td data-label="<?php echo h(t('admin.col.actions')); ?>">
+                                        <form method="POST" class="inline-action-form"<?php echo i18n_confirm_attrs('admin.confirm.delete_exclusion'); ?>>
+                                            <?php echo csrf_input(); ?>
+                                            <input type="hidden" name="delete_exclusion" value="<?php echo (int) $ex['id']; ?>">
+                                            <button type="submit" class="button error small" aria-label="<?php echo h(t('admin.exclusion_delete', array('{name}' => $ex['participant_name'], '{other}' => $ex['excluded_name']))); ?>">
+                                                <?php echo h(t('admin.delete')); ?>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php else: ?>
+                    <div class="empty-state">
+                        <div class="empty-icon" aria-hidden="true">🤝</div>
+                        <p class="empty-text"><?php echo h(t('admin.exclusions_empty')); ?></p>
+                        <p class="empty-hint"><?php echo h(t('admin.exclusions_empty_hint')); ?></p>
+                    </div>
+                <?php endif; ?>
+            <?php elseif (!$group['is_drawn']): ?>
                 <div class="empty-state">
                     <div class="empty-icon" aria-hidden="true">🤝</div>
-                    <p class="empty-text">Keine Ausschlüsse definiert.</p>
-                    <p class="empty-hint">Jeder kann jedem zugelost werden.</p>
+                    <p class="empty-text"><?php echo h(t('admin.exclusions_wait')); ?></p>
+                    <p class="empty-hint"><?php echo h(t('admin.exclusions_wait_hint')); ?></p>
                 </div>
-            <?php endif; ?>
-        <?php elseif (!$group['is_drawn']): ?>
-            <div class="empty-state">
-                <div class="empty-icon" aria-hidden="true">🤝</div>
-                <p class="empty-text">Ausschlüsse sind noch nicht möglich.</p>
-                <p class="empty-hint">Sobald mindestens zwei Personen dabei sind, kannst du festlegen, wer wen nicht beschenken soll.</p>
-            </div>
-        <?php else: ?>
-            <p class="section-description">Nach der Auslosung können Ausschlüsse nicht mehr geändert werden. Ein Zurücksetzen ist in der Gefahrenzone möglich.</p>
-            <?php if ($exclusions): ?>
-                <table class="app-table">
-                    <thead>
-                        <tr>
-                            <th>Person</th>
-                            <th>kann nicht wichteln</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($exclusions as $ex): ?>
-                            <tr>
-                                <td data-label="Person"><?php echo htmlspecialchars($ex['participant_name']); ?></td>
-                                <td data-label="kann nicht wichteln"><?php echo htmlspecialchars($ex['excluded_name']); ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
             <?php else: ?>
-                <div class="empty-state">
-                    <div class="empty-icon" aria-hidden="true">🤝</div>
-                    <p class="empty-text">Keine Ausschlüsse gesetzt.</p>
-                    <p class="empty-hint">Bei dieser Auslosung konnte jeder jedem zugelost werden.</p>
-                </div>
+                <p class="section-description"><?php echo h(t('admin.exclusions_locked_long')); ?></p>
+                <?php if ($exclusions): ?>
+                    <table class="app-table">
+                        <thead>
+                            <tr>
+                                <th><?php echo h(t('admin.person')); ?></th>
+                                <th><?php echo h(t('admin.cannot')); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($exclusions as $ex): ?>
+                                <tr>
+                                    <td data-label="<?php echo h(t('admin.person')); ?>"><?php echo h($ex['participant_name']); ?></td>
+                                    <td data-label="<?php echo h(t('admin.cannot')); ?>"><?php echo h($ex['excluded_name']); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php else: ?>
+                    <div class="empty-state">
+                        <div class="empty-icon" aria-hidden="true">🤝</div>
+                        <p class="empty-text"><?php echo h(t('admin.exclusions_none_set')); ?></p>
+                        <p class="empty-hint"><?php echo h(t('admin.exclusions_any')); ?></p>
+                    </div>
+                <?php endif; ?>
             <?php endif; ?>
-        <?php endif; ?>
         </section>
 
         <section class="section-card" id="auslosung" aria-labelledby="draw-heading">
             <div class="section-card-header">
                 <span class="section-icon" aria-hidden="true">🎲</span>
-                <h2 id="draw-heading">Auslosung</h2>
+                <h2 id="draw-heading"><?php echo h(t('admin.draw')); ?></h2>
             </div>
-        <?php if (!$group['is_drawn']): ?>
-            <p class="section-description">Wenn alle Teilnehmer registriert sind und die Ausschlüsse stimmen, kannst du die Namen ziehen. Personen mit E-Mail werden sofort benachrichtigt.</p>
-            <?php if (count($participants) < 2): ?>
-                <div class="empty-state">
-                    <div class="empty-icon" aria-hidden="true">🎲</div>
-                    <p class="empty-text">Noch zu wenige Teilnehmer.</p>
-                    <p class="empty-hint">Für eine Auslosung braucht es mindestens zwei Personen.</p>
+            <?php if (!$group['is_drawn']): ?>
+                <p class="section-description"><?php echo h(t('admin.draw_ready_help')); ?></p>
+                <?php if (count($participants) < 2): ?>
+                    <div class="empty-state">
+                        <div class="empty-icon" aria-hidden="true">🎲</div>
+                        <p class="empty-text"><?php echo h(t('admin.draw_too_few')); ?></p>
+                        <p class="empty-hint"><?php echo h(t('admin.draw_too_few_hint')); ?></p>
+                    </div>
+                <?php endif; ?>
+                <form method="POST" id="draw-form"<?php echo i18n_confirm_attrs('admin.confirm.draw'); ?>>
+                    <?php echo csrf_input(); ?>
+                    <input type="hidden" name="draw" value="1">
+                    <button type="submit" class="button primary"><?php echo h(t('admin.draw_submit')); ?></button>
+                </form>
+            <?php else: ?>
+                <div class="notification success" role="status" aria-live="polite">
+                    <span aria-hidden="true">✓</span> <?php echo h(t('admin.draw_done')); ?>
                 </div>
+                <p class="section-description"><?php echo h(t('admin.draw_done_help')); ?></p>
             <?php endif; ?>
-            <form method="POST" id="draw-form" onsubmit="<?php echo html_onsubmit_confirm('Möchtest du die Auslosung wirklich durchführen? Alle Teilnehmer mit hinterlegter E-Mail-Adresse werden sofort benachrichtigt.'); ?>">
-                <?php echo csrf_input(); ?>
-                <input type="hidden" name="draw" value="1">
-                <button type="submit" class="button primary">Jetzt auslosen</button>
-            </form>
-        <?php else: ?>
-            <div class="notification success" role="status" aria-live="polite">
-                <span aria-hidden="true">✓</span> Die Auslosung wurde bereits durchgeführt. Alle Teilnehmer mit E-Mail-Adresse wurden benachrichtigt.
-            </div>
-            <p class="section-description">Die Zuordnungen sind aktiv. Zurücksetzen und Löschen findest du in der Gefahrenzone.</p>
-        <?php endif; ?>
         </section>
 
-        <!-- Auflösung an alle Teilnehmer -->
         <?php
-        $reveal_already_sent = !empty($group['reveal_sent_at']);
-        $reveal_sent_label = $reveal_already_sent ? format_reveal_sent_at($group['reveal_sent_at']) : '';
-        if ($reveal_already_sent && $reveal_sent_label === '') {
-            $reveal_sent_label = (string) $group['reveal_sent_at'];
-        }
         $reveal_stats = reveal_recipient_stats($participants);
-        if ($reveal_already_sent) {
-            $reveal_confirm = 'Die Auflösung wurde bereits am ' . $reveal_sent_label . " versendet.\n\nEin erneuter Versand schickt die komplette Liste noch einmal an alle Teilnehmer. Wirklich erneut senden?";
-        } else {
-            $reveal_confirm = "Die Auflösung verrät allen Teilnehmern, wer wem ein Geschenk gemacht hat. Das kann nicht rückgängig gemacht werden und nimmt die Überraschung vorweg.\n\nAuflösung jetzt an alle senden?";
-        }
+        $reveal_confirm_key = $reveal_already_sent ? 'admin.confirm.reveal_again' : 'admin.confirm.reveal';
+        $reveal_confirm_vars = $reveal_already_sent ? array('{when}' => $reveal_sent_label) : array();
         ?>
         <section class="section-card reveal-panel" id="aufloesung" aria-labelledby="reveal-heading">
             <div class="reveal-panel-header">
                 <span class="reveal-panel-icon" aria-hidden="true">✨</span>
                 <div>
-                    <h2 id="reveal-heading">Auflösung</h2>
-                    <p class="reveal-panel-text" id="reveal-description">Schicke allen Teilnehmern die komplette Liste, wer wem ein Geschenk gemacht hat (Geber → Beschenkter).</p>
+                    <h2 id="reveal-heading"><?php echo h(t('admin.reveal')); ?></h2>
+                    <p class="reveal-panel-text" id="reveal-description"><?php echo h(t('admin.reveal_help')); ?></p>
                 </div>
             </div>
-
             <?php if (!$group['is_drawn']): ?>
-                <p class="form-hint" id="reveal-hint">Der Versand ist erst möglich, wenn die Auslosung durchgeführt wurde.</p>
+                <p class="form-hint" id="reveal-hint"><?php echo h(t('admin.reveal_wait')); ?></p>
                 <button type="button" class="button primary" disabled aria-disabled="true" aria-describedby="reveal-hint">
-                    Auflösung an alle senden
+                    <?php echo h(t('admin.reveal_send')); ?>
                 </button>
             <?php else: ?>
                 <?php if ($reveal_already_sent): ?>
                     <p class="reveal-sent-note">
                         <span aria-hidden="true">✓</span>
-                        Auflösung versendet am <?php echo htmlspecialchars($reveal_sent_label); ?>.
+                        <?php echo h(t('admin.reveal_sent_note', array('{when}' => $reveal_sent_label))); ?>
                     </p>
                 <?php endif; ?>
-
                 <p class="form-hint" id="reveal-hint">
-                    <?php if ((int) $reveal_stats['with_email'] === 1): ?>
-                        Es wird 1 E-Mail versendet.
-                    <?php else: ?>
-                        Es werden <?php echo (int) $reveal_stats['with_email']; ?> E-Mails versendet.
-                    <?php endif; ?>
-                    <?php if ((int) $reveal_stats['without_email'] === 1): ?>
-                        1 Teilnehmer ohne E-Mail-Adresse erhält keine Mail.
-                    <?php elseif ((int) $reveal_stats['without_email'] > 1): ?>
-                        <?php echo (int) $reveal_stats['without_email']; ?> Teilnehmer ohne E-Mail-Adresse erhalten keine Mail.
+                    <?php echo h(tn('admin.reveal_mails', (int) $reveal_stats['with_email'])); ?>
+                    <?php if ((int) $reveal_stats['without_email'] > 0): ?>
+                        <?php echo h(tn('admin.reveal_skip', (int) $reveal_stats['without_email'])); ?>
                     <?php endif; ?>
                 </p>
-
-                <form method="POST" id="reveal-form" onsubmit="<?php echo html_onsubmit_confirm($reveal_confirm); ?>">
+                <form method="POST" id="reveal-form"<?php echo i18n_confirm_attrs($reveal_confirm_key, $reveal_confirm_vars); ?>>
                     <?php echo csrf_input(); ?>
                     <input type="hidden" name="send_reveal" value="1">
                     <?php if ($reveal_already_sent): ?>
                         <label class="reveal-confirm-label" for="confirm-resend">
                             <input type="checkbox" id="confirm-resend" name="confirm_resend" value="1" required>
-                            <span>Ich möchte die Auflösung erneut senden. Sie wurde bereits verschickt und geht noch einmal an alle.</span>
+                            <span><?php echo h(t('admin.reveal_resend_label')); ?></span>
                         </label>
                     <?php endif; ?>
                     <button type="submit" class="button primary" aria-describedby="reveal-hint">
                         <span aria-hidden="true"><?php echo $reveal_already_sent ? '↻' : '✨'; ?></span>
-                        <?php echo $reveal_already_sent ? 'Auflösung erneut senden' : 'Auflösung an alle senden'; ?>
+                        <?php echo h($reveal_already_sent ? t('admin.reveal_again') : t('admin.reveal_send')); ?>
                     </button>
                 </form>
             <?php endif; ?>
         </section>
-        
+
         <section class="section-card danger-zone" id="gefahrenzone" aria-labelledby="danger-heading">
             <div class="section-card-header">
                 <span class="section-icon" aria-hidden="true">⚠️</span>
-                <h2 id="danger-heading">Gefahrenzone</h2>
+                <h2 id="danger-heading"><?php echo h(t('admin.danger')); ?></h2>
             </div>
-            <p class="section-description">Diese Aktionen sind endgültig oder löschen die aktuellen Zuordnungen. Sie sind bewusst von der übrigen Verwaltung getrennt.</p>
+            <p class="section-description"><?php echo h(t('admin.danger_help')); ?></p>
             <?php if ($group['is_drawn']): ?>
                 <div class="danger-block">
-                    <h3>Auslosung zurücksetzen</h3>
-                    <p class="text-muted">Du kannst die Auslosung zurücksetzen, um sie erneut durchzuführen. Dies löscht alle aktuellen Zuordnungen, und du kannst danach neue Teilnehmer hinzufügen oder Ausschlüsse ändern.</p>
-                    <form method="POST" id="reset-draw-form" onsubmit="<?php echo html_onsubmit_confirm('Möchtest du die Auslosung wirklich zurücksetzen? Alle aktuellen Zuordnungen werden gelöscht.'); ?>">
+                    <h3><?php echo h(t('admin.reset')); ?></h3>
+                    <p class="text-muted"><?php echo h(t('admin.reset_long')); ?></p>
+                    <form method="POST" id="reset-draw-form"<?php echo i18n_confirm_attrs('admin.confirm.reset_draw'); ?>>
                         <?php echo csrf_input(); ?>
                         <input type="hidden" name="reset_draw" value="1">
-                        <button type="submit" class="button error">Auslosung zurücksetzen</button>
+                        <button type="submit" class="button error"><?php echo h(t('admin.reset')); ?></button>
                     </form>
                 </div>
             <?php endif; ?>
             <div class="danger-block">
-                <h3>Gruppe löschen</h3>
-                <p class="text-muted">Das Löschen der Gruppe kann nicht rückgängig gemacht werden. Alle Teilnehmer, Ausschlüsse und die Auslosung werden permanent gelöscht.</p>
-                <form method="POST" id="delete-group-form" onsubmit="<?php echo html_onsubmit_confirm('Möchtest du die Gruppe «' . $group['name'] . '» wirklich permanent löschen? Alle Teilnehmer, Ausschlüsse und die Auslosung werden unwiderruflich gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.'); ?>">
+                <h3><?php echo h(t('admin.delete_group')); ?></h3>
+                <p class="text-muted"><?php echo h(t('admin.delete_long')); ?></p>
+                <form method="POST" id="delete-group-form"<?php echo i18n_confirm_attrs('admin.confirm.delete_group', array('{name}' => $group['name'])); ?>>
                     <?php echo csrf_input(); ?>
                     <input type="hidden" name="delete_group" value="1">
                     <button type="submit" class="button error">
-                        <span aria-hidden="true">🗑️</span> Gruppe permanent löschen
+                        <span aria-hidden="true">🗑️</span> <?php echo h(t('admin.delete_permanent')); ?>
                     </button>
                 </form>
             </div>
         </section>
     </div>
-    
-    <!-- Footer -->
-    <?php include __DIR__ . '/../includes/templates/footer.php'; ?>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            handleFormSubmit(document.getElementById('draw-form'), 'Wird ausgelost...');
-            handleFormSubmit(document.getElementById('update-group-form'), 'Wird aktualisiert...');
-            handleFormSubmit(document.getElementById('reset-draw-form'), 'Wird zurückgesetzt...');
-            handleFormSubmit(document.getElementById('delete-group-form'), 'Wird gelöscht...');
-            handleFormSubmit(document.getElementById('reveal-form'), 'Wird gesendet...');
-            handleFormSubmit(document.getElementById('reminder-form'), 'Wird gesendet...');
-            handleFormSubmit(document.getElementById('bulk-import-form'), 'Wird angelegt...');
-
-            const exclusionForm = document.querySelector('.exclusion-form');
-            if (exclusionForm) handleFormSubmit(exclusionForm, 'Wird hinzugefügt...');
-
-            document.querySelectorAll('.resend-email-form').forEach(form => {
-                handleFormSubmit(form, 'Wird gesendet...');
+            handleFormSubmit(document.getElementById('draw-form'), <?php echo json_encode(t('js.drawing'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>);
+            handleFormSubmit(document.getElementById('update-group-form'), <?php echo json_encode(t('js.updating'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>);
+            handleFormSubmit(document.getElementById('reset-draw-form'), <?php echo json_encode(t('js.resetting'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>);
+            handleFormSubmit(document.getElementById('delete-group-form'), <?php echo json_encode(t('js.deleting'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>);
+            handleFormSubmit(document.getElementById('reveal-form'), <?php echo json_encode(t('js.sending'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>);
+            handleFormSubmit(document.getElementById('reminder-form'), <?php echo json_encode(t('js.sending'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>);
+            handleFormSubmit(document.getElementById('bulk-import-form'), <?php echo json_encode(t('js.importing'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>);
+            var exclusionForm = document.querySelector('.exclusion-form');
+            if (exclusionForm) handleFormSubmit(exclusionForm, <?php echo json_encode(t('js.adding'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>);
+            document.querySelectorAll('.resend-email-form').forEach(function(form) {
+                handleFormSubmit(form, <?php echo json_encode(t('js.sending'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>);
             });
-
-            document.querySelectorAll('.email-edit-form').forEach(form => {
-                handleFormSubmit(form, 'Wird gespeichert...');
+            document.querySelectorAll('.email-edit-form').forEach(function(form) {
+                handleFormSubmit(form, <?php echo json_encode(t('js.saving'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>);
             });
         });
     </script>
-</body>
-</html>
+<?php token_page_close(); ?>

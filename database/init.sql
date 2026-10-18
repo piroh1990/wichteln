@@ -74,3 +74,6 @@ SELECT 'Nächster Schritt: mysql -u wichtel_db_user -p wichtel_db < database/set
 -- Oder in PHP:
 -- php -r "echo bin2hex(random_bytes(16));"
 -- ====================================
+
+-- Sprachspalten groups.language und participants.language legt database/setup.sql an.
+-- Bestehende Datenbanken: database/migrations/20261018_add_language.sql einmal ausführen.

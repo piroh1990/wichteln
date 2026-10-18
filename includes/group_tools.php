@@ -162,22 +162,26 @@ function dispatch_wishlist_giver_mail($pdo, $participant, $is_drawn, $old_wishli
         return 'rate_limited';
     }
 
-    $subject = 'Wunschliste aktualisiert';
-    $html = create_wishlist_update_email(
-        isset($giver['name']) ? $giver['name'] : '',
-        isset($participant['name']) ? $participant['name'] : '',
-        normalize_wishlist_text($new_wishlist)
-    );
+    $lang = i18n_row_language($giver);
+    if ($lang === null) {
+        $lang = 'de';
+    }
+    $wishlist_text = normalize_wishlist_text($new_wishlist);
+    $giver_name = isset($giver['name']) ? $giver['name'] : '';
+    $updater_name = isset($participant['name']) ? $participant['name'] : '';
+    $subject = wishlist_email_subject($lang);
+    $html = create_wishlist_update_email($giver_name, $updater_name, $wishlist_text, $lang);
+    $plain = create_wishlist_plain_text($giver_name, $updater_name, $wishlist_text, $lang);
 
     if ($sender === null) {
-        $sender = function ($to, $subject, $html) {
-            return send_email($to, $subject, $html, true);
+        $sender = function ($to, $subject, $html, $plain = null) {
+            return send_email($to, $subject, $html, true, $plain);
         };
     }
 
     $ok = false;
     try {
-        $ok = (bool) call_user_func($sender, $email, $subject, $html);
+        $ok = (bool) call_user_func($sender, $email, $subject, $html, $plain);
     } catch (Exception $e) {
         error_log('Wunschliste Versandfehler: ' . $e->getMessage());
     }
@@ -192,21 +196,21 @@ function dispatch_wishlist_giver_mail($pdo, $participant, $is_drawn, $old_wishli
 
 function wishlist_update_notice($status) {
     if ($status === 'sent') {
-        return 'Deine Wunschliste wurde gespeichert. Dein Wichtel wurde per E-Mail informiert.';
+        return t('wishlist.notice.sent');
     }
     if ($status === 'unchanged') {
-        return 'Deine Wunschliste ist unverändert.';
+        return t('wishlist.notice.unchanged');
     }
     if ($status === 'not_drawn') {
-        return 'Deine Wunschliste wurde erfolgreich gespeichert.';
+        return t('wishlist.notice.not_drawn');
     }
     if ($status === 'rate_limited') {
-        return 'Deine Wunschliste wurde gespeichert. Eine weitere E-Mail an deinen Wichtel folgt erst nach einer Pause, damit niemand zu viele Mails bekommt.';
+        return t('wishlist.notice.rate_limited');
     }
     if ($status === 'no_email' || $status === 'no_giver') {
-        return 'Deine Wunschliste wurde gespeichert. Dein Wichtel hat keine E-Mail-Adresse, deshalb ging keine Benachrichtigung raus.';
+        return t('wishlist.notice.no_email');
     }
-    return 'Deine Wunschliste wurde gespeichert. Die Benachrichtigung an deinen Wichtel konnte nicht gesendet werden.';
+    return t('wishlist.notice.failed');
 }
 
 /**
@@ -255,16 +259,16 @@ function admin_group_checklist($participants, $group) {
 
 function admin_checklist_draw_label($draw) {
     if ($draw === 'done') {
-        return 'Auslosung erledigt';
+        return t('checklist.draw.done');
     }
     if ($draw === 'ready') {
-        return 'Auslosung bereit';
+        return t('checklist.draw.ready');
     }
-    return 'Auslosung noch nicht bereit';
+    return t('checklist.draw.wait');
 }
 
 function admin_checklist_reveal_label($reveal) {
-    return ($reveal === 'sent') ? 'Auflösung gesendet' : 'Auflösung offen';
+    return ($reveal === 'sent') ? t('checklist.reveal.sent') : t('checklist.reveal.open');
 }
 
 /**
@@ -274,30 +278,30 @@ function admin_checklist_reveal_label($reveal) {
  */
 function exclusion_save_message($forward, $reverse = null) {
     if ($forward === 'invalid' || $reverse === 'invalid') {
-        return array('type' => 'error', 'text' => 'Ungültige Auswahl.');
+        return array('type' => 'error', 'text' => t('admin.exclusion_invalid'));
     }
     if ($reverse === null) {
         if ($forward === 'added') {
-            return array('type' => 'success', 'text' => 'Ausschluss erfolgreich hinzugefügt.');
+            return array('type' => 'success', 'text' => t('admin.exclusion_added'));
         }
-        return array('type' => 'error', 'text' => 'Dieser Ausschluss existiert bereits.');
+        return array('type' => 'error', 'text' => t('admin.exclusion_exists'));
     }
 
     $added = (($forward === 'added') ? 1 : 0) + (($reverse === 'added') ? 1 : 0);
     $duplicate = (($forward === 'duplicate') ? 1 : 0) + (($reverse === 'duplicate') ? 1 : 0);
     if ($added === 2) {
-        return array('type' => 'success', 'text' => 'Ausschluss in beide Richtungen hinzugefügt.');
+        return array('type' => 'success', 'text' => t('admin.exclusion_both'));
     }
     if ($added === 1 && $duplicate === 1) {
         return array(
             'type' => 'success',
-            'text' => 'Eine Richtung war schon gespeichert. Die Gegenrichtung wurde ergänzt.',
+            'text' => t('admin.exclusion_one_new'),
         );
     }
     if ($duplicate === 2) {
-        return array('type' => 'error', 'text' => 'Dieser Ausschluss existiert bereits.');
+        return array('type' => 'error', 'text' => t('admin.exclusion_exists'));
     }
-    return array('type' => 'error', 'text' => 'Fehler beim Hinzufügen des Ausschlusses.');
+    return array('type' => 'error', 'text' => t('admin.exclusion_fail'));
 }
 
 /**
@@ -327,18 +331,18 @@ function insert_group_exclusion($pdo, $group_id, $participant_id, $excluded_id) 
 function bulk_name_email_result($name, $email) {
     $name = trim((string) $name);
     if ($name === '') {
-        return array('error' => 'Name fehlt.');
+        return array('error' => t('bulk.name_missing'));
     }
     if (preg_match('/[\x00-\x1F\x7F]/', $name)) {
-        return array('error' => 'Der Name enthält ungültige Zeichen.');
+        return array('error' => t('bulk.name_chars'));
     }
     if (strlen($name) > 255) {
-        return array('error' => 'Der Name ist länger als 255 Zeichen.');
+        return array('error' => t('bulk.name_long'));
     }
     if ($email !== null) {
         $email = trim((string) $email);
         if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 255) {
-            return array('error' => 'Ungültige E-Mail-Adresse.');
+            return array('error' => t('bulk.email_invalid'));
         }
     }
     return array('name' => $name, 'email' => $email);
@@ -367,7 +371,7 @@ function parse_bulk_participant_line($line) {
     }
 
     if (filter_var($line, FILTER_VALIDATE_EMAIL)) {
-        return array('error' => 'Name fehlt, es steht nur eine E-Mail-Adresse in der Zeile.');
+        return array('error' => t('bulk.email_only'));
     }
 
     return bulk_name_email_result($line, null);
@@ -396,19 +400,19 @@ function parse_bulk_participants($raw, $max_rows = 100) {
         $nonempty++;
         $line_no = $index + 1;
         if ($nonempty > $max_rows) {
-            $errors[] = 'Höchstens ' . $max_rows . ' Teilnehmer auf einmal.';
+            $errors[] = t('bulk.max', array('{count}' => (string) $max_rows));
             break;
         }
 
         $parsed = parse_bulk_participant_line($trimmed);
         if (isset($parsed['error'])) {
-            $errors[] = 'Zeile ' . $line_no . ': ' . $parsed['error'];
+            $errors[] = t('bulk.line', array('{line}' => (string) $line_no, '{error}' => $parsed['error']));
             continue;
         }
 
         $email_key = ($parsed['email'] !== null) ? strtolower($parsed['email']) : '';
         if ($email_key !== '' && isset($seen_emails[$email_key])) {
-            $errors[] = 'Zeile ' . $line_no . ': Die E-Mail-Adresse kommt in der Liste mehrfach vor.';
+            $errors[] = t('bulk.line', array('{line}' => (string) $line_no, '{error}' => t('bulk.duplicate')));
             continue;
         }
         if ($email_key !== '') {
@@ -459,79 +463,6 @@ function gift_days_until($gift_date, $today = null) {
     return (int) $now->diff($gift)->format('%r%a');
 }
 
-function gift_reminder_sentence($days) {
-    if ($days === null) {
-        return '';
-    }
-    $days = (int) $days;
-    if ($days > 1) {
-        return 'In ' . $days . ' Tagen ist die Geschenkübergabe.';
-    }
-    if ($days === 1) {
-        return 'Morgen ist die Geschenkübergabe.';
-    }
-    if ($days === 0) {
-        return 'Heute ist die Geschenkübergabe.';
-    }
-    if ($days === -1) {
-        return 'Die Geschenkübergabe war gestern.';
-    }
-    return 'Die Geschenkübergabe war vor ' . abs($days) . ' Tagen.';
-}
-
-function create_gift_reminder_email($data) {
-    $name = isset($data['name']) ? $data['name'] : '';
-    $group_name = isset($data['group_name']) ? $data['group_name'] : '';
-    $sentence = isset($data['sentence']) ? $data['sentence'] : '';
-    $gift_date = isset($data['gift_date']) ? $data['gift_date'] : '';
-    $participant_link = isset($data['participant_link']) ? $data['participant_link'] : '';
-    $ics_url = isset($data['ics_url']) ? $data['ics_url'] : '';
-
-    $link_html = '';
-    if ($participant_link !== '') {
-        $safe_link = htmlspecialchars($participant_link, ENT_QUOTES, 'UTF-8');
-        $link_html = '
-                            <p style="margin: 0 0 16px 0;">
-                                <a href="' . $safe_link . '" style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #2a9d8f, #264653); color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px;">Zum Teilnehmerbereich</a>
-                            </p>';
-    }
-
-    $body = '
-                            <p style="margin: 0 0 20px 0; color: #2b2d42; font-size: 16px; line-height: 1.6;">
-                                Hallo <strong style="color: #e63946;">' . htmlspecialchars($name) . '</strong>,
-                            </p>
-                            <p style="margin: 0 0 16px 0; color: #2b2d42; font-size: 16px; line-height: 1.6;">
-                                ' . htmlspecialchars($sentence) . '
-                            </p>
-                            <p style="margin: 0 0 16px 0; color: #2b2d42; font-size: 16px; line-height: 1.6;">
-                                Gruppe: <strong>' . htmlspecialchars($group_name) . '</strong><br>
-                                Datum: <strong>' . htmlspecialchars($gift_date) . '</strong>
-                            </p>
-                            ' . $link_html . '
-                            ' . email_calendar_paragraph($ics_url) . '
-                            <p style="margin: 16px 0 0 0; color: #2b2d42; font-size: 16px; line-height: 1.6;">
-                                Viel Spaß beim Wichteln!
-                            </p>';
-
-    return render_email_template('Erinnerung zur Geschenkübergabe', $sentence, $body);
-}
-
-function create_gift_reminder_plain_text($data) {
-    $lines = array();
-    $lines[] = 'Hallo ' . (isset($data['name']) ? $data['name'] : '') . ',';
-    $lines[] = '';
-    $lines[] = isset($data['sentence']) ? $data['sentence'] : '';
-    $lines[] = 'Gruppe: ' . (isset($data['group_name']) ? $data['group_name'] : '');
-    $lines[] = 'Datum: ' . (isset($data['gift_date']) ? $data['gift_date'] : '');
-    if (!empty($data['participant_link'])) {
-        $lines[] = 'Teilnehmerbereich: ' . $data['participant_link'];
-    }
-    if (!empty($data['ics_url'])) {
-        $lines[] = 'In Kalender speichern: ' . $data['ics_url'];
-    }
-    return implode("\n", $lines);
-}
-
 /**
  * @param callable|null $sender function($to, $subject, $html, $plain): bool
  * @return array status, sent, failed, skipped, days
@@ -563,13 +494,7 @@ function deliver_gift_reminders($participants, $group, $sender = null, $today = 
         };
     }
 
-    $sentence = gift_reminder_sentence($days);
-    $gift_label = date('d.m.Y', strtotime($gift_raw));
     $group_name = isset($group['name']) ? $group['name'] : '';
-    $subject = rtrim($sentence, '.');
-    if ($group_name !== '') {
-        $subject .= ' – ' . str_replace(array("\r", "\n"), ' ', $group_name);
-    }
 
     $sent = 0;
     $failed = 0;
@@ -586,6 +511,15 @@ function deliver_gift_reminders($participants, $group, $sender = null, $today = 
             continue;
         }
 
+        $lang = i18n_row_language($participant);
+        if ($lang === null) {
+            $lang = 'de';
+        }
+        $sentence = gift_reminder_sentence($days, $lang);
+        $gift_label = i18n_with_lang($lang, function () use ($gift_raw) {
+            return fmt_date($gift_raw);
+        });
+        $subject = reminder_email_subject($sentence, $group_name, $lang);
         $token = isset($participant['participant_token']) ? (string) $participant['participant_token'] : '';
         $payload = array(
             'name' => isset($participant['name']) ? $participant['name'] : '',
@@ -593,7 +527,8 @@ function deliver_gift_reminders($participants, $group, $sender = null, $today = 
             'sentence' => $sentence,
             'gift_date' => $gift_label,
             'participant_link' => ($token !== '') ? get_display_url('/participant.php?token=' . rawurlencode($token)) : '',
-            'ics_url' => gift_ics_url($group),
+            'ics_url' => gift_ics_url($group, $lang),
+            'language' => $lang,
         );
 
         $ok = false;
@@ -641,104 +576,22 @@ function gift_reminder_result_message($result) {
     $skipped = isset($result['skipped']) ? (int) $result['skipped'] : 0;
 
     if ($status === 'no_date') {
-        return array(
-            'type' => 'error',
-            'text' => 'Die Erinnerung kann nicht gesendet werden. Lege zuerst ein Datum der Geschenkübergabe fest.',
-        );
+        return array('type' => 'error', 'text' => t('reminder.need_date'));
     }
     if ($status === 'no_recipients') {
-        return array(
-            'type' => 'error',
-            'text' => 'Die Erinnerung wurde an niemanden gesendet. Kein Teilnehmer hat eine gültige E-Mail-Adresse.',
-        );
+        return array('type' => 'error', 'text' => t('reminder.no_recipients'));
     }
     if ($status === 'failed') {
-        $failed_text = ($failed === 1) ? '1 E-Mail ist fehlgeschlagen.' : ($failed . ' E-Mails sind fehlgeschlagen.');
         return array(
             'type' => 'error',
-            'text' => 'Die Erinnerung wurde an niemanden gesendet. ' . $failed_text,
+            'text' => delivery_flash_text('reminder.sent', 'reminder.none', $status, $sent, $failed, $skipped),
         );
-    }
-
-    $sent_text = ($sent === 1)
-        ? 'Die Erinnerung wurde an 1 Teilnehmer gesendet.'
-        : ('Die Erinnerung wurde an ' . $sent . ' Teilnehmer gesendet.');
-
-    $extra = array();
-    if ($skipped === 1) {
-        $extra[] = '1 Teilnehmer ohne E-Mail wurde übersprungen';
-    } elseif ($skipped > 1) {
-        $extra[] = $skipped . ' Teilnehmer ohne E-Mail wurden übersprungen';
-    }
-    if ($failed === 1) {
-        $extra[] = '1 E-Mail ist fehlgeschlagen';
-    } elseif ($failed > 1) {
-        $extra[] = $failed . ' E-Mails sind fehlgeschlagen';
-    }
-
-    $text = $sent_text;
-    if (count($extra) > 0) {
-        $text .= ' ' . implode('. ', $extra) . '.';
     }
 
     return array(
         'type' => ($failed > 0) ? 'warning' : 'success',
-        'text' => $text,
+        'text' => delivery_flash_text('reminder.sent', 'reminder.none', $status, $sent, $failed, $skipped),
     );
-}
-
-function create_admin_recovery_email($groups) {
-    $items = '';
-    if (!is_array($groups)) {
-        $groups = array();
-    }
-    foreach ($groups as $group) {
-        if (!is_array($group)) {
-            continue;
-        }
-        $name = htmlspecialchars(isset($group['name']) ? $group['name'] : '', ENT_QUOTES, 'UTF-8');
-        $link = htmlspecialchars(isset($group['admin_link']) ? $group['admin_link'] : '', ENT_QUOTES, 'UTF-8');
-        $items .= '
-                            <p style="margin: 0 0 16px 0; color: #2b2d42; font-size: 16px; line-height: 1.6;">
-                                <strong>' . $name . '</strong><br>
-                                <a href="' . $link . '">' . $link . '</a>
-                            </p>';
-    }
-
-    $body = '
-                            <p style="margin: 0 0 20px 0; color: #2b2d42; font-size: 16px; line-height: 1.6;">
-                                Hallo,
-                            </p>
-                            <p style="margin: 0 0 20px 0; color: #2b2d42; font-size: 16px; line-height: 1.6;">
-                                hier sind die Admin-Links zu den Gruppen, die mit dieser E-Mail-Adresse angelegt wurden. Speichere sie als Lesezeichen.
-                            </p>
-                            ' . $items . '
-                            <p style="margin: 16px 0 0 0; color: #2b2d42; font-size: 16px; line-height: 1.6;">
-                                Viel Spaß beim Wichteln!
-                            </p>';
-
-    return render_email_template('Admin-Link', 'Dein Admin-Link', $body);
-}
-
-function create_admin_recovery_plain_text($groups) {
-    $lines = array(
-        'Hallo,',
-        '',
-        'hier sind die Admin-Links zu den Gruppen, die mit dieser E-Mail-Adresse angelegt wurden:',
-        '',
-    );
-    if (!is_array($groups)) {
-        $groups = array();
-    }
-    foreach ($groups as $group) {
-        if (!is_array($group)) {
-            continue;
-        }
-        $lines[] = isset($group['name']) ? $group['name'] : '';
-        $lines[] = isset($group['admin_link']) ? $group['admin_link'] : '';
-        $lines[] = '';
-    }
-    return implode("\n", $lines);
 }
 
 function ics_escape($value) {
@@ -780,10 +633,15 @@ function ics_fold_line($line) {
     return $result;
 }
 
-function build_gift_ics($group, $dtstamp = null) {
+function build_gift_ics($group, $dtstamp = null, $lang = null) {
     if (!is_array($group)) {
         return '';
     }
+    if ($lang === null) {
+        $from_row = i18n_row_language($group);
+        $lang = ($from_row === null) ? 'de' : $from_row;
+    }
+    return i18n_with_lang($lang, function () use ($group, $dtstamp) {
     $gift_date = isset($group['gift_exchange_date']) ? (string) $group['gift_exchange_date'] : '';
     if (gift_days_until($gift_date, $gift_date) === null) {
         return '';
@@ -803,14 +661,14 @@ function build_gift_ics($group, $dtstamp = null) {
 
     $group_id = isset($group['id']) ? (int) $group['id'] : 0;
     $uid = 'wichteln-' . ($group_id > 0 ? $group_id : 'datum') . '-' . $start->format('Ymd') . '@wichtlae.ch';
-    $name = isset($group['name']) ? (string) $group['name'] : 'Wichteln';
-    $summary = 'Geschenkübergabe: ' . $name;
-    $description = 'Geschenkübergabe der Gruppe ' . $name . ' am ' . $start->format('d.m.Y') . '.';
+    $name = isset($group['name']) ? (string) $group['name'] : t('mail.brand');
+    $summary = t('ics.summary', array('{name}' => $name));
+    $description = t('ics.description', array('{name}' => $name, '{date}' => fmt_date($gift_date)));
 
     $lines = array(
         'BEGIN:VCALENDAR',
         'VERSION:2.0',
-        'PRODID:-//wichtlae.ch//Wichteln//DE',
+        'PRODID:' . t('ics.prodid'),
         'CALSCALE:GREGORIAN',
         'METHOD:PUBLISH',
         'BEGIN:VEVENT',
@@ -830,6 +688,7 @@ function build_gift_ics($group, $dtstamp = null) {
     }
 
     return implode("\r\n", $folded) . "\r\n";
+    });
 }
 
 function ics_signing_key() {
@@ -862,7 +721,7 @@ function gift_ics_signature_valid($group_id, $gift_date, $signature) {
  * Kalenderlink, der nur den ICS-Eintrag freigibt.
  * Erwartet id und gift_exchange_date der Gruppe.
  */
-function gift_ics_url($group) {
+function gift_ics_url($group, $lang = null) {
     if (!is_array($group)) {
         return '';
     }
@@ -871,8 +730,13 @@ function gift_ics_url($group) {
     if ($group_id < 1 || preg_match('/^\d{4}-\d{2}-\d{2}$/', $date) !== 1) {
         return '';
     }
+    if ($lang === null) {
+        $from_row = i18n_row_language($group);
+        $lang = ($from_row === null) ? i18n_current() : $from_row;
+    }
+    $lang = i18n_allow($lang);
     $signature = gift_ics_signature($group_id, $date);
-    return get_display_url('/kalender.php?g=' . $group_id . '&d=' . rawurlencode($date) . '&s=' . rawurlencode($signature));
+    return get_display_url('/kalender.php?g=' . $group_id . '&d=' . rawurlencode($date) . '&lang=' . $lang . '&s=' . rawurlencode($signature));
 }
 
 function public_clean_slugs() {

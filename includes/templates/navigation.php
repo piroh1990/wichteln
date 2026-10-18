@@ -1,58 +1,81 @@
 <!-- Navigation -->
 <nav class="main-nav">
     <div class="nav-container">
-        <a href="/" class="nav-logo">
+        <a href="<?php echo h(i18n_href('index')); ?>" class="nav-logo">
             <img src="/images/logo.png" alt="Wichtlä.ch Logo" height="40">
         </a>
-        
-        <button class="nav-toggle" id="navToggle" aria-label="Menü öffnen" aria-expanded="false" aria-controls="navMenu">
+
+        <button class="nav-toggle" id="navToggle" aria-label="<?php echo h(t('nav.menu_open')); ?>" aria-expanded="false" aria-controls="navMenu">
             <span></span>
             <span></span>
             <span></span>
         </button>
-        
+
         <?php
         $current_script = isset($_SERVER['SCRIPT_NAME']) ? (string) $_SERVER['SCRIPT_NAME'] : '';
         $current_page = basename($current_script !== '' ? $current_script : (isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : ''));
         if (strpos($current_script, '/admin/') !== false) {
             $current_page = '';
         }
+        $nav_items = array(
+            array('index', 'nav.home', 'index.php'),
+            array('was-ist-wichteln', 'nav.what', 'was-ist-wichteln.php'),
+            array('wichtel-ideen', 'nav.ideas', 'wichtel-ideen.php'),
+            array('firmenwichteln-tipps', 'nav.company', 'firmenwichteln-tipps.php'),
+            array('faq', 'nav.faq', 'faq.php'),
+            array('ueber-uns', 'nav.about', 'ueber-uns.php'),
+            array('create_group', 'nav.create', 'create_group.php'),
+        );
         ?>
         <ul class="nav-menu" id="navMenu">
-            <li><a href="/" class="nav-link"<?php echo $current_page === 'index.php' ? ' aria-current="page"' : ''; ?>>Home</a></li>
-            <li><a href="/was-ist-wichteln" class="nav-link"<?php echo $current_page === 'was-ist-wichteln.php' ? ' aria-current="page"' : ''; ?>>Was ist Wichteln?</a></li>
-            <li><a href="/wichtel-ideen" class="nav-link"<?php echo $current_page === 'wichtel-ideen.php' ? ' aria-current="page"' : ''; ?>>Geschenkideen</a></li>
-            <li><a href="/firmenwichteln-tipps" class="nav-link"<?php echo $current_page === 'firmenwichteln-tipps.php' ? ' aria-current="page"' : ''; ?>>Firmenwichteln</a></li>
-            <li><a href="/faq" class="nav-link"<?php echo $current_page === 'faq.php' ? ' aria-current="page"' : ''; ?>>FAQ</a></li>
-            <li><a href="/ueber-uns" class="nav-link"<?php echo $current_page === 'ueber-uns.php' ? ' aria-current="page"' : ''; ?>>Über uns</a></li>
-            <li><a href="/create_group" class="nav-link nav-link-primary"<?php echo $current_page === 'create_group.php' ? ' aria-current="page"' : ''; ?>>Gruppe erstellen</a></li>
+            <?php foreach ($nav_items as $item): ?>
+                <?php
+                $classes = 'nav-link';
+                if ($item[2] === 'create_group.php') {
+                    $classes .= ' nav-link-primary';
+                }
+                $current = ($current_page === $item[2]) ? ' aria-current="page"' : '';
+                ?>
+                <li><a href="<?php echo h(i18n_href($item[0])); ?>" class="<?php echo h($classes); ?>"<?php echo $current; ?>><?php echo h(t($item[1])); ?></a></li>
+            <?php endforeach; ?>
+            <?php if (i18n_show_switcher()): ?>
+                <li class="lang-switch-item">
+                    <ul class="lang-switch" aria-label="<?php echo h(t('lang.switch')); ?>">
+                        <?php foreach (i18n_languages() as $code): ?>
+                            <?php $active = ($code === i18n_current()); ?>
+                            <li>
+                                <a href="<?php echo h(i18n_switch_href($code)); ?>" hreflang="<?php echo h($code); ?>" lang="<?php echo h($code); ?>"<?php echo $active ? ' aria-current="true"' : ''; ?>><?php echo h(strtoupper($code)); ?></a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </li>
+            <?php endif; ?>
         </ul>
     </div>
 </nav>
 
 <script>
-// Mobile Navigation Toggle
 document.addEventListener('DOMContentLoaded', function() {
-    const navToggle = document.getElementById('navToggle');
-    const navMenu = document.getElementById('navMenu');
-    
+    var navToggle = document.getElementById('navToggle');
+    var navMenu = document.getElementById('navMenu');
+    var openLabel = (window.I18N && window.I18N['nav.menu_open']) || 'Menü öffnen';
+    var closeLabel = (window.I18N && window.I18N['nav.menu_close']) || 'Menü schliessen';
+
     if (navToggle && navMenu) {
         navToggle.addEventListener('click', function() {
             navToggle.classList.toggle('active');
             navMenu.classList.toggle('active');
-
-            const isExpanded = navToggle.classList.contains('active');
-            navToggle.setAttribute('aria-expanded', isExpanded);
-            navToggle.setAttribute('aria-label', isExpanded ? 'Menü schließen' : 'Menü öffnen');
+            var isExpanded = navToggle.classList.contains('active');
+            navToggle.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+            navToggle.setAttribute('aria-label', isExpanded ? closeLabel : openLabel);
         });
-        
-        // Close menu when clicking outside
+
         document.addEventListener('click', function(event) {
             if (!navToggle.contains(event.target) && !navMenu.contains(event.target)) {
                 navToggle.classList.remove('active');
                 navMenu.classList.remove('active');
                 navToggle.setAttribute('aria-expanded', 'false');
-                navToggle.setAttribute('aria-label', 'Menü öffnen');
+                navToggle.setAttribute('aria-label', openLabel);
             }
         });
     }

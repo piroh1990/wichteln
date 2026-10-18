@@ -9,17 +9,15 @@
 <div id="cookie-banner" class="cookie-banner" hidden style="display: none;" role="dialog" aria-labelledby="cookie-banner-title" aria-describedby="cookie-banner-text">
     <div class="cookie-banner-content">
         <div class="cookie-banner-copy">
-            <p id="cookie-banner-title" class="cookie-banner-title">Einwilligung zur Reichweitenmessung</p>
+            <p id="cookie-banner-title" class="cookie-banner-title"><?php echo function_exists('h') ? h(t('cookie.title')) : 'Einwilligung zur Reichweitenmessung'; ?></p>
             <p id="cookie-banner-text" class="cookie-banner-text">
-                Matomo wertet Besuche aus. «Akzeptieren» erlaubt ein Matomo-Cookie.
-                «Ablehnen» lässt die Messung ohne Tracking-Cookies.
-                Werbeanzeigen schaltet dieser Hinweis nicht frei.
-                <a href="/datenschutz">Datenschutz</a>
+                <?php echo function_exists('h') ? h(t('cookie.text')) : 'Matomo wertet Besuche aus.'; ?>
+                <a href="<?php echo function_exists('i18n_href') ? h(i18n_href('datenschutz')) : '/datenschutz'; ?>"><?php echo function_exists('h') ? h(t('cookie.privacy')) : 'Datenschutz'; ?></a>
             </p>
         </div>
         <div class="cookie-banner-actions">
-            <button type="button" class="cookie-banner-reject" onclick="wichtelnSetConsent('rejected')">Ablehnen</button>
-            <button type="button" class="cookie-banner-accept" onclick="wichtelnSetConsent('accepted')">Akzeptieren</button>
+            <button type="button" class="cookie-banner-reject" onclick="wichtelnSetConsent('rejected')"><?php echo function_exists('h') ? h(t('cookie.reject')) : 'Ablehnen'; ?></button>
+            <button type="button" class="cookie-banner-accept" onclick="wichtelnSetConsent('accepted')"><?php echo function_exists('h') ? h(t('cookie.accept')) : 'Akzeptieren'; ?></button>
         </div>
     </div>
 </div>

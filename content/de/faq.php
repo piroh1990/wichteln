@@ -1,0 +1,744 @@
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "Was ist Wichtlä.ch?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Wichtlä.ch ist ein kostenloses Online-Tool zum Organisieren von Wichtel-Events. Du kannst damit Wichtel-Gruppen erstellen, Teilnehmer hinzufügen, automatisch und fair Namen ziehen lassen, Lose per E-Mail verschicken und Ausschlüsse definieren. Alles ohne Konto, ohne App-Download – einfach im Browser!"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Kostet Wichtlä.ch etwas?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Nein, Wichtlä.ch ist 100% kostenlos! Es gibt keine versteckten Kosten, keine Premium-Accounts und keine Einschränkungen."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Brauche ich ein Konto?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Nein. Kein Konto nötig. Du erstellst einfach eine Gruppe, fügst Teilnehmer hinzu und erhältst einen Admin-Link per E-Mail."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Wie viele Personen können mitmachen?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Empfohlen: mindestens 3 Personen; technisch möglich ab 2. Nach oben gibt es praktisch keine Grenze – ob 5, 20 oder 100 Teilnehmer, das System funktioniert für alle Gruppengrössen."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Wie funktioniert das Losziehen?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Der Algorithmus stellt sicher, dass niemand sich selbst zieht, jede Person genau eine andere Person beschenkt, jede Person genau ein Geschenk erhält und definierte Ausschlüsse eingehalten werden. Das Los wird per E-Mail verschickt und bleibt geheim."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Was sind Ausschlüsse und wofür brauche ich sie?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Ausschlüsse verhindern, dass bestimmte Personen einander ziehen. Das ist sinnvoll bei Paaren, engen Freunden, Geschwistern in Familien-Wichteln oder Vorgesetzten/Mitarbeitern im Firmenwichteln."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Kann ich später noch Teilnehmer hinzufügen?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Ja! Als Admin kannst du über deinen Admin-Link jederzeit neue Teilnehmer hinzufügen, Wunschlisten ergänzen oder ändern und weitere Ausschlüsse definieren. Sobald die Namen gezogen wurden, müsste die Ziehung neu durchgeführt werden."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Kann ich die Ziehung wiederholen?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Ja, als Admin kannst du die Ziehung zurücksetzen und neu durchführen lassen. Das ist nützlich, wenn du Ausschlüsse vergessen hast, neue Teilnehmer hinzugekommen sind oder ein Fehler passiert ist."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Was passiert, wenn jemand sein Los verliert?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Es gibt auf der Startseite keinen Knopf Los abrufen. Jede Person hat einen persönlichen Teilnehmer-Link in der Bestätigungs-Mail und beim Admin zum Kopieren. Darüber sieht man den eigenen Wichtelpartner. Der Admin kann die Zuordnung nach der Auslosung auch erneut per E-Mail senden."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Kann ich mehrere Wichtel-Gruppen erstellen?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Ja, absolut! Du kannst beliebig viele Gruppen erstellen, z.B. eine für die Familie, eine für Freunde und eine für die Arbeit. Jede Gruppe hat ihren eigenen Admin-Link."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Sind meine Daten sicher?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Ja! Wir verwenden SSL-Verschlüsselung für alle Verbindungen, der Server-Standort ist in der Schweiz, wir halten das Schweizer Datenschutzgesetz (DSG) ein und Gruppen werden automatisch nach Ablauf gelöscht."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Welche Daten werden gespeichert?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Wir speichern nur das Nötigste: Namen der Teilnehmer, E-Mail-Adressen (für Benachrichtigungen), Wunschlisten (optional), Ausschlüsse und Ziehungsergebnisse. Nicht gespeichert werden: Telefonnummern, Adressen, Zahlungsdaten oder sonstige persönliche Informationen."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Wie lange werden meine Daten aufbewahrt?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Gruppen und alle zugehörigen Daten werden drei Monate nach dem Event automatisch gelöscht. Ohne Eventdatum gilt die Frist ab dem Erstellen der Gruppe. Als Admin kannst du die Gruppe jederzeit selbst löschen."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Kann jemand anders mein Los sehen?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Zuerst sieht jede Person nur den eigenen Wichtelpartner, und nur über den persönlichen Link. In der Verwaltung gibt es keine Liste aller Zuordnungen. Schickt der Admin die Auflösung, erhalten alle Teilnehmer mit E-Mail die komplette Liste, wer wem gewichtelt hat."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Ich habe keine E-Mail erhalten – was tun?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Prüfe den Spam-Ordner und die E-Mail-Adresse. Der Admin kann im Bereich Teilnehmer den persönlichen Link kopieren oder die Zuordnung erneut per E-Mail senden. Eine Funktion Los erneut zusenden gibt es auf der Startseite nicht."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Ich habe meinen Admin-Link verloren!",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Auf der Seite Admin-Link erneut senden die E-Mail-Adresse eintragen, die beim Erstellen der Gruppe verwendet wurde. Wenn dazu eine Gruppe existiert, kommt der Link erneut. Ein Sicherheitscode und eine Begrenzung der Versuche schützen das Formular. Die Antwort verrät nicht, ob die Adresse gespeichert ist."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Was ist die Auflösungs-Mail?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Nach der Auslosung kann der Admin Auflösung an alle senden. Jede Person mit E-Mail bekommt dann die Liste, wer wem gewichtelt hat. Bis dahin sieht jede Person nur den eigenen Wichtelpartner. Ein zweiter Versand braucht eine ausdrückliche Bestätigung."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Die Ziehung funktioniert nicht – warum?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Mögliche Gründe: Zu viele Ausschlüsse (mathematisch unmöglich), zu wenige Teilnehmer (empfohlen: mindestens 3 Personen; technisch möglich ab 2) oder ein technisches Problem (Browser-Cache leeren). Reduziere die Ausschlüsse oder füge mehr Teilnehmer hinzu."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Kann ich eine Gruppe löschen?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Ja! Als Admin findest du im Admin-Bereich eine 'Gruppe löschen'-Option. Alle Daten werden sofort und unwiderruflich gelöscht."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Funktioniert Wichtlä.ch auf dem Smartphone?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Ja, vollständig! Wichtlä.ch ist komplett responsive und funktioniert auf Smartphones (iOS & Android), Desktop-Computern und Tablets. Keine App nötig – einfach im Browser öffnen!"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Wann ist der beste Zeitpunkt, um zu starten?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "3-4 Wochen vor dem Event ist ideal. Genug Zeit zum Geschenke-Besorgen, Teilnehmer können in Ruhe überlegen und bei Problemen bleibt Zeit für Korrekturen. Für spontane Wichtel-Aktionen reicht auch 1-2 Wochen Vorlauf."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Welches Budget empfehlt ihr?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Das hängt von eurer Gruppe ab: 10-15 CHF für Freunde, Studenten und grosse Gruppen; 15-25 CHF als Standard für die meisten Wichtel-Events; 25-50 CHF für Firmen und kleinere Kreise. Wählt ein Budget, das für alle bezahlbar ist!"
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Soll das Wichteln anonym bleiben?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Das ist Geschmackssache: Anonym ist spannender mit mehr Rätselraten, offen ist persönlicher und einfacher bei der Geschenkauswahl. Viele Gruppen machen es so: Geschenke anonym verpacken, aber nach dem Auspacken verrät sich der Schenker."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Was tun, wenn jemand nicht mitmachen will?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Wichteln sollte immer freiwillig sein! Niemand sollte sich gezwungen fühlen. Bei Firmenwichteln: Macht eine Umfrage vorher und organisiert das Event nur, wenn genug Leute mitmachen wollen."
+                }
+            }
+        ]
+    }
+    </script>
+<div class="content-page">
+        <div class="breadcrumb">
+            <a href="<?php echo h(i18n_href('index')); ?>">Home</a> / FAQ
+        </div>
+        
+        <header class="page-header">
+            <h1 class="page-title">Häufig gestellte Fragen ?</h1>
+            <p class="page-subtitle">Alle Antworten zu Wichtlä.ch, Funktionen, Datenschutz und Tipps für erfolgreiches Wichteln</p>
+        </header>
+        
+        <article>
+            <!-- Allgemeine Fragen -->
+            <section class="faq-section">
+                <h2>🎁 Allgemeine Fragen</h2>
+                
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-1" id="faq-question-1" onclick="toggleFaq(this)">
+                            <span class="faq-title">Was ist Wichtlä.ch?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-1" class="faq-answer" role="region" aria-labelledby="faq-question-1">
+<p>
+                            Wichtlä.ch ist ein <strong>kostenloses Online-Tool</strong> zum Organisieren von Wichtel-Events. Du kannst damit ganz einfach:
+                        </p>
+                        <ul>
+                            <li>Wichtel-Gruppen erstellen</li>
+                            <li>Teilnehmer hinzufügen</li>
+                            <li>Automatisch und fair Namen ziehen lassen</li>
+                            <li>Lose per E-Mail verschicken</li>
+                            <li>Ausschlüsse definieren (z.B. Paare ziehen sich nicht)</li>
+                        </ul>
+                        <p>
+                            Alles ohne Konto, ohne App-Download – einfach im Browser!
+                        </p>
+                    </div>
+                </div>
+                
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-2" id="faq-question-2" onclick="toggleFaq(this)">
+                            <span class="faq-title">Kostet Wichtlä.ch etwas?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-2" class="faq-answer" role="region" aria-labelledby="faq-question-2">
+<p>
+                            <strong>Nein, Wichtlä.ch ist 100% kostenlos!</strong>
+                        </p>
+                        <p>
+                            Es gibt keine versteckten Kosten, keine Premium-Accounts und keine Einschränkungen. Der Service wird durch kleine Werbeanzeigen finanziert, die dezent platziert sind und nicht stören.
+                        </p>
+                    </div>
+                </div>
+                
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-3" id="faq-question-3" onclick="toggleFaq(this)">
+                            <span class="faq-title">Brauche ich ein Konto?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-3" class="faq-answer" role="region" aria-labelledby="faq-question-3">
+<p>
+                            <strong>Nein!</strong> Kein Konto nötig. Du erstellst einfach eine Gruppe, fügst Teilnehmer hinzu und erhältst einen Admin-Link per E-Mail. Fertig!
+                        </p>
+                        <p>
+                            Das macht Wichtlä.ch besonders einfach und schnell in der Nutzung.
+                        </p>
+                    </div>
+                </div>
+                
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-4" id="faq-question-4" onclick="toggleFaq(this)">
+                            <span class="faq-title">Wie viele Personen können mitmachen?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-4" class="faq-answer" role="region" aria-labelledby="faq-question-4">
+<p>
+                            <strong>Empfohlen: mindestens 3 Personen; technisch möglich ab 2.</strong> Nach oben gibt es praktisch keine Grenze – ob 5, 20 oder 100 Teilnehmer, das System funktioniert für alle Gruppengrössen.
+                        </p>
+                        <p>
+                            Besonders beliebt sind Gruppen von 5-30 Personen (z.B. für Familien, Freundeskreise oder Teams).
+                        </p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Funktionen -->
+            <section class="faq-section">
+                <h2>⚙️ Funktionen & Nutzung</h2>
+                
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-5" id="faq-question-5" onclick="toggleFaq(this)">
+                            <span class="faq-title">Wie funktioniert das Losziehen?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-5" class="faq-answer" role="region" aria-labelledby="faq-question-5">
+<p>
+                            Der Algorithmus stellt sicher, dass:
+                        </p>
+                        <ul>
+                            <li>✅ Niemand sich selbst zieht</li>
+                            <li>✅ Jede Person genau eine andere Person beschenkt</li>
+                            <li>✅ Jede Person genau ein Geschenk erhält</li>
+                            <li>✅ Definierte Ausschlüsse eingehalten werden</li>
+                        </ul>
+                        <p>
+                            Das Los wird per E-Mail verschickt und bleibt geheim – du siehst nur, wen DU beschenken sollst.
+                        </p>
+                    </div>
+                </div>
+                
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-6" id="faq-question-6" onclick="toggleFaq(this)">
+                            <span class="faq-title">Was sind Ausschlüsse und wofür brauche ich sie?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-6" class="faq-answer" role="region" aria-labelledby="faq-question-6">
+<p>
+                            <strong>Ausschlüsse</strong> verhindern, dass bestimmte Personen einander ziehen. Das ist sinnvoll bei:
+                        </p>
+                        <ul>
+                            <li>Paaren oder Ehepartner (kennen die Wünsche meist schon)</li>
+                            <li>Enge Freunde, die sich sowieso beschenken</li>
+                            <li>Geschwistern in Familien-Wichteln</li>
+                            <li>Vorgesetzte/Mitarbeiter im Firmenwichteln</li>
+                        </ul>
+                        <p>
+                            Beispiel: Du gibst an "Anna ↔ Peter" – dann kann Anna nicht Peter ziehen und Peter nicht Anna.
+                        </p>
+                    </div>
+                </div>
+                
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-7" id="faq-question-7" onclick="toggleFaq(this)">
+                            <span class="faq-title">Kann ich später noch Teilnehmer hinzufügen?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-7" class="faq-answer" role="region" aria-labelledby="faq-question-7">
+<p>
+                            <strong>Ja!</strong> Als Admin kannst du über deinen Admin-Link jederzeit:
+                        </p>
+                        <ul>
+                            <li>Neue Teilnehmer hinzufügen</li>
+                            <li>Wunschlisten ergänzen oder ändern</li>
+                            <li>Weitere Ausschlüsse definieren</li>
+                        </ul>
+                        <p>
+                            <strong>Wichtig:</strong> Sobald die Namen gezogen wurden, können keine Teilnehmer mehr hinzugefügt werden. Die Ziehung müsste neu durchgeführt werden.
+                        </p>
+                    </div>
+                </div>
+                
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-8" id="faq-question-8" onclick="toggleFaq(this)">
+                            <span class="faq-title">Kann ich die Ziehung wiederholen?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-8" class="faq-answer" role="region" aria-labelledby="faq-question-8">
+<p>
+                            <strong>Ja</strong>, als Admin kannst du die Ziehung zurücksetzen und neu durchführen lassen. Das ist nützlich, wenn:
+                        </p>
+                        <ul>
+                            <li>Du Ausschlüsse vergessen hast</li>
+                            <li>Neue Teilnehmer hinzugekommen sind</li>
+                            <li>Ein Fehler passiert ist</li>
+                        </ul>
+                        <p>
+                            <strong>Achtung:</strong> Bei einer neuen Ziehung werden alle bisherigen Zuordnungen gelöscht!
+                        </p>
+                    </div>
+                </div>
+                
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-9" id="faq-question-9" onclick="toggleFaq(this)">
+                            <span class="faq-title">Was passiert, wenn jemand sein Los verliert?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-9" class="faq-answer" role="region" aria-labelledby="faq-question-9">
+<p>
+                            Es gibt auf der Startseite keinen Knopf «Los abrufen». Jede Person hat einen persönlichen Teilnehmer-Link:
+                        </p>
+                        <ul>
+                            <li>in der Bestätigungs-Mail nach der Anmeldung</li>
+                            <li>beim Admin zum Kopieren, unter «Teilnehmer»</li>
+                        </ul>
+                        <p>
+                            Über diesen Link siehst du deinen eigenen Wichtelpartner und kannst die Wunschliste ändern. Der Admin kann die Zuordnung nach der Auslosung auch erneut per E-Mail senden.
+                        </p>
+                    </div>
+                </div>
+                
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-10" id="faq-question-10" onclick="toggleFaq(this)">
+                            <span class="faq-title">Kann ich mehrere Wichtel-Gruppen erstellen?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-10" class="faq-answer" role="region" aria-labelledby="faq-question-10">
+<p>
+                            <strong>Ja, absolut!</strong> Du kannst beliebig viele Gruppen erstellen, z.B.:
+                        </p>
+                        <ul>
+                            <li>Eine für die Familie</li>
+                            <li>Eine für Freunde</li>
+                            <li>Eine für die Arbeit</li>
+                        </ul>
+                        <p>
+                            Jede Gruppe hat ihren eigenen Admin-Link, den du per E-Mail erhältst.
+                        </p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Datenschutz & Sicherheit -->
+            <section class="faq-section">
+                <h2>🔒 Datenschutz & Sicherheit</h2>
+                
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-11" id="faq-question-11" onclick="toggleFaq(this)">
+                            <span class="faq-title">Sind meine Daten sicher?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-11" class="faq-answer" role="region" aria-labelledby="faq-question-11">
+<p>
+                            <strong>Ja!</strong> Wir nehmen Datenschutz sehr ernst:
+                        </p>
+                        <ul>
+                            <li>🔐 SSL-Verschlüsselung für alle Verbindungen</li>
+                            <li>🇨🇭 Server-Standort in der Schweiz</li>
+                            <li>📜 Einhaltung des Schweizer Datenschutzgesetzes (DSG)</li>
+                            <li>🗑️ Automatische Löschung nach Ablauf der Gruppe</li>
+                            <li>🚫 Keine Weitergabe an Dritte (ausser Google AdSense für Werbung)</li>
+                        </ul>
+                        <p>
+                            Mehr Details in unserer <a href="<?php echo h(i18n_href('datenschutz')); ?>">Datenschutzerklärung</a>.
+                        </p>
+                    </div>
+                </div>
+                
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-12" id="faq-question-12" onclick="toggleFaq(this)">
+                            <span class="faq-title">Welche Daten werden gespeichert?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-12" class="faq-answer" role="region" aria-labelledby="faq-question-12">
+<p>
+                            Wir speichern nur das Nötigste:
+                        </p>
+                        <ul>
+                            <li>Namen der Teilnehmer</li>
+                            <li>E-Mail-Adressen (für Benachrichtigungen)</li>
+                            <li>Wunschlisten (optional, falls angegeben)</li>
+                            <li>Ausschlüsse</li>
+                            <li>Ziehungsergebnisse</li>
+                        </ul>
+                        <p>
+                            <strong>Nicht gespeichert werden:</strong> Telefonnummern, Adressen, Zahlungsdaten oder sonstige persönliche Informationen.
+                        </p>
+                    </div>
+                </div>
+                
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-13" id="faq-question-13" onclick="toggleFaq(this)">
+                            <span class="faq-title">Wie lange werden meine Daten aufbewahrt?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-13" class="faq-answer" role="region" aria-labelledby="faq-question-13">
+<p>
+                            Gruppen und alle zugehörigen Daten werden <strong>drei Monate nach dem Event automatisch gelöscht</strong>. Ohne Eventdatum gilt die Frist ab dem Erstellen der Gruppe.
+                        </p>
+                        <p>
+                            Als Admin kannst du deine Gruppe auch jederzeit manuell löschen – alle Daten werden dann sofort entfernt.
+                        </p>
+                    </div>
+                </div>
+                
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-14" id="faq-question-14" onclick="toggleFaq(this)">
+                            <span class="faq-title">Kann jemand anders mein Los sehen?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-14" class="faq-answer" role="region" aria-labelledby="faq-question-14">
+<p>
+                            Zuerst sieht jede Person nur den eigenen Wichtelpartner, und nur über den persönlichen Link. In der Verwaltung gibt es keine Liste aller Zuordnungen.
+                        </p>
+                        <p>
+                            Das ändert sich, wenn der Admin die <strong>Auflösung</strong> verschickt. Dann erhalten alle Teilnehmer mit E-Mail-Adresse die komplette Liste, wer wem gewichtelt hat. Vorher bleibt das geheim.
+                        </p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Probleme & Support -->
+            <section class="faq-section">
+                <h2>🆘 Probleme & Support</h2>
+                
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-15" id="faq-question-15" onclick="toggleFaq(this)">
+                            <span class="faq-title">Ich habe keine E-Mail erhalten – was tun?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-15" class="faq-answer" role="region" aria-labelledby="faq-question-15">
+<p>
+                            Wenn du keine E-Mail erhalten hast, prüfe bitte:
+                        </p>
+                        <ul>
+                            <li>📧 <strong>Spam-Ordner:</strong> Manchmal landen unsere E-Mails im Spam</li>
+                            <li>✉️ <strong>E-Mail-Adresse:</strong> Hast du dich vielleicht vertippt?</li>
+                            <li>⏱️ <strong>Wartezeit:</strong> E-Mails können 1-2 Minuten dauern</li>
+                            <li>🚫 <strong>E-Mail-Filter:</strong> Firmen-E-Mails blockieren manchmal externe Absender</li>
+                        </ul>
+                        <p>
+                            <strong>Lösung:</strong> Bitte den Admin, im Bereich «Teilnehmer» den persönlichen Link zu kopieren oder die Zuordnung erneut per E-Mail zu senden. Eine Funktion «Los erneut zusenden» gibt es auf der Startseite nicht.
+                        </p>
+                    </div>
+                </div>
+                
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-16" id="faq-question-16" onclick="toggleFaq(this)">
+                            <span class="faq-title">Ich habe meinen Admin-Link verloren!</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-16" class="faq-answer" role="region" aria-labelledby="faq-question-16">
+<p>
+                            Den Link kannst du erneut anfordern: Auf <a href="<?php echo h(i18n_href('admin-link')); ?>">Admin-Link erneut senden</a> die E-Mail-Adresse eintragen, die beim Erstellen der Gruppe verwendet wurde. Wenn dazu eine Gruppe existiert, schicken wir den Admin-Link noch einmal. Ein Sicherheitscode und eine Begrenzung der Versuche schützen das Formular.
+                        </p>
+                        <p>
+                            Die Antwort ist immer gleich formuliert, damit niemand prüfen kann, ob eine Adresse bei uns gespeichert ist.
+                        </p>
+                        <div class="highlight-box">
+                            <strong>Tipp:</strong> Speichere den Admin-Link als Lesezeichen im Browser.
+                        </div>
+                    </div>
+                </div>
+                
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-24" id="faq-question-24" onclick="toggleFaq(this)">
+                            <span class="faq-title">Was ist die Auflösungs-Mail?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-24" class="faq-answer" role="region" aria-labelledby="faq-question-24">
+<p>
+                            Nach der Auslosung kann der Admin <strong>«Auflösung an alle senden»</strong>. Jede Person mit E-Mail-Adresse bekommt dann die Liste, wer wem gewichtelt hat (Geber → Beschenkter).
+                        </p>
+                        <p>
+                            Bis dahin sieht jede Person nur den eigenen Wichtelpartner. Ein zweiter Versand geht nur mit ausdrücklicher Bestätigung, damit die Mail nicht aus Versehen mehrfach rausgeht.
+                        </p>
+                    </div>
+                </div>
+
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-17" id="faq-question-17" onclick="toggleFaq(this)">
+                            <span class="faq-title">Die Ziehung funktioniert nicht – warum?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-17" class="faq-answer" role="region" aria-labelledby="faq-question-17">
+<p>
+                            Mögliche Gründe:
+                        </p>
+                        <ul>
+                            <li><strong>Zu viele Ausschlüsse:</strong> Bei zu vielen Ausschlüssen ist eine gültige Ziehung mathematisch unmöglich</li>
+                            <li><strong>Zu wenige Teilnehmer:</strong> Empfohlen sind mindestens 3 Personen, technisch möglich ab 2</li>
+                            <li><strong>Technisches Problem:</strong> Browser-Cache leeren und erneut versuchen</li>
+                        </ul>
+                        <p>
+                            <strong>Tipp:</strong> Reduziere die Anzahl der Ausschlüsse oder füge mehr Teilnehmer hinzu.
+                        </p>
+                    </div>
+                </div>
+                
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-18" id="faq-question-18" onclick="toggleFaq(this)">
+                            <span class="faq-title">Kann ich eine Gruppe löschen?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-18" class="faq-answer" role="region" aria-labelledby="faq-question-18">
+<p>
+                            <strong>Ja!</strong> Als Admin findest du im Admin-Bereich eine "Gruppe löschen"-Option. Alle Daten werden sofort und unwiderruflich gelöscht.
+                        </p>
+                        <p>
+                            <strong>Achtung:</strong> Dies kann nicht rückgängig gemacht werden!
+                        </p>
+                    </div>
+                </div>
+                
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-19" id="faq-question-19" onclick="toggleFaq(this)">
+                            <span class="faq-title">Funktioniert Wichtlä.ch auf dem Smartphone?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-19" class="faq-answer" role="region" aria-labelledby="faq-question-19">
+<p>
+                            <strong>Ja, vollständig!</strong> Wichtlä.ch ist komplett responsive und funktioniert auf allen Geräten:
+                        </p>
+                        <ul>
+                            <li>📱 Smartphones (iOS & Android)</li>
+                            <li>💻 Desktop-Computer</li>
+                            <li>🖥️ Tablets</li>
+                        </ul>
+                        <p>
+                            Keine App nötig – einfach im Browser öffnen!
+                        </p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Tipps & Best Practices -->
+            <section class="faq-section">
+                <h2>💡 Tipps & Best Practices</h2>
+                
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-20" id="faq-question-20" onclick="toggleFaq(this)">
+                            <span class="faq-title">Wann ist der beste Zeitpunkt, um zu starten?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-20" class="faq-answer" role="region" aria-labelledby="faq-question-20">
+<p>
+                            <strong>3-4 Wochen vor dem Event</strong> ist ideal:
+                        </p>
+                        <ul>
+                            <li>Genug Zeit zum Geschenke-Besorgen</li>
+                            <li>Teilnehmer können in Ruhe überlegen</li>
+                            <li>Bei Problemen bleibt Zeit für Korrekturen</li>
+                        </ul>
+                        <p>
+                            Für spontane Wichtel-Aktionen reicht auch 1-2 Wochen Vorlauf.
+                        </p>
+                    </div>
+                </div>
+                
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-21" id="faq-question-21" onclick="toggleFaq(this)">
+                            <span class="faq-title">Welches Budget empfehlt ihr?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-21" class="faq-answer" role="region" aria-labelledby="faq-question-21">
+<p>
+                            Das hängt von eurer Gruppe ab:
+                        </p>
+                        <ul>
+                            <li><strong>10-15 CHF:</strong> Freunde, Studenten, grosse Gruppen</li>
+                            <li><strong>15-25 CHF:</strong> Standard für die meisten Wichtel-Events</li>
+                            <li><strong>25-50 CHF:</strong> Firmen, kleinere Gruppen, engere Kreise</li>
+                        </ul>
+                        <p>
+                            <strong>Wichtig:</strong> Wählt ein Budget, das für alle bezahlbar ist!
+                        </p>
+                    </div>
+                </div>
+                
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-22" id="faq-question-22" onclick="toggleFaq(this)">
+                            <span class="faq-title">Soll das Wichteln anonym bleiben?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-22" class="faq-answer" role="region" aria-labelledby="faq-question-22">
+<p>
+                            Das ist Geschmackssache:
+                        </p>
+                        <ul>
+                            <li><strong>Anonym:</strong> Spannender, mehr Rätselraten, klassische Variante</li>
+                            <li><strong>Offen:</strong> Persönlicher, einfacher bei der Geschenkauswahl</li>
+                        </ul>
+                        <p>
+                            Viele Gruppen machen es so: Geschenke anonym verpacken, aber nach dem Auspacken verrät sich der Schenker. Das Beste aus beiden Welten!
+                        </p>
+                    </div>
+                </div>
+                
+                                <div class="faq-item">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-23" id="faq-question-23" onclick="toggleFaq(this)">
+                            <span class="faq-title">Was tun, wenn jemand nicht mitmachen will?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-23" class="faq-answer" role="region" aria-labelledby="faq-question-23">
+<p>
+                            <strong>Wichteln sollte immer freiwillig sein!</strong> Niemand sollte sich gezwungen fühlen.
+                        </p>
+                        <p>
+                            Bei Firmenwichteln: Macht eine Umfrage vorher und organisiert das Event nur, wenn genug Leute mitmachen wollen. Nicht-Teilnehmer sollten sich nicht ausgeschlossen fühlen.
+                        </p>
+                    </div>
+                </div>
+            </section>
+            
+            <div class="cta-section">
+                <h2>Noch Fragen?</h2>
+                <p>Schreib uns eine E-Mail oder starte einfach dein erstes Wichteln – es ist kinderleicht!</p>
+                <a href="<?php echo h(i18n_href('create_group')); ?>" class="cta-button-white">Jetzt Gruppe erstellen →</a>
+            </div>
+        </article>
+    </div>
+    
+    <script>
+        function toggleFaq(button) {
+            toggleFAQ(button);
+        }
+    </script>
+    
+    <!-- Simple Footer -->

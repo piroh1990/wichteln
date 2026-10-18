@@ -1,7 +1,6 @@
 <?php
-// register.php
-
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/templates/public_shell.php';
 
 if (!headers_sent()) {
     header('X-Robots-Tag: noindex, nofollow');
@@ -10,23 +9,23 @@ if (!headers_sent()) {
 
 start_secure_session();
 
-$invite_token = $_GET['token'] ?? '';
+$invite_token = isset($_GET['token']) ? (string) $_GET['token'] : '';
 $pdo = db_connect();
 
-// Gruppe abrufen
 $stmt = $pdo->prepare("SELECT * FROM `groups` WHERE `invite_token` = ?");
-$stmt->execute([$invite_token]);
+$stmt->execute(array($invite_token));
 $group = $stmt->fetch(PDO::FETCH_ASSOC);
 
+i18n_boot_register(is_array($group) ? $group : null, $invite_token);
+
 if (!$group) {
-    die('Ungültiger Einladungstoken.');
+    die(h(t('error.invite')));
 }
 
 if ($group['is_drawn']) {
-    die('Die Registrierung ist nicht mehr möglich. Die Auslosung wurde bereits durchgeführt.');
+    die(h(t('error.registration_closed')));
 }
 
-// Teilnehmer registrieren
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = trim(isset($_POST['name']) ? $_POST['name'] : '');
     $email = trim(isset($_POST['email']) ? $_POST['email'] : '') ?: null;
@@ -34,121 +33,65 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!verify_csrf_token(isset($_POST['csrf_token']) ? $_POST['csrf_token'] : '')) {
         $error = csrf_failure_message();
     } elseif (!registration_attempt_allowed($invite_token, request_client_ip())) {
-        $error = 'Zu viele Anmeldungen. Bitte später erneut versuchen.';
+        $error = t('error.rate_register');
     } elseif (empty($name)) {
-        $error = "Name darf nicht leer sein.";
-    } elseif (($length_error = limit_text_error($name, 255, 'Name')) !== '') {
+        $error = t('error.name_empty');
+    } elseif (($length_error = limit_text_error($name, 255, t('field.name'))) !== '') {
         $error = $length_error;
-    } elseif ($email !== null && ($length_error = limit_text_error($email, 255, 'E-Mail')) !== '') {
+    } elseif ($email !== null && ($length_error = limit_text_error($email, 255, t('field.email'))) !== '') {
         $error = $length_error;
     } elseif ($email !== null && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $error = "Ungültige E-Mail-Adresse.";
+        $error = t('error.email_invalid');
     } else {
         $participant_token = generate_token();
+        $lang = i18n_current();
+        i18n_insert_participant($pdo, $group['id'], $name, $email, $participant_token, $lang);
 
-        $stmt = $pdo->prepare("INSERT INTO `participants` (`group_id`, `name`, `email`, `participant_token`) VALUES (?, ?, ?, ?)");
-        $stmt->execute([$group['id'], $name, $email, $participant_token]);
-
-        // Link an Teilnehmer senden, falls E-Mail angegeben
         if ($email) {
-            $participant_link = get_base_url() . '/participant.php?token=' . urlencode($participant_token);
-            $budget_display = $group['budget'] !== null ? number_format($group['budget'], 2) . " CHF" : "Nicht festgelegt";
-            $description_display = $group['description'] ?: "Keine Beschreibung.";
-            $gift_exchange_date_display = $group['gift_exchange_date'] ? date('d.m.Y', strtotime($group['gift_exchange_date'])) : "Nicht festgelegt";
-            
-            $subject = 'Willkommen beim Wichteln! 🎁';
-            $html_message = create_registration_email([
-                'name' => $name,
-                'group_name' => $group['name'],
-                'participant_link' => $participant_link,
-                'budget' => $budget_display,
-                'description' => $description_display,
-                'gift_date' => $gift_exchange_date_display,
-                'ics_url' => !empty($group['gift_exchange_date']) ? gift_ics_url($group) : ''
-            ]);
-
-            if (!send_email($email, $subject, $html_message, true)) {
-                // Fehlerbehandlung, falls E-Mail nicht gesendet werden konnte
+            $participant_link = get_display_url('/participant.php?token=' . urlencode($participant_token));
+            if (!send_registration_mail($email, $name, $group, $participant_link, $lang)) {
                 error_log('E-Mail konnte nicht an ' . mask_email($email) . ' gesendet werden.');
-                $email_error = "E-Mail konnte nicht gesendet werden. Bitte überprüfe deine E-Mail-Adresse.";
             }
         }
 
-        // Weiterleitung zur Teilnehmerseite
-        header("Location: participant.php?token=" . urlencode($participant_token));
+        header('Location: /participant.php?token=' . urlencode($participant_token));
         exit();
     }
 }
-?>
 
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>Registrierung für <?php echo htmlspecialchars($group['name']); ?></title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <link rel="apple-touch-icon" sizes="57x57" href="/images/favicon/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="/images/favicon/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/images/favicon/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="/images/favicon/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/images/favicon/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/images/favicon/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/images/favicon/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/images/favicon/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192"  href="/images/favicon/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
-    <link rel="manifest" href="/images/favicon/manifest.json">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="/images/favicon/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
-   <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <!-- CSS Stylesheet -->
-    <link rel="stylesheet" href="css/styles.css">
-    <!-- Shared JavaScript -->
-    <script src="js/main.js"></script>
-    <?php echo token_page_referrer_meta(); ?>
-</head>
-<body>
-    <?php include __DIR__ . '/../includes/templates/navigation.php'; ?>
+$presented = mail_present_group($group, i18n_current());
+token_page_open(t('meta.register.title', array('{group}' => $group['name'])));
+?>
     <div class="container app-page">
         <header class="app-hero">
-            <p class="app-kicker">Einladung</p>
-            <h1>Mitmachen bei <?php echo htmlspecialchars($group['name']); ?></h1>
-            <p class="app-hero-lead">Trag dich ein. Danach siehst du deine Wunschliste und später, wen du beschenkst.</p>
+            <p class="app-kicker"><?php echo h(t('register.kicker')); ?></p>
+            <h1><?php echo h(t('register.heading', array('{group}' => $group['name']))); ?></h1>
+            <p class="app-hero-lead"><?php echo h(t('register.lead')); ?></p>
         </header>
         <?php if (isset($error)): ?>
             <div class="notification error" role="alert" aria-live="assertive">
-                <?php echo htmlspecialchars($error); ?>
-            </div>
-        <?php endif; ?>
-        <?php if (isset($email_error)): ?>
-            <div class="notification error" role="alert" aria-live="assertive">
-                <?php echo htmlspecialchars($email_error); ?>
+                <?php echo h($error); ?>
             </div>
         <?php endif; ?>
 
         <section class="section-card" aria-labelledby="register-group-heading">
             <div class="section-card-header">
                 <span class="section-icon" aria-hidden="true">ℹ️</span>
-                <h2 id="register-group-heading">Das Wichteln</h2>
+                <h2 id="register-group-heading"><?php echo h(t('register.about')); ?></h2>
             </div>
             <div class="group-info-grid">
                 <div class="group-info-item">
-                    <span class="info-label"><span aria-hidden="true">💰</span> Budget</span>
-                    <span class="info-value"><?php echo $group['budget'] !== null ? number_format($group['budget'], 2) . ' CHF' : 'Nicht festgelegt'; ?></span>
+                    <span class="info-label"><span aria-hidden="true">💰</span> <?php echo h(t('register.budget')); ?></span>
+                    <span class="info-value"><?php echo h($presented['budget']); ?></span>
                 </div>
                 <div class="group-info-item">
-                    <span class="info-label"><span aria-hidden="true">📅</span> Geschenkübergabe</span>
-                    <span class="info-value"><?php echo $group['gift_exchange_date'] ? date('d.m.Y', strtotime($group['gift_exchange_date'])) : 'Nicht festgelegt'; ?></span>
+                    <span class="info-label"><span aria-hidden="true">📅</span> <?php echo h(t('register.date')); ?></span>
+                    <span class="info-value"><?php echo h($presented['gift_date']); ?></span>
                 </div>
                 <?php if (!empty($group['description'])): ?>
                 <div class="group-info-item full-width">
-                    <span class="info-label"><span aria-hidden="true">📄</span> Beschreibung</span>
-                    <span class="info-value"><?php echo htmlspecialchars($group['description']); ?></span>
+                    <span class="info-label"><span aria-hidden="true">📄</span> <?php echo h(t('register.description')); ?></span>
+                    <span class="info-value"><?php echo h($group['description']); ?></span>
                 </div>
                 <?php endif; ?>
             </div>
@@ -157,31 +100,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <section class="section-card" aria-labelledby="register-form-heading">
             <div class="section-card-header">
                 <span class="section-icon" aria-hidden="true">✏️</span>
-                <h2 id="register-form-heading">Deine Anmeldung</h2>
+                <h2 id="register-form-heading"><?php echo h(t('register.form')); ?></h2>
             </div>
             <form method="POST" id="register-form">
                 <?php echo csrf_input(); ?>
                 <div class="form-group">
-                    <label for="name">Name:<span class="required-indicator" aria-hidden="true" title="Erforderlich">*</span></label>
-                    <input type="text" id="name" name="name" required placeholder="Dein Name" autocomplete="name">
+                    <label for="name"><?php echo h(t('register.name')); ?><span class="required-indicator" aria-hidden="true" title="<?php echo h(t('captcha.required')); ?>">*</span></label>
+                    <input type="text" id="name" name="name" required placeholder="<?php echo h(t('register.name_ph')); ?>" autocomplete="name" value="<?php echo isset($name) ? h($name) : ''; ?>">
                 </div>
                 <div class="form-group">
-                    <label for="email">E-Mail (optional):</label>
-                    <input type="email" id="email" name="email" placeholder="deine@email.ch" aria-describedby="email_hint" autocomplete="email">
-                    <small id="email_hint" class="form-hint">Wir senden dir deinen Wichtelpartner per E-Mail, sobald die Auslosung stattfindet.</small>
+                    <label for="email"><?php echo h(t('register.email')); ?></label>
+                    <input type="email" id="email" name="email" placeholder="<?php echo h(t('register.email_ph')); ?>" aria-describedby="email_hint" autocomplete="email" value="<?php echo isset($email) && $email !== null ? h($email) : ''; ?>">
+                    <small id="email_hint" class="form-hint"><?php echo h(t('register.email_hint')); ?></small>
                 </div>
-                <button type="submit" class="button primary">Registrieren</button>
+                <button type="submit" class="button primary"><?php echo h(t('register.submit')); ?></button>
             </form>
         </section>
     </div>
-    <!-- Cookie Banner -->
-    <?php include __DIR__ . '/cookie-banner.php'; ?>
-    <?php include __DIR__ . '/../includes/templates/footer.php'; ?>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            handleFormSubmit(document.getElementById('register-form'), 'Wird registriert...');
+            handleFormSubmit(document.getElementById('register-form'), <?php echo json_encode(t('js.registering'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>);
         });
     </script>
-</body>
-</html>
+<?php token_page_close(); ?>
