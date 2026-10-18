@@ -51,7 +51,7 @@ run_test('ad slots: only homepage and was-ist-wichteln', function() {
 });
 
 run_test('datenschutz: no absolute third-party denial and no opt-out script', function() {
-    $src = file_get_contents(dirname(__DIR__) . '/public/datenschutz.php');
+    $src = file_get_contents(dirname(__DIR__) . '/content/de/datenschutz.php');
     assert_true(strpos($src, 'niemals mit Dritten') === false, 'Absolute no-sharing sentence is gone');
     assert_true(stripos($src, 'Kein Tracking durch Dritte') === false, 'No-third-party-tracking claim is gone');
     assert_true(strpos($src, 'optOutJS') === false, 'Matomo opt-out script is not embedded');
@@ -60,7 +60,7 @@ run_test('datenschutz: no absolute third-party denial and no opt-out script', fu
 });
 
 run_test('impressum: postal address and punycode mailto', function() {
-    $src = file_get_contents(dirname(__DIR__) . '/public/impressum.php');
+    $src = file_get_contents(dirname(__DIR__) . '/content/de/impressum.php');
     assert_true(strpos($src, 'Patrick Raths') !== false, 'Operator name is present');
     assert_true(strpos($src, 'Erlenstrasse 4b') !== false, 'Street and house number are present');
     assert_true(strpos($src, '5462 Siglistorf') !== false, 'Postal code and city are present');

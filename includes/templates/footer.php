@@ -4,40 +4,42 @@
         <div class="footer-content">
             <div class="footer-section">
                 <h3>Wichtlä.ch</h3>
-                <p>Die einfache und kostenlose Lösung für dein Wichteln in der Schweiz.</p>
+                <p><?php echo h(t('footer.tagline')); ?></p>
             </div>
-            
+
             <div class="footer-section">
-                <h4>Wichtel-Infos</h4>
+                <h4><?php echo h(t('footer.info')); ?></h4>
                 <ul class="footer-links">
-                    <li><a href="/was-ist-wichteln">Was ist Wichteln?</a></li>
-                    <li><a href="/wichtel-ideen">Geschenkideen</a></li>
-                    <li><a href="/firmenwichteln-tipps">Firmenwichteln</a></li>
-                    <li><a href="/faq">FAQ</a></li>
+                    <li><a href="<?php echo h(i18n_href('was-ist-wichteln')); ?>"><?php echo h(t('nav.what')); ?></a></li>
+                    <li><a href="<?php echo h(i18n_href('wichtel-ideen')); ?>"><?php echo h(t('nav.ideas')); ?></a></li>
+                    <li><a href="<?php echo h(i18n_href('firmenwichteln-tipps')); ?>"><?php echo h(t('nav.company')); ?></a></li>
+                    <li><a href="<?php echo h(i18n_href('faq')); ?>"><?php echo h(t('nav.faq')); ?></a></li>
                 </ul>
             </div>
-            
+
             <div class="footer-section">
-                <h4>Rechtliches</h4>
+                <h4><?php echo h(t('footer.legal')); ?></h4>
                 <ul class="footer-links">
-                    <li><a href="/impressum">Impressum</a></li>
-                    <li><a href="/datenschutz">Datenschutz</a></li>
+                    <li><a href="<?php echo h(i18n_href('ueber-uns')); ?>"><?php echo h(t('nav.about')); ?></a></li>
+                    <li><a href="<?php echo h(i18n_href('impressum')); ?>"><?php echo h(t('footer.imprint')); ?></a></li>
+                    <li><a href="<?php echo h(i18n_href('datenschutz')); ?>"><?php echo h(t('footer.privacy')); ?></a></li>
                 </ul>
             </div>
-            
+
             <div class="footer-section">
-                <h4>Wichteln starten</h4>
+                <h4><?php echo h(t('footer.start')); ?></h4>
                 <ul class="footer-links">
-                    <li><a href="/create_group">Neue Gruppe erstellen</a></li>
-                    <li><a href="/admin-link">Admin-Link erneut senden</a></li>
-                    <li><a href="/">Zur Startseite</a></li>
+                    <li><a href="<?php echo h(i18n_href('create_group')); ?>"><?php echo h(t('footer.create')); ?></a></li>
+                    <li><a href="<?php echo h(i18n_href('admin-link')); ?>"><?php echo h(t('footer.admin_link')); ?></a></li>
+                    <li><a href="<?php echo h(i18n_href('participant')); ?>"><?php echo h(t('footer.participant')); ?></a></li>
+                    <li><a href="<?php echo h(i18n_href('index')); ?>"><?php echo h(t('footer.home')); ?></a></li>
                 </ul>
             </div>
         </div>
-        
+
         <div class="footer-bottom">
-            <p>&copy; <?php echo date('Y'); ?> wichtlä.ch - Alle Rechte vorbehalten</p>
-            <p class="footer-heart">Mit ❤️ in der Schweiz entwickelt</p>
+            <p>&copy; <?php echo date('Y'); ?> wichtlä.ch – <?php echo h(t('footer.rights')); ?></p>
+            <p class="footer-heart"><?php echo h(t('footer.made')); ?></p>
         </div>
     </div>
 </footer>

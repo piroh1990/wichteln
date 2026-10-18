@@ -36,7 +36,7 @@ function generate_captcha_code() {
 }
 
 function captcha_hint_text($suffix = '') {
-    $text = 'Bitte gib die ' . captcha_length() . ' Zeichen aus dem Bild ein.';
+    $text = t('captcha.hint', array('{count}' => (string) captcha_length()));
     if ($suffix !== '') {
         $text .= ' ' . $suffix;
     }
@@ -54,7 +54,7 @@ function captcha_answer_field() {
         . ' autocomplete="off"'
         . ' autocapitalize="characters"'
         . ' spellcheck="false"'
-        . ' placeholder="' . htmlspecialchars('Die ' . $length . ' Zeichen aus dem Bild', ENT_QUOTES, 'UTF-8') . '"'
+        . ' placeholder="' . htmlspecialchars(t('captcha.placeholder', array('{count}' => (string) $length)), ENT_QUOTES, 'UTF-8') . '"'
         . ' aria-describedby="captcha_hint">';
 }
 

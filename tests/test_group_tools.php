@@ -154,7 +154,7 @@ run_test('ics download contains the gift date and escapes commas', function() {
     assert_equals('', build_gift_ics(array('name' => 'Leer', 'gift_exchange_date' => '')), 'No date yields no file');
 
     $url = gift_ics_url(array('id' => 9, 'gift_exchange_date' => '2026-12-24'));
-    assert_true(strpos($url, 'kalender.php?g=9&d=2026-12-24&s=') !== false, 'Calendar URL is signed');
+    assert_true(strpos($url, 'kalender.php?g=9&d=2026-12-24&lang=de&s=') !== false, 'Calendar URL is signed');
     assert_true(strpos($url, 'token=') === false, 'Calendar URL has no access token');
     assert_true(gift_ics_signature_valid(9, '2026-12-24', substr($url, strrpos($url, 's=') + 2)), 'Signature matches');
     assert_equals('', gift_ics_url('teilnehmer'), 'A role string is not a calendar link');
@@ -184,19 +184,19 @@ run_test('clean urls, sitemap and robots', function() {
 });
 
 run_test('copy matches reveal, recovery and the homepage typo fix', function() {
-    $home = file_get_contents(dirname(__DIR__) . '/public/index.php');
+    $home = file_get_contents(dirname(__DIR__) . '/content/de/index.php');
     assert_true(strpos($home, 'Auschlüsse') === false, 'Typo is gone');
     assert_true(strpos($home, 'Ausschlüsse möglich') !== false, 'Correct spelling is on the homepage');
     assert_true(strpos($home, 'Niemand außer dir kennt alle Zuordnungen') === false, 'Old secrecy claim is gone');
     assert_true(strpos($home, 'Auflösungs-Mail') !== false, 'Homepage mentions the reveal mail');
 
-    $faq = file_get_contents(dirname(__DIR__) . '/public/faq.php');
+    $faq = file_get_contents(dirname(__DIR__) . '/content/de/faq.php');
     assert_true(strpos($faq, 'Los abrufen') !== false, 'The old button is named so we can say it does not exist');
     assert_true(strpos($faq, 'keinen Knopf') !== false, 'Homepage lot lookup is retracted');
     assert_true(strpos($faq, 'keine Wiederherstellungsmöglichkeit') === false, 'Recovery is no longer described as impossible');
     assert_true(strpos($faq, 'auch nicht der Admin') === false, 'Admin secrecy is no longer absolute');
     assert_true(strpos($faq, 'Auflösungs-Mail') !== false, 'Reveal mail is documented');
-    assert_true(strpos($faq, '/admin-link') !== false, 'FAQ links to recovery');
+    assert_true(strpos($faq, "i18n_href('admin-link')") !== false, 'FAQ links to recovery');
     assert_true(strpos($faq, 'google_ads.php') === false, 'FAQ has no ads');
 
     $recovery = file_get_contents(dirname(__DIR__) . '/public/admin-link.php');
@@ -211,7 +211,8 @@ run_test('copy matches reveal, recovery and the homepage typo fix', function() {
     assert_true(strpos($admin, 'name="bulk_participants"') !== false, 'Bulk import field exists');
     assert_true(strpos($admin, 'name="send_reminder"') !== false, 'Reminder button exists');
     assert_true(strpos($admin, 'confirm_reminder_resend') !== false, 'Resend needs confirmation');
-    assert_true(strpos($admin, 'In Kalender speichern') !== false, 'Admin calendar link exists');
+    assert_true(strpos($admin, "t('mail.calendar')") !== false, 'Admin calendar link exists');
+    assert_true(strpos($admin, 'gift_ics_url') !== false, 'Admin calendar link is the signed file');
 });
 
 run_test('reminder column is in setup and the migration', function() {
