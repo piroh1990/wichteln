@@ -292,7 +292,7 @@
             <?php require_once dirname(__DIR__, 2) . '/includes/support.php'; ?>
             <h2 id="freiwillige-unterstuetzung">14. Freiwillige Unterstützung</h2>
             <p>
-                wichtlä.ch lässt sich gratis und ohne Werbung nutzen. Eine Unterstützung ist freiwillig. Sie ist keine Voraussetzung für eine Funktion, und es gibt keine Gegenleistung.
+                wichtlä.ch lässt sich gratis und werbefrei nutzen. Eine Unterstützung ist freiwillig. Sie ist keine Voraussetzung für eine Funktion, und es gibt keine Gegenleistung.
             </p>
             <p>
                 Der Link «Freiwillig unterstützen» führt zu <?php echo h(support_provider_name()); ?>, einem Zahlungsdienst. Dort werden Zahlungs- und Kontaktdaten von <?php echo h(support_provider_name()); ?> bearbeitet. Bezahlst du mit TWINT, bearbeitet auch TWINT diese Daten. Empfänger der Zahlung ist Raths IT.
