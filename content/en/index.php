@@ -13,7 +13,7 @@
                     <span class="hero-title-main">Secret Santa made easy</span>
                     <span class="hero-title-sub">Organise your Secret Santa online</span>
                 </h1>
-                <p class="hero-subtitle">The simplest way to organise your Secret Santa. No sign-up, no hidden costs — just start!</p>
+                <p class="hero-subtitle">The simplest way to organise your Secret Santa. No account needed, no hidden costs — just start!</p>
                 
                 <div class="hero-features">
                     <div class="hero-feature">
@@ -39,7 +39,7 @@
                         <span>Go to the participant area</span>
                         <span class="cta-arrow" aria-hidden="true">→</span>
                     </a>
-                    <p class="cta-subtext">No sign-up required • Start right away</p>
+                    <p class="cta-subtext">No account needed • Start right away</p>
                 </div>
             </div>
         </div>
@@ -78,7 +78,7 @@
                     <span class="step-number">4</span>
                     <span class="step-icon" aria-hidden="true">🎲</span>
                     <h3>Draw names</h3>
-                    <p>One click draws the names. Every participant automatically receives an email with the person they’re buying for.</p>
+                    <p>One click draws the names. Every participant automatically receives an email with the person they’re giving a gift to.</p>
                 </div>
             </div>
         </div>
@@ -92,12 +92,12 @@
             <div class="feature-grid">
                 <div class="feature-card">
                     <h3><span class="feature-icon" aria-hidden="true">🔒</span> Safe &amp; private</h3>
-                    <p>Until the reveal, each person only sees who they’re buying for. The admin sends the full list to everyone only with the reveal email.</p>
+                    <p>Until the reveal, each person only sees who they’re giving a gift to. The admin sends the full list to everyone only with the reveal email.</p>
                 </div>
                 
                 <div class="feature-card">
                     <h3><span class="feature-icon" aria-hidden="true">⚡</span> Lightning fast</h3>
-                    <p>Your Secret Santa group is created and the first invites are sent in under 2 minutes. No sign-up needed!</p>
+                    <p>Your Secret Santa group is created and the first invites are sent in under 2 minutes. No account needed!</p>
                 </div>
                 
                 <div class="feature-card">
@@ -137,7 +137,7 @@
                         </button>
                     </h3>
                     <div id="faq-answer-1" class="faq-answer" role="region" aria-labelledby="faq-question-1">
-                        <p>After you click “Draw names”, the names are matched automatically and at random. Nobody draws themselves, and every exclusion is respected. Each participant then receives an email with the person they’re buying for.</p>
+                        <p>After you click “Draw names”, the names are matched automatically and at random. Nobody draws themselves, and every exclusion is respected. Each participant then receives an email with the person they’re giving a gift to.</p>
                     </div>
                 </div>
                 
@@ -161,19 +161,19 @@
                         </button>
                     </h3>
                     <div id="faq-answer-3" class="faq-answer" role="region" aria-labelledby="faq-question-3">
-                        <p>Every participant with an email address automatically receives a message naming the person they’re buying for. Their personal link lets them look it up again at any time. The full list stays secret until the admin sends the reveal to everyone.</p>
+                        <p>Every participant with an email address automatically receives a message naming the person they’re giving a gift to. Their personal link lets them look it up again at any time. The full list stays secret until the admin sends the reveal to everyone.</p>
                     </div>
                 </div>
                 
                 <div class="faq-item">
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-4" id="faq-question-4" onclick="toggleFAQ(this, true)">
-                            <span class="faq-title">Do I need to sign up?</span>
+                            <span class="faq-title">Do I need an account?</span>
                             <span class="faq-toggle" aria-hidden="true">+</span>
                         </button>
                     </h3>
                     <div id="faq-answer-4" class="faq-answer" role="region" aria-labelledby="faq-question-4">
-                        <p>No! You can start straight away without signing up. After you create a group, you receive an admin link that you should save. Participants do not need to sign up either.</p>
+                        <p>No! You can start straight away without an account. After you create a group, you receive an admin link that you should save. Participants do not need an account either.</p>
                     </div>
                 </div>
                 
@@ -209,6 +209,6 @@
         <div class="container">
             <h2>Ready for your Secret Santa?</h2>
             <p>Start now and organise your perfect Secret Santa in a few minutes</p>
-            <a href="<?php echo h(i18n_href('create_group')); ?>" class="cta-button">Create a group for free »</a>
+            <a href="<?php echo h(i18n_href('create_group')); ?>" class="cta-button">Create a group for free →</a>
         </div>
     </section>

@@ -8,7 +8,7 @@
                 "name": "C’est quoi, Wichtlä.ch ?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Wichtlä.ch est un outil en ligne gratuit pour organiser un Secret Santa. Tu peux créer des groupes, ajouter des participants, tirer les noms automatiquement et de façon équitable, envoyer les attributions par e-mail et définir des exclusions. Le tout sans inscription et sans application : directement dans le navigateur."
+                    "text": "Wichtlä.ch est un outil en ligne gratuit pour organiser un Secret Santa. Tu peux créer des groupes, ajouter des participants, tirer les noms automatiquement et de façon équitable, envoyer les attributions par e-mail et définir des exclusions. Le tout sans compte et sans application : directement dans le navigateur."
                 }
             },
             {
@@ -21,10 +21,10 @@
             },
             {
                 "@type": "Question",
-                "name": "Dois-je m’inscrire ?",
+                "name": "Ai-je besoin d’un compte ?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Non. Aucune inscription n’est nécessaire. Tu crées simplement un groupe, tu ajoutes des participants et tu reçois un lien admin par e-mail."
+                    "text": "Non. Aucun compte n’est nécessaire. Tu crées simplement un groupe, tu ajoutes des participants et tu reçois un lien admin par e-mail."
                 }
             },
             {
@@ -32,7 +32,7 @@
                 "name": "Combien de personnes peuvent participer ?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Au moins 3 personnes sont recommandées pour un Secret Santa qui fonctionne bien. Vers le haut, il n’y a pratiquement pas de limite : 5, 20 ou 100 participants, le système convient à toutes les tailles de groupe."
+                    "text": "Au moins 3 personnes sont recommandées pour un Secret Santa qui fonctionne bien. Il n’y a pratiquement pas de limite maximale : 5, 20 ou 100 participants, le système convient à toutes les tailles de groupe."
                 }
             },
             {
@@ -40,7 +40,7 @@
                 "name": "Comment fonctionne le tirage ?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "L’algorithme veille à ce que personne ne se tire soi-même, que chaque personne offre un cadeau à exactement une autre personne, que chaque personne reçoive exactement un cadeau et que les exclusions définies soient respectées. L’attribution est envoyée par e-mail et reste secrète."
+                    "text": "L’algorithme veille à ce que personne ne tire son propre nom, que chaque personne offre un cadeau à exactement une autre personne, que chaque personne reçoive exactement un cadeau et que les exclusions définies soient respectées. L’attribution est envoyée par e-mail et reste secrète."
                 }
             },
             {
@@ -48,7 +48,7 @@
                 "name": "Que sont les exclusions et à quoi servent-elles ?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Les exclusions empêchent certaines personnes de se tirer mutuellement. C’est utile pour les couples, les amis proches, les frères et sœurs dans un Secret Santa en famille, ou les responsables et les collaborateurs dans un Secret Santa en entreprise."
+                    "text": "Les exclusions empêchent certaines personnes de tomber l’un sur l’autre. C’est utile pour les couples, les amis proches, les frères et sœurs dans un Secret Santa en famille, ou les responsables et les collaborateurs dans un Secret Santa en entreprise."
                 }
             },
             {
@@ -96,7 +96,7 @@
                 "name": "Quelles données sont enregistrées ?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Nous n’enregistrons que le nécessaire : les noms des participants, les adresses e-mail (pour les notifications), les listes de souhaits (facultatif), les exclusions et les résultats du tirage. Ne sont pas enregistrés : numéros de téléphone, adresses, données de paiement ou autres informations personnelles."
+                    "text": "Nous n’enregistrons que le nécessaire : les noms des participants, les adresses e-mail (pour les notifications), les listes de souhaits (facultatif), les exclusions et les résultats du tirage. Ne sont pas enregistrés : numéros de téléphone, adresses postales, données de paiement ou autres informations personnelles."
                 }
             },
             {
@@ -176,7 +176,7 @@
                 "name": "Quel budget est recommandé ?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Ça dépend de ton groupe : 10-15 CHF pour les amis, les étudiants et les grands groupes ; 15-25 CHF comme standard pour la plupart des Secret Santa ; 25-50 CHF pour les entreprises et les cercles plus petits. Choisis un budget que tout le monde peut se permettre."
+                    "text": "Ça dépend de ton groupe : 10 à 15 CHF pour les amis, les étudiants et les grands groupes ; 15 à 25 CHF comme standard pour la plupart des Secret Santa ; 25 à 50 CHF pour les entreprises et les cercles plus petits. Choisis un budget que tout le monde peut se permettre."
                 }
             },
             {
@@ -227,12 +227,12 @@
                         <ul>
                             <li>créer des groupes Secret Santa</li>
                             <li>ajouter des participants</li>
-                            <li>faire tirer les noms automatiquement et de façon équitable</li>
+                            <li>tirer les noms au sort automatiquement et de façon équitable</li>
                             <li>envoyer les attributions par e-mail</li>
-                            <li>définir des exclusions (par exemple, les couples ne se tirent pas)</li>
+                            <li>définir des exclusions (par exemple, les couples ne tombent pas l’un sur l’autre)</li>
                         </ul>
                         <p>
-                            Le tout sans inscription et sans application : directement dans le navigateur !
+                            Le tout sans compte et sans application : directement dans le navigateur !
                         </p>
                     </div>
                 </div>
@@ -249,7 +249,7 @@
                             <strong>Non, Wichtlä.ch est 100 % gratuit !</strong>
                         </p>
                         <p>
-                            Il n’y a pas de frais cachés, pas de comptes premium et pas de limitations. Le service est financé par de petites annonces, placées discrètement pour ne pas gêner.
+                            Il n’y a pas de frais cachés, pas de comptes premium et pas de limitations. Le service est financé par de petites publicités, placées discrètement pour ne pas gêner.
                         </p>
                     </div>
                 </div>
@@ -257,13 +257,13 @@
                                 <div class="faq-item">
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-3" id="faq-question-3" onclick="toggleFaq(this)">
-                            <span class="faq-title">Dois-je m’inscrire ?</span>
+                            <span class="faq-title">Ai-je besoin d’un compte ?</span>
                             <span class="faq-icon" aria-hidden="true">▼</span>
                         </button>
                     </h3>
                     <div id="faq-answer-3" class="faq-answer" role="region" aria-labelledby="faq-question-3">
 <p>
-                            <strong>Non !</strong> Aucune inscription n’est nécessaire. Tu crées simplement un groupe, tu ajoutes des participants et tu reçois un lien admin par e-mail. C’est tout !
+                            <strong>Non !</strong> Aucun compte n’est nécessaire. Tu crées simplement un groupe, tu ajoutes des participants et tu reçois un lien admin par e-mail. C’est tout !
                         </p>
                         <p>
                             C’est ce qui rend Wichtlä.ch particulièrement simple et rapide à utiliser.
@@ -280,7 +280,7 @@
                     </h3>
                     <div id="faq-answer-4" class="faq-answer" role="region" aria-labelledby="faq-question-4">
 <p>
-                            <strong>Au moins 3 personnes</strong> sont recommandées pour un Secret Santa qui fonctionne bien. Vers le haut, il n’y a pratiquement pas de limite : 5, 20 ou 100 participants, le système convient à toutes les tailles de groupe.
+                            <strong>Au moins 3 personnes</strong> sont recommandées pour un Secret Santa qui fonctionne bien. Il n’y a pratiquement pas de limite maximale : 5, 20 ou 100 participants, le système convient à toutes les tailles de groupe.
                         </p>
                         <p>
                             Les groupes de 5 à 30 personnes sont particulièrement appréciés, par exemple en famille, entre amis ou en équipe.
@@ -305,7 +305,7 @@
                             L’algorithme veille à ce que :
                         </p>
                         <ul>
-                            <li>✅ personne ne se tire soi-même</li>
+                            <li>✅ personne ne tire son propre nom</li>
                             <li>✅ chaque personne offre un cadeau à exactement une autre personne</li>
                             <li>✅ chaque personne reçoive exactement un cadeau</li>
                             <li>✅ les exclusions définies soient respectées</li>
@@ -325,7 +325,7 @@
                     </h3>
                     <div id="faq-answer-6" class="faq-answer" role="region" aria-labelledby="faq-question-6">
 <p>
-                            Les <strong>exclusions</strong> empêchent certaines personnes de se tirer mutuellement. C’est utile pour :
+                            Les <strong>exclusions</strong> empêchent certaines personnes de tomber l’un sur l’autre. C’est utile pour :
                         </p>
                         <ul>
                             <li>les couples ou les conjoints (ils connaissent souvent déjà les envies)</li>
@@ -396,7 +396,7 @@
                         </p>
                         <ul>
                             <li>dans l’e-mail de confirmation après l’inscription</li>
-                            <li>chez l’admin, à copier, sous « Participants »</li>
+                            <li>auprès de l’admin, qui peut le copier sous « Participants »</li>
                         </ul>
                         <p>
                             Avec ce lien, tu vois la personne à qui tu offres un cadeau et tu peux modifier ta liste de souhaits. Après le tirage, l’admin peut aussi renvoyer l’attribution par e-mail.
@@ -474,7 +474,7 @@
                             <li>les résultats du tirage</li>
                         </ul>
                         <p>
-                            <strong>Ne sont pas enregistrés :</strong> numéros de téléphone, adresses, données de paiement ou autres informations personnelles.
+                            <strong>Ne sont pas enregistrés :</strong> numéros de téléphone, adresses postales, données de paiement ou autres informations personnelles.
                         </p>
                     </div>
                 </div>
@@ -570,7 +570,7 @@
                     </h3>
                     <div id="faq-answer-24" class="faq-answer" role="region" aria-labelledby="faq-question-24">
 <p>
-                            Après le tirage, l’admin peut choisir <strong>« Envoyer la révélation à tout le monde »</strong>. Chaque personne avec une adresse e-mail reçoit alors la liste de qui était le Père Noël secret de qui (donneur → destinataire).
+                            Après le tirage, l’admin peut choisir <strong>« Envoyer la révélation à tout le monde »</strong>. Chaque personne avec une adresse e-mail reçoit alors la liste de qui était le Père Noël secret de qui (Père Noël secret → destinataire).
                         </p>
                         <p>
                             Jusque-là, chacun ne voit que la personne à qui il offre un cadeau. Un second envoi n’est possible qu’avec une confirmation explicite, pour que l’e-mail ne parte pas plusieurs fois par erreur.
@@ -630,8 +630,8 @@
                         </p>
                         <ul>
                             <li>📱 smartphones (iOS et Android)</li>
+                            <li>📲 tablettes</li>
                             <li>💻 ordinateurs</li>
-                            <li>🖥️ tablettes</li>
                         </ul>
                         <p>
                             Pas besoin d’application : ouvre simplement le navigateur !
@@ -678,9 +678,9 @@
                             Ça dépend de ton groupe :
                         </p>
                         <ul>
-                            <li><strong>10-15 CHF :</strong> amis, étudiants, grands groupes</li>
-                            <li><strong>15-25 CHF :</strong> le standard pour la plupart des Secret Santa</li>
-                            <li><strong>25-50 CHF :</strong> entreprises, groupes plus petits, cercles plus proches</li>
+                            <li><strong>10 à 15 CHF :</strong> amis, étudiants, grands groupes</li>
+                            <li><strong>15 à 25 CHF :</strong> le standard pour la plupart des Secret Santa</li>
+                            <li><strong>25 à 50 CHF :</strong> entreprises, groupes plus petits, cercles plus proches</li>
                         </ul>
                         <p>
                             <strong>Important :</strong> choisis un budget que tout le monde peut se permettre !

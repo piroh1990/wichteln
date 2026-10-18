@@ -479,7 +479,7 @@ token_page_open(t('meta.admin.title', array('{group}' => $group['name'])));
             <h1><?php echo h($group['name']); ?></h1>
             <p class="app-hero-lead"><?php echo h(t('admin.lead')); ?></p>
             <div class="status-row" id="admin-status-strip">
-                <span class="status-pill"><?php echo h(t('admin.participants', array('{count}' => (string) (int) $checklist['participants']))); ?></span>
+                <span class="status-pill"><?php echo h(tn('admin.participants', (int) $checklist['participants'])); ?></span>
                 <span class="status-pill <?php echo ($checklist['with_email'] === $checklist['participants'] && $checklist['participants'] > 0) ? 'is-done' : 'is-wait'; ?>">
                     <?php echo h(t('admin.with_email', array('{count}' => (string) (int) $checklist['with_email']))); ?>
                 </span>

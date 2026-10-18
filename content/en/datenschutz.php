@@ -14,7 +14,7 @@
             
             <h3>Our approach to privacy</h3>
             <div class="privacy-highlight">
-                <p><strong>We do not pass Secret Santa group data or match data on to third parties.</strong> We use names, email addresses, wishlists and matches only for the Secret Santa in your group. Advertising and audience measurement are separate from that and are described in section 10.</p>
+                <p><strong>We do not pass Secret Santa group data or match data on to third parties.</strong> We use names, email addresses, wishlists and matches only for the Secret Santa in your group. Advertising and analytics are separate from that and are described in section 10.</p>
             </div>
             
             <h2>2. Data collection on this website</h2>
@@ -122,9 +122,9 @@
             
             <h3>Purpose of the processing</h3>
             <ul>
-                <li><strong>Secret Santa draw:</strong> matching people within your group with the person they are buying for</li>
+                <li><strong>Secret Santa draw:</strong> matching people within your group with the person they are giving a gift to</li>
                 <li><strong>Email notifications:</strong> sending information about your match (only if you provided an email address)</li>
-                <li><strong>Wishlists:</strong> showing your wishes to the person who is buying for you</li>
+                <li><strong>Wishlists:</strong> showing your wishes to the person who is giving you a gift</li>
                 <li><strong>Group management:</strong> managing participants and exclusions</li>
             </ul>
             
@@ -136,7 +136,7 @@
                 <p><strong>Your Secret Santa data stays private:</strong> as a rule, we do not pass your group data (names, email addresses, wishlists) on to third parties. The only exception is sending email through our email provider.</p>
             </div>
             
-            <h3>Advertising and audience measurement</h3>
+            <h3>Advertising and analytics</h3>
             <p>
                 Google AdSense and Matomo do not receive any Secret Santa group data or match data. The technical data they process after consent is described only in section 10.
             </p>
@@ -147,7 +147,7 @@
             </p>
             <ul>
                 <li>Your name (to all members of the group)</li>
-                <li>Your wishlist (only to the person buying for you, after the draw)</li>
+                <li>Your wishlist (only to the person giving you a gift, after the draw)</li>
             </ul>
             <p>
                 Your email address stays <strong>private at all times</strong> and is not visible to other participants.
@@ -166,7 +166,7 @@
                 The group administrator can delete the whole group at any time. All participant data, matches and wishlists are then permanently deleted.
             </p>
             
-            <h2>8. Your rights (under the Swiss Data Protection Act)</h2>
+            <h2>8. Your rights (under the Swiss Federal Act on Data Protection (FADP))</h2>
             
             <p>You have the following rights regarding your personal data:</p>
             
@@ -193,7 +193,7 @@
                 <li><strong>Access control:</strong> only authorised people can access group data</li>
             </ul>
             
-            <h2>10. Advertising, cookies and audience measurement</h2>
+            <h2>10. Advertising, cookies and analytics</h2>
 
             <p>
                 This section covers Google AdSense, Matomo, the related cookies, the legal basis and how to withdraw consent. The functional sign-in cookie from section 4 stays separate from this.
@@ -212,7 +212,7 @@
 
             <h3>Matomo</h3>
             <p>
-                For audience measurement we use Matomo on a server of the operator (<code>analytics.patrick-raths.ch</code>). Until you consent, we do not set tracking cookies. If you decline, measurement continues without tracking cookies. Only after “Accept” may Matomo set cookies in order to recognise return visits.
+                For analytics we use Matomo on a server of the operator (<code>analytics.patrick-raths.ch</code>). Until you consent, we do not set tracking cookies. If you decline, measurement continues without tracking cookies. Only after “Accept” may Matomo set cookies in order to recognise return visits.
             </p>
             <p>Where measurement is running, this can include in particular:</p>
             <ul>
@@ -273,7 +273,7 @@
 
             <h3>Legal basis</h3>
             <p>
-                Processing for advertising and analytics is based on your consent under the Swiss Data Protection Act. For people in the EEA and the United Kingdom, Art. 6(1)(a) GDPR applies as well. We ask for consent to ads through Google’s CMP (Funding Choices / Privacy &amp; messaging, TCF for the EEA and the UK, including a message for Switzerland). The notice on this website, when Google’s CMP is not active, only lets you choose whether Matomo may set cookies.
+                Processing for advertising and analytics is based on your consent under the Swiss Federal Act on Data Protection (FADP). For people in the EEA and the United Kingdom, Art. 6(1)(a) GDPR applies as well. We ask for consent to ads through Google’s CMP (Funding Choices / Privacy &amp; messaging, TCF for the EEA and the UK, including a message for Switzerland). The notice on this website, when Google’s CMP is not active, only lets you choose whether Matomo may set cookies.
             </p>
 
             <h3>Withdrawal</h3>

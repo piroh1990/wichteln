@@ -1,6 +1,6 @@
 <div class="container">
         <div class="content-card">
-            <div class="legal-notice"><p>Cette traduction sert à t’orienter. Seule la version allemande fait foi.</p></div>
+            <div class="legal-notice"><p>Cette traduction est fournie à titre indicatif. Seule la version allemande fait foi.</p></div>
             <h1>Mentions légales</h1>
             
             <h2>Exploitant</h2>
@@ -8,7 +8,7 @@
                 Patrick Raths<br>
                 Erlenstrasse 4b<br>
                 5462 Siglistorf<br>
-                Schweiz
+                Suisse
             </p>
             
             <h2>Contact</h2>

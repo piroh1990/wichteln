@@ -8,7 +8,7 @@
                 "name": "What is Wichtlä.ch?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Wichtlä.ch is a free online tool for organising a Secret Santa. You can create groups, add participants, draw names automatically and fairly, send the matches by email and define exclusions. All of it with no sign-up and no app to download — just in the browser."
+                    "text": "Wichtlä.ch is a free online tool for organising a Secret Santa. You can create groups, add participants, draw names automatically and fairly, send the matches by email and define exclusions. All of it with no account and no app to download — just in the browser."
                 }
             },
             {
@@ -21,10 +21,10 @@
             },
             {
                 "@type": "Question",
-                "name": "Do I have to sign up?",
+                "name": "Do I need an account?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "No. No sign-up is required. You simply create a group, add participants and receive an admin link by email."
+                    "text": "No. No account needed. You simply create a group, add participants and receive an admin link by email."
                 }
             },
             {
@@ -40,7 +40,7 @@
                 "name": "How does the draw work?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "The algorithm makes sure that nobody draws themselves, that each person buys for exactly one other person, that each person receives exactly one gift and that the exclusions you defined are respected. The match is sent by email and stays secret."
+                    "text": "The algorithm makes sure that nobody draws themselves, that each person gives a gift to exactly one other person, that each person receives exactly one gift and that the exclusions you defined are respected. The match is sent by email and stays secret."
                 }
             },
             {
@@ -72,7 +72,7 @@
                 "name": "What happens if someone loses their match?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "There is no button on the homepage to look up a match. Each person has a personal participant link, in the confirmation email and with the admin, ready to copy. That link shows the person they’re buying for. After the draw, the admin can also send the match by email again."
+                    "text": "There is no button on the homepage to look up a match. Each person has a personal participant link, in the confirmation email and with the admin, ready to copy. That link shows the person they’re giving a gift to. After the draw, the admin can also send the match by email again."
                 }
             },
             {
@@ -88,7 +88,7 @@
                 "name": "Is my data safe?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Yes. We use SSL encryption for every connection, the server is in Switzerland, we follow the Swiss Data Protection Act (FADP) and groups are deleted automatically when they expire."
+                    "text": "Yes. We use SSL encryption for every connection, the server is in Switzerland, we follow the Swiss Federal Act on Data Protection (FADP) and groups are deleted automatically when they expire."
                 }
             },
             {
@@ -112,7 +112,7 @@
                 "name": "Can someone else see my match?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "At first, each person only sees the person they’re buying for, and only through their personal link. The admin area has no list of every match. If the admin sends the reveal, every participant with an email address receives the full list of who was whose Secret Santa."
+                    "text": "At first, each person only sees the person they’re giving a gift to, and only through their personal link. The admin area has no list of every match. If the admin sends the reveal, every participant with an email address receives the full list of who was whose Secret Santa."
                 }
             },
             {
@@ -136,7 +136,7 @@
                 "name": "What is the reveal email?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "After the draw, the admin can send the reveal to everyone. Each person with an email address then receives the list of who was whose Secret Santa. Until then, each person only sees the person they’re buying for. A second send needs an explicit confirmation."
+                    "text": "After the draw, the admin can send the reveal to everyone. Each person with an email address then receives the list of who was whose Secret Santa. Until then, each person only sees the person they’re giving a gift to. A second send needs an explicit confirmation."
                 }
             },
             {
@@ -176,7 +176,7 @@
                 "name": "What budget do you recommend?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "It depends on your group: 10-15 CHF for friends, students and large groups; 15-25 CHF as the standard for most Secret Santas; 25-50 CHF for companies and smaller circles. Choose a budget everyone can afford."
+                    "text": "It depends on your group: 10–15 CHF for friends, students and large groups; 15–25 CHF as the standard for most Secret Santas; 25–50 CHF for companies and smaller circles. Choose a budget everyone can afford."
                 }
             },
             {
@@ -222,7 +222,7 @@
                     </h3>
                     <div id="faq-answer-1" class="faq-answer" role="region" aria-labelledby="faq-question-1">
 <p>
-                            Wichtlä.ch is a <strong>free online tool</strong> for organising a Secret Santa. You can easily:
+                            Wichtlä.ch is a <strong>free online tool</strong> for organising a Secret Santa. You can:
                         </p>
                         <ul>
                             <li>create Secret Santa groups</li>
@@ -232,7 +232,7 @@
                             <li>define exclusions (for example, couples do not draw each other)</li>
                         </ul>
                         <p>
-                            All of it with no sign-up and no app — just in the browser!
+                            All of it with no account and no app — just in the browser!
                         </p>
                     </div>
                 </div>
@@ -257,13 +257,13 @@
                                 <div class="faq-item">
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-3" id="faq-question-3" onclick="toggleFaq(this)">
-                            <span class="faq-title">Do I have to sign up?</span>
+                            <span class="faq-title">Do I need an account?</span>
                             <span class="faq-icon" aria-hidden="true">▼</span>
                         </button>
                     </h3>
                     <div id="faq-answer-3" class="faq-answer" role="region" aria-labelledby="faq-question-3">
 <p>
-                            <strong>No!</strong> No sign-up is required. You simply create a group, add participants and receive an admin link by email. That’s it!
+                            <strong>No!</strong> You don’t need an account. You simply create a group, add participants and receive an admin link by email. That’s it!
                         </p>
                         <p>
                             That is what makes Wichtlä.ch especially simple and quick to use.
@@ -306,12 +306,12 @@
                         </p>
                         <ul>
                             <li>✅ nobody draws themselves</li>
-                            <li>✅ each person buys for exactly one other person</li>
+                            <li>✅ each person gives a gift to exactly one other person</li>
                             <li>✅ each person receives exactly one gift</li>
                             <li>✅ the exclusions you defined are respected</li>
                         </ul>
                         <p>
-                            The match is sent by email and stays secret — you only see the person YOU are buying for.
+                            The match is sent by email and stays secret — you only see the person YOU are giving a gift to.
                         </p>
                     </div>
                 </div>
@@ -395,11 +395,11 @@
                             There is no “Look up my match” button on the homepage. Each person has a personal participant link:
                         </p>
                         <ul>
-                            <li>in the confirmation email after signing up</li>
+                            <li>in the confirmation email after joining</li>
                             <li>with the admin, ready to copy, under “Participants”</li>
                         </ul>
                         <p>
-                            Through this link you see the person you’re buying for and you can change your wishlist. After the draw, the admin can also send the match by email again.
+                            Through this link you see the person you’re giving a gift to and you can change your wishlist. After the draw, the admin can also send the match by email again.
                         </p>
                     </div>
                 </div>
@@ -445,7 +445,7 @@
                         <ul>
                             <li>🔐 SSL encryption for every connection</li>
                             <li>🇨🇭 server located in Switzerland</li>
-                            <li>📜 compliance with the Swiss Data Protection Act (FADP)</li>
+                            <li>📜 compliance with the Swiss Federal Act on Data Protection (FADP)</li>
                             <li>🗑️ automatic deletion when the group expires</li>
                             <li>🚫 no sharing with third parties (except Google AdSense for advertising)</li>
                         </ul>
@@ -505,7 +505,7 @@
                     </h3>
                     <div id="faq-answer-14" class="faq-answer" role="region" aria-labelledby="faq-question-14">
 <p>
-                            At first, each person only sees the person they’re buying for, and only through their personal link. The admin area has no list of every match.
+                            At first, each person only sees the person they’re giving a gift to, and only through their personal link. The admin area has no list of every match.
                         </p>
                         <p>
                             That changes when the admin sends the <strong>reveal</strong>. Every participant with an email address then receives the full list of who was whose Secret Santa. Until then, it stays secret.
@@ -573,7 +573,7 @@
                             After the draw, the admin can choose <strong>“Send the reveal to everyone”</strong>. Each person with an email address then receives the list of who was whose Secret Santa (giver → recipient).
                         </p>
                         <p>
-                            Until then, each person only sees the person they’re buying for. A second send is only possible with an explicit confirmation, so the email does not go out more than once by mistake.
+                            Until then, each person only sees the person they’re giving a gift to. A second send is only possible with an explicit confirmation, so the email does not go out more than once by mistake.
                         </p>
                     </div>
                 </div>
@@ -630,8 +630,8 @@
                         </p>
                         <ul>
                             <li>📱 phones (iOS and Android)</li>
-                            <li>💻 desktop computers</li>
-                            <li>🖥️ tablets</li>
+                            <li>📲 tablets</li>
+                            <li>💻 computers</li>
                         </ul>
                         <p>
                             No app needed — just open it in the browser!
@@ -678,9 +678,9 @@
                             It depends on your group:
                         </p>
                         <ul>
-                            <li><strong>10-15 CHF:</strong> friends, students, large groups</li>
-                            <li><strong>15-25 CHF:</strong> the standard for most Secret Santas</li>
-                            <li><strong>25-50 CHF:</strong> companies, smaller groups, closer circles</li>
+                            <li><strong>10–15 CHF:</strong> friends, students, large groups</li>
+                            <li><strong>15–25 CHF:</strong> the standard for most Secret Santas</li>
+                            <li><strong>25–50 CHF:</strong> companies, smaller groups, closer circles</li>
                         </ul>
                         <p>
                             <strong>Important:</strong> choose a budget everyone can afford!

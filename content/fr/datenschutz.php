@@ -1,7 +1,7 @@
 <div class="container">
         <div class="content-card">
-            <div class="legal-notice"><p>Cette traduction sert à t’orienter. Seule la version allemande fait foi.</p></div>
-            <h1>Politique de confidentialité</h1>
+            <div class="legal-notice"><p>Cette traduction est fournie à titre indicatif. Seule la version allemande fait foi.</p></div>
+            <h1>Déclaration de protection des données</h1>
             
             <p><strong>Mise à jour : <?php echo date('d.m.Y'); ?></strong></p>
             

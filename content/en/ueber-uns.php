@@ -12,10 +12,10 @@
             <section class="content-section">
                 <h2>Our mission</h2>
                 <p>
-                    <strong>Wichtlä.ch</strong> has a simple goal: to make organising a Secret Santa as straightforward as possible. No scraps of paper, no fiddly apps, no hidden costs. You create a group, invite the participants, and the names are drawn automatically and fairly.
+                    <strong>Wichtlä.ch</strong> has a simple goal: to make organising a Secret Santa as straightforward as possible. No scraps of paper, no fiddly apps, no hidden costs. You create a group, invite the participants, and the names are drawn automatically and fairly. The name “Wichtlä” comes from “Wichtel”, the German and Swiss-German word for Secret Santa.
                 </p>
                 <p>
-                    For family, friends or a company Secret Santa, the tool is for anyone who wants to add this tradition to Christmas. The whole platform is <strong>free</strong> and requires <strong>no sign-up</strong>.
+                    For family, friends or a company Secret Santa, the tool is for anyone who wants to add this tradition to Christmas. The whole platform is <strong>free</strong> and requires <strong>no account</strong>.
                 </p>
             </section>
 
@@ -35,8 +35,8 @@
 
                 <ul>
                     <li><strong>100% free:</strong> no hidden costs, no premium features behind a paywall</li>
-                    <li><strong>No sign-up:</strong> start right away, without an account or handing over personal data</li>
-                    <li><strong>Privacy under the Swiss FADP:</strong> your data is handled confidentially and protected under the strict Swiss Federal Act on Data Protection</li>
+                    <li><strong>No account needed:</strong> start right away, without an account or handing over personal data</li>
+                    <li><strong>Privacy under the Swiss Federal Act on Data Protection (FADP):</strong> your data is handled confidentially and protected under the strict Swiss Federal Act on Data Protection (FADP)</li>
                     <li><strong>Easy to use:</strong> your Secret Santa group is created and the invites are sent in under 2 minutes</li>
                     <li><strong>A fair draw:</strong> our algorithm matches people at random and fairly, and you can define exclusions</li>
                     <li><strong>Automatic email notification:</strong> every participant receives their match conveniently by email</li>
@@ -67,13 +67,13 @@
                 </script>
 
                 <p>
-                    You will find more legal information on our <a href="<?php echo h(i18n_href('impressum')); ?>">legal notice</a> and in our <a href="<?php echo h(i18n_href('datenschutz')); ?>">privacy policy</a>.
+                    You will find more legal information in our <a href="<?php echo h(i18n_href('impressum')); ?>">legal notice</a> and our <a href="<?php echo h(i18n_href('datenschutz')); ?>">privacy policy</a>.
                 </p>
             </section>
 
             <div class="cta-section">
                 <h2>Ready for your Secret Santa?</h2>
-                <p>Organise your Secret Santa in under 2 minutes — free, simple, and with no sign-up!</p>
+                <p>Organise your Secret Santa in under 2 minutes — free, simple, and with no account needed!</p>
                 <a href="<?php echo h(i18n_href('create_group')); ?>" class="cta-button-white">Create a Secret Santa group →</a>
             </div>
         </article>

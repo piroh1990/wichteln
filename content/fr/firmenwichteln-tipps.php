@@ -76,7 +76,7 @@
                     <div class="step-card">
                         <div class="step-number">2</div>
                         <h3>Fixer les règles</h3>
-                        <p>Fixe avec l’équipe : le budget (15-30 CHF recommandés), la date, la variante, et si les cadeaux restent anonymes.</p>
+                        <p>Fixe avec l’équipe : le budget (15 à 30 CHF recommandés), la date, la variante, et si les cadeaux restent anonymes.</p>
                     </div>
                     
                     <div class="step-card">
@@ -88,7 +88,7 @@
                     <div class="step-card">
                         <div class="step-number">4</div>
                         <h3>Tirer les noms</h3>
-                        <p>Utilise un outil en ligne comme Wichtlä.ch. Ça fait gagner du temps, ça évite les erreurs, et personne ne se tire soi-même.</p>
+                        <p>Utilise un outil en ligne comme Wichtlä.ch. Ça fait gagner du temps, ça évite les erreurs, et personne ne tire son propre nom.</p>
                     </div>
                     
                     <div class="step-card">
@@ -112,9 +112,9 @@
                 <div class="highlight-box">
                     <h3>💰 Repères de budget pour les entreprises suisses</h3>
                     <ul>
-                        <li><strong>15-20 CHF :</strong> idéal pour les grandes équipes (plus de 20 personnes) ou les budgets plus serrés</li>
-                        <li><strong>20-30 CHF :</strong> le standard pour les équipes moyennes (10-20 personnes), un bon milieu</li>
-                        <li><strong>30-50 CHF :</strong> pour les petites équipes (moins de 10 personnes) ou des attentes plus élevées</li>
+                        <li><strong>15 à 20 CHF :</strong> idéal pour les grandes équipes (plus de 20 personnes) ou les budgets plus serrés</li>
+                        <li><strong>20 à 30 CHF :</strong> le standard pour les équipes moyennes (10-20 personnes), un bon milieu</li>
+                        <li><strong>30 à 50 CHF :</strong> pour les petites équipes (moins de 10 personnes) ou des attentes plus élevées</li>
                     </ul>
                     <p><strong>Important :</strong> le budget doit rester abordable pour tout le monde. Pense aux écarts de salaire !</p>
                 </div>
@@ -135,11 +135,11 @@
                 <p>Chacun tire un nom et trouve un cadeau qui convient. Les cadeaux sont remis en personne le jour de l’événement.</p>
                 <p><strong>Idéal pour :</strong> les équipes qui se connaissent bien et qui aiment les cadeaux personnels.</p>
                 
-                <h3>2. Ange du Secret Santa</h3>
+                <h3>2. Ange gardien du Secret Santa</h3>
                 <p>Pendant 2 à 4 semaines, un Père Noël secret laisse de petites attentions sur le bureau d’une personne, sans se montrer. À la fin, place à la grande révélation.</p>
-                <p><strong>Idéal pour :</strong> les équipes qui se croisent souvent au bureau. Budget : 5-10 CHF par semaine.</p>
+                <p><strong>Idéal pour :</strong> les équipes qui se croisent souvent au bureau. Budget : 5 à 10 CHF par semaine.</p>
                 
-                <h3>3. Secret Santa pourri</h3>
+                <h3>3. Secret Santa cadeaux nuls</h3>
                 <p>Chacun apporte un cadeau dont personne ne veut, un objet farfelu ou quelque chose de drôle. L’humour passe avant tout !</p>
                 <p><strong>Idéal pour :</strong> les équipes détendues, avec le sens de l’humour. Veille à ce que ça reste respectueux.</p>
                 
@@ -157,19 +157,19 @@
                 
                 <h3>Top 10 des cadeaux pour les collègues</h3>
                 <ol>
-                    <li><strong>Mug isotherme de qualité</strong> — pour le café ou le thé au bureau (15-25 CHF)</li>
-                    <li><strong>Organiseur de bureau</strong> — de l’ordre et du style (15-30 CHF)</li>
-                    <li><strong>Chocolat suisse</strong> — une sélection premium, toujours appréciée (15-25 CHF)</li>
-                    <li><strong>Petite plante de bureau</strong> — succulente ou cactus (10-15 CHF)</li>
-                    <li><strong>Affiche ou cartes motivantes</strong> — pour une ambiance positive (10-20 CHF)</li>
-                    <li><strong>Joli carnet</strong> — pour les réunions et les notes (12-20 CHF)</li>
-                    <li><strong>Gadgets USB</strong> — lampe de clavier, ventilateur, chaufferette (15-25 CHF)</li>
-                    <li><strong>Coffret thé ou café</strong> — une sélection premium pour les amateurs (15-25 CHF)</li>
-                    <li><strong>Accessoires de bureau amusants</strong> — un peu de fun au travail (10-20 CHF)</li>
-                    <li><strong>Batterie externe</strong> — pratique en déplacement (20-30 CHF)</li>
+                    <li><strong>Mug isotherme de qualité</strong> — pour le café ou le thé au bureau (15 à 25 CHF)</li>
+                    <li><strong>Organiseur de bureau</strong> — de l’ordre et du style (15 à 30 CHF)</li>
+                    <li><strong>Chocolat suisse</strong> — une sélection premium, toujours appréciée (15 à 25 CHF)</li>
+                    <li><strong>Petite plante de bureau</strong> — succulente ou cactus (10 à 15 CHF)</li>
+                    <li><strong>Affiche ou cartes motivantes</strong> — pour une ambiance positive (10 à 20 CHF)</li>
+                    <li><strong>Joli carnet</strong> — pour les réunions et les notes (12 à 20 CHF)</li>
+                    <li><strong>Gadgets USB</strong> — lampe de clavier, ventilateur, chauffe-tasse (15 à 25 CHF)</li>
+                    <li><strong>Coffret thé ou café</strong> — une sélection premium pour les amateurs (15 à 25 CHF)</li>
+                    <li><strong>Accessoires de bureau amusants</strong> — un peu de fun au travail (10 à 20 CHF)</li>
+                    <li><strong>Batterie externe</strong> — pratique en déplacement (20 à 30 CHF)</li>
                 </ol>
                 
-                <h3>Des cadeaux qui vont toujours</h3>
+                <h3>Des valeurs sûres</h3>
                 <ul>
                     <li>🍫 Du bon chocolat ou des douceurs</li>
                     <li>☕ Du café, du thé ou du chocolat à boire</li>
@@ -203,9 +203,9 @@
                             <li>Les cadeaux avec un message politique ou religieux</li>
                             <li>Les cadeaux trop personnels ou intimes</li>
                             <li>L’alcool, sauf si tu sais que ça convient</li>
-                            <li>Les objets usagés ou cassés, sauf pour un Secret Santa pourri</li>
+                            <li>Les objets usagés ou cassés, sauf pour un Secret Santa cadeaux nuls</li>
                             <li>Les blagues que deux personnes seulement comprennent</li>
-                            <li>Se tirer soi-même</li>
+                            <li>Tirer son propre nom</li>
                         </ul>
                     </div>
                 </div>
@@ -242,7 +242,7 @@
                 <ul>
                     <li>☐ Informer l’équipe et demander qui est intéressé (4 semaines avant)</li>
                     <li>☐ Fixer le budget et la date (3 semaines avant)</li>
-                    <li>☐ Choisir la variante (classique, pourri, à thème, etc.)</li>
+                    <li>☐ Choisir la variante (classique, cadeaux nuls, à thème, etc.)</li>
                     <li>☐ Établir la liste des participants avec les adresses e-mail</li>
                     <li>☐ Utiliser un outil en ligne (par exemple Wichtlä.ch) et lancer le tirage</li>
                     <li>☐ En option : définir des exclusions (responsables, partenaires, etc.)</li>

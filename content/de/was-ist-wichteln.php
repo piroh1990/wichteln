@@ -140,7 +140,7 @@
             
             <div class="cta-section">
                 <h2>Bereit für dein Wichtel-Event?</h2>
-                <p>Organisiere dein Wichteln in weniger als 2 Minuten – kostenlos, einfach und ohne Registrierung!</p>
+                <p>Organisiere dein Wichteln in weniger als 2 Minuten – kostenlos, einfach und ohne Konto!</p>
                 <a href="<?php echo h(i18n_href('create_group')); ?>" class="cta-button-white">Jetzt Wichtel-Gruppe erstellen →</a>
             </div>
         </article>

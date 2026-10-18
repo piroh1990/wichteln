@@ -32,10 +32,10 @@
             <section class="content-section">
                 <h2>The Secret Santa tradition</h2>
                 <p>
-                    <strong>Secret Santa</strong> is a popular custom in the run-up to Christmas: people in a group give each other small gifts. The twist is that each person buys for only one other person, and the match is drawn by lot, often in secret. The tradition brings suspense and joy, and it strengthens the sense of togetherness in families, groups of friends and companies.
+                    <strong>Secret Santa</strong> is a popular custom in the run-up to Christmas: people in a group exchange small gifts. The twist is that each person gives a gift to just one other person, and the match is drawn by lot, often in secret. At the reveal, everyone finds out who was whose Secret Santa. The tradition brings suspense and joy, and it strengthens the sense of togetherness in families, groups of friends and companies.
                 </p>
                 <p>
-                    In German the custom is called <strong>“Wichteln”</strong>. The name comes from the Wichtel, small mysterious beings from Norse mythology who do good in secret. Secret Santa participants do the same: they surprise one another with a thoughtful or funny gift.
+                    In German the custom is called <strong>“Wichteln”</strong>. The name comes from the Wichtel, small mysterious beings from Germanic folklore who do good in secret. Secret Santa participants do the same: they surprise one another with a thoughtful or funny gift.
                 </p>
             </section>
             
@@ -59,7 +59,7 @@
                 
                 <ol>
                     <li><strong>Form a group:</strong> gather everyone who wants to take part (at least 3 people)</li>
-                    <li><strong>Set a budget:</strong> agree a maximum amount (for example 10-20 CHF)</li>
+                    <li><strong>Set a budget:</strong> agree a maximum amount (for example 10–20 CHF)</li>
                     <li><strong>Draw names:</strong> each person draws a name and keeps it secret</li>
                     <li><strong>Get the gift:</strong> buy or make a suitable gift for the person you drew</li>
                     <li><strong>The exchange:</strong> hand over the gifts at your Secret Santa event</li>
@@ -98,7 +98,7 @@
                     
                     <div class="variant-card">
                         <div class="variant-icon" aria-hidden="true">🎅</div>
-                        <h3>Secret Santa angel</h3>
+                        <h3>Guardian angel Secret Santa</h3>
                         <p>Over several weeks, a secret giver leaves small treats for one person, without revealing who they are.</p>
                     </div>
                     
@@ -111,7 +111,7 @@
                     <div class="variant-card">
                         <div class="variant-icon" aria-hidden="true">📦</div>
                         <h3>Surprise Secret Santa</h3>
-                        <p>Nobody knows who is buying for whom. The gifts are mixed and handed out at random. A total surprise!</p>
+                        <p>Nobody knows who is giving a gift to whom. The gifts are mixed and handed out at random. A total surprise!</p>
                     </div>
                 </div>
             </section>
@@ -119,7 +119,7 @@
             <section class="content-section">
                 <h2>Secret Santa in Switzerland</h2>
                 <p>
-                    In Switzerland, Secret Santa is especially popular during Advent. It is often called <strong>“Weihnachtswichteln”</strong>, or simply <strong>“Wichteln”</strong>. Many companies organise one for their staff, to strengthen team culture and celebrate the run-up to Christmas together.
+                    In Switzerland, Secret Santa is especially popular during Advent. In German-speaking Switzerland it is often called <strong>“Weihnachtswichteln”</strong>, or simply <strong>“Wichteln”</strong>. In French-speaking Switzerland people mostly say “Secret Santa”. Many companies organise one for their staff, to strengthen team culture and celebrate the run-up to Christmas together.
                 </p>
                 <p>
                     A typically Swiss touch is to combine it with a cosy get-together over mulled wine, fondue or raclette. The gifts are usually handed over at a small Christmas party.
@@ -140,7 +140,7 @@
             
             <div class="cta-section">
                 <h2>Ready for your Secret Santa?</h2>
-                <p>Organise your Secret Santa in under 2 minutes — free, simple, and with no sign-up!</p>
+                <p>Organise your Secret Santa in under 2 minutes — free, simple, and with no account needed!</p>
                 <a href="<?php echo h(i18n_href('create_group')); ?>" class="cta-button-white">Create a Secret Santa group →</a>
             </div>
         </article>

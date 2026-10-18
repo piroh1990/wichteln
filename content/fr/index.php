@@ -13,7 +13,7 @@
                     <span class="hero-title-main">Secret Santa, tout simplement</span>
                     <span class="hero-title-sub">Organise ton Secret Santa en ligne</span>
                 </h1>
-                <p class="hero-subtitle">La façon la plus simple d’organiser ton Secret Santa. Pas d’inscription, pas de frais cachés : tu commences tout de suite !</p>
+                <p class="hero-subtitle">La façon la plus simple d’organiser ton Secret Santa. Pas de compte, pas de frais cachés : tu commences tout de suite !</p>
                 
                 <div class="hero-features">
                     <div class="hero-feature">
@@ -36,10 +36,10 @@
                         <span class="cta-arrow" aria-hidden="true">→</span>
                     </a>
                     <a href="<?php echo h(i18n_href('participant')); ?>" class="cta-button cta-button-secondary">
-                        <span>Vers l’espace participant</span>
+                        <span>Accéder à l’espace participant</span>
                         <span class="cta-arrow" aria-hidden="true">→</span>
                     </a>
-                    <p class="cta-subtext">Aucune inscription nécessaire • Tu commences tout de suite</p>
+                    <p class="cta-subtext">Aucun compte nécessaire • Tu commences tout de suite</p>
                 </div>
             </div>
         </div>
@@ -71,7 +71,7 @@
                     <span class="step-number">3</span>
                     <span class="step-icon" aria-hidden="true">🎯</span>
                     <h3>Définir les exclusions</h3>
-                    <p>Indique qui ne doit pas offrir un cadeau à qui. Pratique pour les couples ou les frères et sœurs qui ne veulent pas se tirer mutuellement.</p>
+                    <p>Indique qui ne doit pas offrir un cadeau à qui. Pratique pour les couples ou les frères et sœurs qui ne veulent pas tomber l’un sur l’autre.</p>
                 </div>
                 
                 <div class="step">
@@ -97,7 +97,7 @@
                 
                 <div class="feature-card">
                     <h3><span class="feature-icon" aria-hidden="true">⚡</span> Ultra rapide</h3>
-                    <p>En moins de 2 minutes, ton groupe Secret Santa est créé et les premières invitations partent. Aucune inscription nécessaire !</p>
+                    <p>En moins de 2 minutes, ton groupe Secret Santa est créé et les premières invitations partent. Aucun compte nécessaire !</p>
                 </div>
                 
                 <div class="feature-card">
@@ -107,7 +107,7 @@
                 
                 <div class="feature-card">
                     <h3><span class="feature-icon" aria-hidden="true">💝</span> Exclusions</h3>
-                    <p>Indique qui ne peut pas tirer qui. Idéal pour les couples, les frères et sœurs ou les colocataires qui ne doivent pas se tirer mutuellement.</p>
+                    <p>Indique qui ne peut pas tirer qui. Idéal pour les couples, les frères et sœurs ou les colocataires qui ne doivent pas tomber l’un sur l’autre.</p>
                 </div>
                 
                 <div class="feature-card">
@@ -137,7 +137,7 @@
                         </button>
                     </h3>
                     <div id="faq-answer-1" class="faq-answer" role="region" aria-labelledby="faq-question-1">
-                        <p>Après un clic sur « Lancer le tirage », les noms sont attribués automatiquement et au hasard. Personne ne se tire soi-même, et toutes les exclusions sont respectées. Chaque participant reçoit ensuite un e-mail avec la personne à qui offrir un cadeau.</p>
+                        <p>Après un clic sur « Lancer le tirage », les noms sont attribués automatiquement et au hasard. Personne ne tire son propre nom, et toutes les exclusions sont respectées. Chaque participant reçoit ensuite un e-mail avec la personne à qui offrir un cadeau.</p>
                     </div>
                 </div>
                 
@@ -149,7 +149,7 @@
                         </button>
                     </h3>
                     <div id="faq-answer-2" class="faq-answer" role="region" aria-labelledby="faq-question-2">
-                        <p>Oui ! En tant qu’admin, tu peux indiquer avant le tirage quelles personnes ne doivent pas se tirer mutuellement. C’est particulièrement pratique pour les couples ou les frères et sœurs. Tu peux définir autant d’exclusions que tu veux.</p>
+                        <p>Oui ! En tant qu’admin, tu peux indiquer avant le tirage quelles personnes ne doivent pas tomber l’un sur l’autre. C’est particulièrement pratique pour les couples ou les frères et sœurs. Tu peux définir autant d’exclusions que tu veux.</p>
                     </div>
                 </div>
                 
@@ -173,7 +173,7 @@
                         </button>
                     </h3>
                     <div id="faq-answer-4" class="faq-answer" role="region" aria-labelledby="faq-question-4">
-                        <p>Non ! Tu peux commencer tout de suite, sans inscription. Après la création d’un groupe, tu reçois un lien admin à conserver. Les participants n’ont pas besoin de s’inscrire non plus.</p>
+                        <p>Non ! Tu peux commencer tout de suite, sans compte. Après la création d’un groupe, tu reçois un lien admin à conserver. Les participants n’ont pas besoin de compte non plus.</p>
                     </div>
                 </div>
                 
@@ -209,6 +209,6 @@
         <div class="container">
             <h2>Prêt pour ton Secret Santa ?</h2>
             <p>Commence maintenant et organise ton Secret Santa parfait en quelques minutes</p>
-            <a href="<?php echo h(i18n_href('create_group')); ?>" class="cta-button">Créer un groupe gratuitement »</a>
+            <a href="<?php echo h(i18n_href('create_group')); ?>" class="cta-button">Créer un groupe gratuitement →</a>
         </div>
     </section>

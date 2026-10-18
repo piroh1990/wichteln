@@ -8,7 +8,7 @@
                 Patrick Raths<br>
                 Erlenstrasse 4b<br>
                 5462 Siglistorf<br>
-                Schweiz
+                Switzerland
             </p>
             
             <h2>Contact</h2>

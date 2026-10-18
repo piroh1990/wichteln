@@ -76,7 +76,7 @@
                     <div class="step-card">
                         <div class="step-number">2</div>
                         <h3>Set the rules</h3>
-                        <p>Agree together: the budget (15-30 CHF is a good range), the date, the variant, and whether gifts stay anonymous.</p>
+                        <p>Agree together: the budget (15–30 CHF is a good range), the date, the variant, and whether gifts stay anonymous.</p>
                     </div>
                     
                     <div class="step-card">
@@ -112,9 +112,9 @@
                 <div class="highlight-box">
                     <h3>💰 Budget guidelines for Swiss companies</h3>
                     <ul>
-                        <li><strong>15-20 CHF:</strong> ideal for large teams (more than 20 people) or tighter budgets</li>
-                        <li><strong>20-30 CHF:</strong> the standard for medium teams (10-20 people) — a good middle ground</li>
-                        <li><strong>30-50 CHF:</strong> for small teams (fewer than 10 people) or higher expectations</li>
+                        <li><strong>15–20 CHF:</strong> ideal for large teams (more than 20 people) or tighter budgets</li>
+                        <li><strong>20–30 CHF:</strong> the standard for medium teams (10-20 people) — a good middle ground</li>
+                        <li><strong>30–50 CHF:</strong> for small teams (fewer than 10 people) or higher expectations</li>
                     </ul>
                     <p><strong>Important:</strong> the budget should be affordable for every participant. Keep different salary levels in mind!</p>
                 </div>
@@ -137,7 +137,7 @@
                 
                 <h3>2. Secret Santa angel</h3>
                 <p>For 2 to 4 weeks, someone leaves small treats on a colleague’s desk, in secret. The big reveal comes at the end.</p>
-                <p><strong>Best for:</strong> teams that see a lot of each other in the office. Budget: 5-10 CHF per week.</p>
+                <p><strong>Best for:</strong> teams that see a lot of each other in the office. Budget: 5–10 CHF per week.</p>
                 
                 <h3>3. Gag-gift Secret Santa</h3>
                 <p>Everyone brings an unwanted, quirky or funny gift. Humour comes first!</p>
@@ -157,16 +157,16 @@
                 
                 <h3>Top 10 gifts for colleagues</h3>
                 <ol>
-                    <li><strong>A good travel mug</strong> — for coffee or tea at the desk (15-25 CHF)</li>
-                    <li><strong>Desk organiser</strong> — order and style for the office (15-30 CHF)</li>
-                    <li><strong>Swiss chocolate</strong> — a premium selection, always welcome (15-25 CHF)</li>
-                    <li><strong>A small desk plant</strong> — a succulent or cactus (10-15 CHF)</li>
-                    <li><strong>Motivational posters or cards</strong> — for a positive mood (10-20 CHF)</li>
-                    <li><strong>A quality notebook</strong> — for meetings and notes (12-20 CHF)</li>
-                    <li><strong>USB gadgets</strong> — keyboard light, fan, warmer (15-25 CHF)</li>
-                    <li><strong>Tea or coffee set</strong> — a premium selection for people who enjoy it (15-25 CHF)</li>
-                    <li><strong>Funny office accessories</strong> — a bit of fun at work (10-20 CHF)</li>
-                    <li><strong>Power bank</strong> — handy on the go (20-30 CHF)</li>
+                    <li><strong>A good travel mug</strong> — for coffee or tea at the desk (15–25 CHF)</li>
+                    <li><strong>Desk organiser</strong> — order and style for the office (15–30 CHF)</li>
+                    <li><strong>Swiss chocolate</strong> — a premium selection, always welcome (15–25 CHF)</li>
+                    <li><strong>A small desk plant</strong> — a succulent or cactus (10–15 CHF)</li>
+                    <li><strong>Motivational posters or cards</strong> — for a positive mood (10–20 CHF)</li>
+                    <li><strong>A quality notebook</strong> — for meetings and notes (12–20 CHF)</li>
+                    <li><strong>USB gadgets</strong> — keyboard light, fan, mug warmer (15–25 CHF)</li>
+                    <li><strong>Tea or coffee set</strong> — a premium selection for people who enjoy it (15–25 CHF)</li>
+                    <li><strong>Funny office accessories</strong> — a bit of fun at work (10–20 CHF)</li>
+                    <li><strong>Power bank</strong> — handy on the go (20–30 CHF)</li>
                 </ol>
                 
                 <h3>Gifts that always work</h3>
@@ -205,7 +205,7 @@
                             <li>Give alcohol, unless you know it is welcome</li>
                             <li>Give used or broken items, except in a gag-gift exchange</li>
                             <li>Give gifts with an in-joke only two people understand</li>
-                            <li>Draw yourself</li>
+                            <li>Draw your own name</li>
                         </ul>
                     </div>
                 </div>
@@ -221,12 +221,12 @@
                 
                 <div class="highlight-box">
                     <h3>❓ “Our team works from home. Can we still do Secret Santa?”</h3>
-                    <p><strong>What to do:</strong> yes! Use an online tool for the draw and send the gifts by post. Hold a virtual exchange on a video call. It works really well.</p>
+                    <p><strong>What to do:</strong> Yes! Use an online tool for the draw and send the gifts by post. Hold a virtual exchange on a video call. It works really well.</p>
                 </div>
                 
                 <div class="highlight-box">
                     <h3>❓ “Someone lost their match. What now?”</h3>
-                    <p><strong>What to do:</strong> with an online tool such as Wichtlä.ch, everyone can look up the person they’re buying for again at any time, using their personal link. For paper slips: keep a spare list!</p>
+                    <p><strong>What to do:</strong> with an online tool such as Wichtlä.ch, everyone can look up the person they’re giving a gift to again at any time, using their personal link. For paper slips: keep a spare list!</p>
                 </div>
                 
                 <div class="highlight-box">

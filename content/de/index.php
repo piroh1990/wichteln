@@ -13,7 +13,7 @@
                     <span class="hero-title-main">Wichteln leicht gemacht</span>
                     <span class="hero-title-sub">Organisiere dein Wichteln online</span>
                 </h1>
-                <p class="hero-subtitle">Die einfachste Art, dein Wichteln zu organisieren. Keine Registrierung, keine versteckten Kosten – einfach starten!</p>
+                <p class="hero-subtitle">Die einfachste Art, dein Wichteln zu organisieren. Kein Konto nötig, keine versteckten Kosten – einfach starten!</p>
                 
                 <div class="hero-features">
                     <div class="hero-feature">
@@ -39,7 +39,7 @@
                         <span>Zum Teilnehmerbereich</span>
                         <span class="cta-arrow" aria-hidden="true">→</span>
                     </a>
-                    <p class="cta-subtext">Keine Registrierung erforderlich • Sofort loslegen</p>
+                    <p class="cta-subtext">Kein Konto nötig • Sofort loslegen</p>
                 </div>
             </div>
         </div>
@@ -97,7 +97,7 @@
                 
                 <div class="feature-card">
                     <h3><span class="feature-icon" aria-hidden="true">⚡</span> Blitzschnell</h3>
-                    <p>In weniger als 2 Minuten ist deine Wichtel-Gruppe erstellt und die ersten Einladungen verschickt. Keine Registrierung notwendig!</p>
+                    <p>In weniger als 2 Minuten ist deine Wichtel-Gruppe erstellt und die ersten Einladungen verschickt. Kein Konto nötig!</p>
                 </div>
                 
                 <div class="feature-card">
@@ -168,12 +168,12 @@
                 <div class="faq-item">
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-4" id="faq-question-4" onclick="toggleFAQ(this, true)">
-                            <span class="faq-title">Ist eine Registrierung notwendig?</span>
+                            <span class="faq-title">Brauche ich ein Konto?</span>
                             <span class="faq-toggle" aria-hidden="true">+</span>
                         </button>
                     </h3>
                     <div id="faq-answer-4" class="faq-answer" role="region" aria-labelledby="faq-question-4">
-                        <p>Nein! Du kannst sofort ohne Registrierung loslegen. Nach dem Erstellen einer Gruppe erhältst du einen Admin-Link, den du dir speichern solltest. Teilnehmer benötigen ebenfalls keine Registrierung.</p>
+                        <p>Nein! Kein Konto nötig. Du kannst sofort loslegen. Nach dem Erstellen einer Gruppe erhältst du einen Admin-Link, den du dir speichern solltest. Teilnehmer brauchen ebenfalls kein Konto.</p>
                     </div>
                 </div>
                 

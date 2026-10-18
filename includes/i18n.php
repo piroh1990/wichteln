@@ -118,7 +118,11 @@ function t($key, $params = array()) {
 
 function tn($key, $count, $params = array()) {
     $count = (int) $count;
-    $form = ($count === 1) ? 'one' : 'other';
+    if (i18n_current() === 'fr') {
+        $form = ($count === 0 || $count === 1) ? 'one' : 'other';
+    } else {
+        $form = ($count === 1) ? 'one' : 'other';
+    }
     if (!is_array($params)) {
         $params = array();
     }
@@ -142,7 +146,11 @@ function fmt_date($value, $with_time = false) {
     if ($timestamp === false) {
         return '';
     }
-    $date = date('d.m.Y', $timestamp);
+    if (i18n_current() === 'en') {
+        $date = date('j M Y', $timestamp);
+    } else {
+        $date = date('d.m.Y', $timestamp);
+    }
     if (!$with_time) {
         return $date;
     }
@@ -156,7 +164,11 @@ function fmt_money($amount) {
     if ($amount === null || $amount === '' || !is_numeric($amount)) {
         return t('value.unset');
     }
-    return number_format((float) $amount, 2, '.', '') . ' CHF';
+    $number = number_format((float) $amount, 2, '.', '');
+    if (i18n_current() === 'en') {
+        return 'CHF ' . $number;
+    }
+    return $number . ' CHF';
 }
 
 function i18n_prefix($lang) {

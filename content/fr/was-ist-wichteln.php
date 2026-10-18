@@ -3,7 +3,7 @@
         "@context": "https://schema.org",
         "@type": "Article",
         "headline": "C’est quoi, le Secret Santa ? Tradition, règles et variantes",
-        "description": "Tout sur la tradition du Secret Santa : origines, règles et variantes comme le Secret Santa pourri ou à thème.",
+        "description": "Tout sur la tradition du Secret Santa : origines, règles et variantes comme le Secret Santa cadeaux nuls ou à thème.",
         "author": {
             "@type": "Organization",
             "name": "Wichtlä.ch"
@@ -35,7 +35,7 @@
                     Le <strong>Secret Santa</strong> est une tradition très répandue avant Noël : dans un groupe, chacun offre un petit cadeau à une seule personne. Le principe : tu n’offres qu’à une personne, et l’attribution se fait par tirage au sort, souvent dans le secret. Ça crée de la surprise, de la joie, et ça rapproche familles, groupes d’amis et entreprises.
                 </p>
                 <p>
-                    En allemand, on appelle ça <strong>« Wichteln »</strong>. Le mot vient des Wichtel, de petites créatures mystérieuses de la mythologie nordique qui font le bien en cachette. Les participants font pareil : ils se surprennent avec un cadeau réfléchi ou drôle. Lors de la révélation, chacun découvre qui était le <strong>Père Noël secret</strong> de qui.
+                    En allemand, on appelle ça <strong>« Wichteln »</strong>. Le mot vient des Wichtel, de petites créatures mystérieuses du folklore germanique qui font le bien en cachette. Les participants font pareil : ils se surprennent avec un cadeau réfléchi ou drôle. Lors de la révélation, chacun découvre qui était le <strong>Père Noël secret</strong> de qui.
                 </p>
             </section>
             
@@ -59,7 +59,7 @@
                 
                 <ol>
                     <li><strong>Former le groupe :</strong> rassemble toutes les personnes qui veulent participer (au moins 3)</li>
-                    <li><strong>Fixer le budget :</strong> mets-toi d’accord avec le groupe sur un montant maximum (par exemple 10-20 CHF)</li>
+                    <li><strong>Fixer le budget :</strong> mets-toi d’accord avec le groupe sur un montant maximum (par exemple 10 à 20 CHF)</li>
                     <li><strong>Tirer les noms :</strong> chacun tire un nom au sort et le garde secret</li>
                     <li><strong>Trouver le cadeau :</strong> achète ou fabrique un cadeau qui convient à la personne tirée</li>
                     <li><strong>La remise :</strong> remets les cadeaux lors de ton Secret Santa</li>
@@ -86,7 +86,7 @@
                     
                     <div class="variant-card">
                         <div class="variant-icon" aria-hidden="true">♻️</div>
-                        <h3>Secret Santa pourri</h3>
+                        <h3>Secret Santa cadeaux nuls</h3>
                         <p>Chacun apporte un cadeau dont personne ne veut, ou un objet farfelu. L’humour et la créativité passent avant tout.</p>
                     </div>
                     
@@ -98,7 +98,7 @@
                     
                     <div class="variant-card">
                         <div class="variant-icon" aria-hidden="true">🎅</div>
-                        <h3>Ange du Secret Santa</h3>
+                        <h3>Ange gardien du Secret Santa</h3>
                         <p>Pendant plusieurs semaines, un Père Noël secret gâte une personne avec de petites attentions, sans se montrer.</p>
                     </div>
                     
@@ -119,7 +119,7 @@
             <section class="content-section">
                 <h2>Le Secret Santa en Suisse</h2>
                 <p>
-                    En Suisse, le Secret Santa est particulièrement apprécié pendant l’Avent. On l’appelle souvent <strong>« Weihnachtswichteln »</strong>, ou simplement <strong>« Wichteln »</strong>. Beaucoup d’entreprises en organisent un pour leurs collaborateurs, pour renforcer l’esprit d’équipe et fêter ensemble l’approche de Noël.
+                    En Suisse, le Secret Santa est particulièrement apprécié pendant l’Avent. En Suisse alémanique, on parle souvent de <strong>« Weihnachtswichteln »</strong> ou simplement de <strong>« Wichteln »</strong>. En Suisse romande, on dit surtout « Secret Santa ». Beaucoup d’entreprises en organisent un pour leurs collaborateurs, pour renforcer l’esprit d’équipe et fêter ensemble l’approche de Noël.
                 </p>
                 <p>
                     Très suisse : l’associer à un moment convivial autour d’un vin chaud, d’une fondue ou d’une raclette. Les cadeaux sont le plus souvent remis lors d’une petite fête de Noël.
@@ -133,14 +133,14 @@
                     <li><strong>Pense à la personne :</strong> demande-toi ce qui lui fera vraiment plaisir</li>
                     <li><strong>Sois créatif :</strong> un cadeau fait maison ou original plaît souvent plus qu’un cadeau cher</li>
                     <li><strong>Prévois le délai :</strong> laisse assez de temps pour trouver le cadeau</li>
-                    <li><strong>Pense aux exclusions :</strong> pour les couples ou les amis très proches, il est souvent judicieux de ne pas se tirer mutuellement</li>
+                    <li><strong>Pense aux exclusions :</strong> pour les couples ou les amis très proches, il est souvent judicieux de ne pas tomber l’un sur l’autre</li>
                     <li><strong>Amuse-toi :</strong> un Secret Santa doit faire plaisir, pas stresser !</li>
                 </ul>
             </section>
             
             <div class="cta-section">
                 <h2>Prêt pour ton Secret Santa ?</h2>
-                <p>Organise ton Secret Santa en moins de 2 minutes : gratuit, simple, et sans inscription !</p>
+                <p>Organise ton Secret Santa en moins de 2 minutes : gratuit, simple, et sans compte !</p>
                 <a href="<?php echo h(i18n_href('create_group')); ?>" class="cta-button-white">Créer un groupe Secret Santa →</a>
             </div>
         </article>

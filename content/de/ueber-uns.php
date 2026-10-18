@@ -15,7 +15,7 @@
                     <strong>Wichtlä.ch</strong> hat ein einfaches Ziel: das Organisieren von Wichtel-Events so unkompliziert wie möglich zu machen. Kein Zettel-Chaos, keine umständlichen Apps, keine versteckten Kosten – einfach eine Gruppe erstellen, Teilnehmer einladen und die Namen automatisch und fair auslosen lassen.
                 </p>
                 <p>
-                    Ob für die Familie, den Freundeskreis oder das Firmenwichteln – unser Tool ist für alle gedacht, die Weihnachten mit einer schönen Wichtel-Tradition bereichern möchten. Die gesamte Plattform ist <strong>kostenlos</strong> und erfordert <strong>keine Registrierung</strong>.
+                    Ob für die Familie, den Freundeskreis oder das Firmenwichteln – unser Tool ist für alle gedacht, die Weihnachten mit einer schönen Wichtel-Tradition bereichern möchten. Die gesamte Plattform ist <strong>kostenlos</strong> und erfordert <strong>kein Konto</strong>.
                 </p>
             </section>
 
@@ -25,7 +25,7 @@
                     Wichtlä.ch wurde von <a href="https://raths-it.ch"><strong>Raths-IT</strong></a> ins Leben gerufen und wird aus der <strong>Schweiz</strong> betrieben. Die Idee entstand aus einem ganz alltäglichen Problem: Jedes Jahr in der Vorweihnachtszeit das gleiche Spiel – Zettel schreiben, in einen Hut werfen, hoffen, dass niemand sich selbst zieht, und dann die Lose irgendwie an alle verteilen. Besonders wenn nicht alle am selben Ort sind, wird das schnell kompliziert.
                 </p>
                 <p>
-                    Aus diesem Bedarf heraus wurde Wichtlä.ch entwickelt: ein schlankes, schnelles Online-Tool, das genau dieses Problem löst. Ohne unnötigen Schnickschnack, ohne Datensammelei, ohne Registrierungszwang – einfach Wichteln, wie es sein sollte.
+                    Aus diesem Bedarf heraus wurde Wichtlä.ch entwickelt: ein schlankes, schnelles Online-Tool, das genau dieses Problem löst. Ohne unnötigen Schnickschnack, ohne Datensammelei, ohne Konto – einfach Wichteln, wie es sein sollte.
                 </p>
             </section>
 
@@ -35,7 +35,7 @@
 
                 <ul>
                     <li><strong>100% kostenlos:</strong> Keine versteckten Kosten, keine Premium-Features hinter einer Paywall</li>
-                    <li><strong>Keine Registrierung:</strong> Sofort loslegen, ohne Account oder persönliche Daten angeben zu müssen</li>
+                    <li><strong>Kein Konto nötig:</strong> Sofort loslegen, ohne Account oder persönliche Daten angeben zu müssen</li>
                     <li><strong>Datenschutz nach Schweizer DSG:</strong> Deine Daten werden vertraulich behandelt und nach den strengen Schweizer Datenschutzgesetzen geschützt</li>
                     <li><strong>Einfache Bedienung:</strong> In weniger als 2 Minuten ist deine Wichtel-Gruppe erstellt und die Einladungen verschickt</li>
                     <li><strong>Faire Auslosung:</strong> Unser Algorithmus sorgt dafür, dass die Zuordnung zufällig und fair erfolgt – inklusive der Möglichkeit, Ausschlüsse zu definieren</li>
@@ -73,7 +73,7 @@
 
             <div class="cta-section">
                 <h2>Bereit für dein Wichtel-Event?</h2>
-                <p>Organisiere dein Wichteln in weniger als 2 Minuten – kostenlos, einfach und ohne Registrierung!</p>
+                <p>Organisiere dein Wichteln in weniger als 2 Minuten – kostenlos, einfach und ohne Konto!</p>
                 <a href="<?php echo h(i18n_href('create_group')); ?>" class="cta-button-white">Jetzt Wichtel-Gruppe erstellen →</a>
             </div>
         </article>

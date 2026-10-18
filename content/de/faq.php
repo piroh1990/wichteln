@@ -8,7 +8,7 @@
                 "name": "Was ist Wichtlä.ch?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Wichtlä.ch ist ein kostenloses Online-Tool zum Organisieren von Wichtel-Events. Du kannst damit Wichtel-Gruppen erstellen, Teilnehmer hinzufügen, automatisch und fair Namen ziehen lassen, Lose per E-Mail verschicken und Ausschlüsse definieren. Alles ohne Registrierung, ohne App-Download – einfach im Browser!"
+                    "text": "Wichtlä.ch ist ein kostenloses Online-Tool zum Organisieren von Wichtel-Events. Du kannst damit Wichtel-Gruppen erstellen, Teilnehmer hinzufügen, automatisch und fair Namen ziehen lassen, Lose per E-Mail verschicken und Ausschlüsse definieren. Alles ohne Konto, ohne App-Download – einfach im Browser!"
                 }
             },
             {
@@ -21,10 +21,10 @@
             },
             {
                 "@type": "Question",
-                "name": "Muss ich mich registrieren?",
+                "name": "Brauche ich ein Konto?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Nein! Es ist keine Registrierung erforderlich. Du erstellst einfach eine Gruppe, fügst Teilnehmer hinzu und erhältst einen Admin-Link per E-Mail."
+                    "text": "Nein. Kein Konto nötig. Du erstellst einfach eine Gruppe, fügst Teilnehmer hinzu und erhältst einen Admin-Link per E-Mail."
                 }
             },
             {
@@ -232,7 +232,7 @@
                             <li>Ausschlüsse definieren (z.B. Paare ziehen sich nicht)</li>
                         </ul>
                         <p>
-                            Alles ohne Registrierung, ohne App-Download – einfach im Browser!
+                            Alles ohne Konto, ohne App-Download – einfach im Browser!
                         </p>
                     </div>
                 </div>
@@ -257,13 +257,13 @@
                                 <div class="faq-item">
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-3" id="faq-question-3" onclick="toggleFaq(this)">
-                            <span class="faq-title">Muss ich mich registrieren?</span>
+                            <span class="faq-title">Brauche ich ein Konto?</span>
                             <span class="faq-icon" aria-hidden="true">▼</span>
                         </button>
                     </h3>
                     <div id="faq-answer-3" class="faq-answer" role="region" aria-labelledby="faq-question-3">
 <p>
-                            <strong>Nein!</strong> Es ist keine Registrierung erforderlich. Du erstellst einfach eine Gruppe, fügst Teilnehmer hinzu und erhältst einen Admin-Link per E-Mail. Fertig!
+                            <strong>Nein!</strong> Kein Konto nötig. Du erstellst einfach eine Gruppe, fügst Teilnehmer hinzu und erhältst einen Admin-Link per E-Mail. Fertig!
                         </p>
                         <p>
                             Das macht Wichtlä.ch besonders einfach und schnell in der Nutzung.

@@ -98,7 +98,7 @@ run_test('partner registration admin wishlist reveal recovery and reminder mails
     );
     $expected = array(
         'fr' => array(
-            'partner' => 'La personne à qui tu offres un cadeau 🎁',
+            'partner' => 'Ton tirage au Secret Santa est fait 🎁',
             'registration' => 'Ton inscription au Secret Santa est confirmée ! 🎁',
             'admin' => 'Ton groupe Secret Santa «Pine» est créé ! 🎁',
             'wishlist' => 'Liste de souhaits mise à jour',
@@ -106,9 +106,9 @@ run_test('partner registration admin wishlist reveal recovery and reminder mails
             'recovery' => 'Ton lien admin',
         ),
         'en' => array(
-            'partner' => 'The person you’re buying for 🎁',
+            'partner' => 'Your Secret Santa match is in 🎁',
             'registration' => 'You’re signed up for Secret Santa! 🎁',
-            'admin' => 'Your Secret Santa group "Pine" is ready! 🎁',
+            'admin' => 'Your Secret Santa group “Pine” is ready! 🎁',
             'wishlist' => 'Wishlist updated',
             'reveal' => 'Reveal: who was whose Secret Santa?',
             'recovery' => 'Your admin link',
@@ -141,7 +141,7 @@ run_test('partner registration admin wishlist reveal recovery and reminder mails
             create_html_email($partner),
             create_partner_plain_text($partner),
             $expected[$lang]['partner'],
-            array('Anna', 'Noah', 'a red scarf', '25.00 CHF')
+            array('Anna', 'Noah', 'a red scarf', $fields['budget'])
         );
         assert_true(strpos($fields['ics_url'], 'lang=' . $lang . '&s=') !== false, $lang . ' ics url');
 
@@ -322,4 +322,23 @@ run_test('reveal and reminder use the recipient language', function () {
     assert_true(strpos($sent[1][3], 'lang=en&s=') !== false, 'English reminder calendar link');
     assert_no_german_leftovers($sent[0][2] . $sent[0][3], 'fr reminder');
     assert_no_german_leftovers($sent[1][2] . $sent[1][3], 'en reminder');
+});
+
+run_test('plural, date and money follow the language', function () {
+    i18n_activate('fr');
+    assert_equals('0 participant', tn('admin.participants', 0), 'French zero is singular');
+    assert_equals('1 participant', tn('admin.participants', 1), 'French one');
+    assert_equals('2 participants', tn('admin.participants', 2), 'French other');
+    assert_equals('18.10.2026', fmt_date('2026-10-18'), 'French date');
+    assert_equals('25.00 CHF', fmt_money(25), 'French money');
+    i18n_activate('en');
+    assert_equals('0 participants', tn('admin.participants', 0), 'English zero is plural');
+    assert_equals('1 participant', tn('admin.participants', 1), 'English one');
+    assert_equals('18 Oct 2026', fmt_date('2026-10-18'), 'English date');
+    assert_equals('CHF 25.00', fmt_money(25), 'English money');
+    i18n_activate('de');
+    assert_equals('0 Teilnehmer', tn('admin.participants', 0), 'German zero');
+    assert_equals('1 Teilnehmer', tn('admin.participants', 1), 'German one');
+    assert_equals('24.12.2026', fmt_date('2026-12-24'), 'German date');
+    assert_equals('25.00 CHF', fmt_money('25'), 'German money');
 });

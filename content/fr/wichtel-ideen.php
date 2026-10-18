@@ -2,7 +2,7 @@
     {
         "@context": "https://schema.org",
         "@type": "Article",
-        "headline": "100+ idées de cadeaux Secret Santa pour 10-30 CHF",
+        "headline": "100+ idées de cadeaux Secret Santa pour 10 à 30 CHF",
         "description": "Les meilleures idées de cadeaux Secret Santa pour chaque budget : pratiques, drôles, créatives et personnelles.",
         "author": {
             "@type": "Organization",
@@ -39,7 +39,7 @@
                         <span class="idea-category">Pratique</span>
                         <h3 class="idea-title">Mug isotherme de qualité</h3>
                         <p class="idea-description">Parfait pour les amateurs de café ou de thé. Garde les boissons chaudes ou froides pendant des heures.</p>
-                        <div class="idea-price">15-25 CHF</div>
+                        <div class="idea-price">15 à 25 CHF</div>
                     </div>
                     
                     <div class="idea-card">
@@ -47,7 +47,7 @@
                         <span class="idea-category">Pratique</span>
                         <h3 class="idea-title">Chaussettes amusantes</h3>
                         <p class="idea-description">Des chaussettes avec des motifs drôles, des slogans ou des couleurs folles. Toujours un succès !</p>
-                        <div class="idea-price">10-15 CHF</div>
+                        <div class="idea-price">10 à 15 CHF</div>
                     </div>
                     
                     <div class="idea-card">
@@ -55,7 +55,7 @@
                         <span class="idea-category">Pratique</span>
                         <h3 class="idea-title">Joli carnet</h3>
                         <p class="idea-description">Un journal de qualité ou un bullet journal pour les notes, les idées et la créativité.</p>
-                        <div class="idea-price">12-20 CHF</div>
+                        <div class="idea-price">12 à 20 CHF</div>
                     </div>
                     
                     <div class="idea-card">
@@ -63,7 +63,7 @@
                         <span class="idea-category">Cocooning</span>
                         <h3 class="idea-title">Coffret de bougies parfumées</h3>
                         <p class="idea-description">De belles bougies parfumées pour une ambiance cosy à la maison.</p>
-                        <div class="idea-price">15-25 CHF</div>
+                        <div class="idea-price">15 à 25 CHF</div>
                     </div>
                     
                     <div class="idea-card">
@@ -71,7 +71,7 @@
                         <span class="idea-category">Gourmand</span>
                         <h3 class="idea-title">Chocolat suisse</h3>
                         <p class="idea-description">Du chocolat premium de Suisse. Un classique qui fait toujours plaisir !</p>
-                        <div class="idea-price">10-20 CHF</div>
+                        <div class="idea-price">10 à 20 CHF</div>
                     </div>
                     
                     <div class="idea-card">
@@ -79,7 +79,7 @@
                         <span class="idea-category">Durable</span>
                         <h3 class="idea-title">Mini-plante</h3>
                         <p class="idea-description">Une succulente, un cactus ou un petit pot d’herbes. Ça met de la vie au bureau.</p>
-                        <div class="idea-price">8-15 CHF</div>
+                        <div class="idea-price">8 à 15 CHF</div>
                     </div>
                     
                     <!-- Cadeaux drôles -->
@@ -87,8 +87,8 @@
                         <span class="idea-icon" aria-hidden="true">🎲</span>
                         <span class="idea-category">Drôle</span>
                         <h3 class="idea-title">Jeu de cartes amusant</h3>
-                        <p class="idea-description">« Klattschen », « Exploding Kittens » ou d’autres jeux de soirée pour les moments entre amis.</p>
-                        <div class="idea-price">15-25 CHF</div>
+                        <p class="idea-description">« Exploding Kittens », « Taco chat » ou « Uno ».</p>
+                        <div class="idea-price">15 à 25 CHF</div>
                     </div>
                     
                     <div class="idea-card">
@@ -96,7 +96,7 @@
                         <span class="idea-category">Drôle</span>
                         <h3 class="idea-title">Déco de bureau farfelue</h3>
                         <p class="idea-description">Des figurines drôles, des pancartes à slogans ou des accessoires de bureau un peu absurdes.</p>
-                        <div class="idea-price">10-20 CHF</div>
+                        <div class="idea-price">10 à 20 CHF</div>
                     </div>
                     
                     <div class="idea-card">
@@ -104,7 +104,7 @@
                         <span class="idea-category">Drôle</span>
                         <h3 class="idea-title">T-shirt amusant</h3>
                         <p class="idea-description">Des t-shirts avec des slogans drôles, des jeux de mots ou des motifs décalés.</p>
-                        <div class="idea-price">15-25 CHF</div>
+                        <div class="idea-price">15 à 25 CHF</div>
                     </div>
                     
                     <!-- Cadeaux créatifs -->
@@ -113,7 +113,7 @@
                         <span class="idea-category">Créatif</span>
                         <h3 class="idea-title">Livre de coloriage pour adultes</h3>
                         <p class="idea-description">Des mandalas ou des coloriages pour se détendre et laisser parler la créativité.</p>
-                        <div class="idea-price">10-18 CHF</div>
+                        <div class="idea-price">10 à 18 CHF</div>
                     </div>
                     
                     <div class="idea-card">
@@ -121,7 +121,7 @@
                         <span class="idea-category">Créatif</span>
                         <h3 class="idea-title">Puzzle 3D</h3>
                         <p class="idea-description">De petits puzzles 3D de monuments ou d’objets sympas.</p>
-                        <div class="idea-price">12-22 CHF</div>
+                        <div class="idea-price">12 à 22 CHF</div>
                     </div>
                     
                     <div class="idea-card">
@@ -129,7 +129,7 @@
                         <span class="idea-category">Créatif</span>
                         <h3 class="idea-title">Album photo Polaroid</h3>
                         <p class="idea-description">Un mini-album pour photos instantanées. Parfait pour les souvenirs !</p>
-                        <div class="idea-price">10-15 CHF</div>
+                        <div class="idea-price">10 à 15 CHF</div>
                     </div>
                     
                     <!-- Tech et gadgets -->
@@ -138,7 +138,7 @@
                         <span class="idea-category">Tech</span>
                         <h3 class="idea-title">Batterie externe</h3>
                         <p class="idea-description">Une batterie externe compacte pour les déplacements. Pratique et toujours appréciée.</p>
-                        <div class="idea-price">15-30 CHF</div>
+                        <div class="idea-price">15 à 30 CHF</div>
                     </div>
                     
                     <div class="idea-card">
@@ -146,7 +146,7 @@
                         <span class="idea-category">Tech</span>
                         <h3 class="idea-title">Gadgets pour téléphone</h3>
                         <p class="idea-description">Support de téléphone, PopSocket, range-câbles ou coques originales.</p>
-                        <div class="idea-price">8-20 CHF</div>
+                        <div class="idea-price">8 à 20 CHF</div>
                     </div>
                     
                     <div class="idea-card">
@@ -154,7 +154,7 @@
                         <span class="idea-category">Tech</span>
                         <h3 class="idea-title">Guirlande LED</h3>
                         <p class="idea-description">Une guirlande à piles pour une ambiance douce.</p>
-                        <div class="idea-price">10-18 CHF</div>
+                        <div class="idea-price">10 à 18 CHF</div>
                     </div>
                     
                     <!-- Bien-être -->
@@ -163,7 +163,7 @@
                         <span class="idea-category">Bien-être</span>
                         <h3 class="idea-title">Coffret de boules de bain</h3>
                         <p class="idea-description">Des sels et boules de bain pour un moment de détente.</p>
-                        <div class="idea-price">12-20 CHF</div>
+                        <div class="idea-price">12 à 20 CHF</div>
                     </div>
                     
                     <div class="idea-card">
@@ -171,7 +171,7 @@
                         <span class="idea-category">Bien-être</span>
                         <h3 class="idea-title">Coffret de crèmes pour les mains</h3>
                         <p class="idea-description">De bonnes crèmes pour les mains, dans plusieurs parfums. Surtout bienvenues en hiver.</p>
-                        <div class="idea-price">15-25 CHF</div>
+                        <div class="idea-price">15 à 25 CHF</div>
                     </div>
                     
                     <div class="idea-card">
@@ -179,7 +179,7 @@
                         <span class="idea-category">Bien-être</span>
                         <h3 class="idea-title">Coffret de thés premium</h3>
                         <p class="idea-description">Une sélection de thés de qualité, dans un bel emballage.</p>
-                        <div class="idea-price">15-25 CHF</div>
+                        <div class="idea-price">15 à 25 CHF</div>
                     </div>
                     
                     <!-- Gourmand -->
@@ -188,7 +188,7 @@
                         <span class="idea-category">Gourmand</span>
                         <h3 class="idea-title">Coffret d’épices</h3>
                         <p class="idea-description">De beaux mélanges d’épices ou des spécialités régionales pour cuisiner.</p>
-                        <div class="idea-price">12-22 CHF</div>
+                        <div class="idea-price">12 à 22 CHF</div>
                     </div>
                     
                     <div class="idea-card">
@@ -196,7 +196,7 @@
                         <span class="idea-category">Gourmand</span>
                         <h3 class="idea-title">Miel suisse</h3>
                         <p class="idea-description">Du miel régional de Suisse. Durable et délicieux.</p>
-                        <div class="idea-price">10-18 CHF</div>
+                        <div class="idea-price">10 à 18 CHF</div>
                     </div>
                     
                     <div class="idea-card">
@@ -204,32 +204,32 @@
                         <span class="idea-category">Gourmand</span>
                         <h3 class="idea-title">Café de barista</h3>
                         <p class="idea-description">Des grains de café de qualité, torréfiés localement.</p>
-                        <div class="idea-price">12-20 CHF</div>
+                        <div class="idea-price">12 à 20 CHF</div>
                     </div>
                     
-                    <!-- Secret Santa pourri -->
+                    <!-- Secret Santa cadeaux nuls -->
                     <div class="idea-card">
                         <span class="idea-icon" aria-hidden="true">🦄</span>
-                        <span class="idea-category">Pourri</span>
+                        <span class="idea-category">Loufoque</span>
                         <h3 class="idea-title">Produits licorne</h3>
-                        <p class="idea-description">Des chaussons licorne au papier toilette licorne : plus c’est absurde, mieux c’est !</p>
-                        <div class="idea-price">8-15 CHF</div>
+                        <p class="idea-description">Des chaussons licorne jusqu’au papier toilette licorne : plus c’est absurde, mieux c’est !</p>
+                        <div class="idea-price">8 à 15 CHF</div>
                     </div>
                     
                     <div class="idea-card">
                         <span class="idea-icon" aria-hidden="true">🎤</span>
-                        <span class="idea-category">Pourri</span>
+                        <span class="idea-category">Loufoque</span>
                         <h3 class="idea-title">Gadgets inutiles</h3>
                         <p class="idea-description">Mini-aspirateur USB, tasse qui se mélange toute seule, punching-ball de bureau : merveilleusement superflu.</p>
-                        <div class="idea-price">10-20 CHF</div>
+                        <div class="idea-price">10 à 20 CHF</div>
                     </div>
                     
                     <div class="idea-card">
                         <span class="idea-icon" aria-hidden="true">📚</span>
-                        <span class="idea-category">Pourri</span>
+                        <span class="idea-category">Loufoque</span>
                         <h3 class="idea-title">Livres « comment devenir riche »</h3>
                         <p class="idea-description">Des guides ironiques, ou des livres aux titres délicieusement absurdes.</p>
-                        <div class="idea-price">5-15 CHF</div>
+                        <div class="idea-price">5 à 15 CHF</div>
                     </div>
                 </div>
             </section>
@@ -249,9 +249,9 @@
                 
                 <h3>Cadeaux selon le budget</h3>
                 <ul>
-                    <li><strong>10-15 CHF :</strong> chaussettes, chocolat, bougies, petites plantes, carnets</li>
-                    <li><strong>15-20 CHF :</strong> mug isotherme, coffret de thés, crème pour les mains, épices, jeux de cartes</li>
-                    <li><strong>20-30 CHF :</strong> batterie externe, puzzle 3D, coffret de boules de bain, café premium, livres</li>
+                    <li><strong>10 à 15 CHF :</strong> chaussettes, chocolat, bougies, petites plantes, carnets</li>
+                    <li><strong>15 à 20 CHF :</strong> mug isotherme, coffret de thés, crème pour les mains, épices, jeux de cartes</li>
+                    <li><strong>20 à 30 CHF :</strong> batterie externe, puzzle 3D, coffret de boules de bain, café premium, livres</li>
                 </ul>
                 
                 <h3>Cadeaux Secret Santa faits maison</h3>

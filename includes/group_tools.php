@@ -663,7 +663,7 @@ function build_gift_ics($group, $dtstamp = null, $lang = null) {
     $uid = 'wichteln-' . ($group_id > 0 ? $group_id : 'datum') . '-' . $start->format('Ymd') . '@wichtlae.ch';
     $name = isset($group['name']) ? (string) $group['name'] : t('mail.brand');
     $summary = t('ics.summary', array('{name}' => $name));
-    $description = t('ics.description', array('{name}' => $name, '{date}' => $start->format('d.m.Y')));
+    $description = t('ics.description', array('{name}' => $name, '{date}' => fmt_date($gift_date)));
 
     $lines = array(
         'BEGIN:VCALENDAR',
