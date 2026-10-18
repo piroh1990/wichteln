@@ -493,12 +493,7 @@ run_test('Systemstatus, Saison und Tageschart', function () {
     assert_true(!$mail_bad['ok']);
     assert_true(count($mail_bad['warnings']) >= 2);
 
-    assert_true(master_admin_ads_status(false, false)['ok']);
-    $cmp = master_admin_ads_status(true, false);
-    assert_true(!$cmp['ok']);
-    assert_true(strpos(implode(' ', $cmp['warnings']), 'GOOGLE_CMP_ENABLED') !== false);
-    $testing = master_admin_ads_status(false, true);
-    assert_true(strpos(implode(' ', $testing['warnings']), 'GOOGLE_ADS_TESTING') !== false);
+    assert_true(!function_exists('master_admin_ads_status'), 'Ad status helper is gone');
 
     $php_status = master_admin_php_status();
     assert_equals(PHP_VERSION, $php_status['version']);
@@ -555,5 +550,7 @@ run_test('Systemstatus, Saison und Tageschart', function () {
     assert_true(strpos($page, 'substr(htmlspecialchars') === false);
     assert_true(strpos($page, 'matomo') === false);
     assert_true(strpos($page, 'adsbygoogle') === false);
+    assert_true(strpos($page, 'GOOGLE_ADS_TESTING') === false);
+    assert_true(strpos($page, 'Anzeigen-Flags') === false);
     assert_true(strpos($page, '/css/styles.css') !== false);
 });

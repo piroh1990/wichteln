@@ -2990,24 +2990,6 @@ a.button:disabled {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Ad Container */
-.ad-container {
-    margin: 2rem 0;
-    padding: 1rem;
-    background: #f8f9fa;
-    border-radius: 8px;
-    text-align: center;
-    border: 1px solid #e0e0e0;
-}
-
-.ad-label {
-    font-size: 0.75rem;
-    color: #999;
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
-    letter-spacing: 0.5px;
-}
-
 /* Admin Info Box */
 .admin-info-box {
     display: flex;
@@ -3202,27 +3184,6 @@ a.button:disabled {
         flex-direction: column;
         align-items: flex-start;
     }
-}
-
-.public-ad-slot {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
-}
-
-.ad-test-placeholder {
-    background: #e3f2fd;
-    border: 3px dashed #2196F3;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #1976D2;
-    font-size: 1rem;
-    font-family: monospace;
-    font-weight: bold;
-    padding: 2rem;
-    min-height: 250px;
-    text-align: center;
 }
 
 /* Info Icon */

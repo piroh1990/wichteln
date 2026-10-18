@@ -31,12 +31,6 @@ if (isset($_GET['deleted']) && $_GET['deleted'] == '1') {
         . h(t('home.deleted')) . '</div></div>';
 }
 
-function wichteln_render_home_ad() {
-    $position = 1;
-    $label = t('ads.home');
-    include __DIR__ . '/../includes/templates/google_ads.php';
-}
-
 i18n_include_content('index');
 ?>
     <script>

@@ -303,10 +303,6 @@ $mail_status = master_admin_mail_status(
     (string) ini_get('sendmail_path'),
     function_exists('mail')
 );
-$ads_status = master_admin_ads_status(
-    defined('GOOGLE_CMP_ENABLED') ? (bool) GOOGLE_CMP_ENABLED : null,
-    defined('GOOGLE_ADS_TESTING') ? (bool) GOOGLE_ADS_TESTING : null
-);
 $apache_modules = null;
 if (function_exists('apache_get_modules')) {
     $loaded_modules = @apache_get_modules();
@@ -747,17 +743,12 @@ function master_dashboard_page_url($filters_params, $page_key, $page_number) {
                 <span class="system-pill<?php echo $mail_status['ok'] ? '' : ' is-warn'; ?>">E-Mail <?php echo $mail_status['ok'] ? 'konfiguriert' : 'nicht konfiguriert'; ?></span>
                 <span class="system-pill<?php echo $rewrite_status === 'aktiv' ? '' : ($rewrite_status === 'inaktiv' ? ' is-warn' : ' is-unknown'); ?>">Clean-URLs <?php echo htmlspecialchars($rewrite_status, ENT_QUOTES, 'UTF-8'); ?></span>
                 <span class="system-pill<?php echo ((int) $schema['missing_count'] === 0) ? '' : ' is-warn'; ?>">Spalten <?php echo ((int) $schema['missing_count'] === 0) ? 'vollständig' : ((int) $schema['missing_count'] . ' fehlen'); ?></span>
-                <span class="system-pill<?php echo $ads_status['ok'] ? '' : ' is-warn'; ?>">Anzeigen-Flags <?php echo $ads_status['ok'] ? 'unauffällig' : 'prüfen'; ?></span>
                 <span class="system-pill<?php echo !empty($rate_limit_status['writable']) ? '' : ' is-warn'; ?>">Rate-Limit <?php echo !empty($rate_limit_status['writable']) ? 'beschreibbar' : 'nicht beschreibbar'; ?></span>
             </div>
             <div class="status-list">
                 <p>Versand über PHP <code>mail()</code><?php if ($mail_status['from'] !== ''): ?> von <?php echo htmlspecialchars($mail_status['from'], ENT_QUOTES, 'UTF-8'); ?><?php endif; ?>. Sendmail-Pfad <?php echo $mail_status['sendmail'] ? 'gesetzt' : 'leer'; ?>.</p>
                 <?php foreach ($mail_status['warnings'] as $mail_warning): ?>
                     <p class="notification warning" role="status"><?php echo htmlspecialchars($mail_warning, ENT_QUOTES, 'UTF-8'); ?></p>
-                <?php endforeach; ?>
-                <p>GOOGLE_CMP_ENABLED: <?php echo $ads_status['cmp_enabled'] === null ? 'nicht gesetzt' : ($ads_status['cmp_enabled'] ? 'true' : 'false'); ?>. GOOGLE_ADS_TESTING: <?php echo $ads_status['ads_testing'] === null ? 'nicht gesetzt' : ($ads_status['ads_testing'] ? 'true' : 'false'); ?>.</p>
-                <?php foreach ($ads_status['warnings'] as $ads_warning): ?>
-                    <p class="notification warning" role="status"><?php echo htmlspecialchars($ads_warning, ENT_QUOTES, 'UTF-8'); ?></p>
                 <?php endforeach; ?>
                 <?php if (!$php_status['ok']): ?>
                     <p class="notification warning" role="status">PHP 7.4 oder neuer wird erwartet.</p>
