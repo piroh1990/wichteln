@@ -29,11 +29,13 @@ CREATE TABLE IF NOT EXISTS `groups` (
   `is_drawn` TINYINT(1) DEFAULT 0 COMMENT 'Wurde bereits ausgelost? (0=Nein, 1=Ja)',
   `reveal_sent_at` DATETIME NULL DEFAULT NULL COMMENT 'Zeitpunkt, zu dem die Auflösung an alle Teilnehmer gesendet wurde',
   `reminder_sent_at` DATETIME NULL DEFAULT NULL COMMENT 'Zeitpunkt der Erinnerung an die Geschenkübergabe. NULL = noch nicht gesendet.',
+  `premium_license_id` INT NULL DEFAULT NULL COMMENT 'Premium-Lizenz. NULL = normale Gruppe. Kein Fremdschlüssel, bestehende Gruppen bleiben unverändert.',
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Erstellungszeitpunkt',
   
   INDEX idx_admin_token (`admin_token`),
   INDEX idx_invite_token (`invite_token`),
-  INDEX idx_created_at (`created_at`)
+  INDEX idx_created_at (`created_at`),
+  INDEX idx_premium_license (`premium_license_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
 COMMENT='Wichtel-Gruppen';
 
@@ -104,6 +106,60 @@ CREATE TABLE IF NOT EXISTS `group_statistics` (
 COMMENT='Anonymisierte Statistiken gelöschter Gruppen';
 
 -- ====================================
+-- 5. PREMIUM-LIZENZEN
+-- ====================================
+-- Eine Lizenz deckt mehrere Gruppen ab. Der Code liegt nur als Hash.
+
+CREATE TABLE IF NOT EXISTS `premium_licenses` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `tier` VARCHAR(32) NOT NULL COMMENT 'verein, firma oder firma_plus',
+  `status` VARCHAR(16) NOT NULL DEFAULT 'pending' COMMENT 'pending, active oder revoked',
+  `buyer_email` VARCHAR(255) NOT NULL COMMENT 'E-Mail der kaufenden Person',
+  `company_name` VARCHAR(255) NULL,
+  `company_address` TEXT NULL,
+  `contact_name` VARCHAR(255) NULL,
+  `domain` VARCHAR(255) NULL COMMENT 'Optionale Domain-Lizenz, exakt, ohne Subdomains',
+  `code_hash` CHAR(64) NULL COMMENT 'sha256 des Lizenzcodes, NULL bis zur Aktivierung',
+  `access_token` VARCHAR(64) NULL COMMENT 'Klartext-Token der Übersicht, NULL bis zur Aktivierung',
+  `greeting` TEXT NULL,
+  `logo_file` VARCHAR(64) NULL,
+  `color_primary` VARCHAR(7) NULL,
+  `color_accent` VARCHAR(7) NULL,
+  `stripe_session_id` VARCHAR(255) NULL,
+  `stripe_event_id` VARCHAR(255) NULL,
+  `season_year` SMALLINT NOT NULL,
+  `language` VARCHAR(5) NOT NULL DEFAULT 'de',
+  `created_at` DATETIME NOT NULL,
+  `activated_at` DATETIME NULL,
+  `notified_at` DATETIME NULL,
+  UNIQUE KEY `uniq_premium_code_hash` (`code_hash`),
+  UNIQUE KEY `uniq_premium_access_token` (`access_token`),
+  UNIQUE KEY `uniq_premium_stripe_session` (`stripe_session_id`),
+  INDEX `idx_premium_buyer_email` (`buyer_email`),
+  INDEX `idx_premium_domain` (`domain`),
+  INDEX `idx_premium_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+COMMENT='Premium-Lizenzen pro Saison';
+
+CREATE TABLE IF NOT EXISTS `premium_confirmations` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `license_id` INT NOT NULL,
+  `group_id` INT NOT NULL,
+  `email` VARCHAR(255) NOT NULL,
+  `purpose` VARCHAR(32) NOT NULL,
+  `token_hash` CHAR(64) NOT NULL,
+  `code_hash` CHAR(64) NOT NULL,
+  `language` VARCHAR(5) NOT NULL DEFAULT 'de',
+  `expires_at` DATETIME NOT NULL,
+  `created_at` DATETIME NOT NULL,
+  `consumed_at` DATETIME NULL,
+  INDEX `idx_premium_confirm_token` (`token_hash`),
+  INDEX `idx_premium_confirm_group` (`group_id`),
+  CONSTRAINT `fk_premium_confirm_license` FOREIGN KEY (`license_id`) REFERENCES `premium_licenses`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+COMMENT='E-Mail-Bestätigung, bevor eine Gruppe eine Lizenz beansprucht';
+
+-- ====================================
 -- TABELLEN ANZEIGEN
 -- ====================================
 
@@ -117,6 +173,8 @@ DESCRIBE `groups`;
 DESCRIBE `participants`;
 DESCRIBE `exclusions`;
 DESCRIBE `group_statistics`;
+DESCRIBE `premium_licenses`;
+DESCRIBE `premium_confirmations`;
 
 -- ====================================
 -- TEST-DATEN (Optional - für Entwicklung)

@@ -99,6 +99,15 @@ function i18n_lookup($key, $lang) {
 
 function t($key, $params = array()) {
     $key = (string) $key;
+    if (substr($key, -13) !== '.with_premium'
+        && function_exists('premium_feature_enabled')
+        && premium_feature_enabled()
+    ) {
+        $alt = $key . '.with_premium';
+        if (i18n_lookup($alt, i18n_current()) !== null || i18n_lookup($alt, 'de') !== null) {
+            $key = $alt;
+        }
+    }
     $text = i18n_lookup($key, i18n_current());
     if ($text === null && i18n_current() !== 'de') {
         $text = i18n_lookup($key, 'de');
@@ -193,6 +202,7 @@ function i18n_public_slugs() {
         'firmenwichteln-tipps',
         'ueber-uns',
         'unterstuetzen',
+        'firmen-premium',
         'create_group',
     );
 }
@@ -454,20 +464,27 @@ function i18n_apply_explicit_choice($pdo = null, $table = null, $id = null) {
 }
 
 function i18n_has_language_column($pdo, $table) {
+    static $cache = array();
     if (!$pdo instanceof PDO) {
         return false;
     }
     if ($table !== 'groups' && $table !== 'participants') {
         return false;
     }
+    $key = spl_object_hash($pdo) . ':' . $table;
+    if (isset($cache[$key])) {
+        return $cache[$key];
+    }
     if (!function_exists('mysql_column_exists')) {
+        $cache[$key] = false;
         return false;
     }
     try {
-        return mysql_column_exists($pdo, $table, 'language');
+        $cache[$key] = mysql_column_exists($pdo, $table, 'language');
     } catch (Exception $e) {
-        return false;
+        $cache[$key] = false;
     }
+    return $cache[$key];
 }
 
 function i18n_save_language($pdo, $table, $id, $lang) {

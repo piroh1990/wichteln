@@ -6,6 +6,9 @@ includes/api_config.php
 logs/*.log
 logs/api.log
 logs/rate-limit/
+storage/premium-logos/*
+!storage/premium-logos/.htaccess
+!storage/premium-logos/.gitkeep
 *.log
 
 # Database backups and dumps

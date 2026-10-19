@@ -253,9 +253,11 @@
                 </ul>
             </section>
             
+            <?php echo function_exists('premium_company_extras_html') ? premium_company_extras_html() : ''; ?>
+
             <div class="cta-section">
                 <h2>Bereit für euer Firmenwichteln?</h2>
-                <p>Organisiere das perfekte Team-Wichteln in weniger als 2 Minuten – kostenlos, professionell und stressfrei!</p>
+                <p><?php echo (function_exists('premium_feature_enabled') && premium_feature_enabled()) ? h(t('premium.extra.cta')) : 'Organisiere das perfekte Team-Wichteln in weniger als 2 Minuten – kostenlos, professionell und stressfrei!'; ?></p>
                 <a href="<?php echo h(i18n_href('create_group')); ?>" class="cta-button-white">Jetzt Wichtel-Gruppe erstellen →</a>
             </div>
         </article>

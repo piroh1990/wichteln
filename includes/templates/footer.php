@@ -1,4 +1,7 @@
-<?php require_once dirname(__DIR__) . '/support.php'; ?>
+<?php
+require_once dirname(__DIR__) . '/support.php';
+require_once dirname(__DIR__) . '/premium.php';
+?>
 <!-- Footer -->
 <footer class="site-footer">
     <div class="footer-container">
@@ -23,6 +26,7 @@
                 <ul class="footer-links">
                     <li><a href="<?php echo h(i18n_href('ueber-uns')); ?>"><?php echo h(t('nav.about')); ?></a></li>
                     <?php echo support_footer_html(); ?>
+                    <?php echo premium_footer_html(); ?>
                     <li><a href="<?php echo h(i18n_href('impressum')); ?>"><?php echo h(t('footer.imprint')); ?></a></li>
                     <li><a href="<?php echo h(i18n_href('datenschutz')); ?>"><?php echo h(t('footer.privacy')); ?></a></li>
                 </ul>

@@ -293,7 +293,7 @@
             <?php require_once dirname(__DIR__, 2) . '/includes/support.php'; ?>
             <h2 id="freiwillige-unterstuetzung">14. Soutien libre</h2>
             <p>
-                wichtlä.ch peut s’utiliser gratuitement et sans publicité. Un soutien est libre. Il n’est pas une condition pour utiliser une fonction, et il n’y a pas de contrepartie.
+                <?php echo (function_exists('premium_feature_enabled') && premium_feature_enabled()) ? h(t('premium.extra.privacy')) : 'wichtlä.ch peut s’utiliser gratuitement et sans publicité. Un soutien est libre. Il n’est pas une condition pour utiliser une fonction, et il n’y a pas de contrepartie.'; ?>
             </p>
             <p>
                 Le lien «Soutenir librement» mène à <?php echo h(support_provider_name()); ?>, un service de paiement. Là, les données de paiement et de contact sont traitées par <?php echo h(support_provider_name()); ?>. Si tu paies avec TWINT, TWINT traite aussi ces données. Le destinataire du paiement est Raths IT.
@@ -306,6 +306,23 @@
                 Plus d’informations dans la <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer">déclaration de confidentialité de Stripe</a>.
             </p>
             <?php endif; ?>
+
+            <h2 id="firmen-premium">15. Premium entreprises</h2>
+            <p>
+                Le Premium entreprises est une licence facultative pour plusieurs groupes dans une saison. Sans cette licence, les groupes existants ne changent pas.
+            </p>
+            <p>
+                Pour une licence, nous enregistrons l’adresse de la personne qui achète, le niveau choisi, le statut (en attente, actif ou retiré), une année de saison et la langue. Pour une facture, s’ajoutent l’organisation, l’adresse et un nom de contact facultatif. Une licence de domaine facultative n’enregistre que le domaine que nous saisissons dans l’administration principale, par exemple firma.ch. Le code de licence n’est enregistré que sous forme d’empreinte. Le lien vers la vue d’ensemble est un jeton aléatoire.
+            </p>
+            <p>
+                Si tu paies par carte ou TWINT, le paiement passe par Stripe. wichtlä.ch ne reçoit aucune donnée de carte. Stripe confirme le paiement par un webhook signé, et c’est seulement alors que nous créons la licence. La déclaration de Stripe est sur <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer">stripe.com/privacy</a>.
+            </p>
+            <p>
+                Une demande de facture est envoyée par e-mail à l’adresse prévue dans la configuration, afin que nous puissions facturer et activer la licence à la main. Un groupe ne devient Premium que lorsque l’adresse de la licence est confirmée, ou lorsque le code de licence est correct.
+            </p>
+            <p>
+                Le logo et les couleurs sont sur la licence et apparaissent sur les pages du groupe et des participant·e·s. Nous réenregistrons le logo en PNG, hors du dossier public. La vue RH montre le nom, l’adresse, si une liste de souhaits est remplie, et l’état du rappel. Elle ne montre pas les attributions. La révélation en direct est une étape séparée, avec confirmation par l’admin.
+            </p>
             
             <hr>
             

@@ -301,7 +301,7 @@
             
             <div class="cta-section">
                 <h2>Bereit für dein Wichteln?</h2>
-                <p>Organisiere dein Wichtel-Event in unter 2 Minuten – kostenlos und unkompliziert!</p>
+                <p><?php echo (function_exists('premium_feature_enabled') && premium_feature_enabled()) ? h(t('premium.extra.cta')) : 'Organisiere dein Wichtel-Event in unter 2 Minuten – kostenlos und unkompliziert!'; ?></p>
                 <a href="<?php echo h(i18n_href('create_group')); ?>" class="cta-button-white">Jetzt Wichtel-Gruppe erstellen →</a>
             </div>
         </article>

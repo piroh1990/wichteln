@@ -15,7 +15,12 @@
                     <strong>Wichtlä.ch</strong> hat ein einfaches Ziel: das Organisieren von Wichtel-Events so unkompliziert wie möglich zu machen. Kein Zettel-Chaos, keine umständlichen Apps, keine versteckten Kosten – einfach eine Gruppe erstellen, Teilnehmer einladen und die Namen automatisch und fair auslosen lassen.
                 </p>
                 <p>
-                    Ob für die Familie, den Freundeskreis oder das Firmenwichteln – unser Tool ist für alle gedacht, die Weihnachten mit einer schönen Wichtel-Tradition bereichern möchten. Die gesamte Plattform ist <strong>kostenlos</strong> und erfordert <strong>kein Konto</strong>.
+                    Ob für die Familie, den Freundeskreis oder das Firmenwichteln – unser Tool ist für alle gedacht, die Weihnachten mit einer schönen Wichtel-Tradition bereichern möchten.
+                    <?php if (function_exists('premium_feature_enabled') && premium_feature_enabled()): ?>
+                    <?php echo h(t('premium.extra.about')); ?> <?php echo premium_extra_link_html(); ?>.
+                    <?php else: ?>
+                    Die gesamte Plattform ist <strong>kostenlos</strong> und erfordert <strong>kein Konto</strong>.
+                    <?php endif; ?>
                 </p>
             </section>
 
@@ -34,7 +39,7 @@
                 <p>Es gibt viele Gründe, warum Wichtlä.ch die richtige Wahl für dein Wichtel-Event ist:</p>
 
                 <ul>
-                    <li><strong>100% kostenlos:</strong> Keine versteckten Kosten, keine Premium-Features hinter einer Paywall</li>
+                    <li><?php if (function_exists('premium_feature_enabled') && premium_feature_enabled()): ?><strong><?php echo h(t('premium.extra.bullet')); ?></strong> <?php echo premium_extra_link_html(); ?>.<?php else: ?><strong>100% kostenlos:</strong> Keine versteckten Kosten, keine Premium-Features hinter einer Paywall<?php endif; ?></li>
                     <li><strong>Kein Konto nötig:</strong> Sofort loslegen, ohne Account oder persönliche Daten angeben zu müssen</li>
                     <li><strong>Datenschutz nach Schweizer DSG:</strong> Deine Daten werden vertraulich behandelt und nach den strengen Schweizer Datenschutzgesetzen geschützt</li>
                     <li><strong>Einfache Bedienung:</strong> In weniger als 2 Minuten ist deine Wichtel-Gruppe erstellt und die Einladungen verschickt</li>
@@ -78,7 +83,7 @@
 
             <div class="cta-section">
                 <h2>Bereit für dein Wichtel-Event?</h2>
-                <p>Organisiere dein Wichteln in weniger als 2 Minuten – kostenlos, einfach und ohne Konto!</p>
+                <p><?php echo (function_exists('premium_feature_enabled') && premium_feature_enabled()) ? h(t('premium.extra.cta')) : 'Organisiere dein Wichteln in weniger als 2 Minuten – kostenlos, einfach und ohne Konto!'; ?></p>
                 <a href="<?php echo h(i18n_href('create_group')); ?>" class="cta-button-white">Jetzt Wichtel-Gruppe erstellen →</a>
             </div>
         </article>

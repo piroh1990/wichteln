@@ -253,9 +253,11 @@
                 </ul>
             </section>
             
+            <?php echo function_exists('premium_company_extras_html') ? premium_company_extras_html() : ''; ?>
+
             <div class="cta-section">
                 <h2>Prêt pour ton Secret Santa en entreprise ?</h2>
-                <p>Organise le Secret Santa parfait pour ton équipe en moins de 2 minutes : gratuit, clair, et sans stress !</p>
+                <p><?php echo (function_exists('premium_feature_enabled') && premium_feature_enabled()) ? h(t('premium.extra.cta')) : 'Organise le Secret Santa parfait pour ton équipe en moins de 2 minutes : gratuit, clair, et sans stress !'; ?></p>
                 <a href="<?php echo h(i18n_href('create_group')); ?>" class="cta-button-white">Créer un groupe Secret Santa →</a>
             </div>
         </article>

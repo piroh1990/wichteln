@@ -15,7 +15,12 @@
                     <strong>Wichtlä.ch</strong> a un objectif simple : rendre l’organisation d’un Secret Santa aussi facile que possible. Pas de bouts de papier en désordre, pas d’applications compliquées, pas de frais cachés. Tu crées un groupe, tu invites les participants, et les noms sont tirés automatiquement, de façon équitable. Le nom « Wichtlä » vient de « Wichtel », le mot allemand et suisse allemand pour le Secret Santa.
                 </p>
                 <p>
-                    En famille, entre amis ou pour un Secret Santa en entreprise, l’outil est fait pour toutes les personnes qui veulent enrichir Noël avec cette tradition. Toute la plateforme est <strong>gratuite</strong> et <strong>ne demande aucun compte</strong>.
+                    En famille, entre amis ou pour un Secret Santa en entreprise, l’outil est fait pour toutes les personnes qui veulent enrichir Noël avec cette tradition.
+                    <?php if (function_exists('premium_feature_enabled') && premium_feature_enabled()): ?>
+                    <?php echo h(t('premium.extra.about')); ?> <?php echo premium_extra_link_html(); ?>.
+                    <?php else: ?>
+                    Toute la plateforme est <strong>gratuite</strong> et <strong>ne demande aucun compte</strong>.
+                    <?php endif; ?>
                 </p>
             </section>
 
@@ -34,7 +39,7 @@
                 <p>Il y a beaucoup de raisons de choisir Wichtlä.ch pour ton Secret Santa :</p>
 
                 <ul>
-                    <li><strong>100 % gratuit :</strong> pas de frais cachés, pas de fonctions premium derrière un paiement</li>
+                    <li><?php if (function_exists('premium_feature_enabled') && premium_feature_enabled()): ?><strong><?php echo h(t('premium.extra.bullet')); ?></strong> <?php echo premium_extra_link_html(); ?>.<?php else: ?><strong>100 % gratuit :</strong> pas de frais cachés, pas de fonctions premium derrière un paiement<?php endif; ?></li>
                     <li><strong>Aucun compte :</strong> tu commences tout de suite, sans donner de données personnelles</li>
                     <li><strong>Protection des données selon la LPD suisse :</strong> tes données sont traitées de façon confidentielle et protégées selon la loi fédérale suisse sur la protection des données</li>
                     <li><strong>Utilisation simple :</strong> en moins de 2 minutes, ton groupe Secret Santa est créé et les invitations sont envoyées</li>
@@ -78,7 +83,7 @@
 
             <div class="cta-section">
                 <h2>Prêt pour ton Secret Santa ?</h2>
-                <p>Organise ton Secret Santa en moins de 2 minutes : gratuit, simple, et sans compte !</p>
+                <p><?php echo (function_exists('premium_feature_enabled') && premium_feature_enabled()) ? h(t('premium.extra.cta')) : 'Organise ton Secret Santa en moins de 2 minutes : gratuit, simple, et sans compte !'; ?></p>
                 <a href="<?php echo h(i18n_href('create_group')); ?>" class="cta-button-white">Créer un groupe Secret Santa →</a>
             </div>
         </article>

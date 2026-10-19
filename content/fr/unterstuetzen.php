@@ -15,7 +15,7 @@
                     wichtlä.ch est mon passe-temps. J’ai construit le site moi-même, parce qu’aucun des sites de Secret Santa existants ne me convenait vraiment : trop de publicité, trop compliqué, souvent avec une inscription. Je voulais quelque chose de simple et de propre.
                 </p>
                 <p>
-                    Le serveur et l’exploitation coûtent un peu d’argent et beaucoup de temps libre. Si tu veux, une contribution libre aide à ce que le site reste gratuit et sans publicité.
+                    <?php echo (function_exists('premium_feature_enabled') && premium_feature_enabled()) ? h(t('premium.extra.support')) : 'Le serveur et l’exploitation coûtent un peu d’argent et beaucoup de temps libre. Si tu veux, une contribution libre aide à ce que le site reste gratuit et sans publicité.'; ?>
                 </p>
             </section>
 

@@ -40,4 +40,35 @@ define('SUPPORT_URL', '');
 // Angezeigter Name des Zahlungsdienstes.
 define('SUPPORT_PROVIDER_NAME', 'Stripe');
 
+// Premium Firmen-Wichteln. Die Funktion ist aus, solange dieser Wert leer ist
+// oder fehlt. In includes/config.php auf '1' setzen, wenn sie sichtbar sein soll.
+// '1', 'true', 'yes' und 'on' schalten sie ein. Alles andere lässt sie aus.
+define('PREMIUM_ENABLED', '');
+
+// Empfänger der Rechnungsanfrage. Punycode in der Mail-Adresse.
+// Leer oder ungültig fällt auf info@xn--wichtl-gua.ch zurück.
+define('PREMIUM_INVOICE_EMAIL', 'info@xn--wichtl-gua.ch');
+
+// Stripe Checkout (Karte und TWINT). Alle drei Price-IDs, der Secret Key
+// und das Webhook-Geheimnis müssen gesetzt sein, sonst bleibt die Kartenzahlung
+// verborgen. Die Rechnung funktioniert auch ohne Stripe.
+// Webhook: https://xn--wichtl-gua.ch/premium-webhook.php
+// Ereignis: checkout.session.completed
+define('PREMIUM_STRIPE_SECRET_KEY', '');
+define('PREMIUM_STRIPE_WEBHOOK_SECRET', '');
+define('PREMIUM_STRIPE_PRICE_VEREIN', '');
+define('PREMIUM_STRIPE_PRICE_FIRMA', '');
+define('PREMIUM_STRIPE_PRICE_FIRMA_PLUS', '');
+
+// Optionale Preise (CHF, ganze Franken) und Gruppen-Limits.
+// Auskommentiert heisst: Verein 19 / 3, Firma 49 / 10, Firma Plus 99 / unbegrenzt.
+// Alle Stufen enthalten dieselben Funktionen. Der Unterschied ist die Anzahl Gruppen.
+// Limit 0 oder 'unlimited' heisst kein Limit.
+// define('PREMIUM_PRICE_VEREIN', 19);
+// define('PREMIUM_PRICE_FIRMA', 49);
+// define('PREMIUM_PRICE_FIRMA_PLUS', 99);
+// define('PREMIUM_LIMIT_VEREIN', 3);
+// define('PREMIUM_LIMIT_FIRMA', 10);
+// define('PREMIUM_LIMIT_FIRMA_PLUS', 'unlimited');
+
 ?>

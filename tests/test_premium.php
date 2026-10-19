@@ -1,0 +1,628 @@
+<?php
+
+require_once __DIR__ . '/framework.php';
+require_once __DIR__ . '/../includes/functions.php';
+
+function premium_test_pdo() {
+    $pdo = new PDO('sqlite::memory:');
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->exec('PRAGMA foreign_keys = ON');
+    $pdo->exec('CREATE TABLE `groups` (
+        `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+        `name` TEXT NOT NULL,
+        `admin_token` TEXT NOT NULL,
+        `invite_token` TEXT NOT NULL,
+        `admin_email` TEXT,
+        `language` TEXT DEFAULT \'de\',
+        `budget` REAL,
+        `description` TEXT,
+        `gift_exchange_date` TEXT,
+        `is_drawn` INTEGER DEFAULT 0,
+        `reveal_sent_at` TEXT,
+        `reminder_sent_at` TEXT,
+        `premium_license_id` INTEGER,
+        `created_at` TEXT
+    )');
+    $pdo->exec('CREATE TABLE `participants` (
+        `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+        `group_id` INTEGER NOT NULL,
+        `name` TEXT NOT NULL,
+        `email` TEXT,
+        `language` TEXT DEFAULT \'de\',
+        `participant_token` TEXT NOT NULL,
+        `assigned_to` INTEGER,
+        `wishlist` TEXT,
+        `created_at` TEXT
+    )');
+    $pdo->exec('CREATE TABLE `exclusions` (
+        `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+        `group_id` INTEGER NOT NULL,
+        `participant_id` INTEGER NOT NULL,
+        `excluded_participant_id` INTEGER NOT NULL,
+        UNIQUE (`group_id`, `participant_id`, `excluded_participant_id`)
+    )');
+    $pdo->exec('CREATE TABLE `premium_licenses` (
+        `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+        `tier` TEXT NOT NULL,
+        `status` TEXT NOT NULL,
+        `buyer_email` TEXT NOT NULL,
+        `company_name` TEXT,
+        `company_address` TEXT,
+        `contact_name` TEXT,
+        `domain` TEXT,
+        `code_hash` TEXT UNIQUE,
+        `access_token` TEXT UNIQUE,
+        `greeting` TEXT,
+        `logo_file` TEXT,
+        `color_primary` TEXT,
+        `color_accent` TEXT,
+        `stripe_session_id` TEXT UNIQUE,
+        `stripe_event_id` TEXT,
+        `season_year` INTEGER NOT NULL,
+        `language` TEXT NOT NULL DEFAULT \'de\',
+        `created_at` TEXT NOT NULL,
+        `activated_at` TEXT,
+        `notified_at` TEXT
+    )');
+    $pdo->exec('CREATE TABLE `premium_confirmations` (
+        `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+        `license_id` INTEGER NOT NULL,
+        `group_id` INTEGER NOT NULL,
+        `email` TEXT NOT NULL,
+        `purpose` TEXT NOT NULL,
+        `token_hash` TEXT NOT NULL,
+        `code_hash` TEXT NOT NULL,
+        `language` TEXT NOT NULL DEFAULT \'de\',
+        `expires_at` TEXT NOT NULL,
+        `created_at` TEXT NOT NULL,
+        `consumed_at` TEXT,
+        FOREIGN KEY (`license_id`) REFERENCES `premium_licenses`(`id`) ON DELETE CASCADE
+    )');
+    return $pdo;
+}
+
+function premium_test_group(PDO $pdo, $name) {
+    return i18n_insert_group(
+        $pdo,
+        $name,
+        bin2hex(random_bytes(16)),
+        bin2hex(random_bytes(16)),
+        'admin@example.com',
+        20,
+        'Beschreibung der Gruppe',
+        '2026-12-24',
+        'de'
+    );
+}
+
+function premium_test_person(PDO $pdo, $group_id, $name, $email) {
+    return i18n_insert_participant($pdo, $group_id, $name, $email, bin2hex(random_bytes(16)), 'de');
+}
+
+function premium_test_license(PDO $pdo, $tier, $email, $code, $domain = null) {
+    $now = '2026-10-19 12:00:00';
+    $stmt = $pdo->prepare('INSERT INTO `premium_licenses`
+        (`tier`, `status`, `buyer_email`, `domain`, `code_hash`, `access_token`, `season_year`, `language`, `created_at`, `activated_at`)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+    $stmt->execute(array(
+        $tier,
+        'active',
+        $email,
+        $domain,
+        premium_secret_hash(premium_normalize_code($code)),
+        bin2hex(random_bytes(32)),
+        2026,
+        'de',
+        $now,
+        $now,
+    ));
+    return (int) $pdo->lastInsertId();
+}
+
+function premium_test_sender(&$sent) {
+    return function ($to, $subject, $html, $plain) use (&$sent) {
+        $sent[] = array(
+            'to' => $to,
+            'subject' => $subject,
+            'html' => $html,
+            'plain' => $plain,
+        );
+        return true;
+    };
+}
+
+function premium_test_signature($payload, $secret, $timestamp) {
+    $sig = hash_hmac('sha256', $timestamp . '.' . $payload, $secret);
+    return 't=' . $timestamp . ',v1=' . $sig;
+}
+
+run_test('premium stays hidden until it is configured', function () {
+    assert_equals('', premium_create_form_html(false));
+    assert_equals(404, premium_public_status(false));
+    assert_equals(200, premium_public_status(true));
+    assert_true(strpos(premium_unavailable_body(), '<p>404</p>') !== false, 'unavailable body is a 404');
+
+    $example = file_get_contents(dirname(__DIR__) . '/includes/config.example.php');
+    assert_true(strpos($example, "define('PREMIUM_ENABLED', '');") !== false, 'example leaves premium off');
+
+    $page = file_get_contents(dirname(__DIR__) . '/public/firmen-premium.php');
+    $status = strpos($page, 'http_response_code(404)');
+    $open = strpos($page, 'public_page_open');
+    assert_true($status !== false && $open !== false && $status < $open, '404 happens before the page shell');
+    assert_true(strpos($page, '!premium_feature_enabled()') !== false, 'page checks the feature flag');
+
+    $create = file_get_contents(dirname(__DIR__) . '/public/create_group.php');
+    assert_true(strpos($create, 'premium_create_form_html') !== false, 'create form calls the premium box');
+
+    if (!premium_feature_enabled()) {
+        $php = defined('PHP_BINARY') ? PHP_BINARY : 'php';
+        $pricing = shell_exec(escapeshellarg($php) . ' ' . escapeshellarg(dirname(__DIR__) . '/public/firmen-premium.php') . ' 2>/dev/null');
+        assert_true(is_string($pricing) && strpos($pricing, '<p>404</p>') !== false, 'disabled pricing page returns 404');
+        $form = shell_exec(escapeshellarg($php) . ' ' . escapeshellarg(dirname(__DIR__) . '/public/create_group.php') . ' 2>/dev/null');
+        assert_true(is_string($form) && strpos($form, 'name="group_name"') !== false, 'create page still renders');
+        assert_true(strpos($form, 'firmen_premium') === false, 'create page hides the premium option');
+    }
+
+    $htaccess = file_get_contents(dirname(__DIR__) . '/public/.htaccess');
+    assert_true(strpos($htaccess, 'firmen-premium') !== false, 'clean url rewrite lists the page');
+    assert_true(is_file(dirname(__DIR__) . '/public/firmen-premium.php'), 'page file exists');
+    $hr = file_get_contents(dirname(__DIR__) . '/public/premium-hr.php');
+    assert_true(strpos($hr, 'assigned_to') === false, 'HR page source does not select assignments');
+});
+
+run_test('create form lists premium, prices and both ways to activate', function () {
+    $previous = isset($GLOBALS['i18n_lang']) ? $GLOBALS['i18n_lang'] : 'de';
+    $expected = array(
+        'de' => array('Firmen-Premium', 'CSV-Import', 'Eigenes Logo und eigene Farben', 'Ausschlussregeln', 'Gruppe fürs nächste Jahr kopieren', 'HR-Übersicht mit Live-Aufdeckung', 'Eigener Begrüssungstext', 'Domain-Lizenz', 'Lizenzübersicht', 'Dieselben Funktionen', 'CHF 19', 'CHF 49', 'CHF 99', 'Lizenzcode', 'Bestätigung'),
+        'fr' => array('Premium entreprise', 'Import CSV', 'Texte d’accueil', 'Licence de domaine', 'Les mêmes fonctions', 'CHF 19', 'CHF 49', 'CHF 99', 'code de licence'),
+        'en' => array('Company Premium', 'CSV import', 'welcome text', 'Domain licence', 'The same features', 'CHF 19', 'CHF 49', 'CHF 99', 'licence code'),
+    );
+    foreach ($expected as $lang => $needles) {
+        $GLOBALS['i18n_lang'] = $lang;
+        $html = premium_create_form_html(true, null, true, array(
+            'email' => 'a@b.ch"><script>',
+            'code' => '<b>CODE</b>',
+        ));
+        assert_true(strpos($html, 'name="firmen_premium"') !== false, $lang . ' checkbox');
+        assert_true(strpos($html, 'id="firmen-premium-toggle"') !== false, $lang . ' toggle');
+        assert_true(strpos($html, 'name="premium_license_email"') !== false, $lang . ' email field');
+        assert_true(strpos($html, 'name="premium_license_code"') !== false, $lang . ' code field');
+        assert_true(strpos($html, 'firmen-premium') !== false && strpos($html, '#kaufen') !== false, $lang . ' buy link');
+        assert_true(strpos($html, 'ß') === false, $lang . ' box uses ss');
+        assert_true(strpos($html, '<script>') === false, $lang . ' values are escaped');
+        assert_true(strpos($html, '&lt;b&gt;CODE&lt;/b&gt;') !== false, $lang . ' code is escaped');
+        foreach ($needles as $needle) {
+            assert_true(strpos($html, $needle) !== false, $lang . ' box contains ' . $needle);
+        }
+    }
+    $GLOBALS['i18n_lang'] = $previous;
+
+    $de = file_get_contents(dirname(__DIR__) . '/content/de/firmen-premium.php');
+    $fr = file_get_contents(dirname(__DIR__) . '/content/fr/firmen-premium.php');
+    $en = file_get_contents(dirname(__DIR__) . '/content/en/firmen-premium.php');
+    assert_true(strpos($de, 'ß') === false, 'German premium page uses ss');
+    assert_true(strpos($de, 'premium_pricing_cards_html') !== false, 'German page shows prices');
+    assert_true(strpos($fr, 'premium_pricing_cards_html') !== false, 'French page shows prices');
+    assert_true(strpos($en, 'premium_pricing_cards_html') !== false, 'English page shows prices');
+    assert_true(strpos(file_get_contents(dirname(__DIR__) . '/content/de/datenschutz.php'), 'id="firmen-premium"') !== false, 'privacy mentions premium');
+});
+
+run_test('license limits and configurable tiers', function () {
+    $pdo = premium_test_pdo();
+    $license = premium_test_license($pdo, 'verein', 'verein@example.com', 'ABCD23456789');
+    $attached = 0;
+    for ($i = 1; $i <= 3; $i++) {
+        $group = premium_test_group($pdo, 'Verein ' . $i);
+        $result = premium_attach_group($pdo, $license, $group);
+        assert_true($result['ok'], 'verein group ' . $i . ' attaches');
+        $attached++;
+    }
+    $fourth = premium_test_group($pdo, 'Verein 4');
+    $blocked = premium_attach_group($pdo, $license, $fourth);
+    assert_true(!$blocked['ok'] && $blocked['error'] === 'limit', 'fourth verein group is refused');
+    assert_equals(3, premium_group_count($pdo, $license));
+
+    $firma = premium_test_license($pdo, 'firma', 'firma@example.com', 'EFGH23456789');
+    for ($i = 1; $i <= 10; $i++) {
+        $group = premium_test_group($pdo, 'Firma ' . $i);
+        $result = premium_attach_group($pdo, $firma, $group);
+        assert_true($result['ok'], 'firma group ' . $i);
+    }
+    $extra = premium_attach_group($pdo, $firma, premium_test_group($pdo, 'Firma 11'));
+    assert_equals('limit', $extra['error'], 'eleventh firma group is refused');
+
+    $plus = premium_test_license($pdo, 'firma_plus', 'plus@example.com', 'JKLM23456789');
+    for ($i = 1; $i <= 12; $i++) {
+        $result = premium_attach_group($pdo, $plus, premium_test_group($pdo, 'Plus ' . $i));
+        assert_true($result['ok'], 'firma plus stays open');
+    }
+
+    $custom = array(
+        'verein' => array('price' => 19, 'limit' => 1, 'greeting' => false, 'hide_credit' => false),
+    );
+    assert_true(premium_has_room('verein', 0, $custom), 'custom tier has room for the first group');
+    assert_true(!premium_has_room('verein', 1, $custom), 'custom tier stops at its limit');
+    assert_equals('info@xn--wichtl-gua.ch', premium_normalize_admin_email('info@wichtlä.ch'));
+    assert_equals('info@xn--wichtl-gua.ch', premium_normalize_admin_email(''));
+});
+
+run_test('email confirmation is required before a group is premium', function () {
+    $pdo = premium_test_pdo();
+    $license = premium_test_license($pdo, 'firma', 'buyer@firma.ch', 'NPQR23456789', 'firma.ch');
+    $group = premium_test_group($pdo, 'Bestätigen');
+    $sent = array();
+    $claim = premium_request_email_claim($pdo, $group, 'buyer@firma.ch', 'ip-claim-' . bin2hex(random_bytes(3)), premium_test_sender($sent), 1760000000);
+    assert_equals('sent', $claim['status'], 'known address gets a confirmation');
+    $still = $pdo->query('SELECT `premium_license_id` FROM `groups` WHERE `id` = ' . (int) $group)->fetchColumn();
+    assert_true($still === null || $still === '', 'group stays free until the link is used');
+
+    $stranger = premium_test_group($pdo, 'Fremd');
+    $other = premium_request_email_claim($pdo, $stranger, 'fremd@example.com', 'ip-other-' . bin2hex(random_bytes(3)), premium_test_sender($sent), 1760000000);
+    assert_equals('unknown', $other['status'], 'another address is not told that it missed');
+    $stranger_license = $pdo->query('SELECT `premium_license_id` FROM `groups` WHERE `id` = ' . (int) $stranger)->fetchColumn();
+    assert_true($stranger_license === null || $stranger_license === '', 'stranger group is not attached');
+
+    $confirmed = premium_confirm_token($pdo, $claim['token'], 1760000000);
+    assert_true($confirmed['ok'], 'confirmation link attaches the group');
+    assert_equals($license, (int) $pdo->query('SELECT `premium_license_id` FROM `groups` WHERE `id` = ' . (int) $group)->fetchColumn());
+
+    $domain_group = premium_test_group($pdo, 'Domain');
+    $domain_claim = premium_request_email_claim($pdo, $domain_group, 'sam@firma.ch', 'ip-domain-' . bin2hex(random_bytes(3)), premium_test_sender($sent), 1760000100);
+    assert_equals('sent', $domain_claim['status'], 'same domain can ask');
+    $before = $pdo->query('SELECT `premium_license_id` FROM `groups` WHERE `id` = ' . (int) $domain_group)->fetchColumn();
+    assert_true($before === null || $before === '', 'domain match still waits for confirmation');
+    $domain_ok = premium_confirm_token($pdo, $domain_claim['token'], 1760000100);
+    assert_true($domain_ok['ok'], 'confirmed domain address attaches');
+
+    $sub = premium_request_email_claim($pdo, premium_test_group($pdo, 'Sub'), 'sam@sub.firma.ch', 'ip-sub-' . bin2hex(random_bytes(3)), premium_test_sender($sent), 1760000200);
+    assert_equals('unknown', $sub['status'], 'a subdomain is not the domain licence');
+});
+
+run_test('license code activates and a wrong code does not', function () {
+    $pdo = premium_test_pdo();
+    $code = 'STUV23456789';
+    $license = premium_test_license($pdo, 'verein', 'code@example.com', $code);
+    $group = premium_test_group($pdo, 'Mit Code');
+    $ip = 'ip-code-' . bin2hex(random_bytes(4));
+    $bad = premium_claim_with_code($pdo, $group, 'ZZZZ23456789', $ip);
+    assert_true(!$bad['ok'], 'wrong code does not attach');
+    assert_true($pdo->query('SELECT `premium_license_id` FROM `groups` WHERE `id` = ' . (int) $group)->fetchColumn() === null
+        || $pdo->query('SELECT `premium_license_id` FROM `groups` WHERE `id` = ' . (int) $group)->fetchColumn() === '');
+    $good = premium_claim_with_code($pdo, $group, 'stuv-2345-6789', $ip);
+    assert_true($good['ok'], 'formatted code attaches');
+    assert_equals($license, (int) $pdo->query('SELECT `premium_license_id` FROM `groups` WHERE `id` = ' . (int) $group)->fetchColumn());
+
+    $rate_group = premium_test_group($pdo, 'Limit');
+    $rate_ip = 'ip-rate-' . bin2hex(random_bytes(4));
+    $last = array('ok' => true, 'error' => '');
+    for ($i = 0; $i < 9; $i++) {
+        $last = premium_claim_with_code($pdo, $rate_group, 'WRONG2345678', $rate_ip);
+    }
+    assert_equals('rate', $last['error'], 'code attempts are rate limited');
+});
+
+run_test('stripe webhook checks the signature and creates one license', function () {
+    $pdo = premium_test_pdo();
+    $secret = 'whsec_test_secret_value';
+    $config = array(
+        'secret' => 'sk_test_secret_key',
+        'webhook' => $secret,
+        'prices' => array(
+            'verein' => 'price_verein_test',
+            'firma' => 'price_firma_test',
+            'firma_plus' => 'price_plus_test',
+        ),
+    );
+    $event = array(
+        'id' => 'evt_premium_1',
+        'type' => 'checkout.session.completed',
+        'data' => array(
+            'object' => array(
+                'id' => 'cs_test_session_1',
+                'payment_status' => 'paid',
+                'metadata' => array(
+                    'tier' => 'verein',
+                    'price_id' => 'price_verein_test',
+                    'buyer_email' => 'stripe@example.com',
+                    'language' => 'de',
+                ),
+            ),
+        ),
+    );
+    $payload = json_encode($event);
+    $now = 1760000000;
+    $sent = array();
+    $header = premium_test_signature($payload, $secret, $now);
+    $created = premium_handle_webhook($pdo, $payload, $header, $secret, premium_test_sender($sent), $now, $config);
+    assert_equals('created', $created['status'], 'paid event creates a license');
+    assert_equals(1, (int) $pdo->query('SELECT COUNT(*) FROM `premium_licenses`')->fetchColumn());
+    $body = premium_webhook_response($created);
+    assert_true(strpos($body['body'], $created['code']) === false, 'response body does not contain the code');
+    assert_true(strpos($body['body'], 'created') !== false, 'response only names the status');
+    assert_equals(1, count($sent), 'buyer is emailed once');
+
+    $again = premium_handle_webhook($pdo, $payload, $header, $secret, premium_test_sender($sent), $now, $config);
+    assert_equals('duplicate', $again['status'], 'replay does not create a second license');
+    assert_equals(1, (int) $pdo->query('SELECT COUNT(*) FROM `premium_licenses`')->fetchColumn());
+
+    $bad = premium_handle_webhook($pdo, $payload, 't=' . $now . ',v1=deadbeef', $secret, premium_test_sender($sent), $now, $config);
+    assert_equals('invalid_signature', $bad['status']);
+    assert_equals(1, (int) $pdo->query('SELECT COUNT(*) FROM `premium_licenses`')->fetchColumn());
+
+    $expired_header = premium_test_signature($payload, $secret, $now - 1000);
+    assert_true(!premium_stripe_signature_valid($payload, $expired_header, $secret, $now), 'old signature is rejected');
+});
+
+run_test('invoice mail reaches the admin and a pending license cannot be claimed', function () {
+    $pdo = premium_test_pdo();
+    $sent = array();
+    $result = premium_submit_invoice($pdo, array(
+        'tier' => 'firma',
+        'company' => 'Beispiel AG',
+        'address' => "Bahnhofstrasse 1\n8000 Zürich",
+        'email' => 'rechnung@firma.ch',
+        'contact' => 'Ada',
+    ), 'ip-invoice-' . bin2hex(random_bytes(3)), premium_test_sender($sent), 1760000000);
+    assert_true($result['ok'], 'invoice request is stored');
+    assert_equals(1, count($sent), 'admin is emailed');
+    assert_equals('info@xn--wichtl-gua.ch', $sent[0]['to'], 'admin address is punycode');
+    assert_true(strpos($sent[0]['plain'], 'Beispiel AG') !== false, 'mail names the company');
+    assert_true(strpos($sent[0]['plain'], 'Bahnhofstrasse 1') !== false, 'mail names the address');
+    assert_true(strpos($sent[0]['plain'], 'rechnung@firma.ch') !== false, 'mail names the buyer');
+    $row = $pdo->query('SELECT * FROM `premium_licenses` WHERE `id` = ' . (int) $result['id'])->fetch(PDO::FETCH_ASSOC);
+    assert_equals('pending', $row['status']);
+    assert_true($row['code_hash'] === null || $row['code_hash'] === '', 'pending license has no code');
+
+    $group = premium_test_group($pdo, 'Rechnung');
+    $claim = premium_claim_with_code($pdo, $group, 'ABCD23456789', 'ip-pending-' . bin2hex(random_bytes(3)));
+    assert_true(!$claim['ok'], 'pending code cannot be used');
+
+    $sent = array();
+    $activated = premium_activate_license($pdo, $result['id'], '', premium_test_sender($sent), 1760001000);
+    assert_true($activated['ok'], 'master admin can activate');
+    assert_true(preg_match('/[A-Z2-9]{4}-[A-Z2-9]{4}-[A-Z2-9]{4}/', $sent[0]['plain'], $match) === 1, 'mail contains the code');
+    $used = premium_claim_with_code($pdo, $group, $match[0], 'ip-after-' . bin2hex(random_bytes(3)));
+    assert_true($used['ok'], 'code works after activation');
+});
+
+run_test('csv import validates and does not insert bad rows', function () {
+    $bom = "\xEF\xBB\xBF";
+    $semi = $bom . "Name;E-Mail\n\"Anna, Team\";anna@example.com\n;leer@example.com\nBob;bob@example.com\n";
+    $parsed = premium_parse_csv($semi);
+    assert_equals(2, count($parsed['rows']), 'valid semicolon rows are kept');
+    assert_true(count($parsed['errors']) >= 1, 'a row without a name is an error');
+    assert_equals('Anna, Team', $parsed['rows'][0]['name']);
+    assert_equals('anna@example.com', $parsed['rows'][0]['email']);
+
+    $comma = "Name,Email\n\"Ada, GmbH\",ada@example.com\nCleo,not-an-email\n";
+    $comma_parsed = premium_parse_csv($comma);
+    assert_equals(1, count($comma_parsed['rows']), 'quoted comma field parses');
+    assert_equals('Ada, GmbH', $comma_parsed['rows'][0]['name']);
+    assert_true(count($comma_parsed['errors']) >= 1, 'invalid email is reported');
+
+    $pdo = premium_test_pdo();
+    $group_id = premium_test_group($pdo, 'Import');
+    $group = $pdo->query('SELECT * FROM `groups` WHERE `id` = ' . (int) $group_id)->fetch(PDO::FETCH_ASSOC);
+    $before = (int) $pdo->query('SELECT COUNT(*) FROM `participants`')->fetchColumn();
+    assert_equals($before, (int) $pdo->query('SELECT COUNT(*) FROM `participants`')->fetchColumn(), 'preview does not insert');
+    $created = premium_import_rows($pdo, $group, $parsed['rows']);
+    assert_equals(2, count($created), 'only valid rows are imported');
+    assert_equals(2, (int) $pdo->query('SELECT COUNT(*) FROM `participants`')->fetchColumn());
+});
+
+run_test('exclusion draw succeeds and reports an impossible case', function () {
+    $pdo = premium_test_pdo();
+    $group = premium_test_group($pdo, 'Auslosung');
+    $a = premium_test_person($pdo, $group, 'Anna', 'anna@example.com');
+    $b = premium_test_person($pdo, $group, 'Ben', 'ben@example.com');
+    $c = premium_test_person($pdo, $group, 'Cleo', 'cleo@example.com');
+    premium_add_exclusion($pdo, $group, $a, $b);
+    $rules = $pdo->query('SELECT * FROM `exclusions` WHERE `group_id` = ' . (int) $group)->fetchAll(PDO::FETCH_ASSOC);
+    $drawn = perform_draw(array($a, $b, $c), premium_exclusions_map($rules));
+    assert_true(is_array($drawn), 'one exclusion still has a valid draw');
+    assert_true($drawn[0] !== $b, 'Anna does not draw Ben');
+
+    $pair = premium_test_group($pdo, 'Unmöglich');
+    $x = premium_test_person($pdo, $pair, 'Xena', 'xena@example.com');
+    $y = premium_test_person($pdo, $pair, 'Yann', 'yann@example.com');
+    premium_add_exclusion($pdo, $pair, $x, $y);
+    premium_add_exclusion($pdo, $pair, $y, $x);
+    $blocked = $pdo->query('SELECT * FROM `exclusions` WHERE `group_id` = ' . (int) $pair)->fetchAll(PDO::FETCH_ASSOC);
+    assert_equals(false, perform_draw(array($x, $y), premium_exclusions_map($blocked)), 'mutual exclusion cannot be drawn');
+});
+
+run_test('copying a group excludes last year and respects the limit', function () {
+    $pdo = premium_test_pdo();
+    $license = premium_test_license($pdo, 'firma_plus', 'copy@example.com', 'WXYZ23456789');
+    $group = premium_test_group($pdo, 'Letztes Jahr');
+    premium_attach_group($pdo, $license, $group);
+    $a = premium_test_person($pdo, $group, 'Anna', 'anna@example.com');
+    $b = premium_test_person($pdo, $group, 'Ben', 'ben@example.com');
+    $pdo->prepare('UPDATE `participants` SET `wishlist` = ?, `assigned_to` = ? WHERE `id` = ?')->execute(array('Buch', $b, $a));
+    $pdo->prepare('UPDATE `participants` SET `wishlist` = ?, `assigned_to` = ? WHERE `id` = ?')->execute(array('Tee', $a, $b));
+    $pdo->prepare('UPDATE `groups` SET `is_drawn` = 1 WHERE `id` = ?')->execute(array($group));
+    premium_add_exclusion($pdo, $group, $a, $a);
+
+    $copied = premium_copy_group_for_next_year($pdo, $group);
+    assert_true($copied['ok'], 'copy succeeds while the licence has room');
+    $new = $pdo->query('SELECT * FROM `groups` WHERE `id` = ' . (int) $copied['group_id'])->fetch(PDO::FETCH_ASSOC);
+    assert_equals('2027-12-24', $new['gift_exchange_date'], 'gift date moves one year');
+    assert_equals('Beschreibung der Gruppe', $new['description']);
+    assert_equals(0, (int) $new['is_drawn'], 'the copy is not drawn');
+    assert_equals($license, (int) $new['premium_license_id']);
+    $people = $pdo->query('SELECT * FROM `participants` WHERE `group_id` = ' . (int) $copied['group_id'] . ' ORDER BY `id`')->fetchAll(PDO::FETCH_ASSOC);
+    assert_equals(2, count($people));
+    assert_equals('Buch', $people[0]['wishlist']);
+    assert_true($people[0]['assigned_to'] === null || $people[0]['assigned_to'] === '', 'assignments are not copied');
+    $rules = $pdo->query('SELECT * FROM `exclusions` WHERE `group_id` = ' . (int) $copied['group_id'])->fetchAll(PDO::FETCH_ASSOC);
+    $ids = array((int) $people[0]['id'], (int) $people[1]['id']);
+    assert_equals(false, perform_draw($ids, premium_exclusions_map($rules)), 'last year pairing blocks the only draw');
+
+    $full = premium_test_license($pdo, 'verein', 'voll@example.com', 'ABCD23456781');
+    $first = premium_test_group($pdo, 'Slot 1');
+    premium_attach_group($pdo, $full, $first);
+    premium_test_person($pdo, $first, 'Eins', 'eins@example.com');
+    premium_attach_group($pdo, $full, premium_test_group($pdo, 'Slot 2'));
+    premium_attach_group($pdo, $full, premium_test_group($pdo, 'Slot 3'));
+    $stopped = premium_copy_group_for_next_year($pdo, $first);
+    assert_equals('limit', $stopped['error'], 'copy stops when the licence is full');
+});
+
+run_test('hr overview hides assignments and reveal needs confirmation', function () {
+    $rows = premium_hr_rows(array(
+        array('name' => 'Anna', 'email' => 'anna@example.com', 'wishlist' => 'Buch', 'assigned_to' => 9),
+        array('name' => 'Ben', 'email' => 'ben@example.com', 'wishlist' => '', 'assigned_to' => 8),
+    ), array('reminder_sent_at' => null));
+    $html = premium_hr_table_html($rows);
+    assert_true(strpos($html, 'Anna') !== false, 'participant name is visible');
+    assert_true(strpos($html, 'assigned_to') === false, 'column name is not rendered');
+    assert_true(strpos($html, 'CANARY-RECEIVER') === false, 'assignment canary is absent');
+    $session = array();
+    $locked = premium_reveal_unlock(array(), $session, 4, true, 1760000000);
+    assert_equals('confirm', $locked['error'], 'reveal without the checkbox stays locked');
+    assert_true(!premium_reveal_allowed($locked['session'], 4, 1760000000));
+    $open = premium_reveal_unlock(array('confirm_reveal' => '1'), $session, 4, true, 1760000000);
+    assert_equals('', $open['error']);
+    assert_true(premium_reveal_allowed($open['session'], 4, 1760000000));
+    assert_true(!premium_reveal_allowed($open['session'], 4, 1760000000 + 7201), 'unlock expires');
+});
+
+run_test('logo upload rejects svg and php and reencodes png', function () {
+    $svg = premium_logo_inspect('<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>', 'logo.svg');
+    assert_true(!$svg['ok'], 'svg is rejected');
+    $php = premium_logo_inspect('<?php echo 1; ?>', 'logo.php');
+    assert_true(!$php['ok'], 'php is rejected');
+    $image = imagecreatetruecolor(8, 8);
+    $red = imagecolorallocate($image, 230, 57, 70);
+    imagefilledrectangle($image, 0, 0, 7, 7, $red);
+    ob_start();
+    imagepng($image);
+    $png = ob_get_clean();
+    imagedestroy($image);
+    $too_big = premium_logo_inspect($png, 'logo.png', 10);
+    assert_equals('size', $too_big['error'], 'oversize file is rejected');
+    $ok = premium_logo_inspect($png, 'logo.png');
+    assert_true($ok['ok'], 'png is accepted');
+    assert_equals("\x89PNG\r\n\x1a\n", substr($ok['binary'], 0, 8), 'stored logo is a png');
+});
+
+run_test('every tier includes the same premium functions', function () {
+    $definitions = premium_tier_definitions();
+    foreach (array('verein', 'firma', 'firma_plus') as $key) {
+        assert_true(!empty($definitions[$key]['greeting']), $key . ' includes a greeting');
+        assert_true(!empty($definitions[$key]['hide_credit']), $key . ' hides the credit');
+    }
+    $previous = isset($GLOBALS['i18n_lang']) ? $GLOBALS['i18n_lang'] : 'de';
+    $GLOBALS['i18n_lang'] = 'de';
+    $cards = premium_pricing_cards_html();
+    assert_true(strpos($cards, 'Dieselben Funktionen in jeder Stufe') !== false, 'cards share one sentence');
+    assert_true(strpos($cards, 'Eigener Begrüssungstext') === false, 'greeting is not a plus-only line');
+    assert_true(strpos($cards, 'powered by') === false, 'credit line is not a plus-only line');
+    assert_equals(3, substr_count($cards, 'premium-tier-card'), 'three tiers');
+    $GLOBALS['i18n_lang'] = $previous;
+
+    $pdo = premium_test_pdo();
+    $id = premium_test_license($pdo, 'verein', 'verein-brand@example.com', 'WXYZ23456789');
+    $license = premium_fetch_license($pdo, $id);
+    $saved = premium_save_branding($pdo, $license, array(
+        'color_primary' => '#112233',
+        'color_accent' => '#445566',
+        'greeting' => 'Willkommen im Team',
+    ));
+    assert_true($saved['ok'], 'verein can save a greeting');
+    $state = premium_brand_state(premium_fetch_license($pdo, $id));
+    assert_equals('Willkommen im Team', $state['greeting']);
+    assert_true($state['credit'] === false, 'verein hides powered by');
+    $long = premium_save_branding($pdo, premium_fetch_license($pdo, $id), array(
+        'color_primary' => '#112233',
+        'color_accent' => '#445566',
+        'greeting' => str_repeat('a', 501),
+    ));
+    assert_equals('greeting', $long['error'], 'an unusable greeting is refused');
+});
+
+function premium_render_content($relative) {
+    ob_start();
+    include dirname(__DIR__) . '/' . $relative;
+    return ob_get_clean();
+}
+
+run_test('company page and free claims follow the feature flag', function () {
+    $previous_lang = isset($GLOBALS['i18n_lang']) ? $GLOBALS['i18n_lang'] : 'de';
+    $had_override = array_key_exists('premium_enabled_override', $GLOBALS);
+    $previous_override = $had_override ? $GLOBALS['premium_enabled_override'] : null;
+    try {
+        unset($GLOBALS['premium_enabled_override']);
+        $GLOBALS['i18n_lang'] = 'de';
+        assert_true(strpos(t('footer.tagline'), 'kostenlose Lösung') !== false, 'off state keeps the old tagline');
+        $home_off = premium_render_content('content/de/index.php');
+        assert_true(strpos($home_off, '100% kostenlos') !== false, 'homepage keeps the free claim while premium is off');
+        assert_true(strpos($home_off, 'keine Premium-Features') !== false, 'homepage keeps the no-premium claim while premium is off');
+        assert_true(strpos($home_off, 'firmen-premium') === false, 'homepage does not link premium while it is off');
+        $tips_off = premium_render_content('content/de/firmenwichteln-tipps.php');
+        assert_true(strpos($tips_off, 'Extra-Funktionen für Firmen') === false, 'company tips hide the premium section');
+        assert_true(strpos($tips_off, 'kostenlos, professionell') !== false, 'company tips keep the old closing line');
+
+        $GLOBALS['premium_enabled_override'] = true;
+        foreach (array(
+            'de' => 'Extra-Funktionen für Firmen und Vereine',
+            'fr' => 'fonctions en plus pour entreprises et associations',
+            'en' => 'Extra features for companies and clubs',
+        ) as $lang => $label) {
+            $GLOBALS['i18n_lang'] = $lang;
+            $description = t('meta.index.description');
+            assert_true(strpos($description, $label) !== false, $lang . ' meta names the extra functions');
+            assert_true(stripos($description, '100%') === false && strpos($description, '100 %') === false, $lang . ' meta drops the absolute free claim');
+        }
+
+        $GLOBALS['i18n_lang'] = 'de';
+        $home_on = premium_render_content('content/de/index.php');
+        assert_true(strpos($home_on, '100% kostenlos') === false, 'homepage drops 100 percent');
+        assert_true(strpos($home_on, 'keine Premium-Features') === false, 'homepage drops the no-premium claim');
+        assert_true(strpos($home_on, 'firmen-premium') !== false, 'homepage links to premium');
+        assert_true(strpos($home_on, 'Extra-Funktionen für Firmen und Vereine') !== false, 'homepage names the extra functions');
+        $faq_on = premium_render_content('content/de/faq.php');
+        assert_true(strpos($faq_on, '100% kostenlos') === false, 'faq drops 100 percent');
+        assert_true(strpos($faq_on, 'keine Premium-Accounts') === false, 'faq drops premium accounts');
+        assert_true(strpos($faq_on, 'Extra-Funktionen für Firmen und Vereine') !== false, 'faq names the extra functions');
+
+        $GLOBALS['i18n_lang'] = 'fr';
+        $fr_home = premium_render_content('content/fr/index.php');
+        assert_true(strpos($fr_home, '100 % gratuit') === false, 'french homepage drops the absolute claim');
+        assert_true(strpos($fr_home, 'pas de fonctions premium') === false, 'french homepage drops premium features');
+        assert_true(strpos($fr_home, 'Fonctions en plus pour entreprises et associations') !== false, 'french homepage names the extra functions');
+        $fr_faq = premium_render_content('content/fr/faq.php');
+        assert_true(strpos($fr_faq, '100 % gratuit') === false, 'french faq drops the absolute claim');
+        assert_true(strpos($fr_faq, 'pas de comptes premium') === false, 'french faq drops premium accounts');
+
+        $GLOBALS['i18n_lang'] = 'en';
+        $en_home = premium_render_content('content/en/index.php');
+        assert_true(strpos($en_home, '100% free') === false, 'english homepage drops the absolute claim');
+        assert_true(strpos($en_home, 'no premium features') === false, 'english homepage drops premium features');
+        assert_true(strpos($en_home, 'Extra features for companies and clubs') !== false, 'english homepage names the extra functions');
+        $en_faq = premium_render_content('content/en/faq.php');
+        assert_true(strpos($en_faq, '100% free') === false, 'english faq drops the absolute claim');
+        assert_true(strpos($en_faq, 'no premium accounts') === false, 'english faq drops premium accounts');
+
+        foreach (array(
+            'de' => array('content/de/firmenwichteln-tipps.php', 'Extra-Funktionen für Firmen'),
+            'fr' => array('content/fr/firmenwichteln-tipps.php', 'Fonctions en plus pour les entreprises'),
+            'en' => array('content/en/firmenwichteln-tipps.php', 'Extra features for companies'),
+        ) as $lang => $spec) {
+            $GLOBALS['i18n_lang'] = $lang;
+            $html = premium_render_content($spec[0]);
+            assert_true(strpos($html, $spec[1]) !== false, $lang . ' company page has the section');
+            assert_true(strpos($html, 'CHF 19') !== false && strpos($html, 'CHF 49') !== false && strpos($html, 'CHF 99') !== false, $lang . ' company page lists the prices');
+            assert_true(strpos($html, 'firmen-premium') !== false && strpos($html, '#kaufen') !== false, $lang . ' company page links to the purchase');
+            assert_true(strpos($html, 'ß') === false, $lang . ' company section uses ss');
+            assert_true(strpos($html, 'id="extra-funktionen"') !== false, $lang . ' section is present');
+        }
+    } finally {
+        if ($had_override) {
+            $GLOBALS['premium_enabled_override'] = $previous_override;
+        } else {
+            unset($GLOBALS['premium_enabled_override']);
+        }
+        $GLOBALS['i18n_lang'] = $previous_lang;
+    }
+});

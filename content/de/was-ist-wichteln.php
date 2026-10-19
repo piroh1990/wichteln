@@ -68,7 +68,11 @@
                 <div class="highlight-box">
                     <h3>💡 Tipp: Online Wichteln mit Wichtlä.ch</h3>
                     <p>
+                        <?php if (function_exists('premium_feature_enabled') && premium_feature_enabled()): ?>
+                        <?php echo h(t('premium.extra.tool')); ?> <?php echo premium_extra_link_html(); ?>.
+                        <?php else: ?>
                         Mit unserem kostenlosen Tool wird das Losziehen zum Kinderspiel! Keine Zettel, kein Aufwand – einfach Namen eintragen, und jeder erhält sein Los per E-Mail. Perfekt für verteilte Teams oder Familien.
+                        <?php endif; ?>
                     </p>
                 </div>
             </section>
@@ -140,7 +144,7 @@
             
             <div class="cta-section">
                 <h2>Bereit für dein Wichtel-Event?</h2>
-                <p>Organisiere dein Wichteln in weniger als 2 Minuten – kostenlos, einfach und ohne Konto!</p>
+                <p><?php echo (function_exists('premium_feature_enabled') && premium_feature_enabled()) ? h(t('premium.extra.cta')) : 'Organisiere dein Wichteln in weniger als 2 Minuten – kostenlos, einfach und ohne Konto!'; ?></p>
                 <a href="<?php echo h(i18n_href('create_group')); ?>" class="cta-button-white">Jetzt Wichtel-Gruppe erstellen →</a>
             </div>
         </article>

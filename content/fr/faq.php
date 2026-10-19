@@ -8,7 +8,7 @@
                 "name": "C’est quoi, Wichtlä.ch ?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Wichtlä.ch est un outil en ligne gratuit pour organiser un Secret Santa. Tu peux créer des groupes, ajouter des participants, tirer les noms automatiquement et de façon équitable, envoyer les attributions par e-mail et définir des exclusions. Le tout sans compte et sans application : directement dans le navigateur."
+                    "text": <?php echo premium_json_text('Wichtlä.ch est un outil en ligne gratuit pour organiser un Secret Santa. Tu peux créer des groupes, ajouter des participants, tirer les noms automatiquement et de façon équitable, envoyer les attributions par e-mail et définir des exclusions. Le tout sans compte et sans application : directement dans le navigateur.', 'premium.extra.faq_what'); ?>
                 }
             },
             {
@@ -16,7 +16,7 @@
                 "name": "Wichtlä.ch est-il payant ?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Non, Wichtlä.ch est 100 % gratuit. Il n’y a pas de frais cachés, pas de comptes premium et pas de limitations."
+                    "text": <?php echo premium_json_text('Non, Wichtlä.ch est 100 % gratuit. Il n’y a pas de frais cachés, pas de comptes premium et pas de limitations.', 'premium.extra.faq_json'); ?>
                 }
             },
             {
@@ -221,9 +221,13 @@
                         </button>
                     </h3>
                     <div id="faq-answer-1" class="faq-answer" role="region" aria-labelledby="faq-question-1">
+<?php if (function_exists('premium_feature_enabled') && premium_feature_enabled()): ?>
+<p><?php echo h(t('premium.extra.faq_what')); ?></p>
+<?php else: ?>
 <p>
                             Wichtlä.ch est un <strong>outil en ligne gratuit</strong> pour organiser un Secret Santa. Tu peux tout simplement :
                         </p>
+<?php endif; ?>
                         <ul>
                             <li>créer des groupes Secret Santa</li>
                             <li>ajouter des participants</li>
@@ -245,12 +249,17 @@
                         </button>
                     </h3>
                     <div id="faq-answer-2" class="faq-answer" role="region" aria-labelledby="faq-question-2">
+<?php if (function_exists('premium_feature_enabled') && premium_feature_enabled()): ?>
+<p><strong><?php echo h(t('premium.extra.faq_lead')); ?></strong></p>
+<p><?php echo h(t('premium.extra.faq_more')); ?> <?php echo premium_extra_link_html(); ?>.</p>
+<?php else: ?>
 <p>
                             <strong>Non, Wichtlä.ch est 100 % gratuit !</strong>
                         </p>
                         <p>
                             Il n’y a pas de frais cachés, pas de comptes premium et pas de limitations.
                         </p>
+<?php endif; ?>
                     </div>
                 </div>
                 
