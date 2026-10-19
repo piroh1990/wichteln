@@ -8,7 +8,7 @@
                 "name": "What is Wichtlä.ch?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Wichtlä.ch is a free online tool for organising a Secret Santa. You can create groups, add participants, draw names automatically and fairly, send the matches by email and define exclusions. All of it with no account and no app to download — just in the browser."
+                    "text": <?php echo premium_json_text('Wichtlä.ch is a free online tool for organising a Secret Santa. You can create groups, add participants, draw names automatically and fairly, send the matches by email and define exclusions. All of it with no account and no app to download — just in the browser.', 'premium.extra.faq_what'); ?>
                 }
             },
             {
@@ -16,7 +16,7 @@
                 "name": "Does Wichtlä.ch cost anything?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "No. Wichtlä.ch is 100% free. There are no hidden costs, no premium accounts and no limits."
+                    "text": <?php echo premium_json_text('No. Wichtlä.ch is 100% free. There are no hidden costs, no premium accounts and no limits.', 'premium.extra.faq_json'); ?>
                 }
             },
             {
@@ -221,9 +221,13 @@
                         </button>
                     </h3>
                     <div id="faq-answer-1" class="faq-answer" role="region" aria-labelledby="faq-question-1">
+<?php if (function_exists('premium_feature_enabled') && premium_feature_enabled()): ?>
+<p><?php echo h(t('premium.extra.faq_what')); ?></p>
+<?php else: ?>
 <p>
                             Wichtlä.ch is a <strong>free online tool</strong> for organising a Secret Santa. You can:
                         </p>
+<?php endif; ?>
                         <ul>
                             <li>create Secret Santa groups</li>
                             <li>add participants</li>
@@ -245,12 +249,17 @@
                         </button>
                     </h3>
                     <div id="faq-answer-2" class="faq-answer" role="region" aria-labelledby="faq-question-2">
+<?php if (function_exists('premium_feature_enabled') && premium_feature_enabled()): ?>
+<p><strong><?php echo h(t('premium.extra.faq_lead')); ?></strong></p>
+<p><?php echo h(t('premium.extra.faq_more')); ?> <?php echo premium_extra_link_html(); ?>.</p>
+<?php else: ?>
 <p>
                             <strong>No, Wichtlä.ch is 100% free!</strong>
                         </p>
                         <p>
                             There are no hidden costs, no premium accounts and no limits.
                         </p>
+<?php endif; ?>
                     </div>
                 </div>
                 

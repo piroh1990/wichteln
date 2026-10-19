@@ -69,6 +69,8 @@ mysql -u DEIN_USER -p DEINE_DATENBANK < database/migrations/20261007_add_reminde
 
 `groups.reminder_sent_at` merkt sich, wann der Admin die Erinnerung an die Geschenkübergabe über den Knopf im Admin-Bereich gesendet hat. Dieselbe phpMyAdmin-Schritte gelten für `database/migrations/20261007_add_reminder_sent_at.sql`. Ohne die Spalte bleibt der Erinnerungs-Knopf gesperrt. Ein erneuter Versand braucht die Bestätigung im Formular.
 
+Premium-Lizenzen: `database/migrations/20261019_premium_licenses.sql` legt `premium_licenses`, `premium_confirmations` und `groups.premium_license_id` an. Die Spalte ist NULL, bestehende Gruppen bleiben normale Gruppen. Die Migration ist idempotent. Ohne sie bleibt die Premium-Funktion nach dem Einschalten mit einem Hinweis stehen, der Rest der Seite läuft weiter.
+
 Prüfung:
 
 ```sql
@@ -100,6 +102,12 @@ Der Hinweis auf der Seite fragt, ob Matomo ein Cookie setzen darf. «Akzeptieren
 `CANONICAL_BASE_URL` (Default `https://xn--wichtl-gua.ch`) und optional `ICS_SIGNING_KEY` in eine bestehende `includes/config.php` übernehmen. Die früheren Konstanten `GOOGLE_ADS_*` und `GOOGLE_CMP_ENABLED` werden nicht mehr gelesen. Sie können aus der Konfiguration entfernt werden.
 
 Freiwillige Unterstützung: `SUPPORT_URL` in `includes/config.php` auf den öffentlichen Stripe-Zahlungslink setzen (Payment Link, den Betrag wählt die zahlende Person, TWINT und Karte). `SUPPORT_PROVIDER_NAME` bleibt `Stripe`, ausser der angezeigte Name des Zahlungsdienstes soll anders lauten. Der Link ist kein Geheimnis. Ist `SUPPORT_URL` leer oder fehlt die Konstante, bleiben Footer-Link, Karte und Absatz unsichtbar, und `/unterstuetzen` antwortet mit 404.
+
+Firmen-Premium ist aus, solange `PREMIUM_ENABLED` leer ist oder fehlt. Zum Einschalten in `includes/config.php` auf `'1'` setzen. Dann erscheinen die Option auf dem Formular «Gruppe erstellen», der Admin-Abschnitt, der Footer-Link und `/firmen-premium`. Ist der Schalter leer, antwortet `/firmen-premium` mit 404.
+
+`PREMIUM_INVOICE_EMAIL` ist der Empfänger einer Rechnungsanfrage (Standard `info@xn--wichtl-gua.ch`, Punycode). Stripe Checkout braucht zusätzlich `PREMIUM_STRIPE_SECRET_KEY` (`sk_…`), `PREMIUM_STRIPE_WEBHOOK_SECRET` (`whsec_…`) und die drei Price-IDs `PREMIUM_STRIPE_PRICE_VEREIN`, `PREMIUM_STRIPE_PRICE_FIRMA`, `PREMIUM_STRIPE_PRICE_FIRMA_PLUS`. Fehlt eines davon, bleibt die Kartenzahlung verborgen, die Rechnung geht trotzdem.
+
+Webhook-URL: `https://xn--wichtl-gua.ch/premium-webhook.php`. Ereignis: `checkout.session.completed`. Preise in Stripe in CHF anlegen (Verein 19, Firma 49, Firma Plus 99, falls die optionalen Konstanten `PREMIUM_PRICE_*` nicht anders gesetzt sind). Limits stehen in `PREMIUM_LIMIT_*` (Standard 3, 10 und `unlimited`). `0` oder `unlimited` heisst kein Limit. Verein, Firma und Firma Plus enthalten dieselben Funktionen (CSV, Logo und Farben, Ausschlussregeln, Kopie, HR-Übersicht mit Live-Aufdeckung, Begrüssungstext, ohne «powered by», Domain-Lizenz, Lizenzübersicht). Der Unterschied ist nur die Anzahl Gruppen. Eine neue Saison ist ein neuer Kauf. Widerrufen geht im Master-Admin. Das Verzeichnis `storage/premium-logos/` muss für den PHP-Benutzer beschreibbar sein. Logos liegen dort, nicht unter `public/`.
 
 `logs/rate-limit/` muss für den PHP-Benutzer beschreibbar sein. Ohne dieses Verzeichnis lehnen Captcha, Anmeldung und API weitere Versuche ab.
 
@@ -176,8 +184,8 @@ git pull
 
 1. Diese Datei und `database/migrations/` auf neue SQL-Dateien prüfen.
 2. Neue Migrationen wie oben gegen die Live-Datenbank ausführen, nach einem Backup.
-3. Neue Konstanten aus den `*.example.php` in die echten Konfigurationsdateien übernehmen. Aktuell dazu: `API_ALLOW_ORIGINS` in `includes/api_config.php`, falls die API von einem Browser aus einer anderen Origin aufgerufen wird. Alte Konstanten `GOOGLE_ADS_*` und `GOOGLE_CMP_ENABLED` werden nicht mehr gelesen und können entfallen. Für die freiwillige Unterstützung: `SUPPORT_URL` (Stripe-Zahlungslink) und `SUPPORT_PROVIDER_NAME` (`Stripe`). Ohne `SUPPORT_URL` bleibt die Unterstützung unsichtbar.
-4. Den PHP-Benutzer auf Schreibrecht für `logs/` prüfen.
+3. Neue Konstanten aus den `*.example.php` in die echten Konfigurationsdateien übernehmen. Aktuell dazu: `API_ALLOW_ORIGINS` in `includes/api_config.php`, falls die API von einem Browser aus einer anderen Origin aufgerufen wird. Alte Konstanten `GOOGLE_ADS_*` und `GOOGLE_CMP_ENABLED` werden nicht mehr gelesen und können entfallen. Für die freiwillige Unterstützung: `SUPPORT_URL` (Stripe-Zahlungslink) und `SUPPORT_PROVIDER_NAME` (`Stripe`). Ohne `SUPPORT_URL` bleibt die Unterstützung unsichtbar. Für Firmen-Premium: `PREMIUM_ENABLED` bleibt leer, bis die Funktion live gehen soll, dann `'1'`. Dazu `PREMIUM_INVOICE_EMAIL` und, für Karte/TWINT, die Stripe-Konstanten. Die Migration `database/migrations/20261019_premium_licenses.sql` vorher ausführen.
+4. Den PHP-Benutzer auf Schreibrecht für `logs/` und, sobald Premium an ist, für `storage/premium-logos/` prüfen.
 
 Ein Deploy der CSRF-Härtung ändert das Aussehen der Seiten nicht. Geändert haben sich dabei Schutzmechanismen (CSRF, Master-Admin-Session, CORS-Allowlist) und die einheitliche Spalte `participant_token`.
 

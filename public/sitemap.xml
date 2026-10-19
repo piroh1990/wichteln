@@ -72,6 +72,16 @@
     <priority>0.30</priority>
   </url>
   <url>
+    <loc>https://xn--wichtl-gua.ch/firmen-premium</loc>
+    <xhtml:link rel="alternate" hreflang="de" href="https://xn--wichtl-gua.ch/firmen-premium"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://xn--wichtl-gua.ch/fr/firmen-premium"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/firmen-premium"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://xn--wichtl-gua.ch/firmen-premium"/>
+    <lastmod>2026-10-19T00:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.50</priority>
+  </url>
+  <url>
     <loc>https://xn--wichtl-gua.ch/create_group</loc>
     <xhtml:link rel="alternate" hreflang="de" href="https://xn--wichtl-gua.ch/create_group"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://xn--wichtl-gua.ch/fr/create_group"/>

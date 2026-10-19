@@ -116,6 +116,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    if (premium_feature_enabled() && isset($_POST['premium_action'])) {
+        if (!$csrf_ok) {
+            $_SESSION['master_admin_flash'] = array('type' => 'error', 'text' => csrf_failure_message());
+            master_dashboard_redirect($query_params);
+        }
+        $_SESSION['master_admin_flash'] = premium_master_handle($pdo, $_POST);
+        master_dashboard_redirect($query_params);
+    }
+
     $bulk_result = master_admin_handle_bulk_request($pdo, $_POST, $_SESSION, $csrf_ok, $now);
     if (is_array($bulk_result)) {
         if ($bulk_result['status'] !== 'confirm') {
@@ -370,6 +379,9 @@ function master_dashboard_page_url($filters_params, $page_key, $page_number) {
                 <a href="#gruppen">Gruppen</a>
                 <a href="#kennzahlen">Kennzahlen</a>
                 <a href="#saison">Saison</a>
+                <?php if (premium_feature_enabled()): ?>
+                <a href="#premium-lizenzen">Premium</a>
+                <?php endif; ?>
                 <a href="#systemstatus">Systemstatus</a>
                 <a href="#archiv">Archiv</a>
             </nav>
@@ -732,6 +744,8 @@ function master_dashboard_page_url($filters_params, $page_key, $page_number) {
                 </div>
             </details>
         </section>
+
+        <?php echo premium_master_section_html($pdo); ?>
 
         <section class="section-card" id="systemstatus" aria-labelledby="status-heading">
             <div class="section-card-header">

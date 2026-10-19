@@ -68,7 +68,11 @@
                 <div class="highlight-box">
                     <h3>💡 Tip: online Secret Santa with Wichtlä.ch</h3>
                     <p>
+                        <?php if (function_exists('premium_feature_enabled') && premium_feature_enabled()): ?>
+                        <?php echo h(t('premium.extra.tool')); ?> <?php echo premium_extra_link_html(); ?>.
+                        <?php else: ?>
                         With our free tool, drawing names is child’s play! No slips of paper, no fuss — enter the names, and everyone receives their match by email. Perfect for distributed teams or families.
+                        <?php endif; ?>
                     </p>
                 </div>
             </section>
@@ -140,7 +144,7 @@
             
             <div class="cta-section">
                 <h2>Ready for your Secret Santa?</h2>
-                <p>Organise your Secret Santa in under 2 minutes — free, simple, and with no account needed!</p>
+                <p><?php echo (function_exists('premium_feature_enabled') && premium_feature_enabled()) ? h(t('premium.extra.cta')) : 'Organise your Secret Santa in under 2 minutes — free, simple, and with no account needed!'; ?></p>
                 <a href="<?php echo h(i18n_href('create_group')); ?>" class="cta-button-white">Create a Secret Santa group →</a>
             </div>
         </article>

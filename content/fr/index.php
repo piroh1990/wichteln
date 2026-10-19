@@ -8,7 +8,7 @@
         </div>
         <div class="container">
             <div class="hero-content">
-                <div class="hero-badge"><span aria-hidden="true">✨</span> Gratuit et simple</div>
+                <div class="hero-badge"><span aria-hidden="true">✨</span> <?php echo (function_exists('premium_feature_enabled') && premium_feature_enabled()) ? h(t('premium.extra.badge')) : 'Gratuit et simple'; ?></div>
                 <h1 class="hero-title">
                     <span class="hero-title-main">Secret Santa, tout simplement</span>
                     <span class="hero-title-sub">Organise ton Secret Santa en ligne</span>
@@ -26,7 +26,7 @@
                     </div>
                     <div class="hero-feature">
                         <span class="feature-icon-small" aria-hidden="true">💰</span>
-                        <span>100 % gratuit</span>
+                        <span><?php echo (function_exists('premium_feature_enabled') && premium_feature_enabled()) ? h(t('premium.extra.hero')) : '100 % gratuit'; ?></span>
                     </div>
                 </div>
                 
@@ -114,8 +114,13 @@
                 </div>
                 
                 <div class="feature-card">
+<?php if (function_exists('premium_feature_enabled') && premium_feature_enabled()): ?>
+                    <h3><span class="feature-icon" aria-hidden="true">💰</span> <?php echo h(t('premium.extra.feature_title')); ?></h3>
+                    <p><?php echo h(t('premium.extra.feature_text')); ?> <?php echo premium_extra_link_html(); ?>.</p>
+<?php else: ?>
                     <h3><span class="feature-icon" aria-hidden="true">💰</span> Entièrement gratuit</h3>
                     <p>Pas de frais cachés, pas de fonctions premium. Tu l’utilises gratuitement, sans limitation.</p>
+<?php endif; ?>
                 </div>
             </div>
         </div>

@@ -288,15 +288,17 @@ if ($show_group_selector) {
 }
 
 $presented = mail_present_group($group, i18n_current());
+$premium_license = premium_license_for_group($pdo, $group);
 $calendar_url = !empty($group['gift_exchange_date']) ? gift_ics_url($group, i18n_current()) : '';
 $personal_url = get_display_url('/participant.php?token=' . urlencode($participant_token));
 token_page_open(t('meta.participant.title', array('{name}' => $participant['name'])));
 ?>
-    <div class="container app-page">
+    <div class="container app-page<?php echo premium_page_class($premium_license); ?>"<?php echo premium_page_style_attr($premium_license); ?>>
         <header class="app-hero">
             <p class="app-kicker"><?php echo h(t('participant.kicker')); ?></p>
             <h1><?php echo h(t('participant.welcome', array('{name}' => $participant['name']))); ?></h1>
             <p class="app-hero-lead"><?php echo h(t('participant.group', array('{group}' => $group['name']))); ?></p>
+            <?php echo premium_hero_extras_html($premium_license); ?>
         </header>
 
         <?php if (empty($participant['email'])): ?>

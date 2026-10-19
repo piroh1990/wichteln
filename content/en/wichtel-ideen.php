@@ -301,7 +301,7 @@
             
             <div class="cta-section">
                 <h2>Ready for your Secret Santa?</h2>
-                <p>Organise your Secret Santa in under 2 minutes — free and straightforward!</p>
+                <p><?php echo (function_exists('premium_feature_enabled') && premium_feature_enabled()) ? h(t('premium.extra.cta')) : 'Organise your Secret Santa in under 2 minutes — free and straightforward!'; ?></p>
                 <a href="<?php echo h(i18n_href('create_group')); ?>" class="cta-button-white">Create a Secret Santa group →</a>
             </div>
         </article>

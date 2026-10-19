@@ -15,7 +15,7 @@
                     wichtlä.ch ist mein Hobby. Ich habe die Seite selbst gebaut, weil mir keine der bestehenden Wichtelseiten richtig gefallen hat: zu viel Werbung, zu kompliziert, oft mit Anmeldung. Ich wollte etwas Einfaches und Sauberes.
                 </p>
                 <p>
-                    Server und Betrieb kosten etwas Geld und viel Freizeit. Wenn du magst, hilft ein freiwilliger Beitrag dabei, dass die Seite gratis und werbefrei bleibt.
+                    <?php echo (function_exists('premium_feature_enabled') && premium_feature_enabled()) ? h(t('premium.extra.support')) : 'Server und Betrieb kosten etwas Geld und viel Freizeit. Wenn du magst, hilft ein freiwilliger Beitrag dabei, dass die Seite gratis und werbefrei bleibt.'; ?>
                 </p>
             </section>
 

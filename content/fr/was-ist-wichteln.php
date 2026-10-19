@@ -68,7 +68,11 @@
                 <div class="highlight-box">
                     <h3>💡 Astuce : Secret Santa en ligne avec Wichtlä.ch</h3>
                     <p>
+                        <?php if (function_exists('premium_feature_enabled') && premium_feature_enabled()): ?>
+                        <?php echo h(t('premium.extra.tool')); ?> <?php echo premium_extra_link_html(); ?>.
+                        <?php else: ?>
                         Avec notre outil gratuit, le tirage au sort devient un jeu d’enfant ! Pas de papiers, pas de tracas : tu inscris les noms, et chacun reçoit son attribution par e-mail. Parfait pour les équipes dispersées ou les familles.
+                        <?php endif; ?>
                     </p>
                 </div>
             </section>
@@ -140,7 +144,7 @@
             
             <div class="cta-section">
                 <h2>Prêt pour ton Secret Santa ?</h2>
-                <p>Organise ton Secret Santa en moins de 2 minutes : gratuit, simple, et sans compte !</p>
+                <p><?php echo (function_exists('premium_feature_enabled') && premium_feature_enabled()) ? h(t('premium.extra.cta')) : 'Organise ton Secret Santa en moins de 2 minutes : gratuit, simple, et sans compte !'; ?></p>
                 <a href="<?php echo h(i18n_href('create_group')); ?>" class="cta-button-white">Créer un groupe Secret Santa →</a>
             </div>
         </article>

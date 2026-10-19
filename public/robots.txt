@@ -7,6 +7,12 @@ Disallow: /admin.php
 Disallow: /register.php
 Disallow: /kalender.php
 Disallow: /captcha.php
+Disallow: /premium-lizenz.php
+Disallow: /premium-bestaetigen.php
+Disallow: /premium-hr.php
+Disallow: /premium-aufdeckung.php
+Disallow: /premium-logo.php
+Disallow: /premium-webhook.php
 Disallow: /api/
 Disallow: /*?token=
 Disallow: /*&token=

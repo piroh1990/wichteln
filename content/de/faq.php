@@ -8,7 +8,7 @@
                 "name": "Was ist Wichtlä.ch?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Wichtlä.ch ist ein kostenloses Online-Tool zum Organisieren von Wichtel-Events. Du kannst damit Wichtel-Gruppen erstellen, Teilnehmer hinzufügen, automatisch und fair Namen ziehen lassen, Lose per E-Mail verschicken und Ausschlüsse definieren. Alles ohne Konto, ohne App-Download – einfach im Browser!"
+                    "text": <?php echo premium_json_text('Wichtlä.ch ist ein kostenloses Online-Tool zum Organisieren von Wichtel-Events. Du kannst damit Wichtel-Gruppen erstellen, Teilnehmer hinzufügen, automatisch und fair Namen ziehen lassen, Lose per E-Mail verschicken und Ausschlüsse definieren. Alles ohne Konto, ohne App-Download – einfach im Browser!', 'premium.extra.faq_what'); ?>
                 }
             },
             {
@@ -16,7 +16,7 @@
                 "name": "Kostet Wichtlä.ch etwas?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Nein, Wichtlä.ch ist 100% kostenlos! Es gibt keine versteckten Kosten, keine Premium-Accounts und keine Einschränkungen."
+                    "text": <?php echo premium_json_text('Nein, Wichtlä.ch ist 100% kostenlos! Es gibt keine versteckten Kosten, keine Premium-Accounts und keine Einschränkungen.', 'premium.extra.faq_json'); ?>
                 }
             },
             {
@@ -221,9 +221,13 @@
                         </button>
                     </h3>
                     <div id="faq-answer-1" class="faq-answer" role="region" aria-labelledby="faq-question-1">
+<?php if (function_exists('premium_feature_enabled') && premium_feature_enabled()): ?>
+<p><?php echo h(t('premium.extra.faq_what')); ?></p>
+<?php else: ?>
 <p>
                             Wichtlä.ch ist ein <strong>kostenloses Online-Tool</strong> zum Organisieren von Wichtel-Events. Du kannst damit ganz einfach:
                         </p>
+<?php endif; ?>
                         <ul>
                             <li>Wichtel-Gruppen erstellen</li>
                             <li>Teilnehmer hinzufügen</li>
@@ -245,12 +249,17 @@
                         </button>
                     </h3>
                     <div id="faq-answer-2" class="faq-answer" role="region" aria-labelledby="faq-question-2">
+<?php if (function_exists('premium_feature_enabled') && premium_feature_enabled()): ?>
+<p><strong><?php echo h(t('premium.extra.faq_lead')); ?></strong></p>
+<p><?php echo h(t('premium.extra.faq_more')); ?> <?php echo premium_extra_link_html(); ?>.</p>
+<?php else: ?>
 <p>
                             <strong>Nein, Wichtlä.ch ist 100% kostenlos!</strong>
                         </p>
                         <p>
                             Es gibt keine versteckten Kosten, keine Premium-Accounts und keine Einschränkungen.
                         </p>
+<?php endif; ?>
                     </div>
                 </div>
                 

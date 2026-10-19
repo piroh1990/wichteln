@@ -293,7 +293,7 @@
             <?php require_once dirname(__DIR__, 2) . '/includes/support.php'; ?>
             <h2 id="freiwillige-unterstuetzung">14. Voluntary support</h2>
             <p>
-                wichtlä.ch can be used for free and without advertising. Support is voluntary. It is not required in order to use any feature, and there is nothing in return.
+                <?php echo (function_exists('premium_feature_enabled') && premium_feature_enabled()) ? h(t('premium.extra.privacy')) : 'wichtlä.ch can be used for free and without advertising. Support is voluntary. It is not required in order to use any feature, and there is nothing in return.'; ?>
             </p>
             <p>
                 The “Chip in (voluntary)” link goes to <?php echo h(support_provider_name()); ?>, a payment service. There, payment and contact details are processed by <?php echo h(support_provider_name()); ?>. If you pay with TWINT, TWINT also processes this data. The recipient of the payment is Raths IT.
@@ -306,6 +306,23 @@
                 Further information is in <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer">Stripe’s privacy policy</a>.
             </p>
             <?php endif; ?>
+
+            <h2 id="firmen-premium">15. Company Premium</h2>
+            <p>
+                Company Premium is an optional licence for several groups in one season. Without that licence, existing groups stay as they are.
+            </p>
+            <p>
+                For a licence we store the buyer’s email, the chosen plan, the status (pending, active or revoked), a season year and the language. An invoice also stores the organisation, the address and an optional contact name. An optional domain licence stores only the domain we enter in the master admin, for example firma.ch. The licence code is stored only as a hash. The overview link is a random token.
+            </p>
+            <p>
+                If you pay by card or TWINT, the payment runs through Stripe. wichtlä.ch does not receive card details. Stripe confirms the payment with a signed webhook, and only then do we create the licence. Stripe’s privacy policy is at <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer">stripe.com/privacy</a>.
+            </p>
+            <p>
+                An invoice request is emailed to the address set in the configuration, so we can invoice and activate the licence by hand. A group becomes Premium only after the licence email is confirmed, or when the licence code matches.
+            </p>
+            <p>
+                The logo and colours live on the licence and appear on the group and participant pages. We re-save the logo as a PNG, outside the public folder. The HR overview shows the name, the email, whether a wishlist is filled in, and the reminder status. It does not show the assignments. The live reveal is a separate step, with confirmation by the admin.
+            </p>
             
             <hr>
             

@@ -88,9 +88,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             error_log('E-Mail mit Admin-Link konnte nicht an ' . mask_email($admin_email) . ' gesendet werden.');
         }
 
+        $premium_notice = premium_after_group_created($pdo, $created_group_id, $_POST, null, request_client_ip());
         $redirect_url = '/admin.php?token=' . urlencode($admin_token);
         if (!$email_sent) {
             $redirect_url .= '&email_error=1';
+        }
+        if (is_array($premium_notice) && $premium_notice['text'] !== '') {
+            $_SESSION['admin_flash'] = $premium_notice;
+            $redirect_url .= '&premium=1';
         }
         header('Location: ' . $redirect_url);
         exit();
@@ -137,6 +142,14 @@ public_page_open('create_group', 'meta.create.title', 'meta.create.description')
                 <input type="date" id="gift_exchange_date" name="gift_exchange_date" min="<?php echo h(date('Y-m-d')); ?>" aria-describedby="gift_exchange_date_hint" value="<?php echo isset($gift_exchange_date) && $gift_exchange_date !== null ? h($gift_exchange_date) : ''; ?>">
                 <small id="gift_exchange_date_hint" class="form-hint"><?php echo h(t('create.date_hint')); ?></small>
             </div>
+            <?php
+            $premium_checked = isset($_POST['firmen_premium']) && (string) $_POST['firmen_premium'] === '1';
+            $premium_values = array(
+                'email' => isset($_POST['premium_license_email']) ? $_POST['premium_license_email'] : '',
+                'code' => isset($_POST['premium_license_code']) ? $_POST['premium_license_code'] : '',
+            );
+            echo premium_create_form_html(null, null, $premium_checked, $premium_values);
+            ?>
             <div class="form-group captcha-group">
                 <label for="captcha_answer"><?php echo h(t('captcha.label')); ?><span class="required-indicator" aria-hidden="true" title="<?php echo h(t('captcha.required')); ?>">*</span></label>
                 <div class="captcha-container">

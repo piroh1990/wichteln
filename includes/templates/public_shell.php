@@ -1,6 +1,7 @@
 <?php
 
 require_once dirname(__DIR__) . '/i18n.php';
+require_once dirname(__DIR__) . '/premium.php';
 require_once __DIR__ . '/head.php';
 
 function public_page_open($slug, $title_key, $description_key, $og_type = 'website', $json_ld = null) {

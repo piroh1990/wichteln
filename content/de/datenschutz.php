@@ -292,7 +292,7 @@
             <?php require_once dirname(__DIR__, 2) . '/includes/support.php'; ?>
             <h2 id="freiwillige-unterstuetzung">14. Freiwillige Unterstützung</h2>
             <p>
-                wichtlä.ch lässt sich gratis und werbefrei nutzen. Eine Unterstützung ist freiwillig. Sie ist keine Voraussetzung für eine Funktion, und es gibt keine Gegenleistung.
+                <?php echo (function_exists('premium_feature_enabled') && premium_feature_enabled()) ? h(t('premium.extra.privacy')) : 'wichtlä.ch lässt sich gratis und werbefrei nutzen. Eine Unterstützung ist freiwillig. Sie ist keine Voraussetzung für eine Funktion, und es gibt keine Gegenleistung.'; ?>
             </p>
             <p>
                 Der Link «Freiwillig unterstützen» führt zu <?php echo h(support_provider_name()); ?>, einem Zahlungsdienst. Dort werden Zahlungs- und Kontaktdaten von <?php echo h(support_provider_name()); ?> bearbeitet. Bezahlst du mit TWINT, bearbeitet auch TWINT diese Daten. Empfänger der Zahlung ist Raths IT.
@@ -305,6 +305,23 @@
                 Weitere Informationen stehen in der <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer">Datenschutzerklärung von Stripe</a>.
             </p>
             <?php endif; ?>
+
+            <h2 id="firmen-premium">15. Firmen-Premium</h2>
+            <p>
+                Firmen-Premium ist eine optionale Lizenz für mehrere Gruppen in einer Saison. Ohne diese Lizenz ändert sich an den bestehenden Gruppen nichts.
+            </p>
+            <p>
+                Für eine Lizenz speichern wir die E-Mail der kaufenden Person, die gewählte Stufe, den Status (offen, aktiv oder widerrufen), ein Saisonjahr und die Sprache. Bei einer Rechnung kommen Firma, Adresse und ein optionaler Kontaktname dazu. Eine optionale Domain-Lizenz speichert nur die Domain, die wir im Master-Admin eintragen, zum Beispiel firma.ch. Den Lizenzcode speichern wir nur als Hash. Der Link zur Lizenzübersicht ist ein zufälliges Token.
+            </p>
+            <p>
+                Bezahlst du mit Karte oder TWINT, läuft die Zahlung über Stripe. wichtlä.ch erhält keine Kartendaten. Stripe bestätigt die Zahlung über einen signierten Webhook, und erst dann legen wir die Lizenz an. Die Datenschutzerklärung von Stripe steht unter <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer">stripe.com/privacy</a>.
+            </p>
+            <p>
+                Eine Rechnungsanfrage schicken wir per E-Mail an die in der Konfiguration hinterlegte Adresse, damit wir die Rechnung stellen und die Lizenz von Hand aktivieren können. Die Gruppe wird erst Premium, wenn die E-Mail der Lizenz bestätigt wurde oder der Lizenzcode stimmt.
+            </p>
+            <p>
+                Logo und Farben liegen auf der Lizenz und erscheinen auf den Gruppen- und Teilnehmerseiten. Das Logo speichern wir neu als PNG, ausserhalb des öffentlichen Verzeichnisses. Die HR-Übersicht zeigt Name, E-Mail, ob eine Wunschliste ausgefüllt ist, und den Erinnerungsstatus. Die Zuordnungen zeigt sie nicht. Die Live-Aufdeckung ist ein eigener Schritt mit Bestätigung durch den Admin.
+            </p>
             
             <hr>
             

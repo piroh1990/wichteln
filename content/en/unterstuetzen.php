@@ -15,7 +15,7 @@
                     wichtlä.ch is my hobby. I built the site myself, because none of the existing Secret Santa sites really suited me: too many ads, too complicated, often with an account to create. I wanted something simple and clean.
                 </p>
                 <p>
-                    The server and running the site cost some money and a lot of free time. If you like, a voluntary contribution helps keep the site free and ad-free.
+                    <?php echo (function_exists('premium_feature_enabled') && premium_feature_enabled()) ? h(t('premium.extra.support')) : 'The server and running the site cost some money and a lot of free time. If you like, a voluntary contribution helps keep the site free and ad-free.'; ?>
                 </p>
             </section>
 

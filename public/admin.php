@@ -39,6 +39,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !verify_csrf_token(isset($_POST['cs
     $csrf_error = csrf_failure_message();
 }
 
+if ($csrf_ok && premium_feature_enabled() && isset($_POST['premium_action'])) {
+    $premium_handled = premium_admin_handle($pdo, $group, $_POST, $_FILES, null, request_client_ip());
+    if ($premium_handled['redirect'] !== '') {
+        if ($premium_handled['notice']['text'] !== '') {
+            $_SESSION['admin_flash'] = $premium_handled['notice'];
+        }
+        header('Location: ' . $premium_handled['redirect']);
+        exit();
+    }
+    if (!empty($premium_handled['reload'])) {
+        $_SESSION['admin_flash'] = $premium_handled['notice'];
+        header('Location: /admin.php?token=' . urlencode($admin_token) . '#premium');
+        exit();
+    }
+    if ($premium_handled['notice']['text'] !== '') {
+        $_SESSION['admin_flash'] = $premium_handled['notice'];
+    }
+}
+
 if ($csrf_ok && isset($_POST['reset_draw'])) {
     $clear_reveal = mysql_column_exists($pdo, 'groups', 'reveal_sent_at')
         ? ', `reveal_sent_at` = NULL'
@@ -443,6 +462,7 @@ if (isset($_SESSION['bulk_import_links']) && is_array($_SESSION['bulk_import_lin
 }
 
 $group_language_editable = i18n_has_language_column($pdo, 'groups');
+$premium_license = premium_license_for_group($pdo, $group);
 $invite_url = get_display_url('/register.php?token=' . urlencode($group['invite_token']));
 $admin_url = get_display_url('/admin.php?token=' . urlencode($admin_token));
 $whatsapp_text = t('admin.whatsapp_intro') . "\n\n"
@@ -451,7 +471,7 @@ $whatsapp_text = t('admin.whatsapp_intro') . "\n\n"
 
 token_page_open(t('meta.admin.title', array('{group}' => $group['name'])));
 ?>
-    <div class="container app-page">
+    <div class="container app-page<?php echo premium_page_class($premium_license); ?>"<?php echo premium_page_style_attr($premium_license); ?>>
         <?php
         $reveal_already_sent = !empty($group['reveal_sent_at']);
         $reveal_sent_label = $reveal_already_sent ? format_reveal_sent_at($group['reveal_sent_at']) : '';
@@ -478,6 +498,7 @@ token_page_open(t('meta.admin.title', array('{group}' => $group['name'])));
             <p class="app-kicker"><?php echo h(t('admin.kicker')); ?></p>
             <h1><?php echo h($group['name']); ?></h1>
             <p class="app-hero-lead"><?php echo h(t('admin.lead')); ?></p>
+            <?php echo premium_hero_extras_html($premium_license); ?>
             <div class="status-row" id="admin-status-strip">
                 <span class="status-pill"><?php echo h(tn('admin.participants', (int) $checklist['participants'])); ?></span>
                 <span class="status-pill <?php echo ($checklist['with_email'] === $checklist['participants'] && $checklist['participants'] > 0) ? 'is-done' : 'is-wait'; ?>">
@@ -490,6 +511,9 @@ token_page_open(t('meta.admin.title', array('{group}' => $group['name'])));
                 <span class="status-pill <?php echo ($checklist['reveal'] === 'sent') ? 'is-done' : 'is-wait'; ?>"><?php echo h($reveal_label); ?></span>
             </div>
             <nav class="app-toc" aria-label="<?php echo h(t('admin.toc')); ?>">
+                <?php if (premium_feature_enabled()): ?>
+                <a href="#premium"><?php echo h(t('premium.admin.toc')); ?></a>
+                <?php endif; ?>
                 <a href="#checkliste"><?php echo h(t('admin.toc.checklist')); ?></a>
                 <a href="#ueberblick"><?php echo h(t('admin.toc.overview')); ?></a>
                 <a href="#gruppendetails"><?php echo h(t('admin.toc.details')); ?></a>
@@ -544,6 +568,14 @@ token_page_open(t('meta.admin.title', array('{group}' => $group['name'])));
             </div>
         <?php endif; ?>
 
+        <?php
+        echo premium_admin_section_html(
+            $pdo,
+            $group,
+            $_SESSION,
+            isset($_GET['premium']) && (string) $_GET['premium'] === '1'
+        );
+        ?>
         <section class="section-card" id="checkliste" aria-labelledby="checklist-heading">
             <div class="section-card-header">
                 <span class="section-icon" aria-hidden="true">✅</span>

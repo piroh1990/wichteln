@@ -749,6 +749,7 @@ function public_clean_slugs() {
         'firmenwichteln-tipps',
         'ueber-uns',
         'unterstuetzen',
+        'firmen-premium',
         'create_group',
         'admin-link',
     );
