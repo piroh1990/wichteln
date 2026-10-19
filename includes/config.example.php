@@ -13,7 +13,10 @@ define('DB_NAME', 'wichtel_db');
 define('DB_USER', 'wichtel_db_user');
 define('DB_PASS', 'your_database_password_here');
 
-// E-Mail-Einstellungen
+// E-Mail-Einstellungen. mail() setzt diesen Absender auch als Envelope (-f).
+// Auf Plesk/Metanet muss die Adresse zur Domain der Subscription gehören,
+// sonst lehnt der Mailserver den Envelope ab. Dann folgt ein zweiter Versuch
+// ohne -f. Jeder Versuch steht in logs/mail.log und im PHP-Fehlerlog.
 define('SMTP_FROM_EMAIL', 'noreply@xn--wichtl-gua.ch'); // Ersetze mit deiner Absender-E-Mail
 define('SMTP_FROM_NAME', 'Wichtel Webseite');
 
@@ -45,13 +48,20 @@ define('SUPPORT_PROVIDER_NAME', 'Stripe');
 // '1', 'true', 'yes' und 'on' schalten sie ein. Alles andere lässt sie aus.
 define('PREMIUM_ENABLED', '');
 
-// Empfänger der Rechnungsanfrage. Punycode in der Mail-Adresse.
-// Leer oder ungültig fällt auf info@xn--wichtl-gua.ch zurück.
+// Empfänger der Rechnungsanfrage. Die Adresse wird genau so verwendet,
+// nach Punycode-Normalisierung. Beispiel: kontakt@xn--wichtl-gua.ch.
+// Leer oder ungültig fällt auf info@xn--wichtl-gua.ch zurück und wird protokolliert.
 define('PREMIUM_INVOICE_EMAIL', 'info@xn--wichtl-gua.ch');
 
 // Stripe Checkout (Karte und TWINT). Alle drei Price-IDs, der Secret Key
-// und das Webhook-Geheimnis müssen gesetzt sein, sonst bleibt die Kartenzahlung
-// verborgen. Die Rechnung funktioniert auch ohne Stripe.
+// und das Webhook-Geheimnis müssen die Form unten haben, sonst bleibt die
+// Kartenzahlung verborgen. Die Rechnung funktioniert auch ohne Stripe.
+// PREMIUM_STRIPE_SECRET_KEY: sk_test_, sk_live_, rk_test_ oder rk_live_.
+// Ein Publishable Key pk_ wird abgelehnt. Ein eingeschränkter Key rk_ braucht
+// die Berechtigung, Checkout Sessions zu erstellen.
+// PREMIUM_STRIPE_WEBHOOK_SECRET: muss mit whsec_ beginnen.
+// PREMIUM_STRIPE_PRICE_*: Stripe Price-IDs (price_…), nicht der Frankenbetrag.
+// Anführungszeichen und ein UTF-8-BOM am Anfang werden entfernt.
 // Webhook: https://xn--wichtl-gua.ch/premium-webhook.php
 // Ereignis: checkout.session.completed
 define('PREMIUM_STRIPE_SECRET_KEY', '');
@@ -60,8 +70,9 @@ define('PREMIUM_STRIPE_PRICE_VEREIN', '');
 define('PREMIUM_STRIPE_PRICE_FIRMA', '');
 define('PREMIUM_STRIPE_PRICE_FIRMA_PLUS', '');
 
-// Optionale Preise (CHF, ganze Franken) und Gruppen-Limits.
-// Auskommentiert heisst: Verein 19 / 3, Firma 49 / 10, Firma Plus 99 / unbegrenzt.
+// Angezeigte Preise (CHF, ganze Franken) und Gruppen-Limits.
+// Das sind nicht die Stripe-Price-IDs. Auskommentiert heisst:
+// Verein 19 / 3, Firma 49 / 10, Firma Plus 99 / unbegrenzt.
 // Alle Stufen enthalten dieselben Funktionen. Der Unterschied ist die Anzahl Gruppen.
 // Limit 0 oder 'unlimited' heisst kein Limit.
 // define('PREMIUM_PRICE_VEREIN', 19);

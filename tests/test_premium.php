@@ -626,3 +626,106 @@ run_test('company page and free claims follow the feature flag', function () {
         $GLOBALS['i18n_lang'] = $previous_lang;
     }
 });
+
+run_test('invoice mail uses the configured recipient exactly', function () {
+    assert_equals('kontakt@xn--wichtl-gua.ch', premium_normalize_email('kontakt@xn--wichtl-gua.ch'));
+    assert_equals('kontakt@xn--wichtl-gua.ch', premium_normalize_email('Kontakt@wichtlä.ch'));
+    $info = premium_invoice_recipient_info();
+    assert_equals(premium_invoice_recipient(), $info['email']);
+    assert_true($info['source'] === 'config' || $info['source'] === 'fallback' || $info['source'] === 'invalid_fallback');
+
+    $pdo = premium_test_pdo();
+    $post = array(
+        'tier' => 'verein',
+        'company' => 'Kontakt AG',
+        'address' => 'Seestrasse 2, 8002 Zürich',
+        'email' => 'buyer@example.com',
+    );
+    $sent = array();
+    $result = premium_submit_invoice($pdo, $post, 'ip-kontakt-' . bin2hex(random_bytes(3)), premium_test_sender($sent), 1760000000, 'kontakt@xn--wichtl-gua.ch');
+    assert_true($result['ok'], 'invoice to the configured address is stored');
+    assert_equals('kontakt@xn--wichtl-gua.ch', $sent[0]['to']);
+
+    $sent = array();
+    $unicode = premium_submit_invoice($pdo, $post, 'ip-unicode-' . bin2hex(random_bytes(3)), premium_test_sender($sent), 1760000000, 'kontakt@wichtlä.ch');
+    assert_true($unicode['ok'], 'unicode domain is accepted');
+    assert_equals('kontakt@xn--wichtl-gua.ch', $sent[0]['to'], 'unicode domain becomes punycode');
+
+    $flash = premium_send_test_mail(premium_test_sender($sent));
+    assert_equals('success', $flash['type'], 'test mail uses the sender');
+    assert_true(strpos($flash['text'], premium_invoice_recipient()) !== false, 'test mail names the recipient');
+});
+
+run_test('stripe detection accepts restricted keys and rejects publishable keys', function () {
+    $prices = array(
+        'verein' => 'price_verein_test',
+        'firma' => 'price_firma_test',
+        'firma_plus' => 'price_plus_test',
+    );
+    $ready = array(
+        'secret' => 'rk_live_restricted_key',
+        'webhook' => 'whsec_test_secret_value',
+        'prices' => $prices,
+    );
+    assert_true(premium_stripe_is_configured($ready), 'restricted live key is accepted');
+    $status = premium_stripe_status($ready);
+    assert_true($status['ready'], 'status is ready');
+    assert_equals('rk_live', $status['secret']);
+    assert_equals('ok', $status['webhook']);
+
+    $publishable = $ready;
+    $publishable['secret'] = 'pk_live_publishable_key';
+    assert_true(!premium_stripe_is_configured($publishable), 'publishable key is rejected');
+    assert_equals('publishable', premium_stripe_status($publishable)['secret']);
+
+    $quoted = $ready;
+    $quoted['secret'] = "\xEF\xBB\xBF" . '"sk_test_secret_key"';
+    assert_true(premium_stripe_is_configured($quoted), 'bom and quotes are stripped');
+    assert_equals('sk_test', premium_stripe_status($quoted)['secret']);
+    assert_true(premium_stripe_is_configured(array(
+        'secret' => 'sk_test_secret_key',
+        'webhook' => 'whsec_test_secret_value',
+        'prices' => $prices,
+    )), 'existing test secret stays valid');
+
+    $missing = $ready;
+    $missing['prices'] = $prices;
+    $missing['prices']['firma'] = '29';
+    $bad = premium_stripe_status($missing);
+    assert_true(!$bad['ready'], 'a franc amount is not a price id');
+    assert_equals('invalid', $bad['prices']['firma']);
+    assert_equals('ok', $bad['prices']['verein']);
+    assert_equals('missing', premium_stripe_status(array(
+        'secret' => '',
+        'webhook' => 'whsec_test_secret_value',
+        'prices' => array('verein' => 'price_verein_test', 'firma' => '', 'firma_plus' => 'price_plus_test'),
+    ))['prices']['firma']);
+
+    assert_equals('sk_test_secret_key', premium_clean_config_text('  "sk_test_secret_key"  '));
+    $diag = premium_diagnostics();
+    assert_true(isset($diag['invoice_email'], $diag['stripe']['secret'], $diag['from']));
+    assert_true(strpos(json_encode($diag), 'sk_live_') === false, 'diagnostics do not contain a secret value');
+});
+
+run_test('purchase form sits in the content column and radios are not stretched', function () {
+    foreach (array('de', 'fr', 'en') as $lang) {
+        $html = file_get_contents(__DIR__ . '/../content/' . $lang . '/firmen-premium.php');
+        $pos = strpos($html, 'premium_purchase_section_html');
+        $end = strpos($html, '</article>');
+        assert_true($pos !== false && $end !== false && $pos < $end, $lang . ' purchase section is inside the article');
+    }
+    $page = file_get_contents(__DIR__ . '/../public/firmen-premium.php');
+    assert_true(strpos($page, 'premium_purchase_section_html') === false, 'the page does not print the form twice');
+    $css = file_get_contents(__DIR__ . '/../public/css/styles.css');
+    assert_true(strpos($css, '.premium-buy-form input,') === false, 'text input rule does not cover every input');
+    assert_true(strpos($css, '.premium-tier-choices input[type="radio"]') !== false, 'radios have their own size');
+});
+
+run_test('mail envelope parameter accepts only a safe sender', function () {
+    assert_equals('-f noreply@xn--wichtl-gua.ch', mail_envelope_parameter('noreply@xn--wichtl-gua.ch'));
+    assert_equals('', mail_envelope_parameter('noreply@xn--wichtl-gua.ch;rm'));
+    assert_equals('', mail_envelope_parameter("bad\n@example.com"));
+    assert_equals('Wichtel Webseite', encode_mail_display_name('Wichtel Webseite'));
+    $mail = build_outgoing_mail('<p>Hallo</p>', true, "Hallo\nAnna -> Bea");
+    assert_true(strpos($mail['headers'], 'From: Wichtel Webseite <noreply@xn--wichtl-gua.ch>') !== false, 'ascii from header stays readable');
+});

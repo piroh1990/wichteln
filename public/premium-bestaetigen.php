@@ -23,8 +23,13 @@ token_page_open(t('premium.confirm.ok'));
 ?>
     <div class="container app-page">
         <header class="app-hero">
+            <p class="app-kicker"><?php echo h(t('footer.premium')); ?></p>
             <h1><?php echo h($ok ? t('premium.confirm.ok') : t('premium.confirm.bad')); ?></h1>
         </header>
+        <section class="section-card">
+            <p><?php echo h($ok ? t('premium.confirm.ok') : t('premium.confirm.bad')); ?></p>
+            <p><a class="button primary" href="<?php echo h(i18n_href('index')); ?>"><?php echo h(t('footer.home')); ?></a></p>
+        </section>
     </div>
 <?php
 token_page_close();

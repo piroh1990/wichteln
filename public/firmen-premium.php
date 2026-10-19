@@ -51,24 +51,10 @@ if (isset($_GET['checkout']) && (string) $_GET['checkout'] === 'ok') {
 } elseif (isset($_GET['checkout']) && (string) $_GET['checkout'] === 'cancel') {
     $checkout_note = t('premium.cancel.paid');
 }
+$GLOBALS['premium_page_notice'] = $notice;
+$GLOBALS['premium_checkout_note'] = $checkout_note;
+$GLOBALS['premium_checkout_state'] = isset($_GET['checkout']) ? (string) $_GET['checkout'] : '';
 
 public_page_open('firmen-premium', 'meta.premium.title', 'meta.premium.description', 'website');
-?>
-<?php if ($checkout_note !== ''): ?>
-    <div class="container">
-        <div class="notification <?php echo (isset($_GET['checkout']) && $_GET['checkout'] === 'ok') ? 'success' : 'warning'; ?>" role="status">
-            <?php echo h($checkout_note); ?>
-        </div>
-    </div>
-<?php endif; ?>
-<?php if (is_array($notice) && $notice['text'] !== ''): ?>
-    <div class="container">
-        <div class="notification <?php echo ($notice['type'] === 'success') ? 'success' : 'error'; ?>" role="status">
-            <?php echo h($notice['text']); ?>
-        </div>
-    </div>
-<?php endif; ?>
-<?php
 i18n_include_content('firmen-premium');
-echo premium_purchase_section_html();
 public_page_close();

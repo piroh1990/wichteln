@@ -45,5 +45,6 @@
                     Le traitement des données est décrit dans la <a href="<?php echo h(i18n_href('datenschutz')); ?>#firmen-premium">politique de confidentialité</a>.
                 </p>
             </section>
+            <?php echo premium_purchase_section_html(); ?>
         </article>
     </div>

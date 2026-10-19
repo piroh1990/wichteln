@@ -223,10 +223,23 @@ function premium_normalize_admin_email($raw) {
     return $email;
 }
 
-function premium_invoice_recipient() {
+function premium_invoice_recipient_info() {
     premium_load_config();
-    $raw = (defined('PREMIUM_INVOICE_EMAIL') && is_string(PREMIUM_INVOICE_EMAIL)) ? PREMIUM_INVOICE_EMAIL : '';
-    return premium_normalize_admin_email($raw);
+    $defined = defined('PREMIUM_INVOICE_EMAIL') && is_string(PREMIUM_INVOICE_EMAIL) && trim(PREMIUM_INVOICE_EMAIL) !== '';
+    $raw = $defined ? PREMIUM_INVOICE_EMAIL : '';
+    $email = ($raw === '') ? '' : premium_normalize_email($raw);
+    if ($email !== '') {
+        return array('email' => $email, 'source' => 'config');
+    }
+    if ($defined) {
+        return array('email' => 'info@xn--wichtl-gua.ch', 'source' => 'invalid_fallback');
+    }
+    return array('email' => 'info@xn--wichtl-gua.ch', 'source' => 'fallback');
+}
+
+function premium_invoice_recipient() {
+    $info = premium_invoice_recipient_info();
+    return $info['email'];
 }
 
 function premium_email_display($email) {
@@ -775,7 +788,18 @@ function premium_deliver_license_mail(PDO $pdo, array $license, $code, $sender =
     return $ok;
 }
 
-function premium_submit_invoice(PDO $pdo, array $post, $ip, $sender = null, $now = null) {
+function premium_invoice_destination($recipient = null) {
+    if (is_string($recipient) && trim($recipient) !== '') {
+        $email = premium_normalize_email($recipient);
+        if ($email !== '') {
+            return array('email' => $email, 'source' => 'argument');
+        }
+        return array('email' => premium_normalize_admin_email($recipient), 'source' => 'invalid_fallback');
+    }
+    return premium_invoice_recipient_info();
+}
+
+function premium_submit_invoice(PDO $pdo, array $post, $ip, $sender = null, $now = null, $recipient = null) {
     if (!premium_invoice_attempt_allowed($ip)) {
         return array('ok' => false, 'error' => 'rate');
     }
@@ -824,7 +848,11 @@ function premium_submit_invoice(PDO $pdo, array $post, $ip, $sender = null, $now
     ));
     $id = (int) $pdo->lastInsertId();
     $mail = premium_invoice_mail($fields, $id);
-    $sent = premium_send($sender, premium_invoice_recipient(), $mail[0], $mail[1], $mail[2]);
+    $invoice_to = premium_invoice_destination($recipient);
+    if ($sender === null) {
+        error_log('Premium-Rechnung an ' . $invoice_to['email'] . ' quelle=' . $invoice_to['source']);
+    }
+    $sent = premium_send($sender, $invoice_to['email'], $mail[0], $mail[1], $mail[2]);
     if (!$sent) {
         $pdo->prepare('DELETE FROM `premium_licenses` WHERE `id` = ? AND `status` = ?')->execute(array($id, 'pending'));
         return array('ok' => false, 'error' => 'mail');
@@ -887,45 +915,117 @@ function premium_resend_code(PDO $pdo, $license_id, $sender = null) {
     return premium_deliver_license_mail($pdo, $license, $code, $sender);
 }
 
-function premium_stripe_config($override = null) {
-    if (is_array($override)) {
-        return $override;
+function premium_clean_config_text($value) {
+    if (is_int($value) || is_float($value)) {
+        $value = (string) $value;
     }
-    premium_load_config();
-    $read = function ($name) {
-        if (!defined($name)) {
-            return '';
+    if (is_bool($value)) {
+        return $value ? '1' : '';
+    }
+    if (!is_string($value)) {
+        return '';
+    }
+    if (strncmp($value, "\xEF\xBB\xBF", 3) === 0) {
+        $value = substr($value, 3);
+    }
+    $value = trim($value);
+    $length = strlen($value);
+    if ($length >= 2) {
+        $first = $value[0];
+        $last = $value[$length - 1];
+        if (($first === '"' && $last === '"') || ($first === "'" && $last === "'")) {
+            $value = trim(substr($value, 1, -1));
         }
-        $value = constant($name);
-        return is_string($value) ? trim($value) : '';
-    };
+    }
+    return $value;
+}
+
+function premium_config_value($name) {
+    if (!defined($name)) {
+        return '';
+    }
+    return premium_clean_config_text(constant($name));
+}
+
+function premium_stripe_config($override = null) {
+    if (!is_array($override)) {
+        premium_load_config();
+        $override = array(
+            'secret' => premium_config_value('PREMIUM_STRIPE_SECRET_KEY'),
+            'webhook' => premium_config_value('PREMIUM_STRIPE_WEBHOOK_SECRET'),
+            'prices' => array(
+                'verein' => premium_config_value('PREMIUM_STRIPE_PRICE_VEREIN'),
+                'firma' => premium_config_value('PREMIUM_STRIPE_PRICE_FIRMA'),
+                'firma_plus' => premium_config_value('PREMIUM_STRIPE_PRICE_FIRMA_PLUS'),
+            ),
+        );
+    }
+    $prices = (isset($override['prices']) && is_array($override['prices'])) ? $override['prices'] : array();
     return array(
-        'secret' => $read('PREMIUM_STRIPE_SECRET_KEY'),
-        'webhook' => $read('PREMIUM_STRIPE_WEBHOOK_SECRET'),
+        'secret' => premium_clean_config_text(isset($override['secret']) ? $override['secret'] : ''),
+        'webhook' => premium_clean_config_text(isset($override['webhook']) ? $override['webhook'] : ''),
         'prices' => array(
-            'verein' => $read('PREMIUM_STRIPE_PRICE_VEREIN'),
-            'firma' => $read('PREMIUM_STRIPE_PRICE_FIRMA'),
-            'firma_plus' => $read('PREMIUM_STRIPE_PRICE_FIRMA_PLUS'),
+            'verein' => premium_clean_config_text(isset($prices['verein']) ? $prices['verein'] : ''),
+            'firma' => premium_clean_config_text(isset($prices['firma']) ? $prices['firma'] : ''),
+            'firma_plus' => premium_clean_config_text(isset($prices['firma_plus']) ? $prices['firma_plus'] : ''),
         ),
     );
 }
 
-function premium_stripe_is_configured(array $config) {
-    if (!isset($config['secret'], $config['webhook'], $config['prices']) || !is_array($config['prices'])) {
-        return false;
+function premium_stripe_secret_status($secret) {
+    $secret = premium_clean_config_text($secret);
+    if ($secret === '') {
+        return 'missing';
     }
-    if (strpos($config['secret'], 'sk_') !== 0 || strlen($config['secret']) < 12) {
-        return false;
+    if (preg_match('/\Apk_(?:test|live)_/', $secret) === 1) {
+        return 'publishable';
     }
-    if (strpos($config['webhook'], 'whsec_') !== 0 || strlen($config['webhook']) < 12) {
-        return false;
+    if (preg_match('/\A(sk_test|sk_live|rk_test|rk_live)_/', $secret, $match) === 1 && strlen($secret) >= 12) {
+        return $match[1];
     }
+    return 'invalid';
+}
+
+function premium_stripe_status($config = null) {
+    $config = ($config === null) ? premium_stripe_config() : $config;
+    $secret = premium_stripe_secret_status(isset($config['secret']) ? $config['secret'] : '');
+    $webhook_raw = premium_clean_config_text(isset($config['webhook']) ? $config['webhook'] : '');
+    if ($webhook_raw === '') {
+        $webhook = 'missing';
+    } elseif (strpos($webhook_raw, 'whsec_') === 0 && strlen($webhook_raw) >= 12) {
+        $webhook = 'ok';
+    } else {
+        $webhook = 'invalid';
+    }
+    $prices_in = (isset($config['prices']) && is_array($config['prices'])) ? $config['prices'] : array();
+    $prices = array();
     foreach (array('verein', 'firma', 'firma_plus') as $tier) {
-        if (empty($config['prices'][$tier]) || strpos((string) $config['prices'][$tier], 'price_') !== 0) {
-            return false;
+        $value = premium_clean_config_text(isset($prices_in[$tier]) ? $prices_in[$tier] : '');
+        if ($value === '') {
+            $prices[$tier] = 'missing';
+        } elseif (strpos($value, 'price_') === 0 && strlen($value) >= 8) {
+            $prices[$tier] = 'ok';
+        } else {
+            $prices[$tier] = 'invalid';
         }
     }
-    return true;
+    $secret_ok = in_array($secret, array('sk_test', 'sk_live', 'rk_test', 'rk_live'), true);
+    $ready = $secret_ok && $webhook === 'ok';
+    foreach ($prices as $state) {
+        if ($state !== 'ok') {
+            $ready = false;
+        }
+    }
+    return array(
+        'ready' => $ready,
+        'secret' => $secret,
+        'webhook' => $webhook,
+        'prices' => $prices,
+    );
+}
+
+function premium_stripe_is_configured(array $config) {
+    return !empty(premium_stripe_status($config)['ready']);
 }
 
 function premium_stripe_checkout_ready($config = null) {
@@ -1003,8 +1103,24 @@ function premium_checkout_urls() {
     );
 }
 
+function premium_stripe_error_note($body) {
+    $decoded = json_decode((string) $body, true);
+    if (!is_array($decoded) || !isset($decoded['error']) || !is_array($decoded['error'])) {
+        return '';
+    }
+    $type = isset($decoded['error']['type']) ? (string) $decoded['error']['type'] : '';
+    $code = isset($decoded['error']['code']) ? (string) $decoded['error']['code'] : '';
+    $message = isset($decoded['error']['message']) ? (string) $decoded['error']['message'] : '';
+    $message = preg_replace('/(?:sk|rk|pk)_(?:live|test)_[A-Za-z0-9]+/', '[key]', $message);
+    $message = str_replace(array("\r", "\n"), ' ', (string) $message);
+    if (strlen($message) > 180) {
+        $message = substr($message, 0, 180);
+    }
+    return ' type=' . $type . ' code=' . $code . ' message=' . $message;
+}
+
 function premium_stripe_start_checkout($tier, $email, $transport = null, $config = null, $now = null) {
-    $config = ($config === null) ? premium_stripe_config() : $config;
+    $config = premium_stripe_config($config);
     if (!premium_stripe_is_configured($config) || !premium_known_tier($tier)) {
         return array('ok' => false, 'url' => '', 'error' => 'config');
     }
@@ -1036,7 +1152,7 @@ function premium_stripe_start_checkout($tier, $email, $transport = null, $config
     );
     $response = premium_http_post_form('https://api.stripe.com/v1/checkout/sessions', $fields, $headers, $transport);
     if (empty($response['ok'])) {
-        error_log('Stripe Checkout fehlgeschlagen, HTTP ' . (isset($response['status']) ? (int) $response['status'] : 0));
+        error_log('Stripe Checkout fehlgeschlagen, HTTP ' . (isset($response['status']) ? (int) $response['status'] : 0) . premium_stripe_error_note(isset($response['body']) ? $response['body'] : ''));
         return array('ok' => false, 'url' => '', 'error' => 'stripe');
     }
     $decoded = json_decode($response['body'], true);
@@ -1048,7 +1164,7 @@ function premium_stripe_start_checkout($tier, $email, $transport = null, $config
 }
 
 function premium_apply_checkout_event(PDO $pdo, array $event, $sender = null, $now = null, $config = null) {
-    $config = ($config === null) ? premium_stripe_config() : $config;
+    $config = premium_stripe_config($config);
     $type = isset($event['type']) ? (string) $event['type'] : '';
     $object = (isset($event['data']['object']) && is_array($event['data']['object'])) ? $event['data']['object'] : array();
     if ($type !== 'checkout.session.completed') {
@@ -2196,11 +2312,28 @@ function premium_tier_choices_html($name) {
     return $html;
 }
 
+function premium_purchase_notices_html() {
+    $html = '';
+    $checkout = isset($GLOBALS['premium_checkout_note']) ? (string) $GLOBALS['premium_checkout_note'] : '';
+    $state = isset($GLOBALS['premium_checkout_state']) ? (string) $GLOBALS['premium_checkout_state'] : '';
+    if ($checkout !== '') {
+        $class = ($state === 'ok') ? 'success' : 'warning';
+        $html .= '<div class="notification ' . $class . '" role="status">' . h($checkout) . '</div>';
+    }
+    $notice = isset($GLOBALS['premium_page_notice']) ? $GLOBALS['premium_page_notice'] : null;
+    if (is_array($notice) && !empty($notice['text'])) {
+        $class = (isset($notice['type']) && $notice['type'] === 'success') ? 'success' : 'error';
+        $html .= '<div class="notification ' . $class . '" role="status">' . h($notice['text']) . '</div>';
+    }
+    return $html;
+}
+
 function premium_purchase_section_html() {
     if (!premium_feature_enabled()) {
         return '';
     }
     $html = '<section class="content-section" id="kaufen">';
+    $html .= premium_purchase_notices_html();
     $html .= '<h2>' . h(t('premium.buy.heading')) . '</h2>';
     if (premium_stripe_checkout_ready()) {
         $html .= '<form method="post" class="premium-buy-form">';
@@ -2312,11 +2445,100 @@ function premium_master_licenses(PDO $pdo, $status) {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
+function premium_send_test_mail($sender = null) {
+    $info = premium_invoice_recipient_info();
+    $to = $info['email'];
+    $subject = 'Test-Mail wichtlä.ch';
+    $plain = "Das ist eine Test-Mail von wichtlä.ch.\nEmpfänger: " . $to . "\nQuelle: " . $info['source'] . "\n";
+    $html = '<p>Das ist eine Test-Mail von wichtlä.ch.</p>'
+        . '<p>Empfänger: ' . mail_esc($to) . '</p>'
+        . '<p>Quelle: ' . mail_esc($info['source']) . '</p>';
+    if ($sender === null) {
+        error_log('Premium-Testmail an ' . $to . ' quelle=' . $info['source']);
+    }
+    $ok = premium_send($sender, $to, $subject, $html, $plain);
+    if ($ok) {
+        return array(
+            'type' => 'success',
+            'text' => 'Test-Mail an ' . $to . ' wurde dem Mailserver übergeben. Steht sie nicht im Posteingang, im Spam und in logs/mail.log nachsehen.',
+        );
+    }
+    return array(
+        'type' => 'error',
+        'text' => 'Test-Mail an ' . $to . ' wurde abgelehnt. Der Versuch steht in logs/mail.log und im PHP-Fehlerlog.',
+    );
+}
+
+function premium_diagnostic_label($status) {
+    $labels = array(
+        'missing' => 'fehlt',
+        'invalid' => 'ungültig',
+        'ok' => 'gesetzt',
+        'publishable' => 'Publishable Key (pk_), wird abgelehnt',
+        'sk_test' => 'sk_test vorhanden',
+        'sk_live' => 'sk_live vorhanden',
+        'rk_test' => 'rk_test vorhanden',
+        'rk_live' => 'rk_live vorhanden',
+        'config' => 'aus PREMIUM_INVOICE_EMAIL',
+        'fallback' => 'PREMIUM_INVOICE_EMAIL fehlt, Fallback',
+        'invalid_fallback' => 'PREMIUM_INVOICE_EMAIL ungültig, Fallback',
+    );
+    return isset($labels[$status]) ? $labels[$status] : (string) $status;
+}
+
+function premium_diagnostics() {
+    $invoice = premium_invoice_recipient_info();
+    $from = (defined('SMTP_FROM_EMAIL') && is_string(SMTP_FROM_EMAIL)) ? trim(SMTP_FROM_EMAIL) : '';
+    $sendmail = ini_get('sendmail_path');
+    return array(
+        'enabled' => premium_feature_enabled(),
+        'stripe' => premium_stripe_status(),
+        'invoice_email' => $invoice['email'],
+        'invoice_source' => $invoice['source'],
+        'mail_function' => function_exists('mail'),
+        'from' => $from,
+        'envelope' => mail_envelope_parameter($from),
+        'sendmail' => is_string($sendmail) && trim($sendmail) !== '',
+    );
+}
+
+function premium_master_diagnostic_html() {
+    $diag = premium_diagnostics();
+    $stripe = $diag['stripe'];
+    $html = '<div class="premium-diagnostic">';
+    $html .= '<h3>Diagnose</h3>';
+    $html .= '<p>Premium ist ' . ($diag['enabled'] ? 'eingeschaltet' : 'aus') . '. ';
+    $html .= 'Kartenzahlung ist ' . (!empty($stripe['ready']) ? 'bereit' : 'nicht bereit') . '.</p>';
+    $html .= '<ul>';
+    $html .= '<li>Secret Key: ' . h(premium_diagnostic_label($stripe['secret'])) . '. Erlaubt sind sk_test_, sk_live_, rk_test_ und rk_live_. Ein pk_ Key kann kein Checkout starten.</li>';
+    $html .= '<li>Webhook: ' . h(premium_diagnostic_label($stripe['webhook'])) . '. Der Wert muss mit whsec_ beginnen.</li>';
+    foreach (array('verein' => 'Verein', 'firma' => 'Firma', 'firma_plus' => 'Firma Plus') as $key => $label) {
+        $state = isset($stripe['prices'][$key]) ? $stripe['prices'][$key] : 'missing';
+        $html .= '<li>Price-ID ' . h($label) . ': ' . h(premium_diagnostic_label($state)) . '. Das ist die Stripe-ID price_…, nicht der Frankenbetrag aus PREMIUM_PRICE_*.</li>';
+    }
+    $html .= '<li>Rechnungsmail: ' . h($diag['invoice_email']) . ' (' . h(premium_diagnostic_label($diag['invoice_source'])) . ').</li>';
+    $html .= '<li>PHP mail(): ' . ($diag['mail_function'] ? 'verfügbar' : 'fehlt') . '. Absender ' . h($diag['from'] !== '' ? $diag['from'] : 'fehlt') . '. ';
+    $html .= 'Envelope ' . ($diag['envelope'] !== '' ? h($diag['envelope']) : 'nicht gesetzt') . '. Sendmail-Pfad ' . ($diag['sendmail'] ? 'gesetzt' : 'leer') . '.</li>';
+    $html .= '</ul>';
+    $html .= '<p>Ein eingeschränkter Key (rk_) braucht die Berechtigung, Checkout Sessions zu erstellen. Sonst lehnt Stripe die Zahlung ab, die Meldung dazu steht im PHP-Fehlerlog (HTTP-Status und Fehlercode, ohne Schlüssel).</p>';
+    $html .= '<p>Jede Mail wird in logs/mail.log und im PHP-Fehlerlog festgehalten. Schlägt der Envelope-Absender fehl, folgt ein zweiter Versuch ohne -f.</p>';
+    $html .= '<form method="post" class="premium-inline-form">' . csrf_input();
+    $html .= '<input type="hidden" name="premium_action" value="test_mail">';
+    $html .= '<button type="submit" class="button secondary">Test-Mail senden</button>';
+    $html .= '</form>';
+    $html .= '<p>Die Test-Mail geht an ' . h($diag['invoice_email']) . '.</p>';
+    $html .= '</div>';
+    return $html;
+}
+
 function premium_master_handle(PDO $pdo, array $post, $sender = null) {
+    $action = isset($post['premium_action']) ? (string) $post['premium_action'] : '';
+    if ($action === 'test_mail') {
+        return premium_send_test_mail($sender);
+    }
     if (!premium_tables_ready($pdo)) {
         return array('type' => 'error', 'text' => t('premium.master.missing'));
     }
-    $action = isset($post['premium_action']) ? (string) $post['premium_action'] : '';
     $id = isset($post['license_id']) ? (int) $post['license_id'] : 0;
     if ($action === 'activate') {
         $result = premium_activate_license($pdo, $id, isset($post['domain']) ? $post['domain'] : '', $sender);
@@ -2356,6 +2578,7 @@ function premium_master_section_html(PDO $pdo) {
     }
     $html = '<section class="section-card" id="premium-lizenzen" aria-labelledby="premium-master-heading">';
     $html .= '<div class="section-card-header"><span class="section-icon" aria-hidden="true">✦</span><h2 id="premium-master-heading">' . h(t('premium.master.title')) . '</h2></div>';
+    $html .= premium_master_diagnostic_html();
     if (!premium_tables_ready($pdo)) {
         $html .= '<p>' . h(t('premium.master.missing')) . '</p></section>';
         return $html;
