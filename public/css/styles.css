@@ -4210,14 +4210,21 @@ a.button.support-button:focus-visible,
     margin-top: 0.55rem;
 }
 
-.premium-opt-in-fields input,
-.premium-buy-form input,
+.premium-opt-in-fields input[type="text"],
+.premium-opt-in-fields input[type="email"],
+.premium-buy-form input[type="text"],
+.premium-buy-form input[type="email"],
+.premium-buy-form input[type="number"],
 .premium-buy-form textarea,
-.premium-inline-form input,
-.premium-csv-form input,
+.premium-inline-form input[type="text"],
+.premium-inline-form input[type="email"],
+.premium-csv-form input[type="text"],
+.premium-csv-form input[type="email"],
+.premium-csv-form input[type="file"],
 .premium-csv-form textarea {
     width: 100%;
     max-width: 28rem;
+    box-sizing: border-box;
 }
 
 .premium-tier-grid {
@@ -4241,13 +4248,92 @@ a.button.support-button:focus-visible,
     margin: 0.2rem 0;
 }
 
-.premium-tier-choices label,
 .premium-buy-form,
 .premium-inline-form,
 .premium-copy-form,
 .premium-csv-form {
     display: block;
     margin-top: 0.8rem;
+}
+
+.content-page .premium-buy-form {
+    max-width: 100%;
+}
+
+.content-page .premium-buy-form input[type="text"],
+.content-page .premium-buy-form input[type="email"],
+.content-page .premium-buy-form textarea {
+    max-width: none;
+}
+
+.premium-tier-choices {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin: 0.4rem 0 1rem;
+}
+
+.premium-tier-choices label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.55rem;
+    margin: 0;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--surface, #fff);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.premium-tier-choices input[type="radio"] {
+    width: 1.05rem;
+    height: 1.05rem;
+    max-width: none;
+    margin: 0.15rem 0 0;
+    flex: 0 0 auto;
+    accent-color: var(--secondary-color, #2a9d8f);
+}
+
+.premium-diagnostic ul {
+    margin: 0.4rem 0 1rem 1.2rem;
+}
+
+.premium-diagnostic li {
+    margin: 0.35rem 0;
+}
+
+.premium-hr-table {
+    display: table;
+}
+
+.premium-hr-table thead {
+    display: table-header-group;
+}
+
+.premium-hr-table tbody {
+    display: table-row-group;
+}
+
+.premium-hr-table tr {
+    display: table-row;
+}
+
+.premium-hr-table th,
+.premium-hr-table td {
+    display: table-cell;
+}
+
+@media (max-width: 700px) {
+    .premium-tier-choices {
+        grid-template-columns: 1fr;
+    }
+
+    .premium-buy-form button,
+    .content-page .premium-buy-form button {
+        width: 100%;
+        box-sizing: border-box;
+    }
 }
 
 .premium-logo {

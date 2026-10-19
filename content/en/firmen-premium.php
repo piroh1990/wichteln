@@ -45,5 +45,6 @@
                     How this data is handled is in the <a href="<?php echo h(i18n_href('datenschutz')); ?>#firmen-premium">privacy policy</a>.
                 </p>
             </section>
+            <?php echo premium_purchase_section_html(); ?>
         </article>
     </div>

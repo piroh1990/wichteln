@@ -45,5 +45,6 @@
                     Mehr zur Bearbeitung steht in der <a href="<?php echo h(i18n_href('datenschutz')); ?>#firmen-premium">Datenschutzerklärung</a>.
                 </p>
             </section>
+            <?php echo premium_purchase_section_html(); ?>
         </article>
     </div>

@@ -113,6 +113,36 @@ function encode_mail_subject($subject) {
     return $subject;
 }
 
+function encode_mail_display_name($name) {
+    $name = str_replace(array("\r", "\n", '"'), '', (string) $name);
+    if ($name === '') {
+        return '';
+    }
+    if (preg_match('/[^\x20-\x7E]/', $name)) {
+        return '=?UTF-8?B?' . base64_encode($name) . '?=';
+    }
+    return $name;
+}
+
+function mail_safe_address($value) {
+    $value = trim((string) $value);
+    if ($value === '' || preg_match('/[\r\n\t ]/', $value) === 1) {
+        return '';
+    }
+    if (preg_match('/\A[A-Za-z0-9._+-]+@[A-Za-z0-9.-]+\z/', $value) !== 1) {
+        return '';
+    }
+    return $value;
+}
+
+function mail_envelope_parameter($from) {
+    $from = mail_safe_address($from);
+    if ($from === '') {
+        return '';
+    }
+    return '-f ' . $from;
+}
+
 /**
  * Kopfzeilen und Body für mail() bauen.
  * Mit HTML und Klartext entsteht multipart/alternative, Klartext zuerst.
@@ -120,8 +150,10 @@ function encode_mail_subject($subject) {
  * @return array headers, body, boundary
  */
 function build_outgoing_mail($message, $is_html = false, $plain_text = null) {
-    $headers = "From: " . SMTP_FROM_NAME . " <" . SMTP_FROM_EMAIL . ">\r\n";
-    $headers .= "Reply-To: " . SMTP_FROM_EMAIL . "\r\n";
+    $from_name = defined('SMTP_FROM_NAME') ? encode_mail_display_name(SMTP_FROM_NAME) : '';
+    $from_email = defined('SMTP_FROM_EMAIL') ? str_replace(array("\r", "\n"), '', (string) SMTP_FROM_EMAIL) : '';
+    $headers = "From: " . $from_name . " <" . $from_email . ">\r\n";
+    $headers .= "Reply-To: " . $from_email . "\r\n";
     $headers .= "MIME-Version: 1.0\r\n";
 
     if ($is_html && is_string($plain_text) && $plain_text !== '') {
@@ -158,11 +190,76 @@ function build_outgoing_mail($message, $is_html = false, $plain_text = null) {
     );
 }
 
+function mail_log_recipient($to) {
+    $to = (string) $to;
+    if (function_exists('premium_invoice_recipient')) {
+        $admin = premium_invoice_recipient();
+        if ($admin !== '' && strcasecmp($to, $admin) === 0) {
+            return $admin;
+        }
+    }
+    return mask_email($to);
+}
+
+function mail_log_attempt($to, $subject, $ok, $envelope, $note) {
+    $subject = str_replace(array("\r", "\n"), ' ', (string) $subject);
+    if (strlen($subject) > 120) {
+        $subject = substr($subject, 0, 120);
+    }
+    $note = str_replace(array("\r", "\n"), ' ', trim((string) $note));
+    $line = date('c')
+        . ' to=' . mail_log_recipient($to)
+        . ' subject=' . $subject
+        . ' ok=' . ($ok ? '1' : '0')
+        . ' envelope=' . ($envelope !== '' ? $envelope : '-')
+        . ($note !== '' ? ' note=' . $note : '');
+    error_log('Mail: ' . $line);
+    $dir = dirname(__DIR__) . '/logs';
+    if (!is_dir($dir)) {
+        @mkdir($dir, 0755, true);
+    }
+    @file_put_contents($dir . '/mail.log', $line . "\n", FILE_APPEND | LOCK_EX);
+}
+
+function mail_last_error_note() {
+    $last = error_get_last();
+    if (!is_array($last) || empty($last['message'])) {
+        return '';
+    }
+    return str_replace(array("\r", "\n"), ' ', (string) $last['message']);
+}
+
 // E-Mail senden mit PHP's mail() Funktion.
 // $plain_text erzeugt bei HTML-Mails eine multipart/alternative-Alternative.
+// Der fünfte Parameter setzt den Envelope-Absender (-f). Lehnt der Mailserver
+// das ab, folgt ein zweiter Versuch ohne -f. Jeder Versuch wird protokolliert.
 function send_email($to, $subject, $message, $is_html = false, $plain_text = null) {
+    $to = str_replace(array("\r", "\n"), '', (string) $to);
     $mail = build_outgoing_mail($message, $is_html, $plain_text);
-    return mail($to, encode_mail_subject($subject), $mail['body'], $mail['headers']);
+    $headers = preg_replace("/\r\n|\r|\n/", "\r\n", $mail['headers']);
+    $body = preg_replace("/\r\n|\r|\n/", "\r\n", $mail['body']);
+    $from = (defined('SMTP_FROM_EMAIL') && is_string(SMTP_FROM_EMAIL)) ? SMTP_FROM_EMAIL : '';
+    $envelope = mail_safe_address($from);
+    $param = mail_envelope_parameter($from);
+    $encoded_subject = encode_mail_subject($subject);
+    $ok = false;
+    $note = '';
+    if ($param !== '') {
+        $ok = mail($to, $encoded_subject, $body, $headers, $param);
+        if (!$ok) {
+            mail_log_attempt($to, $subject, false, $envelope, 'envelope_failed ' . mail_last_error_note());
+            $ok = mail($to, $encoded_subject, $body, $headers);
+            $envelope = '';
+            $note = $ok ? 'retried_without_envelope' : ('plain_failed ' . mail_last_error_note());
+        }
+    } else {
+        $ok = mail($to, $encoded_subject, $body, $headers);
+        if (!$ok) {
+            $note = 'plain_failed ' . mail_last_error_note();
+        }
+    }
+    mail_log_attempt($to, $subject, (bool) $ok, $envelope, $note);
+    return (bool) $ok;
 }
 
 /**
