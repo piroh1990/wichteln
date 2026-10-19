@@ -38,6 +38,7 @@ function render_head($options = array()) {
 <!DOCTYPE html>
 <html lang="<?php echo h($html_lang); ?>">
 <head>
+    <?php if ($slug === 'index') { echo "<!-- Awin -->\n"; } ?>
     <meta charset="UTF-8">
     <title><?php echo h($title); ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
