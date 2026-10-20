@@ -329,13 +329,72 @@ run_test('credits add up and a used-up package offers another purchase', functio
         assert_true(strpos($html, 'noch 0 frei') !== false, 'the admin shows that nothing is left');
         assert_true(strpos($html, 'Weiteres Paket kaufen') !== false, 'a used-up credit offers another package');
         assert_true(strpos($html, 'firmen-premium') !== false && strpos($html, '#kaufen') !== false, 'the offer links to the purchase');
+        assert_true(strpos($html, 'class="section-card"') !== false, 'a licensed group keeps the premium section');
+        assert_true(strpos($html, 'premium-admin-offer') === false, 'a licensed group does not get the quiet offer');
         assert_true(strpos($html, 'Verein') === false && strpos($html, 'Firma Plus') === false, 'the admin drops the old tier names');
+        assert_equals('', premium_admin_offer_html($pdo, $row), 'a licensed group has no extra offer box');
         $master = premium_master_section_html($pdo, false);
         assert_true(strpos($master, '1× Premium-Wichteln') !== false, 'master admin names the package');
         assert_true(strpos($master, 'noch 0 frei') !== false, 'master admin shows used and remaining groups');
         assert_equals('3× Premium-Wichteln', premium_tier_label('verein'), 'an old verein row is shown by its credit count');
         assert_equals('10× Premium-Wichteln', premium_tier_label('firma'));
         assert_equals('Premium-Wichteln, ohne Limit', premium_tier_label('firma_plus'));
+    } finally {
+        restore_error_handler();
+        if ($had_override) {
+            $GLOBALS['premium_enabled_override'] = $previous_override;
+        } else {
+            unset($GLOBALS['premium_enabled_override']);
+        }
+        $GLOBALS['i18n_lang'] = $previous_lang;
+    }
+});
+
+run_test('a free group keeps premium as a closed note after the admin tools', function () {
+    $had_override = array_key_exists('premium_enabled_override', $GLOBALS);
+    $previous_override = $had_override ? $GLOBALS['premium_enabled_override'] : null;
+    $previous_lang = isset($GLOBALS['i18n_lang']) ? $GLOBALS['i18n_lang'] : 'de';
+    $GLOBALS['premium_enabled_override'] = true;
+    set_error_handler(function () {
+        return true;
+    });
+    try {
+        $pdo = premium_test_pdo();
+        $group_id = premium_test_group($pdo, 'Familie');
+        $row = $pdo->query('SELECT * FROM `groups` WHERE `id` = ' . (int) $group_id)->fetch(PDO::FETCH_ASSOC);
+        assert_equals('', premium_admin_section_html($pdo, $row), 'a free group has no premium block');
+        $closed = premium_admin_offer_html($pdo, $row);
+        assert_true(strpos($closed, '<details class="premium-admin-offer" id="premium">') !== false, 'the note is closed');
+        assert_true(strpos($closed, ' open') === false, 'the note does not start open');
+        assert_true(strpos($closed, 'Premium Firmen-Wichteln') === false, 'the note does not use the old heading');
+        $open = premium_admin_offer_html($pdo, $row, null, true, true);
+        assert_true(strpos($open, '<details class="premium-admin-offer" id="premium" open>') !== false, 'a fresh premium choice opens the note');
+        assert_true(strpos($open, t('premium.create.later')) !== false, 'the opened note says the licence can wait');
+        foreach (array(
+            'de' => 'Zusatzfunktionen für Firmen und Vereine',
+            'fr' => 'Fonctions supplémentaires pour entreprises et associations',
+            'en' => 'Extra features for companies and clubs',
+        ) as $lang => $title) {
+            $GLOBALS['i18n_lang'] = $lang;
+            $html = premium_admin_offer_html($pdo, $row);
+            assert_true(strpos($html, $title) !== false, $lang . ' note uses the quiet title');
+            assert_true(strpos($html, t('premium.create.free')) !== false, $lang . ' note says the normal draw stays free');
+            assert_true(strpos($html, 'class="premium-price-list"') !== false, $lang . ' note lists the prices');
+            assert_true(strpos($html, 'CHF 9') !== false && strpos($html, 'CHF 19') !== false && strpos($html, 'CHF 29') !== false, $lang . ' note shows the three prices');
+            assert_true(strpos($html, '1 Gruppe') === false && strpos($html, '1 group') === false && strpos($html, '1 groupe') === false, $lang . ' note skips the group count');
+            assert_true(strpos($html, 'name="license_email"') !== false && strpos($html, 'name="license_code"') !== false, $lang . ' note can unlock by email or code');
+            assert_true(strpos($html, 'firmen-premium') !== false && strpos($html, '#kaufen') !== false, $lang . ' note links to the premium page');
+            assert_true(substr_count($html, '<li>') >= 11, $lang . ' note keeps the short feature list');
+        }
+        $admin = file_get_contents(dirname(__DIR__) . '/public/admin.php');
+        $section_at = strpos($admin, 'premium_admin_section_html');
+        $checklist_at = strpos($admin, 'id="checkliste"');
+        $danger_at = strpos($admin, 'id="gefahrenzone"');
+        $offer_at = strpos($admin, 'premium_admin_offer_html');
+        $support_at = strpos($admin, "support_card_html('admin')");
+        assert_true($section_at !== false && $checklist_at !== false && $section_at < $checklist_at, 'the licensed section stays above the checklist');
+        assert_true($danger_at !== false && $offer_at !== false && $support_at !== false && $danger_at < $offer_at && $offer_at < $support_at, 'the quiet note sits after the admin tools');
+        assert_true(strpos($admin, 'if ($premium_license)') !== false, 'the premium shortcut is only there for a licensed group');
     } finally {
         restore_error_handler();
         if ($had_override) {
