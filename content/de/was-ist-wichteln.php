@@ -2,8 +2,8 @@
     {
         "@context": "https://schema.org",
         "@type": "Article",
-        "headline": "Was ist Wichteln? - Tradition, Regeln & Varianten",
-        "description": "Erfahre alles über die Wichtel-Tradition: Herkunft, Regeln, Varianten wie Schrottwichteln und Motto-Wichteln.",
+        "headline": "Was ist Wichteln? Regeln, Ablauf und Budget",
+        "description": "Was Wichteln bedeutet, woher der Brauch kommt und wie Namen ziehen abläuft. Regeln, Varianten wie Schrottwichteln und Budget-Tipps für die Schweiz.",
         "author": {
             "@type": "Organization",
             "name": "Wichtlä.ch"
@@ -14,7 +14,7 @@
             "url": "https://xn--wichtl-gua.ch/"
         },
         "url": "https://xn--wichtl-gua.ch/was-ist-wichteln",
-        "inLanguage": "de",
+        "inLanguage": "de-CH",
         "mainEntityOfPage": "https://xn--wichtl-gua.ch/was-ist-wichteln"
     }
     </script>
@@ -71,7 +71,7 @@
                         <?php if (function_exists('premium_feature_enabled') && premium_feature_enabled()): ?>
                         <?php echo h(t('premium.extra.tool')); ?> <?php echo premium_extra_link_html(); ?>.
                         <?php else: ?>
-                        Mit unserem kostenlosen Tool wird das Losziehen zum Kinderspiel! Keine Zettel, kein Aufwand – einfach Namen eintragen, und jeder erhält sein Los per E-Mail. Perfekt für verteilte Teams oder Familien.
+                        Mit wichtlä.ch lost du ohne Zettel aus. Namen eintragen, den Link teilen, und wer eine E-Mail hinterlegt hat, bekommt das Los per Mail. Die anderen sehen es über den persönlichen Link. Das normale Wichteln bleibt gratis und werbefrei, auch wenn die Runde nicht am selben Ort ist.
                         <?php endif; ?>
                     </p>
                 </div>
@@ -123,11 +123,37 @@
             <section class="content-section">
                 <h2>Wichteln in der Schweiz</h2>
                 <p>
-                    In der Schweiz ist das Wichteln besonders in der Adventszeit beliebt und wird oft als <strong>„Weihnachtswichteln"</strong> oder einfach <strong>„Wichteln"</strong> bezeichnet. Viele Firmen organisieren ein Wichteln für ihre Mitarbeiter, um die Teamkultur zu stärken und die Vorweihnachtszeit gemeinsam zu zelebrieren.
+                    In der Schweiz ist das Wichteln besonders in der Adventszeit beliebt und wird oft als <strong>„Weihnachtswichteln"</strong> oder einfach <strong>„Wichteln"</strong> bezeichnet. In der Romandie sagt man eher Secret Santa. Viele Firmen, Vereine und Familien organisieren eine Runde, um die Vorweihnachtszeit gemeinsam zu feiern.
                 </p>
                 <p>
-                    Typisch schweizerisch ist die Kombination mit einem gemütlichen Zusammensein bei Glühwein, Fondue oder Raclette. Die Geschenke werden meist im Rahmen einer kleinen Weihnachtsfeier überreicht.
+                    Typisch schweizerisch ist die Kombination mit einem gemütlichen Zusammensein bei Glühwein, Fondue oder Raclette. Die Geschenke werden meist im Rahmen einer kleinen Weihnachtsfeier überreicht. Wenn nicht alle im selben Kanton sind, oder das Team im Homeoffice sitzt, ersetzt die Online-Auslosung den Zettel in der Mitte.
                 </p>
+            </section>
+
+            <section class="content-section">
+                <h2>So läuft das online Wichteln ab</h2>
+                <p>Beim Wichteln bekommt jede Person genau ein Los. Online geht das ohne Zettel:</p>
+                <ol>
+                    <li><strong>Wichtelgruppe erstellen:</strong> Name der Runde, deine E-Mail, optional Budget und Datum. <a href="<?php echo h(i18n_href('create_group')); ?>">Hier erstellst du die Gruppe</a>.</li>
+                    <li><strong>Link teilen:</strong> Den Einladungslink schickst du per Mail oder WhatsApp. Es gibt keinen Bot, die Anmeldung läuft im Browser.</li>
+                    <li><strong>Namen eintragen:</strong> Jede Person gibt einen Namen an. Die E-Mail ist freiwillig.</li>
+                    <li><strong>Auslosen:</strong> Der Zufallsgenerator verteilt die Namen. Niemand zieht sich selbst, und Ausschlüsse gelten.</li>
+                    <li><strong>Los ansehen:</strong> Mit E-Mail kommt das Ergebnis per Mail. Ohne E-Mail kopiert der Admin den persönlichen Link und gibt ihn weiter.</li>
+                </ol>
+                <p>Der Admin braucht eine E-Mail, weil der Admin-Link dorthin geschickt wird. Teilnehmer können ohne E-Mail mitmachen. Die einzelnen Fälle stehen in den <a href="<?php echo h(i18n_href('faq')); ?>">häufigen Fragen</a>.</p>
+            </section>
+
+            <section class="content-section">
+                <h2>Regeln und Budget</h2>
+                <p>Die meisten Runden in der Schweiz halten sich an ein paar einfache Regeln. Sie sind kein Gesetz, aber sie verhindern Diskussionen.</p>
+                <ul>
+                    <li>Jede Person beschenkt genau eine andere Person und wird genau einmal beschenkt.</li>
+                    <li>Das Budget gilt für alle. Üblich sind 10–15 CHF in grossen Runden, 15–25 CHF als Mitte und 25–50 CHF in kleineren Teams.</li>
+                    <li>Paare oder Geschwister schliesst man oft gegenseitig aus.</li>
+                    <li>Mitmachen bleibt freiwillig.</li>
+                    <li>Ob der Schenker geheim bleibt, entscheidet die Gruppe. Bis zur Auflösung sieht auf wichtlä.ch jede Person nur das eigene Los.</li>
+                </ul>
+                <p>Ideen in diesen Preislagen stehen bei den <a href="<?php echo h(i18n_href('wichtel-ideen')); ?>">Wichtelgeschenken</a>. Für Firmen und Vereine gibt es eigene <a href="<?php echo h(i18n_href('firmenwichteln-tipps')); ?>">Tipps zum Firmenwichteln</a>.</p>
             </section>
             
             <section class="content-section">

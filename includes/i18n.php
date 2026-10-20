@@ -45,6 +45,17 @@ function i18n_locale() {
     }
 }
 
+function i18n_hreflang($lang) {
+    switch (i18n_allow($lang)) {
+        case 'fr':
+            return 'fr-CH';
+        case 'en':
+            return 'en';
+        default:
+            return 'de-CH';
+    }
+}
+
 function i18n_catalog($lang) {
     $lang = i18n_allow($lang);
     if (!isset($GLOBALS['i18n_catalogs']) || !is_array($GLOBALS['i18n_catalogs'])) {

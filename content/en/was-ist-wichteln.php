@@ -2,8 +2,8 @@
     {
         "@context": "https://schema.org",
         "@type": "Article",
-        "headline": "What is Secret Santa? Tradition, rules and variants",
-        "description": "All about the Secret Santa tradition: origins, rules and variants such as gag gifts and themed exchanges.",
+        "headline": "What is Secret Santa? Rules, steps and budget",
+        "description": "Where Secret Santa comes from, how the draw works and which rules help. Variants and budget tips for Switzerland.",
         "author": {
             "@type": "Organization",
             "name": "Wichtlä.ch"
@@ -71,7 +71,7 @@
                         <?php if (function_exists('premium_feature_enabled') && premium_feature_enabled()): ?>
                         <?php echo h(t('premium.extra.tool')); ?> <?php echo premium_extra_link_html(); ?>.
                         <?php else: ?>
-                        With our free tool, drawing names is child’s play! No slips of paper, no fuss — enter the names, and everyone receives their match by email. Perfect for distributed teams or families.
+                        With wichtlä.ch you draw the names without slips of paper. Enter the names, share the link, and anyone who left an email address receives the match by email. Everyone else sees it through the personal link. A normal Secret Santa stays free and ad-free, even when the group is not in the same place.
                         <?php endif; ?>
                     </p>
                 </div>
@@ -123,11 +123,37 @@
             <section class="content-section">
                 <h2>Secret Santa in Switzerland</h2>
                 <p>
-                    In Switzerland, Secret Santa is especially popular during Advent. In German-speaking Switzerland it is often called <strong>“Weihnachtswichteln”</strong>, or simply <strong>“Wichteln”</strong>. In French-speaking Switzerland people mostly say “Secret Santa”. Many companies organise one for their staff, to strengthen team culture and celebrate the run-up to Christmas together.
+                    In Switzerland, Secret Santa is especially popular during Advent. In German-speaking Switzerland it is often called <strong>“Weihnachtswichteln”</strong>, or simply <strong>“Wichteln”</strong>. In French-speaking Switzerland people mostly say “Secret Santa”. Many companies, clubs and families organise a round to celebrate the run-up to Christmas together.
                 </p>
                 <p>
-                    A typically Swiss touch is to combine it with a cosy get-together over mulled wine, fondue or raclette. The gifts are usually handed over at a small Christmas party.
+                    A typically Swiss touch is to combine it with a cosy get-together over mulled wine, fondue or raclette. The gifts are usually handed over at a small Christmas party. When people are not in the same canton, or the team is working from home, the online draw replaces the slip of paper in the middle of the table.
                 </p>
+            </section>
+
+            <section class="content-section">
+                <h2>How an online draw works</h2>
+                <p>In Secret Santa, each person gets exactly one match. Online, that happens without slips of paper:</p>
+                <ol>
+                    <li><strong>Create the group:</strong> the name, your email, and optionally a budget and a date. <a href="<?php echo h(i18n_href('create_group')); ?>">Create the group here</a>.</li>
+                    <li><strong>Share the link:</strong> send the invite link by email or WhatsApp. There is no bot; sign-up happens in the browser.</li>
+                    <li><strong>Add the names:</strong> each person enters a name. The email is optional.</li>
+                    <li><strong>Draw:</strong> the random generator assigns the names. Nobody draws themselves, and exclusions are kept.</li>
+                    <li><strong>See the result:</strong> with an email address, it arrives by email. Without one, the admin copies the personal link and passes it on.</li>
+                </ol>
+                <p>The admin needs an email address, because the admin link is sent there. Participants can do without one. The details are in the <a href="<?php echo h(i18n_href('faq')); ?>">FAQ</a>.</p>
+            </section>
+
+            <section class="content-section">
+                <h2>Rules and budget</h2>
+                <p>Most groups in Switzerland keep to a few simple rules. They are not a law, but they prevent arguments.</p>
+                <ul>
+                    <li>Each person gives a gift to exactly one other person and receives exactly one gift.</li>
+                    <li>The budget applies to everyone. Common ranges are CHF 10–15 in large groups, CHF 15–25 in the middle and CHF 25–50 in smaller teams.</li>
+                    <li>Couples or siblings often exclude each other.</li>
+                    <li>Taking part stays voluntary.</li>
+                    <li>The group decides whether the giver stays secret. Until the reveal, on wichtlä.ch each person only sees their own match.</li>
+                </ul>
+                <p>Ideas in these price ranges are in the <a href="<?php echo h(i18n_href('wichtel-ideen')); ?>">gift ideas</a>. Companies and clubs can read the <a href="<?php echo h(i18n_href('firmenwichteln-tipps')); ?>">company Secret Santa tips</a>.</p>
             </section>
             
             <section class="content-section">

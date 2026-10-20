@@ -91,6 +91,7 @@ public_page_open('create_group', 'meta.create.title', 'meta.create.description')
     </header>
     <div class="container">
         <h1><?php echo h(t('create.heading')); ?></h1>
+        <p><?php echo h(t('create.lead')); ?></p>
         <?php if (isset($error)): ?>
             <div class="notification error" role="alert" aria-live="assertive">
                 <?php echo h($error); ?>

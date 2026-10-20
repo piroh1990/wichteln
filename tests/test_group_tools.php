@@ -181,6 +181,52 @@ run_test('clean urls, sitemap and robots', function() {
     assert_true(strpos($robots, 'Disallow: /admin.php') !== false, 'Admin URLs are disallowed');
     assert_true(strpos($robots, 'Disallow: /kalender.php') !== false, 'Calendar token URLs are disallowed');
     assert_true(strpos($robots, 'token=') !== false, 'Query tokens are mentioned');
+    assert_true(strpos($sitemap, '.php') === false, 'Sitemap has no php URLs');
+    assert_true(strpos($sitemap, 'https://www.') === false, 'Sitemap has no www host');
+    assert_true(strpos($sitemap, 'hreflang="de-CH"') !== false, 'Sitemap uses Swiss German');
+    assert_true(strpos($sitemap, 'hreflang="fr-CH"') !== false, 'Sitemap uses Swiss French');
+    assert_true(strpos($sitemap, 'hreflang="de"') === false, 'Sitemap does not use a bare de hreflang');
+    assert_true(strpos($sitemap, 'hreflang="fr"') === false, 'Sitemap does not use a bare fr hreflang');
+
+    assert_true(strpos($htaccess, 'RewriteCond %{REQUEST_METHOD} ^(GET|HEAD)$') !== false, 'Legacy redirects are GET and HEAD only');
+    assert_true(strpos($htaccess, '^index\\.php$') !== false, 'index.php redirects home');
+    assert_true(strpos($htaccess, 'https://xn--wichtl-gua.ch/') !== false, 'Redirect target is the canonical host');
+    assert_true(strpos($htaccess, '^www\\.(xn--wichtl-gua\\.ch|wichtlä\\.ch)') !== false, 'www redirects to the bare host');
+    foreach (public_clean_slugs() as $slug) {
+        assert_true(in_array($slug, seo_legacy_php_slugs(), true), $slug . ' is a legacy php redirect');
+    }
+    assert_true(preg_match('/RewriteRule \\^[^\\n]*api/', $htaccess) !== 1, 'API paths are not rewrite targets');
+});
+
+run_test('legacy php and www redirects keep method, query and private endpoints', function () {
+    $base = 'https://xn--wichtl-gua.ch';
+    assert_equals($base . '/faq?x=1&y=2', seo_legacy_redirect_target('GET', 'xn--wichtl-gua.ch', '/faq.php?x=1&y=2'));
+    assert_equals($base . '/?deleted=1', seo_legacy_redirect_target('HEAD', 'www.xn--wichtl-gua.ch', '/index.php?deleted=1'));
+    assert_equals($base . '/fr/was-ist-wichteln?a=1', seo_legacy_redirect_target('GET', 'www.wichtlä.ch', '/fr/was-ist-wichteln.php?a=1'));
+    assert_equals($base . '/en/', seo_legacy_redirect_target('GET', 'xn--wichtl-gua.ch', '/en/index.php'));
+    assert_equals($base . '/create_group?lang=fr', seo_legacy_redirect_target('GET', 'wichtlä.ch', '/create_group.php?lang=fr'));
+    assert_equals($base . '/faq', seo_legacy_redirect_target('GET', 'www.xn--wichtl-gua.ch', '/faq'));
+    assert_equals($base . '/admin.php?token=abc', seo_legacy_redirect_target('GET', 'www.xn--wichtl-gua.ch', '/admin.php?token=abc'));
+    assert_equals($base . '/api/groups.php?id=1', seo_legacy_redirect_target('GET', 'www.xn--wichtl-gua.ch', '/api/groups.php?id=1'));
+    assert_equals($base . '/participant.php?token=abc', seo_legacy_redirect_target('HEAD', 'www.xn--wichtl-gua.ch:443', '/participant.php?token=abc'));
+    assert_equals('/faq?x=1', seo_legacy_redirect_target('GET', 'localhost', '/faq.php?x=1'));
+    assert_equals('/fr/faq', seo_legacy_redirect_target('GET', '127.0.0.1', '/fr/faq.php'));
+
+    assert_equals(null, seo_legacy_redirect_target('POST', 'xn--wichtl-gua.ch', '/create_group.php'));
+    assert_equals(null, seo_legacy_redirect_target('POST', 'www.xn--wichtl-gua.ch', '/create_group.php'));
+    assert_equals(null, seo_legacy_redirect_target('POST', 'www.xn--wichtl-gua.ch', '/api/draw.php'));
+    assert_equals(null, seo_legacy_redirect_target('PUT', 'xn--wichtl-gua.ch', '/faq.php'));
+    assert_equals(null, seo_legacy_redirect_target('GET', 'xn--wichtl-gua.ch', '/faq'));
+    assert_equals(null, seo_legacy_redirect_target('GET', 'xn--wichtl-gua.ch', '/admin.php?token=abc'));
+    assert_equals(null, seo_legacy_redirect_target('GET', 'xn--wichtl-gua.ch', '/api/groups.php'));
+    assert_equals(null, seo_legacy_redirect_target('GET', 'xn--wichtl-gua.ch', '/participant.php?token=abc'));
+    assert_equals(null, seo_legacy_redirect_target('GET', 'xn--wichtl-gua.ch', '/register.php?token=abc'));
+    assert_equals(null, seo_legacy_redirect_target('GET', 'xn--wichtl-gua.ch', '/captcha.php'));
+    assert_equals(null, seo_legacy_redirect_target('GET', 'xn--wichtl-gua.ch', '/kalender.php?g=1'));
+    assert_equals(null, seo_legacy_redirect_target('GET', 'xn--wichtl-gua.ch', '/premium-webhook.php'));
+    assert_equals(null, seo_legacy_redirect_target('GET', 'xn--wichtl-gua.ch', '/wichtel-ideen2.php'));
+    assert_equals(null, seo_legacy_redirect_target('GET', 'localhost', '/admin.php?token=abc'));
+    assert_equals(null, seo_legacy_redirect_target('GET', 'xn--wichtl-gua.ch', "/faq.php?x=1\r\nSet-Cookie: a=b"));
 });
 
 run_test('copy matches reveal, recovery and the homepage typo fix', function() {
