@@ -173,9 +173,9 @@ run_test('premium stays hidden until it is configured', function () {
 run_test('create form lists premium, prices and both ways to activate', function () {
     $previous = isset($GLOBALS['i18n_lang']) ? $GLOBALS['i18n_lang'] : 'de';
     $expected = array(
-        'de' => array('Firmen-Premium', 'CSV-Import', 'Eigenes Logo und eigene Farben', 'Ausschlussregeln', 'Gruppe fürs nächste Jahr kopieren', 'HR-Übersicht mit Live-Aufdeckung', 'Eigener Begrüssungstext', 'Domain-Lizenz', 'Lizenzübersicht', 'Dieselben Funktionen', 'CHF 19', 'CHF 49', 'CHF 99', 'Lizenzcode', 'Bestätigung'),
-        'fr' => array('Premium entreprise', 'Import CSV', 'Texte d’accueil', 'Licence de domaine', 'Les mêmes fonctions', 'CHF 19', 'CHF 49', 'CHF 99', 'code de licence'),
-        'en' => array('Company Premium', 'CSV import', 'welcome text', 'Domain licence', 'The same features', 'CHF 19', 'CHF 49', 'CHF 99', 'licence code'),
+        'de' => array('Zusatzfunktionen für Firmen und Vereine', 'mehr Funktionen wünschen', 'ganz normal und gratis wichteln', 'CSV-Import', 'Eigenes Logo und eigene Farben', 'Gruppe fürs nächste Jahr kopieren', 'HR-Übersicht mit Live-Aufdeckung', 'Eigener Begrüssungstext', 'Domain-Lizenz', 'Lizenzübersicht', 'Dieselben Funktionen', 'CHF 19', 'CHF 49', 'CHF 99', 'Lizenzcode', 'Bestätigung'),
+        'fr' => array('Fonctions supplémentaires pour entreprises et associations', 'plus de fonctions', 'gratuitement', 'Import CSV', 'Texte d’accueil', 'Licence de domaine', 'Les mêmes fonctions', 'CHF 19', 'CHF 49', 'CHF 99', 'code de licence'),
+        'en' => array('Extra features for companies and clubs', 'want more features', 'for free', 'CSV import', 'welcome text', 'Domain licence', 'The same features', 'CHF 19', 'CHF 49', 'CHF 99', 'licence code'),
     );
     foreach ($expected as $lang => $needles) {
         $GLOBALS['i18n_lang'] = $lang;
@@ -194,6 +194,13 @@ run_test('create form lists premium, prices and both ways to activate', function
         foreach ($needles as $needle) {
             assert_true(strpos($html, $needle) !== false, $lang . ' box contains ' . $needle);
         }
+        $toggle = strpos($html, 'id="firmen-premium-toggle"');
+        $row = strpos($html, 'class="premium-opt-in-row"');
+        $row_end = strpos($html, '</label>');
+        assert_true($row !== false && $toggle !== false && $row_end !== false && $row < $toggle && $toggle < $row_end, $lang . ' checkbox and label share one clickable row');
+        assert_true(strpos($html, 'Ausschlussregeln') === false, $lang . ' box does not list exclusion rules');
+        assert_true(strpos($html, 'Exclusion rules the draw') === false, $lang . ' box does not list exclusion rules');
+        assert_true(strpos($html, 'Règles d’exclusion') === false, $lang . ' box does not list exclusion rules');
     }
     $GLOBALS['i18n_lang'] = $previous;
 
@@ -201,6 +208,11 @@ run_test('create form lists premium, prices and both ways to activate', function
     $fr = file_get_contents(dirname(__DIR__) . '/content/fr/firmen-premium.php');
     $en = file_get_contents(dirname(__DIR__) . '/content/en/firmen-premium.php');
     assert_true(strpos($de, 'ß') === false, 'German premium page uses ss');
+    assert_true(strpos($de, 'oder mehr Funktionen wünschen') !== false, 'German page offers more than several groups');
+    assert_true(strpos($de, 'ganz normal und gratis wichteln') !== false, 'German page says companies can use the free draw');
+    assert_true(strpos($de, 'Ausschlussregeln') === false, 'German premium page does not sell exclusion rules');
+    assert_true(strpos($fr, 'souhaitent plus de fonctions') !== false, 'French page offers more than several groups');
+    assert_true(strpos($en, 'want more features') !== false, 'English page offers more than several groups');
     assert_true(strpos($de, 'premium_pricing_cards_html') !== false, 'German page shows prices');
     assert_true(strpos($fr, 'premium_pricing_cards_html') !== false, 'French page shows prices');
     assert_true(strpos($en, 'premium_pricing_cards_html') !== false, 'English page shows prices');
@@ -697,7 +709,16 @@ run_test('company page and free claims follow the feature flag', function () {
             assert_true(strpos($html, 'firmen-premium') !== false && strpos($html, '#kaufen') !== false, $lang . ' company page links to the purchase');
             assert_true(strpos($html, 'ß') === false, $lang . ' company section uses ss');
             assert_true(strpos($html, 'id="extra-funktionen"') !== false, $lang . ' section is present');
+            assert_true(strpos($html, 'Ausschlussregeln, die die Auslosung') === false, $lang . ' company page drops the exclusion claim');
+            assert_true(strpos($html, 'Exclusion rules the draw') === false, $lang . ' company page drops the exclusion claim');
+            assert_true(strpos($html, 'Règles d’exclusion respectées') === false, $lang . ' company page drops the exclusion claim');
+            assert_true(strpos($html, t('premium.create.free')) !== false, $lang . ' company page says the normal draw stays free');
         }
+        $admin = file_get_contents(dirname(__DIR__) . '/public/admin.php');
+        $exclusion = strpos($admin, 'id="ausschluesse"');
+        $add = strpos($admin, 'name="add_exclusion"');
+        assert_true(strpos($admin, 'premium_group_is_premium') === false, 'normal admin exclusions are not behind a premium licence');
+        assert_true($exclusion !== false && $add !== false && $exclusion < $add, 'every group can still save an exclusion');
     } finally {
         if ($had_override) {
             $GLOBALS['premium_enabled_override'] = $previous_override;

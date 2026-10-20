@@ -12,7 +12,7 @@
             <section class="content-section">
                 <h2>Wofür ich das gebaut habe</h2>
                 <p>
-                    Die normale Gruppe bleibt gratis. Premium ist für Vereine und Firmen, die in einer Saison mehrere Gruppen führen: Abteilungen, Standorte, ein Anlass für die Lernenden und einer für das Team.
+                    Die normale Gruppe bleibt gratis. Auch Firmen können ganz normal und gratis wichteln. Die Zusatzfunktionen sind optional. Premium ist für Vereine und Firmen, die in einer Saison mehrere Gruppen führen oder mehr Funktionen wünschen: Abteilungen, Standorte, ein Anlass für die Lernenden und einer für das Team.
                 </p>
                 <p>
                     Eine Lizenz gilt für die laufende Saison und deckt so viele Gruppen ab, wie das Paket hergibt. Es braucht kein Konto. Du verbindest die Lizenz mit der Gruppe, die du gerade anlegst.

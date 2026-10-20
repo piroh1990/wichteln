@@ -4189,8 +4189,23 @@ a.button.support-button:focus-visible,
     background: var(--surface, #fff);
 }
 
-.premium-opt-in-check {
-    margin-right: 0.4rem;
+.premium-opt-in-row {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin: 0;
+    cursor: pointer;
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+.premium-opt-in-row input[type="checkbox"] {
+    width: 1.15rem;
+    height: 1.15rem;
+    min-width: 1.15rem;
+    margin: 0;
+    flex: 0 0 auto;
+    accent-color: var(--secondary-color, #2a9d8f);
 }
 
 .premium-opt-in-box {
@@ -4203,8 +4218,12 @@ a.button.support-button:focus-visible,
     font-size: 0.92rem;
 }
 
-.premium-opt-in-check:checked ~ .premium-opt-in-box {
+.premium-opt-in:has(.premium-opt-in-check:checked) .premium-opt-in-box {
     display: block;
+}
+
+.premium-opt-in-free {
+    margin: 0.35rem 0 0.6rem;
 }
 
 .premium-opt-in-features {

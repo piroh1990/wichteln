@@ -139,7 +139,6 @@ function premium_feature_keys() {
     return array(
         'premium.feature.csv',
         'premium.feature.brand',
-        'premium.feature.rules',
         'premium.feature.copy',
         'premium.feature.hr',
         'premium.feature.greeting',
@@ -2179,10 +2178,13 @@ function premium_create_form_html($enabled = null, $definitions = null, $checked
         $prices[] = premium_tier_label($key) . ' ' . premium_price_label($def['price']) . ', ' . premium_limit_label($def);
     }
     $html = '<div class="form-group premium-opt-in">';
+    $html .= '<label class="premium-opt-in-row" for="firmen-premium-toggle">';
     $html .= '<input class="premium-opt-in-check" type="checkbox" id="firmen-premium-toggle" name="firmen_premium" value="1"' . ($checked ? ' checked' : '') . ' aria-controls="firmen-premium-box">';
-    $html .= '<label for="firmen-premium-toggle">' . h(t('premium.create.label')) . '</label>';
+    $html .= '<span>' . h(t('premium.create.label')) . '</span>';
+    $html .= '</label>';
     $html .= '<div class="premium-opt-in-box" id="firmen-premium-box">';
     $html .= '<p class="premium-opt-in-lead">' . h(t('premium.create.hint')) . '</p>';
+    $html .= '<p class="premium-opt-in-free">' . h(t('premium.create.free')) . '</p>';
     $html .= '<ul class="premium-opt-in-features">' . $items . '</ul>';
     $html .= '<p class="premium-opt-in-prices">' . h(implode(' · ', $prices)) . '</p>';
     $html .= '<p class="premium-opt-in-same">' . h(t('premium.tier.same')) . '</p>';
@@ -2600,7 +2602,6 @@ function premium_company_feature_pairs() {
     return array(
         array('premium.feature.csv', 'premium.company.csv'),
         array('premium.feature.brand', 'premium.company.brand'),
-        array('premium.feature.rules', 'premium.company.rules'),
         array('premium.feature.copy', 'premium.company.copy'),
         array('premium.feature.hr', 'premium.company.hr'),
         array('premium.feature.greeting', 'premium.company.greeting'),
@@ -2617,6 +2618,7 @@ function premium_company_extras_html() {
     $html = '<section class="content-section" id="extra-funktionen">';
     $html .= '<h2>' . h(t('premium.company.heading')) . '</h2>';
     $html .= '<p>' . h(t('premium.company.lead')) . '</p>';
+    $html .= '<p>' . h(t('premium.create.free')) . '</p>';
     foreach (premium_company_feature_pairs() as $pair) {
         $html .= '<h3>' . h(t($pair[0])) . '</h3>';
         $html .= '<p>' . h(t($pair[1])) . '</p>';
