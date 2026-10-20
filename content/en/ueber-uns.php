@@ -5,47 +5,42 @@
 
         <header class="page-header">
             <h1 class="page-title">About us</h1>
-            <p class="page-subtitle">Who is behind Wichtlä.ch</p>
+            <p class="page-subtitle">Why I built wichtlä.ch</p>
         </header>
 
         <article>
             <section class="content-section">
-                <h2>Our mission</h2>
+                <h2>What matters to me</h2>
                 <p>
-                    <strong>Wichtlä.ch</strong> has a simple goal: to make organising a Secret Santa as straightforward as possible. No scraps of paper, no fiddly apps, no hidden costs. You create a group, invite the participants, and the names are drawn automatically and fairly. The name “Wichtlä” comes from “Wichtel”, the German and Swiss-German word for Secret Santa.
+                    I want Secret Santa to be simple. No scraps of paper, no app and no hidden costs: you create a group, invite everyone, and the names are drawn fairly.
                 </p>
                 <p>
-                    For family, friends or a company Secret Santa, the tool is for anyone who wants to add this tradition to Christmas.
-                    <?php if (function_exists('premium_feature_enabled') && premium_feature_enabled()): ?>
-                    <?php echo h(t('premium.extra.about')); ?> <?php echo premium_extra_link_html(); ?>.
-                    <?php else: ?>
-                    The whole platform is <strong>free</strong> and requires <strong>no account</strong>.
-                    <?php endif; ?>
+                    It works for family, friends or the team at work. A normal Secret Santa is free, with no ads and no account.<?php if (function_exists('premium_feature_enabled') && premium_feature_enabled()): ?> <?php echo str_replace('extra features', '<a href="' . h(i18n_href('firmen-premium')) . '">extra features</a>', t('premium.extra.about')); ?><?php endif; ?>
                 </p>
             </section>
 
             <section class="content-section">
-                <h2>Who is behind it?</h2>
+                <h2>Who is behind it</h2>
                 <p>
-                    Wichtlä.ch is Patrick Raths’s hobby. He built the site himself and runs it through <a href="https://raths-it.ch"><strong>Raths IT</strong></a> from <strong>Switzerland</strong>. The idea came from an everyday problem: every year, in the run-up to Christmas, the same routine. Write names, put them in a hat, hope nobody draws themselves, then somehow get the slips to everyone. As soon as people are not in the same place, it quickly gets complicated.
+                    I am Patrick Raths, and wichtlä.ch is my hobby. I built the site myself and run it through my company <a href="https://raths-it.ch"><strong>Raths IT</strong></a> in <strong>Switzerland</strong>. The idea came from a problem that many people know: every year you write names on slips, throw them into a hat and hope that nobody draws themselves. When not everyone is in the same place, it quickly gets complicated.
                 </p>
                 <p>
-                    Wichtlä.ch grew out of that need: a lean, fast online tool that solves exactly this problem. No unnecessary extras, no data hoarding, no forced account. Just a Secret Santa, the way it should be.
+                    That is why I built wichtlä.ch. It is a lean tool with no frills and no account, and I only collect the data the Secret Santa needs.
                 </p>
             </section>
 
             <section class="content-section">
                 <h2>Why Wichtlä.ch?</h2>
-                <p>There are plenty of reasons why Wichtlä.ch is the right choice for your Secret Santa:</p>
+                <p>Here is what I paid attention to while building it:</p>
 
                 <ul>
-                    <li><?php if (function_exists('premium_feature_enabled') && premium_feature_enabled()): ?><strong><?php echo h(t('premium.extra.bullet')); ?></strong> <?php echo premium_extra_link_html(); ?>.<?php else: ?><strong>100% free:</strong> no hidden costs, no premium features behind a paywall<?php endif; ?></li>
-                    <li><strong>No account needed:</strong> start right away, without an account or handing over personal data</li>
-                    <li><strong>Privacy under the Swiss Federal Act on Data Protection (FADP):</strong> your data is handled confidentially and protected under the strict Swiss Federal Act on Data Protection (FADP)</li>
-                    <li><strong>Easy to use:</strong> your Secret Santa group is created and the invites are sent in under 2 minutes</li>
-                    <li><strong>A fair draw:</strong> our algorithm matches people at random and fairly, and you can define exclusions</li>
-                    <li><strong>Automatic email notification:</strong> every participant receives their match conveniently by email</li>
-                    <li><strong>On every device:</strong> it works on phone, tablet and desktop, with no app to download</li>
+                    <li><?php if (function_exists('premium_feature_enabled') && premium_feature_enabled()): ?><strong>Free:</strong> a normal Secret Santa stays without ads and without an account. <?php echo str_replace('extra features', '<a href="' . h(i18n_href('firmen-premium')) . '">extra features</a>', t('premium.extra.bullet')); ?><?php else: ?><strong>Free:</strong> a normal Secret Santa stays without ads and without an account.<?php endif; ?></li>
+                    <li><strong>No account needed:</strong> you can start right away.</li>
+                    <li><strong>Privacy under the Swiss Federal Act on Data Protection (FADP):</strong> I handle your data confidentially.</li>
+                    <li><strong>Simple:</strong> in less than two minutes your group is created and the invitations are sent.</li>
+                    <li><strong>A fair draw:</strong> the assignment is random, and you can set exclusions.</li>
+                    <li><strong>Result by email:</strong> everyone receives their match conveniently by email.</li>
+                    <li><strong>For every device:</strong> it runs on phone, tablet and computer, with no app.</li>
                 </ul>
             </section>
 
@@ -57,7 +52,7 @@
             <section class="content-section">
                 <h2>Contact</h2>
                 <p>
-                    Got a question, a suggestion or feedback? We would love to hear from you. Just send us an email at:
+                    Questions, ideas or feedback? I am glad to get every message. Just write to me at:
                 </p>
                 <p>
                     <strong>Email:</strong> <span id="email-address"></span>
@@ -77,7 +72,7 @@
                 </script>
 
                 <p>
-                    You will find more legal information in our <a href="<?php echo h(i18n_href('impressum')); ?>">legal notice</a> and our <a href="<?php echo h(i18n_href('datenschutz')); ?>">privacy policy</a>.
+                    You will find more legal information in the <a href="<?php echo h(i18n_href('impressum')); ?>">legal notice</a> and in the <a href="<?php echo h(i18n_href('datenschutz')); ?>">privacy policy</a>.
                 </p>
             </section>
 
