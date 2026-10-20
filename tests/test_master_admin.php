@@ -186,6 +186,7 @@ run_test('Sortierung und Status sind whitelisted', function () {
     $valid = master_admin_filters_from_request(array('status' => 'problematisch', 'sort' => 'name', 'dir' => 'asc'));
     assert_equals('problematisch', $valid['status']);
     assert_equals('name', $valid['sort']);
+    assert_equals('gruppen', $valid['section']);
 
     $query = master_admin_group_query(array(
         'q' => '',
@@ -553,4 +554,61 @@ run_test('Systemstatus, Saison und Tageschart', function () {
     assert_true(strpos($page, 'GOOGLE_ADS_TESTING') === false);
     assert_true(strpos($page, 'Anzeigen-Flags') === false);
     assert_true(strpos($page, '/css/styles.css') !== false);
+    assert_true(strpos($page, 'master-nav') !== false, 'Navigation fehlt');
+    assert_true(strpos($page, 'name="view" value="gruppen"') !== false, 'Gruppenfilter behält die Ansicht');
+    assert_true(strpos($page, 'premium_master_section_html($pdo, false)') !== false, 'Lizenzen ohne Diagnose');
+    assert_true(strpos($page, 'premium_master_diagnostic_html()') !== false, 'Diagnose bleibt erreichbar');
+    assert_true(strpos($page, 'master_dashboard_redirect') !== false);
+});
+
+run_test('Dashboard-Bereiche haben eigene Adressen, Karten bleiben Layout', function () {
+    assert_equals('uebersicht', master_admin_section_from_request(array()));
+    assert_equals('gruppen', master_admin_section_from_request(array('view' => 'gruppen')));
+    assert_equals('premium', master_admin_section_from_request(array('view' => 'premium')));
+    assert_equals('statistik', master_admin_section_from_request(array('view' => 'statistik')));
+    assert_equals('system', master_admin_section_from_request(array('view' => 'system')));
+    assert_equals('uebersicht', master_admin_section_from_request(array('view' => 'einstellungen')));
+    assert_equals('uebersicht', master_admin_section_from_request(array('view' => '../system')));
+    assert_equals('gruppen', master_admin_section_from_request(array('view' => 'cards')));
+    assert_equals('gruppen', master_admin_section_from_request(array('q' => 'Alpha')));
+    assert_equals('statistik', master_admin_section_from_request(array('export' => 'statistik')));
+
+    $legacy = master_admin_filters_from_request(array('view' => 'cards', 'status' => 'offen'));
+    assert_equals('cards', $legacy['view']);
+    assert_equals('gruppen', $legacy['section']);
+
+    $cards = master_admin_query_params($legacy);
+    assert_equals('gruppen', $cards['view']);
+    assert_equals('cards', $cards['layout']);
+    assert_equals('offen', $cards['status']);
+
+    $split = master_admin_filters_from_request(array('view' => 'premium', 'layout' => 'cards'));
+    assert_equals('premium', $split['section']);
+    assert_equals('cards', $split['view']);
+    $split_params = master_admin_query_params($split);
+    assert_equals('premium', $split_params['view']);
+    assert_equals('cards', $split_params['layout']);
+
+    $overview = master_admin_query_params(master_admin_filters_from_request(array()));
+    assert_true(!isset($overview['view']));
+    assert_true(!isset($overview['layout']));
+
+    $toggled = master_admin_query_params(
+        master_admin_filters_from_request(array('view' => 'gruppen', 'q' => 'Alpha')),
+        array('layout' => 'table', 'view' => 'gruppen', 'page' => 1)
+    );
+    assert_equals('gruppen', $toggled['view']);
+    assert_true(!isset($toggled['layout']));
+    assert_equals('Alpha', $toggled['q']);
+
+    $back = master_admin_query_params(
+        master_admin_filters_from_request(array('view' => 'system')),
+        array('view' => 'premium')
+    );
+    assert_equals('premium', $back['view']);
+
+    $labels = master_admin_sections();
+    assert_true(strpos($labels['uebersicht'], 'ß') === false);
+    assert_true(isset($labels['gruppen'], $labels['premium'], $labels['statistik'], $labels['system']));
+    assert_true(!isset($labels['einstellungen']));
 });

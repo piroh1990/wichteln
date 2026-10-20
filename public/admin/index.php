@@ -117,6 +117,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (premium_feature_enabled() && isset($_POST['premium_action'])) {
+        $premium_view = ((string) $_POST['premium_action'] === 'test_mail') ? 'system' : 'premium';
+        $query_params = master_admin_query_params($filters, array('view' => $premium_view));
         if (!$csrf_ok) {
             $_SESSION['master_admin_flash'] = array('type' => 'error', 'text' => csrf_failure_message());
             master_dashboard_redirect($query_params);
@@ -127,6 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $bulk_result = master_admin_handle_bulk_request($pdo, $_POST, $_SESSION, $csrf_ok, $now);
     if (is_array($bulk_result)) {
+        $query_params = master_admin_query_params($filters, array('view' => 'gruppen'));
         if ($bulk_result['status'] !== 'confirm') {
             $flash_type = ($bulk_result['status'] === 'done') ? 'success' : (($bulk_result['status'] === 'cancelled') ? 'success' : 'error');
             $_SESSION['master_admin_flash'] = array(
@@ -138,6 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (isset($_POST['action'], $_POST['group_id'])) {
+        $query_params = master_admin_query_params($filters, array('view' => 'gruppen'));
         if (!$csrf_ok) {
             $_SESSION['master_admin_flash'] = array('type' => 'error', 'text' => csrf_failure_message());
             master_dashboard_redirect($query_params);
@@ -245,28 +249,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['export'])) {
     }
 }
 
+$section = isset($filters['section']) ? $filters['section'] : 'uebersicht';
+if (!isset(master_admin_sections()[$section])) {
+    $section = 'uebersicht';
+}
+$premium_on = premium_feature_enabled();
+
 $per_page = ($filters['view'] === 'cards') ? 9 : 20;
 $group_page = array('rows' => array(), 'total' => 0, 'page' => 1, 'pages' => 1, 'offset' => 0, 'per_page' => $per_page);
 $list_error = false;
-try {
-    $group_page = master_admin_fetch_groups($pdo, $filters, $flags, $filters['page'], $per_page, $now);
-} catch (Exception $e) {
-    $list_error = true;
-    error_log('Master-Admin Gruppenliste: ' . $e->getMessage());
-    if ($error === '') {
-        $error = 'Die Gruppenliste konnte nicht geladen werden. Bitte den Systemstatus prüfen.';
+if ($section === 'gruppen') {
+    try {
+        $group_page = master_admin_fetch_groups($pdo, $filters, $flags, $filters['page'], $per_page, $now);
+    } catch (Exception $e) {
+        $list_error = true;
+        error_log('Master-Admin Gruppenliste: ' . $e->getMessage());
+        if ($error === '') {
+            $error = 'Die Gruppenliste konnte nicht geladen werden. Bitte den Systemstatus prüfen.';
+        }
     }
 }
 
 $cleanup_total = 0;
-if (!$list_error) {
+try {
+    $cleanup_filters = $filters;
+    $cleanup_filters['status'] = 'aufraeumen';
+    $cleanup_probe = master_admin_fetch_groups($pdo, $cleanup_filters, $flags, 1, 1, $now);
+    $cleanup_total = $cleanup_probe['total'];
+} catch (Exception $e) {
+    error_log('Master-Admin Aufräumen: ' . $e->getMessage());
+}
+
+$premium_pending_count = 0;
+if ($premium_on) {
     try {
-        $cleanup_filters = $filters;
-        $cleanup_filters['status'] = 'aufraeumen';
-        $cleanup_probe = master_admin_fetch_groups($pdo, $cleanup_filters, $flags, 1, 1, $now);
-        $cleanup_total = $cleanup_probe['total'];
+        $premium_pending_count = premium_master_pending_count($pdo);
     } catch (Exception $e) {
-        error_log('Master-Admin Aufräumen: ' . $e->getMessage());
+        error_log('Master-Admin Premium-Zähler: ' . $e->getMessage());
     }
 }
 
@@ -286,19 +305,32 @@ $kpis = array(
     'upcoming_events' => 0,
     'groups_this_month' => 0,
 );
-try {
-    $kpis = master_admin_kpis($pdo, $now, $flags);
-} catch (Exception $e) {
-    error_log('Master-Admin Kennzahlen: ' . $e->getMessage());
+if ($section === 'uebersicht' || $section === 'statistik') {
+    try {
+        $kpis = master_admin_kpis($pdo, $now, $flags);
+    } catch (Exception $e) {
+        error_log('Master-Admin Kennzahlen: ' . $e->getMessage());
+    }
 }
 
-$season = master_admin_season_bounds($now);
-$season_current = master_admin_window_stats($pdo, $season['current_start'], $season['current_end']);
-$season_previous = master_admin_window_stats($pdo, $season['previous_start'], $season['previous_end']);
-$daily = master_admin_daily_series($pdo, $season['nov_start'], $season['nov_end']);
-$trend = master_admin_monthly_trend($pdo, $now, 6);
-$trend_max = max(1, max($trend));
-$archive = master_admin_fetch_archive($pdo, $filters['archive_page'], 15);
+$season = null;
+$season_current = null;
+$season_previous = null;
+$daily = array();
+$trend = array();
+$trend_max = 1;
+if ($section === 'statistik') {
+    $season = master_admin_season_bounds($now);
+    $season_current = master_admin_window_stats($pdo, $season['current_start'], $season['current_end']);
+    $season_previous = master_admin_window_stats($pdo, $season['previous_start'], $season['previous_end']);
+    $daily = master_admin_daily_series($pdo, $season['nov_start'], $season['nov_end']);
+    $trend = master_admin_monthly_trend($pdo, $now, 6);
+    $trend_max = max(1, max($trend));
+}
+$archive = array('rows' => array(), 'total' => 0, 'page' => 1, 'pages' => 1, 'offset' => 0, 'error' => false);
+if ($section === 'gruppen') {
+    $archive = master_admin_fetch_archive($pdo, $filters['archive_page'], 15);
+}
 $month_labels = master_admin_month_labels();
 
 $created_known = !empty($flags['groups.created_at']);
@@ -320,11 +352,13 @@ if (function_exists('apache_get_modules')) {
     }
 }
 $rewrite_probe = null;
-if ($apache_modules === null && php_sapi_name() !== 'cli-server') {
+if (($section === 'uebersicht' || $section === 'system') && $apache_modules === null && php_sapi_name() !== 'cli-server') {
     $rewrite_probe = master_admin_probe_clean_url(master_admin_clean_url_probe_target($_SERVER));
 }
 $rewrite_status = master_admin_rewrite_status($apache_modules, $rewrite_probe);
 $rate_limit_status = rate_limit_storage_status();
+
+$system_attention = !$php_status['ok'] || !$mail_status['ok'] || $rewrite_status === 'inaktiv' || (int) $schema['missing_count'] > 0 || empty($rate_limit_status['writable']);
 
 $pending_names = array();
 if (is_array($pending_bulk)) {
@@ -352,12 +386,22 @@ function master_dashboard_page_url($filters_params, $page_key, $page_number) {
     }
     return admin_url($params);
 }
+
+function master_dashboard_nav_url($target, array $filters) {
+    if ($target === 'gruppen') {
+        return admin_url(master_admin_query_params($filters, array('view' => 'gruppen')));
+    }
+    if ($target === 'uebersicht') {
+        return 'index.php';
+    }
+    return admin_url(array('view' => $target));
+}
 ?>
 <!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Master-Dashboard – Wichtlä.ch</title>
+    <title><?php echo htmlspecialchars(master_admin_sections()[$section] . ' – Master-Dashboard', ENT_QUOTES, 'UTF-8'); ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
     <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/apple-icon-180x180.png">
@@ -374,17 +418,7 @@ function master_dashboard_page_url($filters_params, $page_key, $page_number) {
         <header class="app-hero">
             <p class="app-kicker">Verwaltung</p>
             <h1>Master-Dashboard</h1>
-            <p class="app-hero-lead">Alle Gruppen, die Saisonstatistik und der Systemstatus.</p>
-            <nav class="app-toc" aria-label="Bereiche dieser Seite">
-                <a href="#gruppen">Gruppen</a>
-                <a href="#kennzahlen">Kennzahlen</a>
-                <a href="#saison">Saison</a>
-                <?php if (premium_feature_enabled()): ?>
-                <a href="#premium-lizenzen">Premium</a>
-                <?php endif; ?>
-                <a href="#systemstatus">Systemstatus</a>
-                <a href="#archiv">Archiv</a>
-            </nav>
+            <p class="app-hero-lead"><?php echo htmlspecialchars(master_admin_sections()[$section], ENT_QUOTES, 'UTF-8'); ?>. Jeder Bereich hat eine eigene Adresse, damit Links und der Zurück-Knopf greifen.</p>
             <form method="POST" action="<?php echo htmlspecialchars(admin_url($query_params), ENT_QUOTES, 'UTF-8'); ?>" class="master-logout">
                 <?php echo csrf_input(); ?>
                 <button type="submit" name="logout" value="1">Abmelden</button>
@@ -397,6 +431,41 @@ function master_dashboard_page_url($filters_params, $page_key, $page_number) {
         <?php if ($error !== ''): ?>
             <div class="notification error" role="alert" aria-live="assertive"><?php echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?></div>
         <?php endif; ?>
+
+        <div class="master-shell">
+            <input type="checkbox" id="master-nav-toggle" class="master-nav-toggle">
+            <label for="master-nav-toggle" class="master-nav-burger">Menü</label>
+            <nav class="master-nav" aria-label="Bereiche">
+                <?php
+                $nav_items = array(
+                    'uebersicht' => array('label' => 'Übersicht', 'badge' => 0),
+                    'gruppen' => array('label' => 'Gruppen', 'badge' => (int) $cleanup_total),
+                    'statistik' => array('label' => 'Statistiken und Export', 'badge' => 0),
+                    'system' => array('label' => 'System', 'badge' => 0, 'alert' => $system_attention),
+                );
+                if ($premium_on) {
+                    $nav_items = array(
+                        'uebersicht' => $nav_items['uebersicht'],
+                        'gruppen' => $nav_items['gruppen'],
+                        'premium' => array('label' => 'Premium-Lizenzen', 'badge' => (int) $premium_pending_count),
+                        'statistik' => $nav_items['statistik'],
+                        'system' => $nav_items['system'],
+                    );
+                }
+                foreach ($nav_items as $nav_key => $nav_item):
+                    $nav_current = ($section === $nav_key);
+                ?>
+                    <a href="<?php echo htmlspecialchars(master_dashboard_nav_url($nav_key, $filters), ENT_QUOTES, 'UTF-8'); ?>"<?php echo $nav_current ? ' aria-current="page"' : ''; ?>>
+                        <span><?php echo htmlspecialchars($nav_item['label'], ENT_QUOTES, 'UTF-8'); ?></span>
+                        <?php if ((int) $nav_item['badge'] > 0): ?>
+                            <span class="master-nav-badge"><?php echo (int) $nav_item['badge']; ?></span>
+                        <?php elseif (!empty($nav_item['alert'])): ?>
+                            <span class="master-nav-badge" aria-label="Hinweis">!</span>
+                        <?php endif; ?>
+                    </a>
+                <?php endforeach; ?>
+            </nav>
+            <div class="master-main">
 
         <?php if (is_array($pending_bulk)): ?>
             <?php
@@ -441,6 +510,41 @@ function master_dashboard_page_url($filters_params, $page_key, $page_number) {
             </section>
         <?php endif; ?>
 
+        <?php if ($section === 'uebersicht'): ?>
+        <section class="section-card" id="uebersicht" aria-labelledby="overview-heading">
+            <div class="section-card-header">
+                <span class="section-icon" aria-hidden="true">🏠</span>
+                <h2 id="overview-heading">Übersicht</h2>
+            </div>
+            <p class="section-description">Die wichtigsten Zahlen und der Systemstand. Listen, Lizenzen und der Export liegen in den anderen Bereichen.</p>
+            <div class="status-grid master-kpis">
+                <div class="status-tile"><span class="status-tile-label">Gruppen</span><span class="status-tile-value"><?php echo (int) $kpis['total_groups']; ?></span><span class="status-tile-hint"><?php echo (int) $kpis['active_groups']; ?> aktiv / <?php echo (int) $kpis['archived_groups']; ?> archiviert</span></div>
+                <div class="status-tile"><span class="status-tile-label">Teilnehmer</span><span class="status-tile-value"><?php echo (int) $kpis['total_participants']; ?></span><span class="status-tile-hint"><?php echo (int) $kpis['active_participants']; ?> aktiv</span></div>
+                <div class="status-tile"><span class="status-tile-label">Abschlussrate</span><span class="status-tile-value"><?php echo (int) $kpis['completion_rate']; ?>%</span><span class="status-tile-hint"><?php echo (int) $kpis['total_drawn']; ?> ausgelost</span></div>
+                <div class="status-tile"><span class="status-tile-label">Diesen Monat</span><span class="status-tile-value"><?php echo (int) $kpis['groups_this_month']; ?></span><span class="status-tile-hint"><?php echo htmlspecialchars($month_labels[date('m', $now)] . ' ' . date('Y', $now), ENT_QUOTES, 'UTF-8'); ?></span></div>
+            </div>
+            <div class="master-overview-links">
+                <a class="button secondary" href="<?php echo htmlspecialchars(master_dashboard_nav_url('gruppen', $filters), ENT_QUOTES, 'UTF-8'); ?>">Gruppen<?php echo $cleanup_total > 0 ? ' (' . (int) $cleanup_total . ' aufräumen)' : ''; ?></a>
+                <?php if ($premium_on): ?>
+                    <a class="button secondary" href="<?php echo htmlspecialchars(master_dashboard_nav_url('premium', $filters), ENT_QUOTES, 'UTF-8'); ?>">Premium<?php echo $premium_pending_count > 0 ? ' (' . (int) $premium_pending_count . ' offen)' : ''; ?></a>
+                <?php endif; ?>
+                <a class="button secondary" href="<?php echo htmlspecialchars(master_dashboard_nav_url('statistik', $filters), ENT_QUOTES, 'UTF-8'); ?>">Statistiken</a>
+                <a class="button secondary" href="<?php echo htmlspecialchars(master_dashboard_nav_url('system', $filters), ENT_QUOTES, 'UTF-8'); ?>">System</a>
+            </div>
+            <div class="status-line">
+                <span class="system-pill<?php echo $php_status['ok'] ? '' : ' is-warn'; ?>">PHP <?php echo htmlspecialchars($php_status['version'], ENT_QUOTES, 'UTF-8'); ?></span>
+                <span class="system-pill<?php echo $mail_status['ok'] ? '' : ' is-warn'; ?>">E-Mail <?php echo $mail_status['ok'] ? 'bereit' : 'prüfen'; ?></span>
+                <span class="system-pill<?php echo $rewrite_status === 'aktiv' ? '' : ($rewrite_status === 'inaktiv' ? ' is-warn' : ' is-unknown'); ?>">Clean-URLs <?php echo htmlspecialchars($rewrite_status, ENT_QUOTES, 'UTF-8'); ?></span>
+                <span class="system-pill<?php echo ((int) $schema['missing_count'] === 0) ? '' : ' is-warn'; ?>">Spalten <?php echo ((int) $schema['missing_count'] === 0) ? 'vollständig' : ((int) $schema['missing_count'] . ' fehlen'); ?></span>
+                <span class="system-pill<?php echo !empty($rate_limit_status['writable']) ? '' : ' is-warn'; ?>">Rate-Limit <?php echo !empty($rate_limit_status['writable']) ? 'beschreibbar' : 'prüfen'; ?></span>
+            </div>
+            <?php if ($system_attention): ?>
+                <p class="section-description"><a href="<?php echo htmlspecialchars(master_dashboard_nav_url('system', $filters), ENT_QUOTES, 'UTF-8'); ?>">Details und SQL stehen unter System.</a></p>
+            <?php endif; ?>
+        </section>
+        <?php endif; ?>
+
+        <?php if ($section === 'gruppen'): ?>
         <section class="section-card" id="gruppen" aria-labelledby="groups-heading">
             <div class="section-card-header">
                 <span class="section-icon" aria-hidden="true">🎁</span>
@@ -449,8 +553,9 @@ function master_dashboard_page_url($filters_params, $page_key, $page_number) {
             <p class="section-description">Suche, Filter und Sortierung laufen auf dem Server und gelten auch für die Seiten und den CSV-Export. Die Tabelle ist die Standardansicht.</p>
 
             <form method="GET" action="index.php" class="master-filters">
-                <?php if ($filters['view'] !== 'table'): ?>
-                    <input type="hidden" name="view" value="<?php echo htmlspecialchars($filters['view'], ENT_QUOTES, 'UTF-8'); ?>">
+                <input type="hidden" name="view" value="gruppen">
+                <?php if ($filters['view'] === 'cards'): ?>
+                    <input type="hidden" name="layout" value="cards">
                 <?php endif; ?>
                 <?php if ($filters['archive_page'] > 1): ?>
                     <input type="hidden" name="archive_page" value="<?php echo (int) $filters['archive_page']; ?>">
@@ -509,12 +614,11 @@ function master_dashboard_page_url($filters_params, $page_key, $page_number) {
                     <button type="submit" name="bulk_action" value="delete" class="button error" onclick="return masterBulkConfirm('Ausgewählte Gruppen dauerhaft löschen? Es wird keine Statistik gespeichert.');">Löschen</button>
                 </form>
                 <div class="view-toggle" role="group" aria-label="Ansicht">
-                    <a href="<?php echo htmlspecialchars(admin_url(master_admin_query_params($filters, array('view' => 'table', 'page' => 1))), ENT_QUOTES, 'UTF-8'); ?>"<?php echo $filters['view'] === 'table' ? ' class="is-active" aria-current="true"' : ''; ?>>Tabelle</a>
-                    <a href="<?php echo htmlspecialchars(admin_url(master_admin_query_params($filters, array('view' => 'cards', 'page' => 1))), ENT_QUOTES, 'UTF-8'); ?>"<?php echo $filters['view'] === 'cards' ? ' class="is-active" aria-current="true"' : ''; ?>>Karten</a>
+                    <a href="<?php echo htmlspecialchars(admin_url(master_admin_query_params($filters, array('layout' => 'table', 'page' => 1))), ENT_QUOTES, 'UTF-8'); ?>"<?php echo $filters['view'] === 'table' ? ' class="is-active" aria-current="true"' : ''; ?>>Tabelle</a>
+                    <a href="<?php echo htmlspecialchars(admin_url(master_admin_query_params($filters, array('layout' => 'cards', 'page' => 1))), ENT_QUOTES, 'UTF-8'); ?>"<?php echo $filters['view'] === 'cards' ? ' class="is-active" aria-current="true"' : ''; ?>>Karten</a>
                 </div>
                 <div class="export-links">
                     <a href="<?php echo htmlspecialchars(admin_url(array_merge($export_params, array('export' => 'gruppen'))), ENT_QUOTES, 'UTF-8'); ?>">CSV Gruppen</a>
-                    <a href="<?php echo htmlspecialchars(admin_url(array_merge($export_params, array('export' => 'statistik'))), ENT_QUOTES, 'UTF-8'); ?>">CSV Statistik</a>
                 </div>
             </div>
 
@@ -643,11 +747,17 @@ function master_dashboard_page_url($filters_params, $page_key, $page_number) {
                 </div>
             <?php endif; ?>
         </section>
+        <?php endif; ?>
 
+        <?php if ($section === 'statistik'): ?>
         <section class="section-card" id="kennzahlen" aria-labelledby="kpi-heading">
             <div class="section-card-header">
                 <span class="section-icon" aria-hidden="true">📊</span>
                 <h2 id="kpi-heading">Kennzahlen</h2>
+            </div>
+            <div class="export-links">
+                <a href="<?php echo htmlspecialchars(admin_url(array_merge($export_params, array('export' => 'gruppen'))), ENT_QUOTES, 'UTF-8'); ?>">CSV Gruppen</a>
+                <a href="<?php echo htmlspecialchars(admin_url(array_merge($export_params, array('export' => 'statistik'))), ENT_QUOTES, 'UTF-8'); ?>">CSV Statistik</a>
             </div>
             <div class="status-grid master-kpis">
                 <div class="status-tile"><span class="status-tile-label">Gesamt Gruppen</span><span class="status-tile-value"><?php echo (int) $kpis['total_groups']; ?></span><span class="status-tile-hint"><?php echo (int) $kpis['active_groups']; ?> aktiv / <?php echo (int) $kpis['archived_groups']; ?> archiviert</span></div>
@@ -745,13 +855,32 @@ function master_dashboard_page_url($filters_params, $page_key, $page_number) {
             </details>
         </section>
 
-        <?php echo premium_master_section_html($pdo); ?>
+        <?php endif; ?>
 
+        <?php if ($section === 'premium'): ?>
+            <?php if ($premium_on): ?>
+                <?php echo premium_master_section_html($pdo, false); ?>
+            <?php else: ?>
+                <section class="section-card" id="premium-lizenzen" aria-labelledby="premium-off-heading">
+                    <div class="section-card-header">
+                        <span class="section-icon" aria-hidden="true">✦</span>
+                        <h2 id="premium-off-heading">Premium-Lizenzen</h2>
+                    </div>
+                    <p class="section-description">Premium ist ausgeschaltet. Anfragen, Lizenzen und Domain-Freigaben erscheinen hier, sobald die Funktion aktiv ist.</p>
+                </section>
+            <?php endif; ?>
+        <?php endif; ?>
+
+        <?php if ($section === 'system'): ?>
         <section class="section-card" id="systemstatus" aria-labelledby="status-heading">
             <div class="section-card-header">
                 <span class="section-icon" aria-hidden="true">🛠️</span>
-                <h2 id="status-heading">Systemstatus</h2>
+                <h2 id="status-heading">System</h2>
             </div>
+            <p class="section-description">PHP, E-Mail, Clean-URLs, Spalten und das Mail-Log. Die Premium-Diagnose und die Test-Mail stehen hier, sobald Premium eingeschaltet ist.</p>
+            <?php if ($premium_on): ?>
+                <?php echo premium_master_diagnostic_html(); ?>
+            <?php endif; ?>
             <div class="status-line">
                 <span class="system-pill<?php echo $php_status['ok'] ? '' : ' is-warn'; ?>">PHP <?php echo htmlspecialchars($php_status['version'], ENT_QUOTES, 'UTF-8'); ?></span>
                 <span class="system-pill<?php echo $mail_status['ok'] ? '' : ' is-warn'; ?>">E-Mail <?php echo $mail_status['ok'] ? 'konfiguriert' : 'nicht konfiguriert'; ?></span>
@@ -797,8 +926,11 @@ function master_dashboard_page_url($filters_params, $page_key, $page_number) {
                     </div>
                 <?php endforeach; ?>
             </details>
+            <p class="section-description">Jede Mail wird in <code>logs/mail.log</code> und im PHP-Fehlerlog festgehalten.</p>
         </section>
+        <?php endif; ?>
 
+        <?php if ($section === 'gruppen'): ?>
         <section class="section-card" id="archiv" aria-labelledby="archive-heading">
             <div class="section-card-header">
                 <span class="section-icon" aria-hidden="true">🗄️</span>
@@ -852,6 +984,9 @@ function master_dashboard_page_url($filters_params, $page_key, $page_number) {
                 </div>
             <?php endif; ?>
         </section>
+        <?php endif; ?>
+            </div>
+        </div>
     </div>
     <?php include __DIR__ . '/../../includes/templates/footer.php'; ?>
     <script>

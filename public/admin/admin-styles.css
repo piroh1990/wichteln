@@ -1,7 +1,96 @@
 /* Ergänzungen zum Seiten-CSS für das Master-Dashboard. */
 
 .container.master-dashboard {
-    max-width: 1180px;
+    max-width: 1240px;
+}
+
+.master-shell {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    gap: 1.25rem;
+    align-items: start;
+    position: relative;
+}
+
+.master-nav-toggle {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.master-nav-burger {
+    display: none;
+}
+
+.master-nav {
+    position: sticky;
+    top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 0.65rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.master-nav a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.62rem 0.75rem;
+    border-radius: 10px;
+    color: var(--text-primary);
+    text-decoration: none;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.master-nav a:hover {
+    background: rgba(42, 157, 143, 0.12);
+}
+
+.master-nav a[aria-current="page"] {
+    background: linear-gradient(135deg, var(--secondary-dark), var(--secondary-color));
+    color: #ffffff;
+}
+
+.master-nav-badge {
+    min-width: 1.4rem;
+    padding: 0.1rem 0.45rem;
+    border-radius: 999px;
+    background: var(--primary-color);
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.master-nav a[aria-current="page"] .master-nav-badge {
+    background: #ffffff;
+    color: var(--primary-color);
+}
+
+.master-main {
+    min-width: 0;
+}
+
+.master-overview-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin: 0 0 1rem;
+}
+
+.master-dashboard #kennzahlen .export-links {
+    margin: -0.4rem 0 1rem;
 }
 
 .master-dashboard .app-hero {
@@ -500,6 +589,41 @@ details.column-details summary {
 @media (max-width: 900px) {
     .master-filters {
         grid-template-columns: 1fr 1fr;
+    }
+
+    .master-shell {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .master-nav-burger {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        align-self: flex-start;
+        margin: 0;
+        padding: 0.5rem 0.95rem;
+        border-radius: 999px;
+        border: 1px solid var(--border-color);
+        background: #ffffff;
+        color: var(--text-primary);
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .master-nav-toggle:focus-visible + .master-nav-burger {
+        outline: 3px solid var(--secondary-color);
+        outline-offset: 2px;
+    }
+
+    .master-nav {
+        display: none;
+        position: static;
+    }
+
+    .master-nav-toggle:checked ~ .master-nav {
+        display: flex;
     }
 }
 

@@ -933,6 +933,10 @@ run_test('master admin can reject pending requests and revoke or delete licences
         });
         $restore_errors = true;
         $html = premium_master_section_html($pdo);
+        assert_true(premium_master_pending_count($pdo) >= 1, 'open requests are counted for the menu');
+        $html_licenses = premium_master_section_html($pdo, false);
+        assert_true(strpos($html_licenses, 'Ablehnen / Löschen') !== false, 'reject stays on the licence view');
+        assert_true(strpos($html_licenses, '<h3>Diagnose</h3>') === false, 'diagnostic leaves the licence view');
         assert_true(strpos($html, 'Ablehnen / Löschen') !== false, 'reject button is shown');
         assert_true(strpos($html, 'name="premium_action" value="reject"') !== false, 'reject is a POST action');
         assert_true(strpos($html, 'name="premium_action" value="activate"') !== false, 'approve stays next to reject');
