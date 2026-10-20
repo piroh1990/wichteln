@@ -13,12 +13,13 @@ function ideas2_test_render($lang, $enabled) {
     $previous = $had ? $GLOBALS['affiliate_of_enabled_override'] : null;
     $get = $_GET;
     $script = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : null;
+    $previous_lang = function_exists('i18n_current') ? i18n_current() : 'de';
     $GLOBALS['affiliate_of_enabled_override'] = $enabled;
     $_GET = array('lang' => $lang);
-    $_SERVER['SCRIPT_NAME'] = '/wichtel-ideen2.php';
+    $_SERVER['SCRIPT_NAME'] = '/wichtel-ideen.php';
     ob_start();
     try {
-        ideas2_render();
+        include __DIR__ . '/../public/wichtel-ideen.php';
         return ob_get_clean();
     } catch (Exception $e) {
         if (ob_get_level() > 0) {
@@ -31,6 +32,9 @@ function ideas2_test_render($lang, $enabled) {
             unset($_SERVER['SCRIPT_NAME']);
         } else {
             $_SERVER['SCRIPT_NAME'] = $script;
+        }
+        if (function_exists('i18n_activate')) {
+            i18n_activate($previous_lang);
         }
         if ($had) {
             $GLOBALS['affiliate_of_enabled_override'] = $previous;
@@ -52,7 +56,7 @@ function ideas2_href($target) {
     return htmlspecialchars(affiliate_of_link($target), ENT_QUOTES, 'UTF-8');
 }
 
-run_test('draft page stays out of navigation, sitemap and the live page', function () {
+run_test('ideas page is indexed and the old address only redirects', function () {
     $root = dirname(__DIR__);
     foreach (array(
         'includes/templates/navigation.php',
@@ -65,39 +69,64 @@ run_test('draft page stays out of navigation, sitemap and the live page', functi
         'content/en/wichtel-ideen.php',
         'includes/i18n.php',
         'includes/group_tools.php',
+        'includes/ideas_page.php',
+        'includes/ideas_kept.php',
     ) as $relative) {
         $src = file_get_contents($root . '/' . $relative);
-        assert_true(strpos($src, 'wichtel-ideen2') === false, $relative . ' does not mention the draft');
+        assert_true(strpos($src, 'wichtel-ideen2') === false, $relative . ' does not keep the draft address');
+        assert_true(strpos($src, 'ß') === false, $relative . ' uses Swiss spelling');
     }
+    assert_true(!is_file($root . '/content/de/wichtel-ideen2.php'), 'German draft content is gone');
+    assert_true(!is_file($root . '/content/fr/wichtel-ideen2.php'), 'French draft content is gone');
+    assert_true(!is_file($root . '/content/en/wichtel-ideen2.php'), 'English draft content is gone');
+
+    $sitemap = file_get_contents($root . '/public/sitemap.xml');
+    assert_true(strpos($sitemap, 'https://xn--wichtl-gua.ch/wichtel-ideen') !== false, 'sitemap keeps the live ideas URL');
+    assert_true(strpos($sitemap, 'wichtel-ideen2') === false, 'sitemap has no draft URL');
 
     $htaccess = file_get_contents($root . '/public/.htaccess');
-    assert_equals(2, substr_count($htaccess, 'wichtel-ideen2'), 'the draft appears only in its own rewrite');
-    assert_true(strpos($htaccess, 'RewriteRule ^wichtel-ideen2/?$ wichtel-ideen2.php [L,QSA]') !== false, 'clean URL maps to the php file');
+    assert_true(strpos($htaccess, 'RewriteRule ^(en|fr)/wichtel-ideen2/?$ /$1/wichtel-ideen [R=301,L,QSA]') !== false, 'language draft redirects');
+    assert_true(strpos($htaccess, 'RewriteRule ^wichtel-ideen2/?$ /wichtel-ideen [R=301,L,QSA]') !== false, 'German draft redirects');
+    assert_true(strpos($htaccess, 'wichtel-ideen2.php') === false, 'draft is not a page rewrite');
     assert_true(strpos($htaccess, 'datenschutz|wichtel-ideen|firmenwichteln-tipps') !== false, 'the live slug stays in the existing rules');
 
-    $page = file_get_contents($root . '/public/wichtel-ideen2.php');
-    assert_true(strpos($page, "header('X-Robots-Tag: noindex, nofollow')") !== false, 'draft sends a noindex header');
-    assert_true(strpos($page, 'ß') === false, 'draft shell uses Swiss spelling');
-    assert_true(strpos(file_get_contents($root . '/content/de/wichtel-ideen2.php'), 'ß') === false, 'German draft uses Swiss spelling');
+    $redirect = file_get_contents($root . '/public/wichtel-ideen2.php');
+    assert_true(strpos($redirect, "header('Location: ' . ideas_draft_redirect_target(\$_GET), true, 301);") !== false, 'direct php file redirects');
+    assert_true(strpos($redirect, 'noindex') === false, 'redirect does not send noindex');
+    assert_equals('/wichtel-ideen', ideas_draft_redirect_target(array()), 'German target');
+    assert_equals('/fr/wichtel-ideen', ideas_draft_redirect_target(array('lang' => 'fr')), 'French target');
+    assert_equals('/en/wichtel-ideen', ideas_draft_redirect_target(array('lang' => 'en')), 'English target');
+    assert_equals('/wichtel-ideen?setlang=de', ideas_draft_redirect_target(array('lang' => 'de', 'setlang' => 'de')), 'unknown lang drops and query stays');
+
+    $page = file_get_contents($root . '/public/wichtel-ideen.php');
+    assert_true(strpos($page, 'noindex') === false, 'live page is indexable');
+    assert_true(strpos($page, "public_page_open('wichtel-ideen', 'meta.ideas.title', 'meta.ideas.description', 'article')") !== false, 'live page keeps title, description and canonical slug');
 });
 
 run_test('affiliate links stay hidden while the feature is off', function () {
     $html = ideas2_test_render('de', false);
-    assert_true(strpos($html, 'name="robots" content="noindex, nofollow"') !== false, 'meta robots is noindex');
-    assert_true(strpos($html, 'rel="canonical"') === false, 'draft has no canonical');
-    assert_true(strpos($html, '<link rel="alternate"') === false, 'draft does not advertise language versions');
+    assert_true(strpos($html, 'noindex') === false, 'live page has no noindex');
+    assert_true(strpos($html, 'rel="canonical" href="https://xn--wichtl-gua.ch/wichtel-ideen"') !== false, 'canonical points at the ideas page');
+    assert_true(strpos($html, 'rel="alternate" hreflang="fr" href="https://xn--wichtl-gua.ch/fr/wichtel-ideen"') !== false, 'French alternate');
+    assert_true(strpos($html, 'rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/wichtel-ideen"') !== false, 'English alternate');
+    assert_true(strpos($html, '<title>Wichtelgeschenke nach Budget | Wichtlä.ch</title>') !== false, 'title matches the page');
+    assert_true(strpos($html, 'content="Kleine Wichtelgeschenke zum Bestellen, grob nach Budget sortiert, mit Tipps für die Auswahl."') !== false, 'description matches the page');
+    assert_true(strpos($html, '"url":"https://xn--wichtl-gua.ch/wichtel-ideen"') !== false, 'structured data uses the live URL');
+    assert_true(strpos($html, 'wichtel-ideen2') === false, 'rendered page does not mention the draft');
     assert_true(strpos($html, 'awin1.com') === false, 'no Awin URL');
     assert_true(strpos($html, '<aside class="of-draft-banner"') === false, 'no banner');
     assert_true(strpos($html, '<p class="affiliate-note of-draft-note">') === false, 'no advertising note');
     assert_true(strpos($html, 'Bei Orell Füssli ansehen') === false, 'no product link text');
+    assert_true(strpos($html, 'Geschenkideen bei Orell Füssli') === false, 'no shop button');
     assert_true(strpos($html, 'Kugelschreiber') !== false, 'the ideas themselves stay');
     assert_true(strpos($html, 'Bis CHF 10') !== false, 'budget bands stay without the shop');
     assert_true(strpos($html, 'Geschenkkarte') === false, 'no gift-card hint while the feature is off');
+    assert_true(strpos($html, 'Tipps für das perfekte Wichtelgeschenk') !== false, 'the old tips stay');
+    assert_true(strpos($html, 'Wichtelgeschenke für verschiedene Gruppen') !== false, 'the old group notes stay');
     assert_true(strpos($html, 'href="/wichtel-ideen"') !== false, 'menu still points at the live page');
-    assert_true(strpos($html, 'href="/wichtel-ideen2"') === false, 'nothing links the draft as a normal page');
-    assert_true(strpos($html, 'href="/wichtel-ideen2?setlang=de"') !== false, 'language switch stays on the draft');
-    assert_true(strpos($html, 'href="/fr/wichtel-ideen2?setlang=fr"') !== false, 'French switch stays on the draft');
-    assert_true(strpos($html, 'href="/en/wichtel-ideen2?setlang=en"') !== false, 'English switch stays on the draft');
+    assert_true(strpos($html, 'href="/wichtel-ideen?setlang=de"') !== false, 'language switch stays on the ideas page');
+    assert_true(strpos($html, 'href="/fr/wichtel-ideen?setlang=fr"') !== false, 'French switch stays on the ideas page');
+    assert_true(strpos($html, 'href="/en/wichtel-ideen?setlang=en"') !== false, 'English switch stays on the ideas page');
 });
 
 function ideas2_expected() {
@@ -214,17 +243,30 @@ run_test('every card links to an Orell Fuessli search and drops anything the sho
     assert_true($article_end !== false && $gift !== false && $gift > $article_end && $note > $gift, 'gift card and note sit outside the article');
 
     $article = ideas2_article($html);
-    assert_true(preg_match('/\d+\.\d{2}/', $article) !== 1, 'no exact prices in the ideas');
-    assert_true(strpos($article, 'awin1.com') !== false, 'shop links live with the ideas');
+    $kept_at = strpos($article, 'class="ideas-kept"');
+    $cta = strpos($article, 'cta-section');
+    assert_true($kept_at !== false && $cta !== false && $kept_at < $cta, 'notes sit below the ideas and above the call to action');
+    $catalog = substr($article, 0, $kept_at);
+    $kept = substr($article, $kept_at, $cta - $kept_at);
+    assert_true(preg_match('/\d+\.\d{2}/', $catalog) !== 1, 'no exact prices in the ideas');
+    assert_true(strpos($catalog, 'awin1.com') !== false, 'shop links live with the ideas');
+    assert_true(strpos($kept, 'awin1.com') === false, 'kept notes have no shop link');
+    assert_true(strpos($kept, '<a ') === false, 'kept notes stay plain text');
     foreach (array(
-        'Schokolade', 'Gewürz', 'Honig', 'Kaffee', 'Kuscheldecke', 'DIY', 'Selbstgemacht',
-        'Erlebnis', 'Insider', 'personalisiert', 'Sukkulente', 'Tee-Set', 'Mini-Pflanze',
-        'T-Shirt', 'Einhorn', 'Gutschein',
+        'Honig', 'Kuscheldecke', 'Sukkulente', 'Mini-Pflanze', 'T-Shirt', 'Einhorn',
     ) as $banned) {
-        assert_true(strpos($article, $banned) === false, 'removed idea stays off the page: ' . $banned);
+        assert_true(strpos($article, $banned) === false, 'removed product stays off the page: ' . $banned);
     }
+    foreach (array(
+        'Schokolade', 'Gewürz', 'Kaffee', 'DIY', 'Selbstgemacht', 'Erlebnis', 'Insider', 'Tee-Set', 'Gutschein',
+    ) as $kept_word) {
+        assert_true(strpos($catalog, $kept_word) === false, $kept_word . ' is not a shop card');
+        assert_true(strpos($kept, $kept_word) !== false, $kept_word . ' stays in the old notes');
+    }
+    assert_true(strpos($kept, 'Tipps für das perfekte Wichtelgeschenk') !== false, 'tips heading');
+    assert_true(strpos($kept, 'Wichtelgeschenke für verschiedene Gruppen') !== false, 'group notes heading');
     foreach (array('Büro', 'Spielspass', 'Gemütlich', 'Kreativ') as $category) {
-        assert_true(strpos($article, $category) !== false, 'category ' . $category);
+        assert_true(strpos($catalog, $category) !== false, 'category ' . $category);
     }
 });
 
@@ -243,6 +285,11 @@ run_test('french and english drafts translate the affiliate copy', function () {
     $de = ideas2_test_render('de', true);
     assert_equals(ideas2_awin_hrefs($de), ideas2_awin_hrefs($fr), 'French page uses the same shop links');
     assert_true(strpos($fr, 'href="/fr/wichtel-ideen"') !== false, 'French menu still points at the live page');
+    assert_true(strpos($fr, 'rel="canonical" href="https://xn--wichtl-gua.ch/fr/wichtel-ideen"') !== false, 'French canonical');
+    assert_true(strpos($fr, 'Conseils pour le cadeau Secret Santa parfait') !== false, 'French tips');
+    assert_true(strpos($fr, 'Des cadeaux Secret Santa selon le groupe') !== false, 'French group notes');
+    assert_true(strpos($fr, 'wichtel-ideen2') === false, 'French page does not mention the draft');
+    assert_true(strpos($fr, 'noindex') === false, 'French page is indexable');
 
     $en = ideas2_test_render('en', true);
     assert_true(strpos($en, 'You will find suitable gifts at Orell Füssli.') !== false, 'English banner');
@@ -252,6 +299,10 @@ run_test('french and english drafts translate the affiliate copy', function () {
     assert_true(strpos($en, ideas2_href(affiliate_of_search_target('Ausmalbuch'))) !== false, 'English page keeps the German shop search');
     assert_true(strpos($en, 'Scented candle') !== false, 'English candle');
     assert_true(strpos($en, 'If nothing fits, a gift card is the easy fallback.') !== false, 'English gift card');
-    assert_true(strpos($en, 'name="robots" content="noindex, nofollow"') !== false, 'English draft stays noindex');
+    assert_true(strpos($en, 'noindex') === false, 'English page is indexable');
+    assert_true(strpos($en, 'rel="canonical" href="https://xn--wichtl-gua.ch/en/wichtel-ideen"') !== false, 'English canonical');
+    assert_true(strpos($en, 'Tips for the perfect Secret Santa gift') !== false, 'English tips');
+    assert_true(strpos($en, 'Secret Santa gifts for different groups') !== false, 'English group notes');
+    assert_true(strpos($en, '<title>Secret Santa gifts by budget | Wichtlä.ch</title>') !== false, 'English title');
     assert_equals(ideas2_awin_hrefs($de), ideas2_awin_hrefs($en), 'English page uses the same shop links');
 });
