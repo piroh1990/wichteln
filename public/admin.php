@@ -583,6 +583,13 @@ token_page_open(t('meta.admin.title', array('{group}' => $group['name'])));
 
         <?php
         echo premium_admin_section_html($pdo, $group, $_SESSION);
+        echo premium_admin_offer_html(
+            $pdo,
+            $group,
+            $_SESSION,
+            $premium_from_create || $premium_claim_retry,
+            $premium_from_create
+        );
         ?>
         <section class="section-card" id="checkliste" aria-labelledby="checklist-heading">
             <div class="section-card-header">
@@ -1100,16 +1107,6 @@ token_page_open(t('meta.admin.title', array('{group}' => $group['name'])));
                 </form>
             </div>
         </section>
-
-        <?php
-        echo premium_admin_offer_html(
-            $pdo,
-            $group,
-            $_SESSION,
-            $premium_from_create || $premium_claim_retry,
-            $premium_from_create
-        );
-        ?>
 
         <?php echo support_card_html('admin'); ?>
     </div>
