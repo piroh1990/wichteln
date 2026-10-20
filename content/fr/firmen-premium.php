@@ -12,7 +12,7 @@
             <section class="content-section">
                 <h2>Pourquoi je l’ai ajouté</h2>
                 <p>
-                    Le groupe habituel reste gratuit. Premium est prévu pour les associations et les entreprises qui mènent plusieurs groupes dans une saison : des services, des sites, un moment pour les apprentis et un pour l’équipe.
+                    Le groupe habituel reste gratuit. Une entreprise peut aussi organiser un Secret Santa tout à fait normal, gratuitement. Les fonctions supplémentaires sont facultatives. Premium est prévu pour les associations et les entreprises qui mènent plusieurs groupes dans une saison ou qui souhaitent plus de fonctions : des services, des sites, un moment pour les apprentis et un pour l’équipe.
                 </p>
                 <p>
                     Une licence vaut pour la saison en cours et couvre autant de groupes que l’offre le permet. Pas de compte. Tu relies la licence au groupe que tu es en train de créer.
