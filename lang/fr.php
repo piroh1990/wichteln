@@ -18,7 +18,7 @@ return array(
     'nav.menu_open' => 'Ouvrir le menu',
     'nav.menu_close' => 'Fermer le menu',
     'footer.tagline' => 'La solution simple et gratuite pour ton Secret Santa en Suisse.',
-    'footer.tagline.with_premium' => 'La solution simple pour ton Secret Santa en Suisse. Le Secret Santa habituel reste gratuit et sans publicité.',
+    'footer.tagline.with_premium' => 'La solution simple pour ton Secret Santa en Suisse.',
     'footer.info' => 'Infos Secret Santa',
     'footer.legal' => 'Légal',
     'footer.start' => 'Lancer un Secret Santa',

@@ -204,6 +204,9 @@ run_test('create form lists premium, prices and both ways to activate', function
         assert_true(stripos($html, 'Saison') === false && stripos($html, 'season') === false && stripos($html, 'saison') === false, $lang . ' box does not sell a season');
         assert_true(strpos($html, 'Firma Plus') === false && strpos($html, 'Company Plus') === false && strpos($html, 'Entreprise Plus') === false, $lang . ' box drops the old tier names');
         assert_true(strpos($html, 'CHF 49') === false && strpos($html, 'CHF 99') === false, $lang . ' box drops the old prices');
+        assert_true(strpos($html, 'class="premium-price-list"') !== false, $lang . ' prices are a list');
+        assert_true(substr_count($html, '<li>') >= 11, $lang . ' price list keeps the packages');
+        assert_true(strpos($html, 'CHF 9,') === false && strpos($html, '1 Gruppe') === false && strpos($html, '1 group') === false && strpos($html, '1 groupe') === false, $lang . ' price list drops the group count');
     }
     $GLOBALS['i18n_lang'] = $previous;
 
@@ -718,6 +721,7 @@ run_test('every tier includes the same premium functions', function () {
     assert_true(strpos($cards, 'Jede Durchführung zählt') !== false, 'cards explain that each run counts');
     assert_true(strpos($cards, '1× Premium-Wichteln') !== false, 'cards name the one-group package');
     assert_true(strpos($cards, 'CHF 9') !== false && strpos($cards, 'CHF 29') !== false, 'cards use the new prices');
+    assert_true(strpos($cards, '1 Gruppe') === false && strpos($cards, '3 Gruppen') === false, 'cards drop the repeated group count');
     assert_true(strpos($cards, 'Verein') === false && strpos($cards, 'Firma Plus') === false, 'cards drop the old tier names');
     assert_true(stripos($cards, 'Saison') === false, 'cards do not mention a season');
     assert_true(strpos($cards, 'Eigener Begrüssungstext') === false, 'greeting is not a plus-only line');
@@ -769,6 +773,14 @@ run_test('company page and free claims follow the feature flag', function () {
 
         $GLOBALS['premium_enabled_override'] = true;
         foreach (array(
+            'de' => 'Die einfache Lösung für dein Wichteln in der Schweiz.',
+            'fr' => 'La solution simple pour ton Secret Santa en Suisse.',
+            'en' => 'The simple way to run your Secret Santa in Switzerland.',
+        ) as $lang => $tagline) {
+            $GLOBALS['i18n_lang'] = $lang;
+            assert_equals($tagline, t('footer.tagline'), $lang . ' footer keeps only the first sentence');
+        }
+        foreach (array(
             'de' => 'Extra-Funktionen für Firmen und Vereine',
             'fr' => 'fonctions en plus pour entreprises et associations',
             'en' => 'Extra features for companies and clubs',
@@ -816,7 +828,9 @@ run_test('company page and free claims follow the feature flag', function () {
             $GLOBALS['i18n_lang'] = $lang;
             $html = premium_render_content($spec[0]);
             assert_true(strpos($html, $spec[1]) !== false, $lang . ' company page has the section');
+            assert_true(strpos($html, 'class="premium-price-list"') !== false, $lang . ' company page lists the prices');
             assert_true(strpos($html, 'CHF 9') !== false && strpos($html, 'CHF 19') !== false && strpos($html, 'CHF 29') !== false, $lang . ' company page lists the prices');
+            assert_true(strpos($html, 'CHF 9,') === false, $lang . ' company page does not inline the prices');
             assert_true(strpos($html, 'CHF 49') === false && strpos($html, 'CHF 99') === false, $lang . ' company page drops the old prices');
             assert_true(stripos($html, 'Saison') === false && stripos($html, 'season') === false && stripos($html, 'saison') === false, $lang . ' company page does not sell a season');
             assert_true(strpos($html, 'firmen-premium') !== false && strpos($html, '#kaufen') !== false, $lang . ' company page links to the purchase');
