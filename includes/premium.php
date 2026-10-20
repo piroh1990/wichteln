@@ -2363,6 +2363,18 @@ function premium_hero_extras_html($license) {
     return $html;
 }
 
+function premium_price_list_html($definitions) {
+    $html = '<ul class="premium-price-list">';
+    foreach ($definitions as $key => $def) {
+        if (!is_array($def) || !isset($def['price'])) {
+            continue;
+        }
+        $html .= '<li>' . h(premium_tier_label($key) . ': ' . premium_price_label($def['price'])) . '</li>';
+    }
+    $html .= '</ul>';
+    return $html;
+}
+
 function premium_create_form_html($enabled = null, $definitions = null, $checked = false, array $values = array()) {
     if (!premium_feature_enabled($enabled)) {
         return '';
@@ -2375,13 +2387,6 @@ function premium_create_form_html($enabled = null, $definitions = null, $checked
     foreach (premium_feature_keys() as $key) {
         $items .= '<li>' . h(t($key)) . '</li>';
     }
-    $prices = array();
-    foreach ($definitions as $key => $def) {
-        if (!is_array($def) || !isset($def['price'])) {
-            continue;
-        }
-        $prices[] = premium_tier_label($key) . ' ' . premium_price_label($def['price']) . ', ' . premium_limit_label($def);
-    }
     $html = '<div class="form-group premium-opt-in">';
     $html .= '<label class="premium-opt-in-row" for="firmen-premium-toggle">';
     $html .= '<input class="premium-opt-in-check" type="checkbox" id="firmen-premium-toggle" name="firmen_premium" value="1"' . ($checked ? ' checked' : '') . ' aria-controls="firmen-premium-box">';
@@ -2391,7 +2396,7 @@ function premium_create_form_html($enabled = null, $definitions = null, $checked
     $html .= '<p class="premium-opt-in-lead">' . h(t('premium.create.hint')) . '</p>';
     $html .= '<p class="premium-opt-in-free">' . h(t('premium.create.free')) . '</p>';
     $html .= '<ul class="premium-opt-in-features">' . $items . '</ul>';
-    $html .= '<p class="premium-opt-in-prices">' . h(implode(' · ', $prices)) . '</p>';
+    $html .= premium_price_list_html($definitions);
     $html .= '<p class="premium-opt-in-same">' . h(t('premium.tier.same')) . '</p>';
     $html .= '<p>' . h(t('premium.create.activate')) . '</p>';
     $html .= '<div class="premium-opt-in-fields">';
@@ -2768,7 +2773,6 @@ function premium_pricing_cards_html($definitions = null) {
         $html .= '<article class="premium-tier-card">';
         $html .= '<h3>' . h(premium_tier_label($key)) . '</h3>';
         $html .= '<p class="premium-tier-price">' . h(premium_price_label($def['price'])) . '</p>';
-        $html .= '<p>' . h(premium_limit_label($def)) . '</p>';
         $html .= '</article>';
     }
     $html .= '</div>';
@@ -2869,14 +2873,8 @@ function premium_company_extras_html() {
         $html .= '<h3>' . h(t($pair[0])) . '</h3>';
         $html .= '<p>' . h(t($pair[1])) . '</p>';
     }
-    $prices = array();
-    foreach (premium_sale_definitions() as $key => $def) {
-        if (!is_array($def) || !isset($def['price'])) {
-            continue;
-        }
-        $prices[] = premium_tier_label($key) . ' ' . premium_price_label($def['price']) . ', ' . premium_limit_label($def);
-    }
-    $html .= '<p>' . h(t('premium.tier.same')) . ' ' . h(implode(' · ', $prices)) . '.</p>';
+    $html .= '<p>' . h(t('premium.tier.same')) . '</p>';
+    $html .= premium_price_list_html(premium_sale_definitions());
     $html .= '<p>' . h(t('premium.company.pay')) . '</p>';
     $html .= '<p><a class="cta-button" href="' . h(i18n_href('firmen-premium') . '#kaufen') . '">' . h(t('premium.company.cta')) . '</a></p>';
     $html .= '</section>';

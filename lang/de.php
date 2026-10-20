@@ -20,7 +20,7 @@ return array(
     'nav.menu_close' => 'Menü schliessen',
 
     'footer.tagline' => 'Die einfache und kostenlose Lösung für dein Wichteln in der Schweiz.',
-    'footer.tagline.with_premium' => 'Die einfache Lösung für dein Wichteln in der Schweiz. Das normale Wichteln bleibt gratis und werbefrei.',
+    'footer.tagline.with_premium' => 'Die einfache Lösung für dein Wichteln in der Schweiz.',
     'footer.info' => 'Wichtel-Infos',
     'footer.legal' => 'Rechtliches',
     'footer.start' => 'Wichteln starten',

@@ -4231,9 +4231,36 @@ a.button.support-button:focus-visible,
     padding: 0;
 }
 
-.premium-opt-in-prices {
+ul.premium-price-list {
+    list-style: disc;
+    margin: 0.15rem 0 0.5rem;
+    padding: 0 0 0 1.15rem;
+}
+
+ul.premium-price-list li {
+    padding: 0.08rem 0;
+    margin: 0;
+    line-height: 1.35;
     font-weight: 600;
-    margin: 0.2rem 0 0.45rem;
+    font-size: 0.92rem;
+}
+
+ul.premium-price-list li::before {
+    content: none;
+}
+
+.content-section ul.premium-price-list,
+.premium-opt-in-box ul.premium-price-list {
+    margin-bottom: 0.5rem;
+    padding-left: 1.15rem;
+}
+
+.content-section ul.premium-price-list li,
+.premium-opt-in-box ul.premium-price-list li {
+    margin-bottom: 0;
+    padding: 0.08rem 0;
+    line-height: 1.35;
+    font-size: 0.92rem;
 }
 
 .premium-opt-in-fields label {

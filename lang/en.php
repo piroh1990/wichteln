@@ -18,7 +18,7 @@ return array(
     'nav.menu_open' => 'Open menu',
     'nav.menu_close' => 'Close menu',
     'footer.tagline' => 'The simple, free way to run your Secret Santa in Switzerland.',
-    'footer.tagline.with_premium' => 'The simple way to run your Secret Santa in Switzerland. A normal Secret Santa stays free and ad-free.',
+    'footer.tagline.with_premium' => 'The simple way to run your Secret Santa in Switzerland.',
     'footer.info' => 'Secret Santa info',
     'footer.legal' => 'Legal',
     'footer.start' => 'Start a Secret Santa',
