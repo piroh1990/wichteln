@@ -169,7 +169,69 @@ run_test('support page is routed like the other public pages', function () {
         $about = support_read('content/' . $lang . '/ueber-uns.php');
         assert_true(stripos($about, 'Hobby') !== false || stripos($about, 'passe-temps') !== false || stripos($about, 'hobby') !== false, $lang . ' about page names the hobby');
         assert_true(strpos($about, $pieces[3]) === false, $lang . ' about page does not repeat the support story');
+        assert_true(strpos($about, 'support_about_html()') !== false, $lang . ' about page keeps the support box');
+        assert_true(strpos($about, 'email-address') !== false, $lang . ' about page keeps the email');
+        assert_true(strpos($about, 'cta-button-white') !== false, $lang . ' about page keeps the call to action');
     }
     $de_page = support_read('content/de/unterstuetzen.php');
     assert_true(strpos($de_page, ' wir ') === false && strpos($de_page, 'Wir ') === false, 'support page speaks as Patrick, not as we');
+
+    i18n_activate('de');
+    $about_de = support_read('content/de/ueber-uns.php');
+    assert_true(strpos($about_de, 'ß') === false, 'about page uses ss');
+    assert_true(strpos($about_de, 'Worum es mir geht') !== false, 'about page heading is first person');
+    assert_true(strpos($about_de, 'Ich bin Patrick Raths, und wichtlä.ch ist mein Hobby.') !== false, 'about page speaks as Patrick');
+    assert_true(strpos($about_de, 'Ich freue mich über jede Nachricht.') !== false, 'about contact is first person');
+    assert_true(strpos($about_de, 'Er hat') === false && strpos($about_de, 'unser ') === false && strpos($about_de, 'Wir ') === false, 'about page drops the old third person');
+    assert_true(strpos($about_de, 'Nebenjob') === false && strpos($about_de, 'Werdegang') === false && stripos($about_de, 'Öffnungszeit') === false, 'about page skips biography and hours');
+    assert_equals('Über uns - Warum ich wichtlä.ch gebaut habe', t('meta.about.title'), 'about title is first person');
+    assert_true(strpos(t('meta.about.description'), 'Ich habe wichtlä.ch gebaut') === 0, 'about description is first person');
+});
+
+function support_render_about($lang, $premium) {
+    require_once dirname(__DIR__) . '/includes/premium.php';
+    $previous_lang = i18n_current();
+    $had_override = array_key_exists('premium_enabled_override', $GLOBALS);
+    $previous_override = $had_override ? $GLOBALS['premium_enabled_override'] : null;
+    i18n_activate($lang);
+    $GLOBALS['premium_enabled_override'] = $premium;
+    try {
+        ob_start();
+        include dirname(__DIR__) . '/content/' . $lang . '/ueber-uns.php';
+        return ob_get_clean();
+    } finally {
+        i18n_activate($previous_lang);
+        if ($had_override) {
+            $GLOBALS['premium_enabled_override'] = $previous_override;
+        } else {
+            unset($GLOBALS['premium_enabled_override']);
+        }
+    }
+}
+
+run_test('about page stays first person and only names extra features when premium is on', function () {
+    $off = array(
+        'de' => array('Ich möchte, dass Wichteln einfach ist.', 'Ich bin Patrick Raths', 'Darauf habe ich beim Bauen geachtet:', 'Schreib mir einfach an:', 'Für Firmen und Vereine gibt es Zusatzfunktionen.'),
+        'fr' => array('Je veux que le Secret Santa soit simple.', 'Je suis Patrick Raths', 'Voici ce à quoi j’ai fait attention', 'Écris-moi simplement à :', 'Pour les entreprises et les associations, il y a des fonctions en plus.'),
+        'en' => array('I want Secret Santa to be simple.', 'I am Patrick Raths', 'Here is what I paid attention to while building it:', 'Just write to me at:', 'Companies and clubs get extra features.'),
+    );
+    foreach ($off as $lang => $pieces) {
+        $html = support_render_about($lang, false);
+        assert_true(strpos($html, $pieces[0]) !== false, $lang . ' mission is first person');
+        assert_true(strpos($html, $pieces[1]) !== false, $lang . ' names Patrick in first person');
+        assert_true(strpos($html, $pieces[2]) !== false, $lang . ' reasons are first person');
+        assert_true(strpos($html, $pieces[3]) !== false, $lang . ' contact is first person');
+        assert_true(strpos($html, $pieces[4]) === false, $lang . ' hides extra features while premium is off');
+        assert_true(strpos($html, 'raths-it.ch') !== false, $lang . ' keeps the company link');
+        assert_true(strpos($html, 'mailto:') !== false, $lang . ' keeps the email link');
+    }
+
+    $on = support_render_about('de', true);
+    assert_true(strpos($on, 'Für Firmen und Vereine gibt es <a href="/firmen-premium">Zusatzfunktionen</a>.') !== false, 'premium about sentence links the extra features');
+    assert_true(strpos($on, 'Für Firmen und Vereine gibt es optionale <a href="/firmen-premium">Zusatzfunktionen</a>.') !== false, 'premium list links the optional features');
+    $fr = support_render_about('fr', true);
+    assert_true(strpos($fr, 'il y a des <a href="/fr/firmen-premium">fonctions en plus</a>.') !== false, 'french premium sentence keeps the link');
+    $en = support_render_about('en', true);
+    assert_true(strpos($en, 'Companies and clubs get <a href="/en/firmen-premium">extra features</a>.') !== false, 'english premium sentence keeps the link');
+    assert_true(strpos($en, 'Companies and clubs get optional <a href="/en/firmen-premium">extra features</a>.') !== false, 'english list keeps the link');
 });

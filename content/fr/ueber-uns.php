@@ -5,47 +5,42 @@
 
         <header class="page-header">
             <h1 class="page-title">À propos</h1>
-            <p class="page-subtitle">Qui est derrière Wichtlä.ch</p>
+            <p class="page-subtitle">Pourquoi j’ai construit wichtlä.ch</p>
         </header>
 
         <article>
             <section class="content-section">
-                <h2>Notre mission</h2>
+                <h2>Ce qui m’importe</h2>
                 <p>
-                    <strong>Wichtlä.ch</strong> a un objectif simple : rendre l’organisation d’un Secret Santa aussi facile que possible. Pas de bouts de papier en désordre, pas d’applications compliquées, pas de frais cachés. Tu crées un groupe, tu invites les participants, et les noms sont tirés automatiquement, de façon équitable. Le nom « Wichtlä » vient de « Wichtel », le mot allemand et suisse allemand pour le Secret Santa.
+                    Je veux que le Secret Santa soit simple. Pas de bouts de papier en désordre, pas d’application et pas de frais cachés : tu crées un groupe, tu invites tout le monde, et les noms sont tirés de façon équitable.
                 </p>
                 <p>
-                    En famille, entre amis ou pour un Secret Santa en entreprise, l’outil est fait pour toutes les personnes qui veulent enrichir Noël avec cette tradition.
-                    <?php if (function_exists('premium_feature_enabled') && premium_feature_enabled()): ?>
-                    <?php echo h(t('premium.extra.about')); ?> <?php echo premium_extra_link_html(); ?>.
-                    <?php else: ?>
-                    Toute la plateforme est <strong>gratuite</strong> et <strong>ne demande aucun compte</strong>.
-                    <?php endif; ?>
+                    Ça convient pour la famille, le cercle d’amis ou l’équipe au travail. Le Secret Santa habituel est gratuit, sans publicité et sans compte.<?php if (function_exists('premium_feature_enabled') && premium_feature_enabled()): ?> <?php echo str_replace('fonctions en plus', '<a href="' . h(i18n_href('firmen-premium')) . '">fonctions en plus</a>', t('premium.extra.about')); ?><?php endif; ?>
                 </p>
             </section>
 
             <section class="content-section">
-                <h2>Qui est derrière ?</h2>
+                <h2>Qui est derrière</h2>
                 <p>
-                    Wichtlä.ch est le passe-temps de Patrick Raths. Il a construit le site lui-même et l’exploite via <a href="https://raths-it.ch"><strong>Raths IT</strong></a> depuis la <strong>Suisse</strong>. L’idée est née d’un problème tout simple : chaque année, avant Noël, le même rituel. Écrire des noms, les mettre dans un chapeau, espérer que personne ne tire son propre nom, puis faire parvenir les papiers à tout le monde. Dès que les gens ne sont pas au même endroit, ça se complique vite.
+                    Je suis Patrick Raths, et wichtlä.ch est mon passe-temps. J’ai construit le site moi-même et je le fais tourner avec ma société <a href="https://raths-it.ch"><strong>Raths IT</strong></a> en <strong>Suisse</strong>. L’idée est venue d’un problème que beaucoup de gens connaissent : chaque année, on écrit des noms sur des papiers, on les jette dans un chapeau et on espère que personne ne tire son propre nom. Quand tout le monde n’est pas au même endroit, ça se complique vite.
                 </p>
                 <p>
-                    Wichtlä.ch est né de ce besoin : un outil en ligne léger et rapide, qui règle exactement ce problème. Sans fioritures, sans collecte de données inutile, sans obligation de créer un compte. Juste un Secret Santa, comme il devrait l’être.
+                    C’est pour ça que j’ai construit wichtlä.ch. C’est un outil léger, sans fioritures et sans compte, et je ne collecte que les données dont le Secret Santa a besoin.
                 </p>
             </section>
 
             <section class="content-section">
                 <h2>Pourquoi Wichtlä.ch ?</h2>
-                <p>Il y a beaucoup de raisons de choisir Wichtlä.ch pour ton Secret Santa :</p>
+                <p>Voici ce à quoi j’ai fait attention en construisant le site :</p>
 
                 <ul>
-                    <li><?php if (function_exists('premium_feature_enabled') && premium_feature_enabled()): ?><strong><?php echo h(t('premium.extra.bullet')); ?></strong> <?php echo premium_extra_link_html(); ?>.<?php else: ?><strong>100 % gratuit :</strong> pas de frais cachés, pas de fonctions premium derrière un paiement<?php endif; ?></li>
-                    <li><strong>Aucun compte :</strong> tu commences tout de suite, sans donner de données personnelles</li>
-                    <li><strong>Protection des données selon la LPD suisse :</strong> tes données sont traitées de façon confidentielle et protégées selon la loi fédérale suisse sur la protection des données</li>
-                    <li><strong>Utilisation simple :</strong> en moins de 2 minutes, ton groupe Secret Santa est créé et les invitations sont envoyées</li>
-                    <li><strong>Tirage équitable :</strong> notre algorithme attribue les noms au hasard et de façon équitable, avec la possibilité de définir des exclusions</li>
-                    <li><strong>Notification automatique par e-mail :</strong> chaque participant reçoit son attribution directement par e-mail</li>
-                    <li><strong>Sur tous les appareils :</strong> ça fonctionne sur smartphone, tablette et ordinateur, sans télécharger d’application</li>
+                    <li><?php if (function_exists('premium_feature_enabled') && premium_feature_enabled()): ?><strong>Gratuit :</strong> le Secret Santa habituel reste sans publicité et sans compte. <?php echo str_replace('fonctions en plus', '<a href="' . h(i18n_href('firmen-premium')) . '">fonctions en plus</a>', t('premium.extra.bullet')); ?><?php else: ?><strong>Gratuit :</strong> le Secret Santa habituel reste sans publicité et sans compte.<?php endif; ?></li>
+                    <li><strong>Aucun compte :</strong> tu peux commencer tout de suite.</li>
+                    <li><strong>Protection des données selon la LPD suisse :</strong> je traite tes données de façon confidentielle.</li>
+                    <li><strong>Simple :</strong> en moins de deux minutes, ton groupe est créé et les invitations sont envoyées.</li>
+                    <li><strong>Tirage équitable :</strong> l’attribution est aléatoire, et tu peux définir des exclusions.</li>
+                    <li><strong>Résultat par e-mail :</strong> tout le monde reçoit son résultat directement par e-mail.</li>
+                    <li><strong>Pour tous les appareils :</strong> ça fonctionne sur smartphone, tablette et ordinateur, sans application.</li>
                 </ul>
             </section>
 
@@ -57,7 +52,7 @@
             <section class="content-section">
                 <h2>Contact</h2>
                 <p>
-                    Tu as une question, une idée ou un retour ? Nous serons contents de te lire. Écris-nous simplement à :
+                    Tu as des questions, des idées ou un retour ? Chaque message me fait plaisir. Écris-moi simplement à :
                 </p>
                 <p>
                     <strong>E-mail :</strong> <span id="email-address"></span>
@@ -77,7 +72,7 @@
                 </script>
 
                 <p>
-                    Tu trouveras d’autres informations juridiques dans nos <a href="<?php echo h(i18n_href('impressum')); ?>">mentions légales</a> et dans notre <a href="<?php echo h(i18n_href('datenschutz')); ?>">déclaration de protection des données</a>.
+                    Tu trouveras d’autres informations juridiques dans les <a href="<?php echo h(i18n_href('impressum')); ?>">mentions légales</a> et dans la <a href="<?php echo h(i18n_href('datenschutz')); ?>">déclaration de protection des données</a>.
                 </p>
             </section>
 

@@ -5,47 +5,42 @@
 
         <header class="page-header">
             <h1 class="page-title">Über uns</h1>
-            <p class="page-subtitle">Wer hinter Wichtlä.ch steckt</p>
+            <p class="page-subtitle">Warum ich wichtlä.ch gebaut habe</p>
         </header>
 
         <article>
             <section class="content-section">
-                <h2>Unsere Mission</h2>
+                <h2>Worum es mir geht</h2>
                 <p>
-                    <strong>Wichtlä.ch</strong> hat ein einfaches Ziel: das Organisieren von Wichtel-Events so unkompliziert wie möglich zu machen. Kein Zettel-Chaos, keine umständlichen Apps, keine versteckten Kosten – einfach eine Gruppe erstellen, Teilnehmer einladen und die Namen automatisch und fair auslosen lassen.
+                    Ich möchte, dass Wichteln einfach ist. Kein Zettelchaos, keine App und keine versteckten Kosten: Du erstellst eine Gruppe, lädst alle ein, und die Namen werden fair ausgelost.
                 </p>
                 <p>
-                    Ob für die Familie, den Freundeskreis oder das Firmenwichteln – unser Tool ist für alle gedacht, die Weihnachten mit einer schönen Wichtel-Tradition bereichern möchten.
-                    <?php if (function_exists('premium_feature_enabled') && premium_feature_enabled()): ?>
-                    <?php echo h(t('premium.extra.about')); ?> <?php echo premium_extra_link_html(); ?>.
-                    <?php else: ?>
-                    Die gesamte Plattform ist <strong>kostenlos</strong> und erfordert <strong>kein Konto</strong>.
-                    <?php endif; ?>
+                    Das passt für die Familie, den Freundeskreis oder das Team im Geschäft. Das normale Wichteln ist gratis, ohne Werbung und ohne Konto.<?php if (function_exists('premium_feature_enabled') && premium_feature_enabled()): ?> <?php echo str_replace('Zusatzfunktionen', '<a href="' . h(i18n_href('firmen-premium')) . '">Zusatzfunktionen</a>', t('premium.extra.about')); ?><?php endif; ?>
                 </p>
             </section>
 
             <section class="content-section">
-                <h2>Wer steckt dahinter?</h2>
+                <h2>Wer dahintersteckt</h2>
                 <p>
-                    Wichtlä.ch ist das Hobby von Patrick Raths. Er hat die Seite selbst gebaut und betreibt sie über <a href="https://raths-it.ch"><strong>Raths IT</strong></a> aus der <strong>Schweiz</strong>. Die Idee entstand aus einem ganz alltäglichen Problem: Jedes Jahr in der Vorweihnachtszeit das gleiche Spiel – Zettel schreiben, in einen Hut werfen, hoffen, dass niemand sich selbst zieht, und dann die Lose irgendwie an alle verteilen. Besonders wenn nicht alle am selben Ort sind, wird das schnell kompliziert.
+                    Ich bin Patrick Raths, und wichtlä.ch ist mein Hobby. Ich habe die Seite selbst gebaut und betreibe sie über meine Firma <a href="https://raths-it.ch"><strong>Raths IT</strong></a> in der <strong>Schweiz</strong>. Die Idee kam aus einem Problem, das wohl viele kennen: Jedes Jahr schreibt man Zettel, wirft sie in einen Hut und hofft, dass niemand sich selbst zieht. Wenn nicht alle am selben Ort sind, wird es schnell kompliziert.
                 </p>
                 <p>
-                    Aus diesem Bedarf heraus wurde Wichtlä.ch entwickelt: ein schlankes, schnelles Online-Tool, das genau dieses Problem löst. Ohne unnötigen Schnickschnack, ohne Datensammelei, ohne Konto – einfach Wichteln, wie es sein sollte.
+                    Deshalb habe ich wichtlä.ch gebaut. Es ist ein schlankes Tool ohne Schnickschnack und ohne Konto, und ich sammle nur die Daten, die es fürs Wichteln braucht.
                 </p>
             </section>
 
             <section class="content-section">
                 <h2>Warum Wichtlä.ch?</h2>
-                <p>Es gibt viele Gründe, warum Wichtlä.ch die richtige Wahl für dein Wichtel-Event ist:</p>
+                <p>Darauf habe ich beim Bauen geachtet:</p>
 
                 <ul>
-                    <li><?php if (function_exists('premium_feature_enabled') && premium_feature_enabled()): ?><strong><?php echo h(t('premium.extra.bullet')); ?></strong> <?php echo premium_extra_link_html(); ?>.<?php else: ?><strong>100% kostenlos:</strong> Keine versteckten Kosten, keine Premium-Features hinter einer Paywall<?php endif; ?></li>
-                    <li><strong>Kein Konto nötig:</strong> Sofort loslegen, ohne Account oder persönliche Daten angeben zu müssen</li>
-                    <li><strong>Datenschutz nach Schweizer DSG:</strong> Deine Daten werden vertraulich behandelt und nach den strengen Schweizer Datenschutzgesetzen geschützt</li>
-                    <li><strong>Einfache Bedienung:</strong> In weniger als 2 Minuten ist deine Wichtel-Gruppe erstellt und die Einladungen verschickt</li>
-                    <li><strong>Faire Auslosung:</strong> Unser Algorithmus sorgt dafür, dass die Zuordnung zufällig und fair erfolgt – inklusive der Möglichkeit, Ausschlüsse zu definieren</li>
-                    <li><strong>Automatische E-Mail-Benachrichtigung:</strong> Jeder Teilnehmer erhält sein Los bequem per E-Mail</li>
-                    <li><strong>Für alle Geräte:</strong> Funktioniert auf Smartphone, Tablet und Desktop – ohne App-Download</li>
+                    <li><?php if (function_exists('premium_feature_enabled') && premium_feature_enabled()): ?><strong>Gratis:</strong> Das normale Wichteln bleibt ohne Werbung und ohne Konto. <?php echo str_replace('Zusatzfunktionen', '<a href="' . h(i18n_href('firmen-premium')) . '">Zusatzfunktionen</a>', t('premium.extra.bullet')); ?><?php else: ?><strong>Gratis:</strong> Das normale Wichteln bleibt ohne Werbung und ohne Konto.<?php endif; ?></li>
+                    <li><strong>Kein Konto nötig:</strong> Du kannst sofort loslegen.</li>
+                    <li><strong>Datenschutz nach Schweizer DSG:</strong> Deine Daten behandle ich vertraulich.</li>
+                    <li><strong>Einfach:</strong> In weniger als zwei Minuten ist deine Gruppe erstellt und die Einladungen sind verschickt.</li>
+                    <li><strong>Faire Auslosung:</strong> Die Zuteilung ist zufällig, und du kannst Ausschlüsse festlegen.</li>
+                    <li><strong>Los per E-Mail:</strong> Alle erhalten ihr Los bequem per E-Mail.</li>
+                    <li><strong>Für alle Geräte:</strong> Es läuft auf Smartphone, Tablet und Computer, ohne App.</li>
                 </ul>
             </section>
 
@@ -57,7 +52,7 @@
             <section class="content-section">
                 <h2>Kontakt</h2>
                 <p>
-                    Hast du Fragen, Anregungen oder Feedback? Wir freuen uns, von dir zu hören! Schreibe uns einfach eine E-Mail an:
+                    Hast du Fragen, Ideen oder Feedback? Ich freue mich über jede Nachricht. Schreib mir einfach an:
                 </p>
                 <p>
                     <strong>E-Mail:</strong> <span id="email-address"></span>
@@ -77,7 +72,7 @@
                 </script>
 
                 <p>
-                    Weitere rechtliche Informationen findest du auf unserer <a href="<?php echo h(i18n_href('impressum')); ?>">Impressum-Seite</a> und in unserer <a href="<?php echo h(i18n_href('datenschutz')); ?>">Datenschutzerklärung</a>.
+                    Weitere rechtliche Infos findest du im <a href="<?php echo h(i18n_href('impressum')); ?>">Impressum</a> und in der <a href="<?php echo h(i18n_href('datenschutz')); ?>">Datenschutzerklärung</a>.
                 </p>
             </section>
 
