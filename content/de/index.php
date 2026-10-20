@@ -10,15 +10,15 @@
             <div class="hero-content">
                 <div class="hero-badge"><span aria-hidden="true">✨</span> <?php echo (function_exists('premium_feature_enabled') && premium_feature_enabled()) ? h(t('premium.extra.badge')) : 'Kostenlos & Einfach'; ?></div>
                 <h1 class="hero-title">
-                    <span class="hero-title-main">Wichteln leicht gemacht</span>
-                    <span class="hero-title-sub">Organisiere dein Wichteln online</span>
+                    <span class="hero-title-main">Wichteln online auslosen</span>
+                    <span class="hero-title-sub">Gratis und ohne Anmeldung, in der Schweiz</span>
                 </h1>
-                <p class="hero-subtitle">Die einfachste Art, dein Wichteln zu organisieren. Kein Konto nötig, keine versteckten Kosten – einfach starten!</p>
+                <p class="hero-subtitle">Namen ziehen per Link oder Mail. Kein Konto nötig, das normale Wichteln bleibt gratis und werbefrei.</p>
                 
                 <div class="hero-features">
                     <div class="hero-feature">
                         <span class="feature-icon-small" aria-hidden="true">📧</span>
-                        <span>Namen ziehen per E-Mail</span>
+                        <span>Namen ziehen per Link oder Mail</span>
                     </div>
                     <div class="hero-feature">
                         <span class="feature-icon-small" aria-hidden="true">⚖️</span>
@@ -76,7 +76,7 @@
                     <span class="step-number">4</span>
                     <span class="step-icon" aria-hidden="true">🎲</span>
                     <h3>Auslosen</h3>
-                    <p>Mit einem Klick werden die Namen ausgelost. Jeder Teilnehmer erhält automatisch eine E-Mail mit seinem Wichtelpartner.</p>
+                    <p>Mit einem Klick werden die Namen zufällig gezogen. Wer eine E-Mail hinterlegt hat, bekommt das Los per Mail. Alle anderen sehen es über den persönlichen Link.</p>
                 </div>
             </div>
         </div>
@@ -140,7 +140,7 @@
                         </button>
                     </h3>
                     <div id="faq-answer-1" class="faq-answer" role="region" aria-labelledby="faq-question-1">
-                        <p>Nach dem Klick auf "Auslosen" werden die Namen automatisch und zufällig zugeordnet. Dabei wird sichergestellt, dass niemand sich selbst zieht und alle Ausschlüsse berücksichtigt werden. Jeder Teilnehmer erhält dann eine E-Mail mit seinem Wichtelpartner.</p>
+                        <p>Nach dem Klick auf "Auslosen" werden die Namen automatisch und zufällig zugeordnet. Dabei wird sichergestellt, dass niemand sich selbst zieht und alle Ausschlüsse berücksichtigt werden. Wer eine E-Mail hinterlegt hat, erhält das Los per Mail. Ohne E-Mail bleibt es über den persönlichen Link sichtbar.</p>
                     </div>
                 </div>
                 
@@ -204,6 +204,34 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <section class="features" id="link-mail-whatsapp">
+        <div class="container">
+            <h2 class="section-title">Link, Mail oder WhatsApp</h2>
+            <p>Die Auslosung läuft im Browser. Eine Wichtel-App musst du nicht installieren. Den Einladungslink teilst du, wie es für die Runde passt, und der Zufallsgenerator verteilt die Namen.</p>
+        </div>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>Wichteln per WhatsApp</h3>
+                <p>Im Admin-Bereich gibt es «Per WhatsApp teilen». Damit schickst du den Einladungslink in den Chat. Anmeldung und Auslosung bleiben auf wichtlä.ch. Einen WhatsApp-Bot gibt es nicht.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Wichtel-Generator</h3>
+                <p>Die Auslosung ist der Zufallsgenerator: sie verteilt die Namen so, dass niemand sich selbst zieht und Ausschlüsse gelten. Ein öffentliches Losrad oder ein Zahlengenerator ist es nicht.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Ohne E-Mail auslosen</h3>
+                <p>Teilnehmer können die E-Mail weglassen. Die Ziehung klappt trotzdem. Das Los kommt dann nicht per Mail, sondern über den persönlichen Link, den der Admin kopiert und weitergibt. Für die Gruppe selbst braucht der Admin eine E-Mail, weil der Admin-Link dorthin geht.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Wichtelgruppe erstellen</h3>
+                <p>Name, deine E-Mail, optional Budget und Datum. Danach teilst du den Einladungslink. <a href="<?php echo h(i18n_href('create_group')); ?>">Gruppe erstellen</a></p>
+            </div>
+        </div>
+        <div class="container">
+            <p>Ausführlicher steht das in den <a href="<?php echo h(i18n_href('faq')); ?>#wichteln-whatsapp">häufigen Fragen</a>. Was der Brauch bedeutet, liest du unter <a href="<?php echo h(i18n_href('was-ist-wichteln')); ?>">Was ist Wichteln?</a>. Geschenkideen nach Budget findest du bei den <a href="<?php echo h(i18n_href('wichtel-ideen')); ?>">Wichtelgeschenken</a>, Tipps für Teams unter <a href="<?php echo h(i18n_href('firmenwichteln-tipps')); ?>">Firmenwichteln</a>.</p>
         </div>
     </section>
 

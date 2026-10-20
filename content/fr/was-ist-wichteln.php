@@ -2,8 +2,8 @@
     {
         "@context": "https://schema.org",
         "@type": "Article",
-        "headline": "C’est quoi, le Secret Santa ? Tradition, règles et variantes",
-        "description": "Tout sur la tradition du Secret Santa : origines, règles et variantes comme le Secret Santa cadeaux nuls ou à thème.",
+        "headline": "C’est quoi, le Secret Santa ? Règles et déroulement",
+        "description": "D’où vient le Secret Santa, comment se déroule le tirage et quelles règles choisir. Variantes et conseils de budget pour la Suisse.",
         "author": {
             "@type": "Organization",
             "name": "Wichtlä.ch"
@@ -14,7 +14,7 @@
             "url": "https://xn--wichtl-gua.ch/"
         },
         "url": "https://xn--wichtl-gua.ch/fr/was-ist-wichteln",
-        "inLanguage": "fr",
+        "inLanguage": "fr-CH",
         "mainEntityOfPage": "https://xn--wichtl-gua.ch/fr/was-ist-wichteln"
     }
     </script>
@@ -71,7 +71,7 @@
                         <?php if (function_exists('premium_feature_enabled') && premium_feature_enabled()): ?>
                         <?php echo h(t('premium.extra.tool')); ?> <?php echo premium_extra_link_html(); ?>.
                         <?php else: ?>
-                        Avec notre outil gratuit, le tirage au sort devient un jeu d’enfant ! Pas de papiers, pas de tracas : tu inscris les noms, et chacun reçoit son attribution par e-mail. Parfait pour les équipes dispersées ou les familles.
+                        Avec wichtlä.ch, tu tires les noms sans papiers. Tu inscris les noms, tu partages le lien, et qui a laissé une adresse reçoit le résultat par e-mail. Les autres le voient via le lien personnel. Le Secret Santa habituel reste gratuit et sans publicité, même si le groupe n’est pas au même endroit.
                         <?php endif; ?>
                     </p>
                 </div>
@@ -123,11 +123,37 @@
             <section class="content-section">
                 <h2>Le Secret Santa en Suisse</h2>
                 <p>
-                    En Suisse, le Secret Santa est particulièrement apprécié pendant l’Avent. En Suisse alémanique, on parle souvent de <strong>« Weihnachtswichteln »</strong> ou simplement de <strong>« Wichteln »</strong>. En Suisse romande, on dit surtout « Secret Santa ». Beaucoup d’entreprises en organisent un pour leurs collaborateurs, pour renforcer l’esprit d’équipe et fêter ensemble l’approche de Noël.
+                    En Suisse, le Secret Santa est particulièrement apprécié pendant l’Avent. En Suisse alémanique, on parle souvent de <strong>« Weihnachtswichteln »</strong> ou simplement de <strong>« Wichteln »</strong>. En Suisse romande, on dit surtout « Secret Santa ». Beaucoup d’entreprises, d’associations et de familles en organisent un pour fêter ensemble l’approche de Noël.
                 </p>
                 <p>
-                    Très suisse : l’associer à un moment convivial autour d’un vin chaud, d’une fondue ou d’une raclette. Les cadeaux sont le plus souvent remis lors d’une petite fête de Noël.
+                    Très suisse : l’associer à un moment convivial autour d’un vin chaud, d’une fondue ou d’une raclette. Les cadeaux sont le plus souvent remis lors d’une petite fête de Noël. Quand tout le monde n’est pas dans le même canton, ou que l’équipe est en télétravail, le tirage en ligne remplace le papier au milieu de la table.
                 </p>
+            </section>
+
+            <section class="content-section">
+                <h2>Comment se déroule le tirage en ligne</h2>
+                <p>Au Secret Santa, chaque personne reçoit exactement une attribution. En ligne, ça se fait sans papiers :</p>
+                <ol>
+                    <li><strong>Créer le groupe :</strong> le nom, ton e-mail, et si tu veux un budget et une date. <a href="<?php echo h(i18n_href('create_group')); ?>">Tu crées le groupe ici</a>.</li>
+                    <li><strong>Partager le lien :</strong> tu envoies le lien d’invitation par e-mail ou WhatsApp. Il n’y a pas de bot, l’inscription se fait dans le navigateur.</li>
+                    <li><strong>Inscrire les noms :</strong> chaque personne donne un nom. L’e-mail est facultatif.</li>
+                    <li><strong>Tirer au sort :</strong> le générateur répartit les noms. Personne ne tire son propre nom, et les exclusions comptent.</li>
+                    <li><strong>Voir le résultat :</strong> avec une adresse, il arrive par e-mail. Sans adresse, l’admin copie le lien personnel et le transmet.</li>
+                </ol>
+                <p>L’admin a besoin d’une adresse, parce que le lien admin y est envoyé. Les participants peuvent s’en passer. Les cas particuliers sont dans la <a href="<?php echo h(i18n_href('faq')); ?>">FAQ</a>.</p>
+            </section>
+
+            <section class="content-section">
+                <h2>Règles et budget</h2>
+                <p>La plupart des groupes en Suisse suivent quelques règles simples. Ce n’est pas une loi, mais ça évite les discussions.</p>
+                <ul>
+                    <li>Chaque personne offre à exactement une autre personne et reçoit exactement un cadeau.</li>
+                    <li>Le budget vaut pour tout le monde. On voit souvent 10–15 CHF dans les grands groupes, 15–25 CHF au milieu et 25–50 CHF dans les petites équipes.</li>
+                    <li>Les couples ou les frères et sœurs s’excluent souvent mutuellement.</li>
+                    <li>Participer reste volontaire.</li>
+                    <li>Le groupe décide si le donneur reste secret. Jusqu’à la révélation, sur wichtlä.ch, chaque personne ne voit que sa propre attribution.</li>
+                </ul>
+                <p>Des idées dans ces prix sont dans les <a href="<?php echo h(i18n_href('wichtel-ideen')); ?>">idées cadeaux</a>. Pour les entreprises et les associations, il y a des <a href="<?php echo h(i18n_href('firmenwichteln-tipps')); ?>">conseils pour le Secret Santa en entreprise</a>.</p>
             </section>
             
             <section class="content-section">

@@ -40,7 +40,7 @@
                 "name": "How does the draw work?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "The algorithm makes sure that nobody draws themselves, that each person gives a gift to exactly one other person, that each person receives exactly one gift and that the exclusions you defined are respected. The match is sent by email and stays secret."
+                    "text": "The algorithm makes sure that nobody draws themselves, that each person gives a gift to exactly one other person, that each person receives exactly one gift and that the exclusions you defined are respected. Anyone who left an email address receives the match by email. Without an email, you see it through the personal link. Only the person you are giving a gift to is shown."
                 }
             },
             {
@@ -194,6 +194,46 @@
                     "@type": "Answer",
                     "text": "Secret Santa should always be voluntary. Nobody should feel forced. For a company Secret Santa: ask beforehand, and only organise the event if enough people want to join in."
                 }
+            },
+            {
+                "@type": "Question",
+                "name": "Can I run Secret Santa on WhatsApp?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes, with the invite link. In the admin area, Share via WhatsApp sends that link into the chat. Sign-up and the draw happen on wichtlä.ch, not in a WhatsApp bot. Anyone who leaves an email address receives the result by email. Without an email, the result is on the personal link, which the admin can copy and send, for example on WhatsApp."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Is there a Secret Santa generator?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "The draw is the random generator. It assigns the names at random, nobody draws themselves, and exclusions are kept. It is not a number generator and not a public wheel."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Can I draw names without email?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Participants can sign up without an email address. The draw still works. The result is then not sent by email, but through the personal link the admin copies and passes on. The admin still needs an email, because the admin link is sent there. The reveal and the reminder only go to addresses that were saved."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Do I need a Secret Santa app?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "No. wichtlä.ch runs in the browser, on a phone and on a computer. There is nothing to install."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How do I create a Secret Santa group?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "On Create a group you enter the name, your email and, if you want, a budget and a date. You receive an admin link and an invite link. You share the invite link by email, WhatsApp or however the group prefers. Then you run the draw in the admin area."
+                }
             }
         ]
     }
@@ -298,6 +338,72 @@
                 </div>
             </section>
             
+            <section class="faq-section" id="wichteln-whatsapp">
+                <h2>Link, WhatsApp and no email</h2>
+
+                <div class="faq-item" id="wichteln-per-whatsapp">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-25" id="faq-question-25" onclick="toggleFaq(this)">
+                            <span class="faq-title">Can I run Secret Santa on WhatsApp?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-25" class="faq-answer" role="region" aria-labelledby="faq-question-25">
+                        <p>Yes, with the invite link. In the admin area, <strong>Share via WhatsApp</strong> sends that link into the chat. Sign-up and the draw happen on wichtlä.ch, not in a WhatsApp bot.</p>
+                        <p>Anyone who leaves an email address receives the result by email. Without an email, the result is on the personal link, which the admin can copy and send, for example on WhatsApp.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" id="wichtel-generator">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-26" id="faq-question-26" onclick="toggleFaq(this)">
+                            <span class="faq-title">Is there a Secret Santa generator?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-26" class="faq-answer" role="region" aria-labelledby="faq-question-26">
+                        <p>The draw is the random generator. It assigns the names at random, nobody draws themselves, and exclusions are kept. It is not a number generator and not a public wheel.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" id="ohne-e-mail">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-27" id="faq-question-27" onclick="toggleFaq(this)">
+                            <span class="faq-title">Can I draw names without email?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-27" class="faq-answer" role="region" aria-labelledby="faq-question-27">
+                        <p>Participants can sign up without an email address. The draw still works. The result is then not sent by email, but through the personal link the admin copies and passes on.</p>
+                        <p>The admin still needs an email, because the admin link is sent there. The reveal and the reminder only go to addresses that were saved.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" id="wichtel-app">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-28" id="faq-question-28" onclick="toggleFaq(this)">
+                            <span class="faq-title">Do I need a Secret Santa app?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-28" class="faq-answer" role="region" aria-labelledby="faq-question-28">
+                        <p>No. wichtlä.ch runs in the browser, on a phone and on a computer. There is nothing to install.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" id="wichtelgruppe-erstellen">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-29" id="faq-question-29" onclick="toggleFaq(this)">
+                            <span class="faq-title">How do I create a Secret Santa group?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-29" class="faq-answer" role="region" aria-labelledby="faq-question-29">
+                        <p>On <a href="<?php echo h(i18n_href('create_group')); ?>">Create a group</a> you enter the name, your email and, if you want, a budget and a date. You receive an admin link and an invite link. You share the invite link by email, WhatsApp or however the group prefers. Then you run the draw in the admin area.</p>
+                    </div>
+                </div>
+            </section>
+
             <!-- Features -->
             <section class="faq-section">
                 <h2>⚙️ Features and how to use them</h2>
@@ -320,7 +426,7 @@
                             <li>✅ the exclusions you defined are respected</li>
                         </ul>
                         <p>
-                            The match is sent by email and stays secret — you only see the person YOU are giving a gift to.
+                            Anyone who left an email address receives the match by email. Without an email, you see it through the personal link. Only the person you are giving a gift to is shown.
                         </p>
                     </div>
                 </div>

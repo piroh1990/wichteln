@@ -40,7 +40,7 @@
                 "name": "Comment fonctionne le tirage ?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "L’algorithme veille à ce que personne ne tire son propre nom, que chaque personne offre un cadeau à exactement une autre personne, que chaque personne reçoive exactement un cadeau et que les exclusions définies soient respectées. L’attribution est envoyée par e-mail et reste secrète."
+                    "text": "L’algorithme veille à ce que personne ne tire son propre nom, que chaque personne offre un cadeau à exactement une autre personne, que chaque personne reçoive exactement un cadeau et que les exclusions définies soient respectées. Qui a laissé une adresse reçoit l’attribution par e-mail. Sans e-mail, tu la vois via le lien personnel. On ne montre que la personne à qui tu offres un cadeau."
                 }
             },
             {
@@ -194,6 +194,46 @@
                     "@type": "Answer",
                     "text": "Un Secret Santa doit toujours rester volontaire. Personne ne devrait se sentir obligé. Pour un Secret Santa en entreprise : fais un sondage avant, et n’organise l’événement que si assez de personnes veulent participer."
                 }
+            },
+            {
+                "@type": "Question",
+                "name": "Puis-je faire un Secret Santa par WhatsApp ?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Oui, avec le lien d’invitation. Dans l’espace admin, Partager par WhatsApp envoie ce lien dans la discussion. L’inscription et le tirage se font sur wichtlä.ch, pas dans un bot WhatsApp. Qui laisse une adresse reçoit le résultat par e-mail. Sans e-mail, le résultat est sur le lien personnel, que l’admin peut copier et envoyer, par exemple sur WhatsApp."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Y a-t-il un générateur de Secret Santa ?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Le tirage est le générateur aléatoire. Il répartit les noms au hasard, personne ne tire son propre nom, et les exclusions comptent. Ce n’est ni un générateur de nombres ni une roue publique."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Puis-je tirer au sort sans e-mail ?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Les participants peuvent s’inscrire sans e-mail. Le tirage fonctionne quand même. Le résultat n’arrive alors pas par e-mail, mais via le lien personnel que l’admin copie et transmet. Pour le groupe, l’admin a besoin d’une adresse, parce que le lien admin y est envoyé. La révélation et le rappel ne partent que vers les adresses enregistrées."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Faut-il une application Secret Santa ?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Non. wichtlä.ch fonctionne dans le navigateur, sur le téléphone et sur l’ordinateur. Il n’y a rien à installer."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Comment créer un groupe Secret Santa ?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Sous Créer un groupe, tu indiques le nom, ton e-mail et, si tu veux, un budget et une date. Tu reçois un lien admin et un lien d’invitation. Tu partages le lien d’invitation par e-mail, WhatsApp ou comme le groupe le préfère. Ensuite tu lances le tirage dans l’espace admin."
+                }
             }
         ]
     }
@@ -298,6 +338,72 @@
                 </div>
             </section>
             
+            <section class="faq-section" id="wichteln-whatsapp">
+                <h2>Lien, WhatsApp et sans e-mail</h2>
+
+                <div class="faq-item" id="wichteln-per-whatsapp">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-25" id="faq-question-25" onclick="toggleFaq(this)">
+                            <span class="faq-title">Puis-je faire un Secret Santa par WhatsApp ?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-25" class="faq-answer" role="region" aria-labelledby="faq-question-25">
+                        <p>Oui, avec le lien d’invitation. Dans l’espace admin, <strong>Partager par WhatsApp</strong> envoie ce lien dans la discussion. L’inscription et le tirage se font sur wichtlä.ch, pas dans un bot WhatsApp.</p>
+                        <p>Qui laisse une adresse reçoit le résultat par e-mail. Sans e-mail, le résultat est sur le lien personnel, que l’admin peut copier et envoyer, par exemple sur WhatsApp.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" id="wichtel-generator">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-26" id="faq-question-26" onclick="toggleFaq(this)">
+                            <span class="faq-title">Y a-t-il un générateur de Secret Santa ?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-26" class="faq-answer" role="region" aria-labelledby="faq-question-26">
+                        <p>Le tirage est le générateur aléatoire. Il répartit les noms au hasard, personne ne tire son propre nom, et les exclusions comptent. Ce n’est ni un générateur de nombres ni une roue publique.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" id="ohne-e-mail">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-27" id="faq-question-27" onclick="toggleFaq(this)">
+                            <span class="faq-title">Puis-je tirer au sort sans e-mail ?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-27" class="faq-answer" role="region" aria-labelledby="faq-question-27">
+                        <p>Les participants peuvent s’inscrire sans e-mail. Le tirage fonctionne quand même. Le résultat n’arrive alors pas par e-mail, mais via le lien personnel que l’admin copie et transmet.</p>
+                        <p>Pour le groupe, l’admin a besoin d’une adresse, parce que le lien admin y est envoyé. La révélation et le rappel ne partent que vers les adresses enregistrées.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" id="wichtel-app">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-28" id="faq-question-28" onclick="toggleFaq(this)">
+                            <span class="faq-title">Faut-il une application Secret Santa ?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-28" class="faq-answer" role="region" aria-labelledby="faq-question-28">
+                        <p>Non. wichtlä.ch fonctionne dans le navigateur, sur le téléphone et sur l’ordinateur. Il n’y a rien à installer.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" id="wichtelgruppe-erstellen">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-29" id="faq-question-29" onclick="toggleFaq(this)">
+                            <span class="faq-title">Comment créer un groupe Secret Santa ?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-29" class="faq-answer" role="region" aria-labelledby="faq-question-29">
+                        <p>Sous <a href="<?php echo h(i18n_href('create_group')); ?>">Créer un groupe</a>, tu indiques le nom, ton e-mail et, si tu veux, un budget et une date. Tu reçois un lien admin et un lien d’invitation. Tu partages ce lien par e-mail, WhatsApp ou comme le groupe le préfère. Ensuite tu lances le tirage dans l’espace admin.</p>
+                    </div>
+                </div>
+            </section>
+
             <!-- Fonctions -->
             <section class="faq-section">
                 <h2>⚙️ Fonctions et utilisation</h2>
@@ -320,7 +426,7 @@
                             <li>✅ les exclusions définies soient respectées</li>
                         </ul>
                         <p>
-                            L’attribution est envoyée par e-mail et reste secrète : tu ne vois que la personne à qui TOI tu dois offrir un cadeau.
+                            Qui a laissé une adresse reçoit l’attribution par e-mail. Sans e-mail, tu la vois via le lien personnel. On ne montre que la personne à qui tu offres un cadeau.
                         </p>
                     </div>
                 </div>

@@ -12,15 +12,34 @@ render_head(array(
     'og_type' => 'website',
     'json_ld' => array(
         '@context' => 'https://schema.org',
-        '@type' => 'WebSite',
-        'name' => 'Wichtlä.ch',
-        'url' => $home_url,
-        'description' => t('meta.index.description'),
-        'inLanguage' => i18n_html_lang(),
-        'publisher' => array(
-            '@type' => 'Organization',
-            'name' => 'Wichtlä.ch',
-            'url' => canonical_base_url() . '/',
+        '@graph' => array(
+            array(
+                '@type' => 'WebSite',
+                'name' => 'Wichtlä.ch',
+                'url' => $home_url,
+                'description' => t('meta.index.description'),
+                'inLanguage' => i18n_hreflang(i18n_current()),
+                'publisher' => array(
+                    '@type' => 'Organization',
+                    'name' => 'Wichtlä.ch',
+                    'url' => canonical_base_url() . '/',
+                ),
+            ),
+            array(
+                '@type' => 'WebApplication',
+                'name' => 'Wichtlä.ch',
+                'url' => $home_url,
+                'applicationCategory' => 'UtilitiesApplication',
+                'operatingSystem' => 'Web',
+                'browserRequirements' => 'Requires a web browser. No install.',
+                'description' => t('meta.index.description'),
+                'inLanguage' => i18n_hreflang(i18n_current()),
+                'offers' => array(
+                    '@type' => 'Offer',
+                    'price' => '0',
+                    'priceCurrency' => 'CHF',
+                ),
+            ),
         ),
     ),
 ));

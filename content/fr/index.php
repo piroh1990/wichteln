@@ -10,15 +10,15 @@
             <div class="hero-content">
                 <div class="hero-badge"><span aria-hidden="true">✨</span> <?php echo (function_exists('premium_feature_enabled') && premium_feature_enabled()) ? h(t('premium.extra.badge')) : 'Gratuit et simple'; ?></div>
                 <h1 class="hero-title">
-                    <span class="hero-title-main">Secret Santa, tout simplement</span>
-                    <span class="hero-title-sub">Organise ton Secret Santa en ligne</span>
+                    <span class="hero-title-main">Tirer les noms en ligne</span>
+                    <span class="hero-title-sub">Gratuit et sans compte, en Suisse</span>
                 </h1>
-                <p class="hero-subtitle">La façon la plus simple d’organiser ton Secret Santa. Pas de compte, pas de frais cachés : tu commences tout de suite !</p>
+                <p class="hero-subtitle">Tire les noms par lien ou par e-mail. Pas de compte, et le Secret Santa habituel reste gratuit et sans publicité.</p>
                 
                 <div class="hero-features">
                     <div class="hero-feature">
                         <span class="feature-icon-small" aria-hidden="true">📧</span>
-                        <span>Tirage des noms par e-mail</span>
+                        <span>Tirage par lien ou e-mail</span>
                     </div>
                     <div class="hero-feature">
                         <span class="feature-icon-small" aria-hidden="true">⚖️</span>
@@ -76,7 +76,7 @@
                     <span class="step-number">4</span>
                     <span class="step-icon" aria-hidden="true">🎲</span>
                     <h3>Lancer le tirage</h3>
-                    <p>Un clic suffit pour tirer les noms. Chaque participant reçoit automatiquement un e-mail avec la personne à qui offrir un cadeau.</p>
+                    <p>Un clic tire les noms au hasard. Qui a laissé une adresse reçoit le résultat par e-mail. Les autres le voient via leur lien personnel.</p>
                 </div>
             </div>
         </div>
@@ -140,7 +140,7 @@
                         </button>
                     </h3>
                     <div id="faq-answer-1" class="faq-answer" role="region" aria-labelledby="faq-question-1">
-                        <p>Après un clic sur « Lancer le tirage », les noms sont attribués automatiquement et au hasard. Personne ne tire son propre nom, et toutes les exclusions sont respectées. Chaque participant reçoit ensuite un e-mail avec la personne à qui offrir un cadeau.</p>
+                        <p>Après un clic sur « Lancer le tirage », les noms sont attribués automatiquement et au hasard. Personne ne tire son propre nom, et toutes les exclusions sont respectées. Qui a laissé une adresse reçoit le résultat par e-mail. Sans e-mail, il reste visible via le lien personnel.</p>
                     </div>
                 </div>
                 
@@ -208,6 +208,34 @@
     </section>
 
     <!-- Appel à l’action -->
+    <section class="features" id="link-mail-whatsapp">
+        <div class="container">
+            <h2 class="section-title">Lien, e-mail ou WhatsApp</h2>
+            <p>Le tirage se fait dans le navigateur. Tu n’as pas d’application à installer. Tu partages le lien d’invitation comme ça arrange le groupe, et le générateur répartit les noms au hasard.</p>
+        </div>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>Secret Santa par WhatsApp</h3>
+                <p>Dans l’espace admin, « Partager par WhatsApp » envoie le lien d’invitation dans la discussion. L’inscription et le tirage restent sur wichtlä.ch. Il n’y a pas de bot WhatsApp.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Générateur de noms</h3>
+                <p>Le tirage est le générateur aléatoire : il répartit les noms pour que personne ne tire son propre nom, et les exclusions comptent. Ce n’est ni une roue publique ni un générateur de nombres.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Tirer au sort sans e-mail</h3>
+                <p>Les participants peuvent laisser l’e-mail vide. Le tirage fonctionne quand même. Le résultat n’arrive alors pas par e-mail, mais via le lien personnel que l’admin copie et transmet. Pour le groupe, l’admin a besoin d’une adresse, parce que le lien admin y est envoyé.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Créer un groupe</h3>
+                <p>Un nom, ton e-mail, et si tu veux un budget et une date. Ensuite tu partages le lien d’invitation. <a href="<?php echo h(i18n_href('create_group')); ?>">Créer un groupe</a></p>
+            </div>
+        </div>
+        <div class="container">
+            <p>Le détail est dans la <a href="<?php echo h(i18n_href('faq')); ?>#wichteln-whatsapp">FAQ</a>. Le sens de la tradition est sous <a href="<?php echo h(i18n_href('was-ist-wichteln')); ?>">C’est quoi, le Secret Santa ?</a>. Des idées selon le budget sont dans les <a href="<?php echo h(i18n_href('wichtel-ideen')); ?>">idées cadeaux</a>, et les équipes trouvent des <a href="<?php echo h(i18n_href('firmenwichteln-tipps')); ?>">conseils pour l’entreprise</a>.</p>
+        </div>
+    </section>
+
     <section class="footer-cta">
         <div class="container">
             <h2>Prêt pour ton Secret Santa ?</h2>

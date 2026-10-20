@@ -10,15 +10,15 @@
             <div class="hero-content">
                 <div class="hero-badge"><span aria-hidden="true">✨</span> <?php echo (function_exists('premium_feature_enabled') && premium_feature_enabled()) ? h(t('premium.extra.badge')) : 'Free &amp; simple'; ?></div>
                 <h1 class="hero-title">
-                    <span class="hero-title-main">Secret Santa made easy</span>
-                    <span class="hero-title-sub">Organise your Secret Santa online</span>
+                    <span class="hero-title-main">Draw Secret Santa names online</span>
+                    <span class="hero-title-sub">Free and with no account, in Switzerland</span>
                 </h1>
-                <p class="hero-subtitle">The simplest way to organise your Secret Santa. No account needed, no hidden costs — just start!</p>
+                <p class="hero-subtitle">Draw names by link or email. No account needed, and a normal Secret Santa stays free and ad-free.</p>
                 
                 <div class="hero-features">
                     <div class="hero-feature">
                         <span class="feature-icon-small" aria-hidden="true">📧</span>
-                        <span>Draw names by email</span>
+                        <span>Draw names by link or email</span>
                     </div>
                     <div class="hero-feature">
                         <span class="feature-icon-small" aria-hidden="true">⚖️</span>
@@ -76,7 +76,7 @@
                     <span class="step-number">4</span>
                     <span class="step-icon" aria-hidden="true">🎲</span>
                     <h3>Draw names</h3>
-                    <p>One click draws the names. Every participant automatically receives an email with the person they’re giving a gift to.</p>
+                    <p>One click draws the names at random. Anyone who left an email address receives the result by email. Everyone else sees it through their personal link.</p>
                 </div>
             </div>
         </div>
@@ -140,7 +140,7 @@
                         </button>
                     </h3>
                     <div id="faq-answer-1" class="faq-answer" role="region" aria-labelledby="faq-question-1">
-                        <p>After you click “Draw names”, the names are matched automatically and at random. Nobody draws themselves, and every exclusion is respected. Each participant then receives an email with the person they’re giving a gift to.</p>
+                        <p>After you click “Draw names”, the names are matched automatically and at random. Nobody draws themselves, and every exclusion is respected. Anyone who left an email address receives the result by email. Without an email, it stays available through the personal link.</p>
                     </div>
                 </div>
                 
@@ -208,6 +208,34 @@
     </section>
 
     <!-- Footer call to action -->
+    <section class="features" id="link-mail-whatsapp">
+        <div class="container">
+            <h2 class="section-title">Link, email or WhatsApp</h2>
+            <p>The draw runs in the browser. There is no Secret Santa app to install. You share the invite link however the group prefers, and the random draw assigns the names.</p>
+        </div>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>Secret Santa on WhatsApp</h3>
+                <p>In the admin area, “Share via WhatsApp” sends the invite link into the chat. Sign-up and the draw stay on wichtlä.ch. There is no WhatsApp bot.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Name generator</h3>
+                <p>The draw is the random generator: it assigns names so that nobody draws themselves, and exclusions are kept. It is not a public wheel and not a number generator.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Draw without email</h3>
+                <p>Participants can leave the email empty. The draw still works. The result is then not sent by email, but through the personal link the admin copies and passes on. The admin still needs an email, because the admin link is sent there.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Create a group</h3>
+                <p>A name, your email, and optionally a budget and a date. Then you share the invite link. <a href="<?php echo h(i18n_href('create_group')); ?>">Create a group</a></p>
+            </div>
+        </div>
+        <div class="container">
+            <p>The longer answers are in the <a href="<?php echo h(i18n_href('faq')); ?>#wichteln-whatsapp">FAQ</a>. What the custom means is under <a href="<?php echo h(i18n_href('was-ist-wichteln')); ?>">What is Secret Santa?</a>. Gift ideas by budget are in the <a href="<?php echo h(i18n_href('wichtel-ideen')); ?>">gift ideas</a>, and teams can read the <a href="<?php echo h(i18n_href('firmenwichteln-tipps')); ?>">company tips</a>.</p>
+        </div>
+    </section>
+
     <section class="footer-cta">
         <div class="container">
             <h2>Ready for your Secret Santa?</h2>

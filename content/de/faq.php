@@ -40,7 +40,7 @@
                 "name": "Wie funktioniert das Losziehen?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Der Algorithmus stellt sicher, dass niemand sich selbst zieht, jede Person genau eine andere Person beschenkt, jede Person genau ein Geschenk erhält und definierte Ausschlüsse eingehalten werden. Das Los wird per E-Mail verschickt und bleibt geheim."
+                    "text": "Der Algorithmus stellt sicher, dass niemand sich selbst zieht, jede Person genau eine andere Person beschenkt, jede Person genau ein Geschenk erhält und definierte Ausschlüsse eingehalten werden. Wer eine E-Mail hinterlegt hat, bekommt das Los per Mail. Ohne E-Mail siehst du es über den persönlichen Link. Gezeigt wird nur, wen du beschenkst."
                 }
             },
             {
@@ -194,6 +194,46 @@
                     "@type": "Answer",
                     "text": "Wichteln sollte immer freiwillig sein! Niemand sollte sich gezwungen fühlen. Bei Firmenwichteln: Macht eine Umfrage vorher und organisiert das Event nur, wenn genug Leute mitmachen wollen."
                 }
+            },
+            {
+                "@type": "Question",
+                "name": "Kann ich per WhatsApp wichteln?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Ja, über den Einladungslink. Im Admin-Bereich gibt es Per WhatsApp teilen. Die Anmeldung und die Auslosung laufen auf wichtlä.ch, nicht in einem WhatsApp-Bot. Wer eine E-Mail hinterlegt, bekommt das Los per Mail. Ohne E-Mail siehst du dein Los über den persönlichen Link, den der Admin kopieren und zum Beispiel per WhatsApp schicken kann."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Gibt es einen Wichtel-Generator oder Zufallsgenerator?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Die Auslosung ist der Zufallsgenerator. Sie verteilt die Namen zufällig, sodass niemand sich selbst zieht und Ausschlüsse gelten. Es ist kein allgemeiner Zahlengenerator und kein öffentliches Losrad."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Kann ich ohne E-Mail auslosen?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Teilnehmer können sich ohne E-Mail anmelden. Die Auslosung klappt trotzdem. Das Los kommt dann nicht per Mail, sondern über den persönlichen Teilnehmer-Link, den der Admin kopiert und weitergibt. Für die Gruppe selbst braucht der Admin eine E-Mail, weil der Admin-Link dorthin geht. Auflösung und Erinnerung gehen nur an Adressen, die hinterlegt sind."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Brauche ich eine Wichtel-App?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Nein. wichtlä.ch läuft im Browser, auf dem Handy und am Computer. Es gibt nichts zu installieren."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Wie erstelle ich eine Wichtelgruppe?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Unter Gruppe erstellen trägst du den Namen, deine E-Mail und optional Budget und Datum ein. Du bekommst einen Admin-Link und einen Einladungslink. Den Einladungslink teilst du per Mail, WhatsApp oder wie es für die Runde passt. Danach lost du im Admin-Bereich aus."
+                }
             }
         ]
     }
@@ -298,6 +338,72 @@
                 </div>
             </section>
             
+            <section class="faq-section" id="wichteln-whatsapp">
+                <h2>Link, WhatsApp und ohne E-Mail</h2>
+
+                <div class="faq-item" id="wichteln-per-whatsapp">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-25" id="faq-question-25" onclick="toggleFaq(this)">
+                            <span class="faq-title">Kann ich per WhatsApp wichteln?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-25" class="faq-answer" role="region" aria-labelledby="faq-question-25">
+                        <p>Ja, über den Einladungslink. Im Admin-Bereich gibt es <strong>Per WhatsApp teilen</strong>. Die Anmeldung und die Auslosung laufen auf wichtlä.ch, nicht in einem WhatsApp-Bot.</p>
+                        <p>Wer eine E-Mail hinterlegt, bekommt das Los per Mail. Ohne E-Mail siehst du dein Los über den persönlichen Link, den der Admin kopieren und zum Beispiel per WhatsApp schicken kann.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" id="wichtel-generator">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-26" id="faq-question-26" onclick="toggleFaq(this)">
+                            <span class="faq-title">Gibt es einen Wichtel-Generator oder Zufallsgenerator?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-26" class="faq-answer" role="region" aria-labelledby="faq-question-26">
+                        <p>Die Auslosung ist der Zufallsgenerator. Sie verteilt die Namen zufällig, sodass niemand sich selbst zieht und Ausschlüsse gelten. Es ist kein allgemeiner Zahlengenerator und kein öffentliches Losrad.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" id="ohne-e-mail">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-27" id="faq-question-27" onclick="toggleFaq(this)">
+                            <span class="faq-title">Kann ich ohne E-Mail auslosen?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-27" class="faq-answer" role="region" aria-labelledby="faq-question-27">
+                        <p>Teilnehmer können sich ohne E-Mail anmelden. Die Auslosung klappt trotzdem. Das Los kommt dann nicht per Mail, sondern über den persönlichen Teilnehmer-Link, den der Admin kopiert und weitergibt.</p>
+                        <p>Für die Gruppe selbst braucht der Admin eine E-Mail, weil der Admin-Link dorthin geht. Auflösung und Erinnerung gehen nur an Adressen, die hinterlegt sind.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" id="wichtel-app">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-28" id="faq-question-28" onclick="toggleFaq(this)">
+                            <span class="faq-title">Brauche ich eine Wichtel-App?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-28" class="faq-answer" role="region" aria-labelledby="faq-question-28">
+                        <p>Nein. wichtlä.ch läuft im Browser, auf dem Handy und am Computer. Es gibt nichts zu installieren.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" id="wichtelgruppe-erstellen">
+                    <h3>
+                        <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-29" id="faq-question-29" onclick="toggleFaq(this)">
+                            <span class="faq-title">Wie erstelle ich eine Wichtelgruppe?</span>
+                            <span class="faq-icon" aria-hidden="true">▼</span>
+                        </button>
+                    </h3>
+                    <div id="faq-answer-29" class="faq-answer" role="region" aria-labelledby="faq-question-29">
+                        <p>Unter <a href="<?php echo h(i18n_href('create_group')); ?>">Gruppe erstellen</a> trägst du den Namen, deine E-Mail und optional Budget und Datum ein. Du bekommst einen Admin-Link und einen Einladungslink. Den Einladungslink teilst du per Mail, WhatsApp oder wie es für die Runde passt. Danach lost du im Admin-Bereich aus.</p>
+                    </div>
+                </div>
+            </section>
+
             <!-- Funktionen -->
             <section class="faq-section">
                 <h2>⚙️ Funktionen & Nutzung</h2>
@@ -320,7 +426,7 @@
                             <li>✅ Definierte Ausschlüsse eingehalten werden</li>
                         </ul>
                         <p>
-                            Das Los wird per E-Mail verschickt und bleibt geheim – du siehst nur, wen DU beschenken sollst.
+                            Wer eine E-Mail hinterlegt hat, bekommt das Los per Mail. Ohne E-Mail siehst du es über den persönlichen Link. Gezeigt wird nur, wen du beschenkst.
                         </p>
                     </div>
                 </div>

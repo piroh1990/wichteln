@@ -107,10 +107,12 @@ run_test('affiliate links stay hidden while the feature is off', function () {
     $html = ideas2_test_render('de', false);
     assert_true(strpos($html, 'noindex') === false, 'live page has no noindex');
     assert_true(strpos($html, 'rel="canonical" href="https://xn--wichtl-gua.ch/wichtel-ideen"') !== false, 'canonical points at the ideas page');
-    assert_true(strpos($html, 'rel="alternate" hreflang="fr" href="https://xn--wichtl-gua.ch/fr/wichtel-ideen"') !== false, 'French alternate');
+    assert_true(strpos($html, 'rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/wichtel-ideen"') !== false, 'German alternate');
+    assert_true(strpos($html, 'rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/wichtel-ideen"') !== false, 'French alternate');
     assert_true(strpos($html, 'rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/wichtel-ideen"') !== false, 'English alternate');
-    assert_true(strpos($html, '<title>Wichtelgeschenke nach Budget | Wichtlä.ch</title>') !== false, 'title matches the page');
-    assert_true(strpos($html, 'content="Kleine Wichtelgeschenke zum Bestellen, grob nach Budget sortiert, mit Tipps für die Auswahl."') !== false, 'description matches the page');
+    assert_true(strpos($html, 'rel="alternate" hreflang="x-default" href="https://xn--wichtl-gua.ch/wichtel-ideen"') !== false, 'default alternate');
+    assert_true(strpos($html, '<title>Wichtelgeschenke: Ideen nach Budget | wichtlä.ch</title>') !== false, 'title matches the page');
+    assert_true(strpos($html, 'content="Wichtelgeschenk-Ideen für die Schweiz, grob nach Budget sortiert. Kurze Tipps für Familie, Freunde und Teams, ohne dass du ein Konto brauchst."') !== false, 'description matches the page');
     assert_true(strpos($html, '"url":"https://xn--wichtl-gua.ch/wichtel-ideen"') !== false, 'structured data uses the live URL');
     assert_true(strpos($html, 'wichtel-ideen2') === false, 'rendered page does not mention the draft');
     assert_true(strpos($html, 'awin1.com') === false, 'no Awin URL');
@@ -316,7 +318,7 @@ run_test('french and english drafts translate the affiliate copy', function () {
     assert_true(strpos($en, 'rel="canonical" href="https://xn--wichtl-gua.ch/en/wichtel-ideen"') !== false, 'English canonical');
     assert_true(strpos($en, 'Tips for the perfect Secret Santa gift') !== false, 'English tips');
     assert_true(strpos($en, 'Secret Santa gifts for different groups') !== false, 'English group notes');
-    assert_true(strpos($en, '<title>Secret Santa gifts by budget | Wichtlä.ch</title>') !== false, 'English title');
+    assert_true(strpos($en, '<title>Secret Santa gift ideas by budget | wichtlä.ch</title>') !== false, 'English title');
     assert_equals(ideas2_awin_hrefs($de), ideas2_awin_hrefs($en), 'English page uses the same shop links');
 });
 

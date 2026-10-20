@@ -695,6 +695,7 @@ require_once __DIR__ . '/group_tools.php';
 require_once __DIR__ . '/premium.php';
 require_once __DIR__ . '/affiliate.php';
 
+seo_maybe_redirect_legacy();
 send_baseline_security_headers();
 
 ?>

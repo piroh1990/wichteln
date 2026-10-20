@@ -4,7 +4,54 @@ if (!function_exists('canonical_base_url')) {
     require_once dirname(__DIR__) . '/urls.php';
 }
 
+function seo_breadcrumb_ld($slug) {
+    if ($slug === '' || $slug === 'index' || !function_exists('t') || !function_exists('i18n_public_slugs') || !function_exists('i18n_public_url')) {
+        return null;
+    }
+    if (!in_array($slug, i18n_public_slugs(), true)) {
+        return null;
+    }
+    $names = array(
+        'faq' => 'nav.faq',
+        'was-ist-wichteln' => 'nav.what',
+        'impressum' => 'footer.imprint',
+        'datenschutz' => 'footer.privacy',
+        'wichtel-ideen' => 'nav.ideas',
+        'firmenwichteln-tipps' => 'nav.company',
+        'ueber-uns' => 'nav.about',
+        'unterstuetzen' => 'footer.support',
+        'firmen-premium' => 'meta.premium.title',
+        'create_group' => 'nav.create',
+    );
+    if (!isset($names[$slug])) {
+        return null;
+    }
+    $home = canonical_base_url() . i18n_public_url('index', i18n_current());
+    $page = canonical_base_url() . i18n_public_url($slug, i18n_current());
+    return array(
+        '@context' => 'https://schema.org',
+        '@type' => 'BreadcrumbList',
+        'itemListElement' => array(
+            array(
+                '@type' => 'ListItem',
+                'position' => 1,
+                'name' => t('nav.home'),
+                'item' => $home,
+            ),
+            array(
+                '@type' => 'ListItem',
+                'position' => 2,
+                'name' => t($names[$slug]),
+                'item' => $page,
+            ),
+        ),
+    );
+}
+
 function render_head($options = array()) {
+    if (function_exists('seo_maybe_redirect_legacy')) {
+        seo_maybe_redirect_legacy();
+    }
     if (!is_array($options)) {
         $options = array();
     }
@@ -21,7 +68,7 @@ function render_head($options = array()) {
     if ($slug !== '' && function_exists('i18n_public_url') && in_array($slug, i18n_public_slugs(), true)) {
         $canonical = canonical_base_url() . i18n_public_url($slug, i18n_current());
         foreach (i18n_languages() as $lang) {
-            $alternates[$lang] = canonical_base_url() . i18n_public_url($slug, $lang);
+            $alternates[i18n_hreflang($lang)] = canonical_base_url() . i18n_public_url($slug, $lang);
         }
         $alternates['x-default'] = canonical_base_url() . i18n_public_url($slug, 'de');
     } elseif (!empty($options['canonical_path']) && function_exists('i18n_allow')) {
@@ -111,6 +158,13 @@ function render_head($options = array()) {
         }
     } elseif (is_string($json_ld) && $json_ld !== '') {
         echo $json_ld;
+    }
+    $breadcrumb = seo_breadcrumb_ld($slug);
+    if (is_array($breadcrumb)) {
+        $breadcrumb_json = json_encode($breadcrumb, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG);
+        if (is_string($breadcrumb_json)) {
+            echo '<script type="application/ld+json">' . $breadcrumb_json . '</script>';
+        }
     }
     ?>
 </head>
