@@ -793,7 +793,8 @@ return array(
 
     'affiliate.wish' => 'Bei Orell Füssli suchen',
     'affiliate.gift' => 'Geschenkideen bei Orell Füssli',
-    'affiliate.note' => 'Werbelink: Wenn du über diese Links bestellst, unterstützt du wichtlä.ch. Für dich kostet es nichts extra.',
+    'affiliate.note' => 'Die Links «Bei Orell Füssli suchen» sind Werbelinks. Wenn du darüber bestellst, unterstützt du wichtlä.ch. Für dich kostet es nichts extra.',
+    'affiliate.note.one' => 'Werbelink: Wenn du über diesen Link bestellst, unterstützt du wichtlä.ch. Für dich kostet es nichts extra.',
     'affiliate.mail.lead' => 'Noch kein Geschenk? Bei Orell Füssli findest du Bücher, Spiele und Geschenkideen. Am besten gleich bestellen, damit es rechtzeitig ankommt.',
     'affiliate.mail.link' => 'Geschenkideen bei Orell Füssli',
     'affiliate.toggle' => 'Werbelinks zu Orell Füssli in dieser Gruppe anzeigen',

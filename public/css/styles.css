@@ -2825,6 +2825,12 @@ a.affiliate-of-link {
     color: var(--text-secondary);
 }
 
+.partner-wishlist-section > .affiliate-note,
+.partner-reveal-body > .affiliate-note {
+    margin: 0.7rem 0.15rem 0;
+    font-size: 0.78rem;
+}
+
 .wishlist-display.locked {
     background: #fff9e6;
     border-left-color: #ffc107;

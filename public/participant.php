@@ -348,13 +348,20 @@ token_page_open(t('meta.participant.title', array('{name}' => $participant['name
                                     <p><?php echo nl2br(h($assigned['wishlist'])); ?></p>
                                 <?php endif; ?>
                             </div>
+                            <?php if ($affiliate_list): ?>
+                                <?php echo affiliate_of_note_html(); ?>
+                            <?php endif; ?>
                         </div>
                     <?php else: ?>
+                        <?php $gift_html = affiliate_of_participant_html($group, ''); ?>
                         <div class="empty-wishlist">
                             <span class="empty-wishlist-icon" aria-hidden="true">📋</span>
                             <p><?php echo h(t('participant.no_wishlist', array('{name}' => $assigned['name']))); ?></p>
-                            <?php echo affiliate_of_participant_html($group, ''); ?>
+                            <?php echo $gift_html; ?>
                         </div>
+                        <?php if ($gift_html !== ''): ?>
+                            <?php echo affiliate_of_note_html('one'); ?>
+                        <?php endif; ?>
                     <?php endif; ?>
                     </div>
                 <?php else: ?>

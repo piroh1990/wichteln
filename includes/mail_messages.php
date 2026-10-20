@@ -73,12 +73,23 @@ function mail_p($html) {
     return '<p style="margin: 0 0 16px 0; color: #2b2d42; font-size: 16px; line-height: 1.6;">' . $html . '</p>';
 }
 
-function mail_button($url, $label) {
+function mail_button($url, $label, $attrs = array()) {
     $url = (string) $url;
     if ($url === '') {
         return '';
     }
-    return '<p style="margin: 24px 0; text-align: center;"><a href="' . mail_esc($url) . '" style="display: inline-block; background: #e63946; color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-weight: 700;">' . mail_esc($label) . '</a></p>';
+    if (!is_array($attrs)) {
+        $attrs = array();
+    }
+    $extra = '';
+    if (!empty($attrs['rel'])) {
+        $extra .= ' rel="' . mail_esc($attrs['rel']) . '"';
+    }
+    if (!empty($attrs['target'])) {
+        $extra .= ' target="' . mail_esc($attrs['target']) . '"';
+    }
+    $style = 'display: inline-block; background: #e63946; color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-weight: 700; white-space: nowrap; word-break: keep-all; hyphens: none; -webkit-hyphens: none;';
+    return '<p style="margin: 24px 0; text-align: center;"><a href="' . mail_esc($url) . '"' . $extra . ' style="' . $style . '"><span style="white-space: nowrap; word-break: keep-all; hyphens: none;">' . mail_esc($label) . '</span></a></p>';
 }
 
 function mail_details_html($budget, $description, $gift_date) {
@@ -120,6 +131,17 @@ function mail_plain_footer() {
         t('mail.from_signature'),
         mail_home_url(),
     );
+}
+
+function mail_plain_closing($with_affiliate_note) {
+    $footer = mail_plain_footer();
+    if ($with_affiliate_note && function_exists('affiliate_of_mail_note_plain')) {
+        $note = affiliate_of_mail_note_plain();
+        if ($note !== '') {
+            array_splice($footer, 1, 0, array($note));
+        }
+    }
+    return $footer;
 }
 
 function mail_participant_link($token) {
@@ -166,6 +188,9 @@ function create_html_email($data) {
             . '<p style="margin: 0; color: #6c757d; font-size: 13px;">' . mail_esc(t('mail.partner.label')) . '</p>'
             . '<p style="margin: 6px 0 0 0; color: #e63946; font-size: 24px; font-weight: 700;">' . mail_esc($assigned) . '</p>'
             . '</div>';
+        if (!empty($data['affiliate'])) {
+            $body .= affiliate_of_mail_html('mail-draw');
+        }
         if (trim((string) $wishlist) !== '') {
             $body .= '<h3 style="margin: 0 0 8px 0; color: #2b2d42;">' . mail_esc(t('mail.partner.wishlist', array('{name}' => $assigned))) . '</h3>';
             $body .= '<div style="background: #f8f9fa; border-radius: 8px; padding: 16px; margin: 0 0 16px 0; white-space: pre-wrap;">' . nl2br(mail_esc($wishlist)) . '</div>';
@@ -173,10 +198,10 @@ function create_html_email($data) {
         $body .= mail_details_html($budget, $description, $gift_date);
         $body .= email_calendar_paragraph($ics);
         $body .= mail_area_html(isset($data['participant_link']) ? $data['participant_link'] : '', 'mail.partner');
-        if (!empty($data['affiliate'])) {
-            $body .= affiliate_of_mail_html('mail-draw');
-        }
         $body .= mail_p(mail_esc(t('mail.signoff')));
+        if (!empty($data['affiliate'])) {
+            $body .= affiliate_of_mail_note_html();
+        }
         return render_email_template(t('mail.partner.title'), t('mail.partner.preview'), $body);
     });
 }
@@ -191,6 +216,13 @@ function create_partner_plain_text($data) {
             '',
             t('mail.partner.label') . ': ' . $assigned,
         );
+        if (!empty($data['affiliate'])) {
+            $promo = affiliate_of_mail_plain('mail-draw');
+            if (count($promo) > 0) {
+                $lines[] = '';
+                $lines = array_merge($lines, $promo);
+            }
+        }
         if ($wishlist !== '') {
             $lines[] = '';
             $lines[] = t('mail.partner.wishlist', array('{name}' => $assigned));
@@ -208,15 +240,8 @@ function create_partner_plain_text($data) {
             $lines[] = '';
             $lines = array_merge($lines, $area);
         }
-        if (!empty($data['affiliate'])) {
-            $promo = affiliate_of_mail_plain('mail-draw');
-            if (count($promo) > 0) {
-                $lines[] = '';
-                $lines = array_merge($lines, $promo);
-            }
-        }
         $lines[] = '';
-        $lines = array_merge($lines, mail_plain_footer());
+        $lines = array_merge($lines, mail_plain_closing(!empty($data['affiliate'])));
         return implode("\n", $lines);
     });
 }
@@ -561,12 +586,15 @@ function create_gift_reminder_email($data) {
         $body .= mail_p(mail_esc($sentence));
         $body .= mail_p(mail_esc(t('mail.group', array('{name}' => $group))));
         $body .= mail_p(mail_esc(t('mail.date_line', array('{date}' => $date))));
-        $body .= mail_button($link, t('mail.reminder.button'));
-        $body .= email_calendar_paragraph($ics);
         if (!empty($data['affiliate'])) {
             $body .= affiliate_of_mail_html('mail-reminder');
         }
+        $body .= mail_button($link, t('mail.reminder.button'));
+        $body .= email_calendar_paragraph($ics);
         $body .= mail_p(mail_esc(t('mail.signoff')));
+        if (!empty($data['affiliate'])) {
+            $body .= affiliate_of_mail_note_html();
+        }
         return render_email_template(t('mail.reminder.title'), $sentence, $body);
     });
 }
@@ -580,12 +608,7 @@ function create_gift_reminder_plain_text($data) {
             isset($data['sentence']) ? $data['sentence'] : '',
             t('mail.group', array('{name}' => isset($data['group_name']) ? $data['group_name'] : '')),
             t('mail.date_line', array('{date}' => isset($data['gift_date']) ? $data['gift_date'] : '')),
-            '',
-            t('mail.reminder.button_plain', array('{url}' => $link)),
         );
-        if (!empty($data['ics_url'])) {
-            $lines[] = t('mail.calendar_plain', array('{url}' => $data['ics_url']));
-        }
         if (!empty($data['affiliate'])) {
             $promo = affiliate_of_mail_plain('mail-reminder');
             if (count($promo) > 0) {
@@ -594,7 +617,12 @@ function create_gift_reminder_plain_text($data) {
             }
         }
         $lines[] = '';
-        $lines = array_merge($lines, mail_plain_footer());
+        $lines[] = t('mail.reminder.button_plain', array('{url}' => $link));
+        if (!empty($data['ics_url'])) {
+            $lines[] = t('mail.calendar_plain', array('{url}' => $data['ics_url']));
+        }
+        $lines[] = '';
+        $lines = array_merge($lines, mail_plain_closing(!empty($data['affiliate'])));
         return implode("\n", $lines);
     });
 }

@@ -80,38 +80,69 @@ run_test('free groups get wish links and mails, premium groups stay off', functi
         assert_true(strpos($html, 'rel="sponsored noopener"') !== false && strpos($html, 'target="_blank"') !== false, 'links are sponsored and open in a new tab');
         assert_true(strpos($html, 'clickref=wish') !== false, 'wish links name their source');
         assert_true(strpos($html, 'sq=Buch') !== false || strpos($html, rawurlencode('sq=Buch')) !== false, 'the wish is the search term');
-        assert_true(strpos($html, 'Werbelink:') !== false, 'the note sits under the wishes');
+        assert_true(strpos($html, 'affiliate-note') === false, 'the wish list markup has no advertising note');
         assert_true(strpos($html, '<script') === false && strpos($html, '<img') === false, 'no script and no image');
+        $note = affiliate_of_note_html();
+        assert_true(strpos($note, 'Bei Orell Füssli suchen') !== false, 'the page note names the search links');
+        assert_true(strpos($note, 'Werbelinks') !== false, 'the page note calls them ad links');
+        assert_true(strpos(affiliate_of_note_html('one'), 'diesen Link') !== false, 'one link uses the singular note');
 
         $empty = affiliate_of_participant_html($free, '');
         assert_true(strpos($empty, 'Geschenkideen bei Orell Füssli') !== false, 'an empty wishlist gets the gift link');
         assert_true(strpos($empty, 'clickref=reveal-page') !== false, 'the gift link names the page');
+        assert_true(strpos($empty, 'affiliate-note') === false, 'the empty gift block has no note inside it');
         assert_equals('', affiliate_of_participant_html($premium, 'Buch'), 'a premium group without opt-in gets nothing');
 
         foreach (array(
-            'de' => 'Noch kein Geschenk?',
-            'fr' => 'Pas encore de cadeau',
-            'en' => 'No gift yet?',
-        ) as $lang => $lead) {
+            'de' => array('lead' => 'Noch kein Geschenk?', 'partner' => 'Dein Wichtelpartner', 'wish' => 'Wunschliste von', 'details' => 'Gruppendetails', 'button' => 'Zum Teilnehmerbereich', 'signoff' => 'Viel Spass beim Wichteln', 'note' => 'diesen Link', 'plural' => 'diese Links', 'link' => 'Geschenkideen bei Orell Füssli'),
+            'fr' => array('lead' => 'Pas encore de cadeau', 'partner' => 'Tu offres un cadeau', 'wish' => 'Liste de souhaits', 'details' => 'Détails du groupe', 'button' => 'espace participant', 'signoff' => 'Amuse-toi bien', 'note' => 'ce lien', 'plural' => 'ces liens', 'link' => 'Idées cadeaux chez Orell Füssli'),
+            'en' => array('lead' => 'No gift yet?', 'partner' => 'giving a gift to', 'wish' => 'Wishlist of', 'details' => 'Group details', 'button' => 'Go to your participant area', 'signoff' => 'Have fun with your Secret Santa', 'note' => 'this link', 'plural' => 'these links', 'link' => 'Gift ideas at Orell Füssli'),
+        ) as $lang => $copy) {
             $GLOBALS['i18n_lang'] = $lang;
             $mail = create_html_email(array(
                 'name' => 'Max',
                 'assigned_name' => 'Erika',
                 'wishlist' => 'Buch',
+                'participant_link' => 'https://example.test/participant',
                 'language' => $lang,
                 'affiliate' => true,
             ));
-            assert_true(strpos($mail, $lead) !== false, $lang . ' draw mail has the short paragraph');
+            $lead_at = strpos($mail, $copy['lead']);
+            $partner_at = strpos($mail, '>Erika</p>');
+            $wish_at = strpos($mail, $copy['wish']);
+            $details_at = strpos($mail, $copy['details']);
+            $button_at = strpos($mail, $copy['button']);
+            $signoff_at = strpos($mail, $copy['signoff']);
+            $note_at = strpos($mail, $copy['note']);
+            assert_true($lead_at !== false, $lang . ' draw mail has the short paragraph');
+            assert_true($partner_at !== false && $lead_at > $partner_at, $lang . ' offer sits under the partner name');
+            assert_true($wish_at !== false && $lead_at < $wish_at, $lang . ' offer sits above the wishlist');
+            assert_true($details_at !== false && $lead_at < $details_at, $lang . ' offer sits above the group details');
+            assert_true($button_at !== false && strpos($mail, 'white-space: nowrap') !== false, $lang . ' participant button stays on one line');
+            assert_true(strpos($mail, 'Teilnehmerbe reich') === false && strpos($mail, '&shy;') === false, $lang . ' button label is not split');
             assert_true(strpos($mail, 'clickref=mail-draw') !== false, $lang . ' draw mail names the source');
             assert_true(strpos($mail, 'rel="sponsored noopener"') !== false, $lang . ' draw mail link is sponsored');
+            $link_at = strpos($mail, $copy['link']);
+            $button_chunk = $link_at === false ? '' : substr($mail, max(0, $link_at - 500), 500);
+            assert_true(strpos($button_chunk, 'background: #e63946') !== false, $lang . ' gift link is a red button');
+            assert_true($signoff_at !== false && $note_at !== false && $note_at > $signoff_at, $lang . ' singular note sits under the signoff');
+            assert_true(strpos($mail, $copy['plural']) === false, $lang . ' mail does not talk about several links');
             $plain = create_partner_plain_text(array(
                 'name' => 'Max',
                 'assigned_name' => 'Erika',
                 'wishlist' => 'Buch',
+                'participant_link' => 'https://example.test/participant',
                 'language' => $lang,
                 'affiliate' => true,
             ));
+            $plain_lead = strpos($plain, $copy['lead']);
+            $plain_wish = strpos($plain, $copy['wish']);
+            $plain_signoff = strpos($plain, $copy['signoff']);
+            $plain_note = strpos($plain, $copy['note']);
             assert_true(strpos($plain, 'clickref=mail-draw') !== false, $lang . ' plain draw mail has the link');
+            assert_true($plain_lead !== false && $plain_wish !== false && $plain_lead < $plain_wish, $lang . ' plain offer sits above the wishlist');
+            assert_true($plain_signoff !== false && $plain_note !== false && $plain_note > $plain_signoff, $lang . ' plain note sits under the signoff');
+            assert_true(strpos($plain, $copy['plural']) === false, $lang . ' plain mail does not talk about several links');
             $reminder = create_gift_reminder_email(array(
                 'name' => 'Max',
                 'sentence' => 'Morgen ist Übergabe.',
@@ -121,7 +152,13 @@ run_test('free groups get wish links and mails, premium groups stay off', functi
                 'language' => $lang,
                 'affiliate' => true,
             ));
+            $reminder_lead = strpos($reminder, $copy['lead']);
+            $reminder_button = strpos($reminder, $copy['button']);
+            $reminder_signoff = strpos($reminder, $copy['signoff']);
+            $reminder_note = strpos($reminder, $copy['note']);
             assert_true(strpos($reminder, 'clickref=mail-reminder') !== false, $lang . ' reminder names the source');
+            assert_true($reminder_lead !== false && $reminder_button !== false && $reminder_lead < $reminder_button, $lang . ' reminder offer sits above the participant button');
+            assert_true($reminder_signoff !== false && $reminder_note !== false && $reminder_note > $reminder_signoff, $lang . ' reminder note sits under the signoff');
             assert_true(strpos($reminder, '<img') === false || strpos($reminder, 'awin') === false, $lang . ' reminder does not use an affiliate image');
             $reminder_plain = create_gift_reminder_plain_text(array(
                 'name' => 'Max',
@@ -132,7 +169,12 @@ run_test('free groups get wish links and mails, premium groups stay off', functi
                 'language' => $lang,
                 'affiliate' => true,
             ));
+            $reminder_plain_lead = strpos($reminder_plain, $copy['lead']);
+            $reminder_plain_link = strpos($reminder_plain, 'https://example.test/p');
+            $reminder_plain_note = strpos($reminder_plain, $copy['note']);
             assert_true(strpos($reminder_plain, 'clickref=mail-reminder') !== false, $lang . ' plain reminder has the link');
+            assert_true($reminder_plain_lead !== false && $reminder_plain_link !== false && $reminder_plain_lead < $reminder_plain_link, $lang . ' plain reminder offer sits above the participant link');
+            assert_true($reminder_plain_note !== false && strpos($reminder_plain, $copy['signoff']) !== false && $reminder_plain_note > strpos($reminder_plain, $copy['signoff']), $lang . ' plain reminder note sits under the signoff');
         }
 
         $quiet = create_html_email(array(
@@ -209,6 +251,12 @@ run_test('privacy mentions awin and the page does not load a tracking script', f
     $page = file_get_contents(__DIR__ . '/../public/participant.php');
     assert_true(strpos($head, 'awin') === false, 'the document head has no awin script');
     assert_true(strpos($page, 'affiliate_of_participant_html') !== false, 'the participant page asks the helper');
+    $list_close = strpos($page, 'id="partner-wishlist"');
+    $list_note = strpos($page, 'affiliate_of_note_html()');
+    $empty_box = strpos($page, 'class="empty-wishlist"');
+    $one_note = strpos($page, "affiliate_of_note_html('one')");
+    assert_true($list_close !== false && $list_note !== false && $list_note > $list_close, 'the wishlist note is printed after the list box');
+    assert_true($empty_box !== false && $one_note !== false && $one_note > $empty_box, 'the empty-list note is printed after that box');
     assert_true(strpos($page, 'awin1.com') === false, 'the participant page does not hard-code a tracking url');
     $example = file_get_contents(__DIR__ . '/../includes/config.example.php');
     assert_true(strpos($example, "define('AFFILIATE_OF_ENABLED', '0');") !== false, 'the feature defaults to off');
