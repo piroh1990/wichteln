@@ -196,6 +196,7 @@ run_test('clean urls, sitemap and robots', function() {
         assert_true(in_array($slug, seo_legacy_php_slugs(), true), $slug . ' is a legacy php redirect');
     }
     assert_true(preg_match('/RewriteRule \\^[^\\n]*api/', $htaccess) !== 1, 'API paths are not rewrite targets');
+    assert_equals(4, substr_count($htaccess, 'RewriteCond %{THE_REQUEST} \s/[^\s?]*\.php[\s?]'), 'PHP redirects apply only to the original client request');
 });
 
 run_test('legacy php and www redirects keep method, query and private endpoints', function () {
@@ -227,6 +228,17 @@ run_test('legacy php and www redirects keep method, query and private endpoints'
     assert_equals(null, seo_legacy_redirect_target('GET', 'xn--wichtl-gua.ch', '/wichtel-ideen2.php'));
     assert_equals(null, seo_legacy_redirect_target('GET', 'localhost', '/admin.php?token=abc'));
     assert_equals(null, seo_legacy_redirect_target('GET', 'xn--wichtl-gua.ch', "/faq.php?x=1\r\nSet-Cookie: a=b"));
+
+    $internal = array(
+        'REQUEST_METHOD' => 'GET',
+        'HTTP_HOST' => 'xn--wichtl-gua.ch',
+        'REQUEST_URI' => '/faq',
+        'SCRIPT_NAME' => '/faq.php',
+        'PHP_SELF' => '/faq.php',
+    );
+    assert_equals(null, seo_legacy_redirect_from_server($internal), 'Internal rewrite to faq.php does not redirect');
+    $internal['REQUEST_URI'] = '/faq.php';
+    assert_equals($base . '/faq', seo_legacy_redirect_from_server($internal), 'A direct faq.php request still redirects');
 });
 
 run_test('copy matches reveal, recovery and the homepage typo fix', function() {

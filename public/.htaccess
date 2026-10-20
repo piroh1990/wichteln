@@ -24,20 +24,29 @@
     # Wenn Plesk oder nginx die Anfrage vor Apache annimmt, gilt diese Datei nicht.
     # Dann zieht die gleiche Logik in PHP (seo_legacy_redirect_target), und www
     # muss zusätzlich in Plesk auf xn--wichtl-gua.ch zeigen.
+    #
+    # THE_REQUEST ist die ursprüngliche Client-Zeile und bleibt nach einem
+    # internen Rewrite stehen. Ohne diese Bedingung startet die Runde nach
+    # /faq -> faq.php neu, ^(faq|...)\.php$ matcht den internen Pfad und
+    # /faq antwortet mit 301 auf sich selbst.
     RewriteCond %{REQUEST_METHOD} ^(GET|HEAD)$
     RewriteCond %{HTTP_HOST} ^(www\.)?(xn--wichtl-gua\.ch|wichtlä\.ch)(?::\d+)?$ [NC]
+    RewriteCond %{THE_REQUEST} \s/[^\s?]*\.php[\s?]
     RewriteRule ^index\.php$ https://xn--wichtl-gua.ch/ [R=301,L,QSA]
 
     RewriteCond %{REQUEST_METHOD} ^(GET|HEAD)$
     RewriteCond %{HTTP_HOST} ^(www\.)?(xn--wichtl-gua\.ch|wichtlä\.ch)(?::\d+)?$ [NC]
+    RewriteCond %{THE_REQUEST} \s/[^\s?]*\.php[\s?]
     RewriteRule ^(en|fr)/index\.php$ https://xn--wichtl-gua.ch/$1/ [R=301,L,QSA]
 
     RewriteCond %{REQUEST_METHOD} ^(GET|HEAD)$
     RewriteCond %{HTTP_HOST} ^(www\.)?(xn--wichtl-gua\.ch|wichtlä\.ch)(?::\d+)?$ [NC]
+    RewriteCond %{THE_REQUEST} \s/[^\s?]*\.php[\s?]
     RewriteRule ^(faq|was-ist-wichteln|impressum|datenschutz|wichtel-ideen|firmenwichteln-tipps|ueber-uns|unterstuetzen|firmen-premium|create_group|admin-link)\.php$ https://xn--wichtl-gua.ch/$1 [R=301,L,QSA]
 
     RewriteCond %{REQUEST_METHOD} ^(GET|HEAD)$
     RewriteCond %{HTTP_HOST} ^(www\.)?(xn--wichtl-gua\.ch|wichtlä\.ch)(?::\d+)?$ [NC]
+    RewriteCond %{THE_REQUEST} \s/[^\s?]*\.php[\s?]
     RewriteRule ^(en|fr)/(faq|was-ist-wichteln|impressum|datenschutz|wichtel-ideen|firmenwichteln-tipps|ueber-uns|unterstuetzen|firmen-premium|create_group|admin-link)\.php$ https://xn--wichtl-gua.ch/$1/$2 [R=301,L,QSA]
 
     RewriteCond %{REQUEST_METHOD} ^(GET|HEAD)$
