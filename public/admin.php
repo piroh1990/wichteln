@@ -567,6 +567,15 @@ token_page_open(t('meta.admin.title', array('{group}' => $group['name'])));
             ?>
             <div class="notification <?php echo h($flash_type); ?>" role="<?php echo $flash_role; ?>" aria-live="<?php echo ($flash_type === 'error') ? 'assertive' : 'polite'; ?>">
                 <?php echo h($admin_flash['text']); ?>
+                <?php
+                $flash_link = '';
+                if (isset($admin_flash['link']) && is_string($admin_flash['link']) && preg_match('#\Ahttps://#', $admin_flash['link']) === 1) {
+                    $flash_link = $admin_flash['link'];
+                }
+                ?>
+                <?php if ($flash_link !== ''): ?>
+                    <p class="flash-link"><a href="<?php echo h($flash_link); ?>"><?php echo h($flash_link); ?></a></p>
+                <?php endif; ?>
             </div>
         <?php endif; ?>
 

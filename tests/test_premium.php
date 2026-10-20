@@ -468,6 +468,87 @@ run_test('copying a group excludes last year and respects the limit', function (
     assert_equals('limit', $stopped['error'], 'copy stops when the licence is full');
 });
 
+run_test('copying a group mails its own admin link', function () {
+    $had_override = array_key_exists('premium_enabled_override', $GLOBALS);
+    $previous_override = $had_override ? $GLOBALS['premium_enabled_override'] : null;
+    $GLOBALS['premium_enabled_override'] = true;
+    try {
+    $pdo = premium_test_pdo();
+    $license = premium_test_license($pdo, 'firma_plus', 'copy-mail@example.com', 'CPY23456789A');
+    $group_id = premium_test_group($pdo, 'Pine');
+    $pdo->prepare('UPDATE `groups` SET `language` = ?, `description` = ?, `admin_email` = ? WHERE `id` = ?')
+        ->execute(array('fr', 'A quiet office', 'admin@example.com', $group_id));
+    premium_attach_group($pdo, $license, $group_id);
+    $old = $pdo->query('SELECT * FROM `groups` WHERE `id` = ' . (int) $group_id)->fetch(PDO::FETCH_ASSOC);
+    $sent = array();
+    $result = premium_admin_handle($pdo, $old, array(
+        'premium_action' => 'copy',
+        'confirm_copy' => '1',
+    ), array(), premium_test_sender($sent));
+
+    $new = $pdo->query('SELECT * FROM `groups` WHERE `id` != ' . (int) $group_id . ' ORDER BY `id` DESC LIMIT 1')->fetch(PDO::FETCH_ASSOC);
+    assert_true(is_array($new), 'the copy is stored');
+    assert_true($new['admin_token'] !== $old['admin_token'], 'the copy gets a new admin token');
+    assert_true($new['invite_token'] !== $old['invite_token'], 'the copy gets a new invite token');
+    assert_true($new['admin_token'] !== '', 'the new admin token is stored');
+    $token_in_url = urlencode($new['admin_token']);
+    assert_true(strpos($result['redirect'], 'token=' . $token_in_url) !== false, 'success page opens the new group');
+    assert_true(strpos($result['redirect'], $old['admin_token']) === false, 'success page does not keep the old token');
+    assert_equals('success', $result['notice']['type']);
+    assert_true(strpos($result['notice']['link'], 'https://') === 0, 'the shown link uses the configured site URL');
+    assert_true(strpos($result['notice']['link'], 'admin.php?token=' . $token_in_url) !== false, 'the success notice shows the new admin link');
+    assert_true(strpos($result['notice']['link'], $old['admin_token']) === false, 'the shown link is not the old admin link');
+
+    assert_equals(1, count($sent), 'one admin mail is sent');
+    assert_equals('admin@example.com', $sent[0]['to']);
+    assert_equals('fr', $new['language'], 'the copy keeps the group language');
+    assert_equals(admin_created_email_subject('Pine', 'fr'), $sent[0]['subject'], 'the copy uses the normal admin-mail subject');
+    assert_true(strpos($sent[0]['html'], 'lang="fr"') !== false, 'the mail follows the group language');
+    assert_true(strpos($sent[0]['html'], 'admin.php?token=' . $token_in_url) !== false, 'html contains the new admin link');
+    assert_true(strpos($sent[0]['plain'], 'admin.php?token=' . $token_in_url) !== false, 'plain text contains the new admin link');
+    assert_true(strpos($sent[0]['html'], 'register.php?token=' . urlencode($new['invite_token'])) !== false, 'html contains the new invite link');
+    assert_true(strpos($sent[0]['html'], $old['admin_token']) === false, 'the mail does not reuse the old admin token');
+    $silent = array();
+    $pdo->prepare('UPDATE `groups` SET `admin_email` = ? WHERE `id` = ?')->execute(array('', $group_id));
+    $again = $pdo->query('SELECT * FROM `groups` WHERE `id` = ' . (int) $group_id)->fetch(PDO::FETCH_ASSOC);
+    $empty_mail = premium_admin_handle($pdo, $again, array(
+        'premium_action' => 'copy',
+        'confirm_copy' => '1',
+    ), array(), premium_test_sender($silent));
+    assert_equals(0, count($silent), 'a group without an admin email does not send');
+    assert_true(strpos($empty_mail['notice']['link'], 'admin.php?token=') !== false, 'the new link is still shown');
+
+    $page = file_get_contents(dirname(__DIR__) . '/public/admin.php');
+    assert_true(strpos($page, 'flash-link') !== false, 'the success page renders the admin link');
+    $create = file_get_contents(dirname(__DIR__) . '/public/create_group.php');
+    assert_true(strpos($create, 'send_created_group_mail(') !== false, 'creating a group uses the same mail function');
+    foreach (array('de', 'fr', 'en') as $lang) {
+        $built = build_created_group_mail(array(
+            'id' => 9,
+            'name' => 'Pine',
+            'admin_email' => 'admin@example.com',
+            'admin_token' => 'new-admin-token',
+            'invite_token' => 'new-invite-token',
+            'language' => $lang,
+            'budget' => 20,
+            'description' => 'A quiet office',
+            'gift_exchange_date' => '2027-12-24',
+        ));
+        assert_equals(admin_created_email_subject('Pine', $lang), $built['subject'], $lang . ' admin subject');
+        assert_true(strpos($built['html'], 'lang="' . $lang . '"') !== false, $lang . ' admin html language');
+        assert_true(strpos($built['html'], 'admin.php?token=new-admin-token') !== false, $lang . ' admin html link');
+        assert_true(strpos($built['plain'], 'admin.php?token=new-admin-token') !== false, $lang . ' admin plain link');
+        assert_true(strpos($built['admin_link'], 'https://') === 0, $lang . ' admin link uses the site URL');
+    }
+    } finally {
+        if ($had_override) {
+            $GLOBALS['premium_enabled_override'] = $previous_override;
+        } else {
+            unset($GLOBALS['premium_enabled_override']);
+        }
+    }
+});
+
 run_test('hr overview hides assignments and reveal needs confirmation', function () {
     $rows = premium_hr_rows(array(
         array('name' => 'Anna', 'email' => 'anna@example.com', 'wishlist' => 'Buch', 'assigned_to' => 9),
@@ -953,7 +1034,18 @@ run_test('live reveal is a quiet fullscreen card', function () {
     assert_true(strpos($page, 'premium_brand_state') !== false, 'the card can use the group logo');
     assert_true(strpos($page, 'premium-reveal-logo') !== false, 'logo markup is present');
     assert_true(strpos($page, 'premium_page_style_attr') !== false, 'brand colours stay on the stage');
+    assert_true(strpos($page, 'premium-reveal-frame') !== false, 'centred content is separate from the button');
+    assert_true(strpos($page, 'premium-reveal-icon-enter') !== false, 'enter icon points toward the corners');
+    assert_true(strpos($page, 'premium-reveal-icon-exit') !== false, 'exit icon is present');
+    assert_true(strpos($page, 'fullscreenchange') !== false, 'the icon follows fullscreen changes');
+    assert_true(strpos($page, 'token_page_open(') !== false, 'the page uses the shared document head');
+    $head = file_get_contents(dirname(__DIR__) . '/includes/templates/head.php');
+    assert_true(strpos($head, 'href="/css/styles.css"') !== false, 'the stylesheet is linked');
     assert_true(strpos($css, 'button.premium-reveal-full') !== false, 'fullscreen control is styled on its own');
+    assert_true(strpos($css, 'bottom: 0.85rem') !== false, 'the button is anchored to the bottom');
+    assert_true(strpos($css, 'right: 0.85rem') !== false, 'the button is anchored to the right');
+    assert_true(strpos($css, '.premium-reveal-frame') !== false, 'the frame rule exists in the stylesheet');
+    assert_true(strpos($css, '.premium-reveal-icon-exit') !== false, 'the exit icon is styled');
     assert_true(strpos($css, '.premium-reveal-burst') !== false, 'the reveal has a light burst');
     assert_true(strpos($css, '.premium-reveal-card.is-open .premium-reveal-receiver') !== false, 'the receiver appears when the card opens');
     assert_true(strpos($css, 'prefers-reduced-motion: reduce') !== false, 'motion can be turned off');

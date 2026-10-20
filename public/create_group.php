@@ -55,38 +55,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $lang
         );
 
-        $admin_link = get_display_url('/admin.php?token=' . urlencode($admin_token));
-        $invite_link = get_display_url('/register.php?token=' . urlencode($invite_token));
         $group_row = array(
             'id' => $created_group_id,
             'name' => $group_name,
+            'admin_email' => $admin_email,
+            'admin_token' => $admin_token,
+            'invite_token' => $invite_token,
             'budget' => $budget,
             'description' => $description,
             'gift_exchange_date' => $gift_exchange_date,
             'language' => $lang,
         );
-        $fields = mail_present_group($group_row, $lang);
-        $mail_data = array(
-            'group_name' => $group_name,
-            'admin_link' => $admin_link,
-            'invite_link' => $invite_link,
-            'budget' => $fields['budget'],
-            'description' => $fields['description'],
-            'gift_date' => $fields['gift_date'],
-            'ics_url' => $fields['ics_url'],
-            'language' => $lang,
-        );
-        $email_sent = send_email(
-            $admin_email,
-            admin_created_email_subject($group_name, $lang),
-            create_admin_email($mail_data),
-            true,
-            create_admin_plain_text($mail_data)
-        );
-
-        if (!$email_sent) {
-            error_log('E-Mail mit Admin-Link konnte nicht an ' . mask_email($admin_email) . ' gesendet werden.');
-        }
+        $email_sent = send_created_group_mail($group_row);
 
         $premium_notice = premium_after_group_created($pdo, $created_group_id, $_POST, null, request_client_ip());
         $redirect_url = '/admin.php?token=' . urlencode($admin_token);

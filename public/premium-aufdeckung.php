@@ -48,10 +48,14 @@ $fullscreen_label = t('premium.reveal.fullscreen');
     <div class="container app-page premium-reveal-page<?php echo premium_page_class($license); ?>"<?php echo premium_page_style_attr($license); ?>>
         <div class="premium-reveal-stage" id="premium-reveal" tabindex="0"<?php echo premium_page_style_attr($license); ?>>
             <button type="button" class="premium-reveal-full" id="premium-reveal-full" aria-label="<?php echo h($fullscreen_label); ?>" title="<?php echo h($fullscreen_label); ?>">
-                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                    <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M9 4H5a1 1 0 0 0-1 1v4M15 4h4a1 1 0 0 1 1 1v4M9 20H5a1 1 0 0 1-1-1v-4M15 20h4a1 1 0 0 0 1-1v-4"/>
+                <svg class="premium-reveal-icon premium-reveal-icon-enter" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M9 4H4v5M4 4l5 5M15 4h5v5M20 4l-5 5M9 20H4v-5M4 20l5-5M15 20h5v-5M20 20l-5-5"/>
+                </svg>
+                <svg class="premium-reveal-icon premium-reveal-icon-exit" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M4 9h5V4M9 9L4 4M20 9h-5V4M15 9l5-5M4 15h5v5M9 15l-5 5M20 15h-5v5M15 15l5 5"/>
                 </svg>
             </button>
+            <div class="premium-reveal-frame">
             <?php if ($brand['logo'] !== ''): ?>
             <img class="premium-reveal-logo" src="<?php echo h($brand['logo']); ?>" alt="<?php echo h($logo_alt); ?>">
             <?php endif; ?>
@@ -68,6 +72,7 @@ $fullscreen_label = t('premium.reveal.fullscreen');
                 <div class="premium-reveal-burst" aria-hidden="true"><i></i><i></i></div>
             </div>
             <p class="premium-reveal-hint"><?php echo h(t('premium.reveal.key')); ?></p>
+            </div>
         </div>
     </div>
     <script>
@@ -177,6 +182,18 @@ $fullscreen_label = t('premium.reveal.fullscreen');
                     next();
                 }
             });
+            function fullscreenElement() {
+                return document.fullscreenElement || document.webkitFullscreenElement || null;
+            }
+
+            function syncFullscreenIcon() {
+                if (fullscreenElement() === stage) {
+                    stage.classList.add('is-fullscreen');
+                } else {
+                    stage.classList.remove('is-fullscreen');
+                }
+            }
+
             if (full) {
                 var canFull = stage.requestFullscreen || stage.webkitRequestFullscreen;
                 if (!canFull) {
@@ -184,7 +201,7 @@ $fullscreen_label = t('premium.reveal.fullscreen');
                 } else {
                     full.addEventListener('click', function (event) {
                         event.stopPropagation();
-                        var active = document.fullscreenElement || document.webkitFullscreenElement;
+                        var active = fullscreenElement();
                         if (active) {
                             if (document.exitFullscreen) {
                                 document.exitFullscreen();
@@ -199,6 +216,8 @@ $fullscreen_label = t('premium.reveal.fullscreen');
                             stage.webkitRequestFullscreen();
                         }
                     });
+                    document.addEventListener('fullscreenchange', syncFullscreenIcon);
+                    document.addEventListener('webkitfullscreenchange', syncFullscreenIcon);
                 }
             }
             show(-1);
