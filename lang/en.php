@@ -638,7 +638,7 @@ return array(
     'premium.buy.heading' => 'Buy a licence',
     'premium.buy.stripe' => 'Card or TWINT',
     'premium.buy.stripe_submit' => 'Continue to payment',
-    'premium.buy.stripe_note' => 'Payment runs at Stripe, by card or TWINT. I don’t see card details.',
+    'premium.buy.stripe_note' => 'Payment runs with Stripe.',
     'premium.buy.invoice' => 'By invoice',
     'premium.checkout.email' => 'Email for the licence',
     'premium.checkout.missing' => 'Card payment is not set up here yet. An invoice still works.',

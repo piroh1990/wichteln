@@ -638,7 +638,7 @@ return array(
     'premium.buy.heading' => 'Acheter une licence',
     'premium.buy.stripe' => 'Carte ou TWINT',
     'premium.buy.stripe_submit' => 'Continuer vers le paiement',
-    'premium.buy.stripe_note' => 'Le paiement se fait chez Stripe, par carte ou TWINT. Je ne vois pas les données de carte.',
+    'premium.buy.stripe_note' => 'Le paiement se fait avec Stripe.',
     'premium.buy.invoice' => 'Sur facture',
     'premium.checkout.email' => 'E-mail pour la licence',
     'premium.checkout.missing' => 'Le paiement par carte n’est pas encore branché ici. La facture reste possible.',

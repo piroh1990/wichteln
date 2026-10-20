@@ -1004,6 +1004,19 @@ run_test('purchase form sits in the content column and radios are not stretched'
     }
     $page = file_get_contents(__DIR__ . '/../public/firmen-premium.php');
     assert_true(strpos($page, 'premium_purchase_section_html') === false, 'the page does not print the form twice');
+    $previous_lang = isset($GLOBALS['i18n_lang']) ? $GLOBALS['i18n_lang'] : 'de';
+    foreach (array(
+        'de' => 'Die Zahlung läuft mit Stripe.',
+        'fr' => 'Le paiement se fait avec Stripe.',
+        'en' => 'Payment runs with Stripe.',
+    ) as $lang => $note) {
+        $GLOBALS['i18n_lang'] = $lang;
+        assert_equals($note, t('premium.buy.stripe_note'), $lang . ' stripe note is one short sentence');
+        assert_true(strpos(t('premium.buy.stripe_note'), 'TWINT') === false, $lang . ' stripe note drops the card details');
+    }
+    $GLOBALS['i18n_lang'] = $previous_lang;
+    $buy = file_get_contents(__DIR__ . '/../includes/premium.php');
+    assert_equals(1, substr_count($buy, "t('premium.buy.stripe_note')"), 'the stripe note is printed once');
     $css = file_get_contents(__DIR__ . '/../public/css/styles.css');
     assert_true(strpos($css, '.premium-buy-form input,') === false, 'text input rule does not cover every input');
     assert_true(strpos($css, '.premium-tier-choices input[type="radio"]') !== false, 'radios have their own size');
