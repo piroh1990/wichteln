@@ -347,6 +347,52 @@ function admin_created_email_subject($group_name, $lang = null) {
     });
 }
 
+function build_created_group_mail(array $group) {
+    $email = isset($group['admin_email']) ? trim((string) $group['admin_email']) : '';
+    $admin_token = isset($group['admin_token']) ? (string) $group['admin_token'] : '';
+    $invite_token = isset($group['invite_token']) ? (string) $group['invite_token'] : '';
+    if ($email === '' || $admin_token === '' || $invite_token === '') {
+        return null;
+    }
+    $lang = 'de';
+    if (isset($group['language']) && function_exists('i18n_is_allowed') && i18n_is_allowed($group['language'])) {
+        $lang = $group['language'];
+    }
+    $group_name = isset($group['name']) ? (string) $group['name'] : '';
+    $admin_link = get_display_url('/admin.php?token=' . urlencode($admin_token));
+    $invite_link = get_display_url('/register.php?token=' . urlencode($invite_token));
+    $fields = mail_present_group($group, $lang);
+    $mail_data = array(
+        'group_name' => $group_name,
+        'admin_link' => $admin_link,
+        'invite_link' => $invite_link,
+        'budget' => $fields['budget'],
+        'description' => $fields['description'],
+        'gift_date' => $fields['gift_date'],
+        'ics_url' => $fields['ics_url'],
+        'language' => $lang,
+    );
+    return array(
+        'to' => $email,
+        'subject' => admin_created_email_subject($group_name, $lang),
+        'html' => create_admin_email($mail_data),
+        'plain' => create_admin_plain_text($mail_data),
+        'admin_link' => $admin_link,
+    );
+}
+
+function send_created_group_mail(array $group) {
+    $mail = build_created_group_mail($group);
+    if ($mail === null) {
+        return false;
+    }
+    $sent = send_email($mail['to'], $mail['subject'], $mail['html'], true, $mail['plain']);
+    if (!$sent && function_exists('mask_email')) {
+        error_log('E-Mail mit Admin-Link konnte nicht an ' . mask_email($mail['to']) . ' gesendet werden.');
+    }
+    return $sent;
+}
+
 function create_wishlist_update_email($giver_name, $updater_name, $wishlist, $lang = null) {
     return mail_run($lang, function () use ($giver_name, $updater_name, $wishlist) {
         $wishlist = (string) $wishlist;

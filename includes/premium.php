@@ -1948,6 +1948,17 @@ function premium_copy_group_for_next_year(PDO $pdo, $group_id) {
             $new_date,
             $lang
         );
+        try {
+            $pdo->exec('SAVEPOINT premium_copy_lang');
+            $set_lang = $pdo->prepare('UPDATE `groups` SET `language` = ? WHERE `id` = ?');
+            $set_lang->execute(array($lang, (int) $new_id));
+            $pdo->exec('RELEASE SAVEPOINT premium_copy_lang');
+        } catch (Exception $e) {
+            try {
+                $pdo->exec('ROLLBACK TO SAVEPOINT premium_copy_lang');
+            } catch (Exception $ignored) {
+            }
+        }
         $link = $pdo->prepare('UPDATE `groups` SET `premium_license_id` = ? WHERE `id` = ?');
         $link->execute(array((int) $license['id'], (int) $new_id));
         $map = array();
@@ -2300,8 +2311,32 @@ function premium_admin_handle(PDO $pdo, array $group, array $post, array $files 
             $empty['notice'] = array('type' => 'error', 'text' => t($key));
             return $empty;
         }
-        $empty['notice'] = array('type' => 'success', 'text' => t('premium.copy.ok'));
-        $empty['redirect'] = '/admin.php?token=' . urlencode($copied['admin_token']);
+        $new_group = null;
+        $loaded = $pdo->prepare('SELECT * FROM `groups` WHERE `id` = ?');
+        $loaded->execute(array((int) $copied['group_id']));
+        $fetched = $loaded->fetch(PDO::FETCH_ASSOC);
+        if (is_array($fetched)) {
+            $new_group = $fetched;
+        }
+        $admin_token = ($new_group && isset($new_group['admin_token'])) ? (string) $new_group['admin_token'] : (string) $copied['admin_token'];
+        $mail = ($new_group !== null) ? build_created_group_mail($new_group) : null;
+        $mail_ok = true;
+        if ($mail !== null) {
+            $mail_ok = premium_send($sender, $mail['to'], $mail['subject'], $mail['html'], $mail['plain']);
+            if (!$mail_ok && function_exists('mask_email')) {
+                error_log('E-Mail mit Admin-Link konnte nicht an ' . mask_email($mail['to']) . ' gesendet werden.');
+            }
+        }
+        $admin_link = get_display_url('/admin.php?token=' . urlencode($admin_token));
+        $empty['notice'] = array(
+            'type' => 'success',
+            'text' => t('premium.copy.ok'),
+            'link' => $admin_link,
+        );
+        $empty['redirect'] = '/admin.php?token=' . urlencode($admin_token);
+        if ($mail !== null && !$mail_ok) {
+            $empty['redirect'] .= '&email_error=1';
+        }
         return $empty;
     }
     if ($action === 'csv_preview' || $action === 'csv_commit') {
