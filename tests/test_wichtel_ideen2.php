@@ -131,46 +131,46 @@ run_test('affiliate links stay hidden while the feature is off', function () {
 
 function ideas2_expected() {
     return array(
-        array('10', 'Kugelschreiber', 'Kugelschreiber'),
-        array('10', 'Lesezeichen', 'Lesezeichen'),
-        array('10', 'Handcreme', 'Handcreme'),
-        array('10', 'Badebombe', 'Badebombe'),
-        array('20', 'Notizbuch', 'Notizbuch'),
-        array('20', 'Leselampe', 'Leselampe'),
-        array('20', 'Tischkalender 2027', 'Tischkalender 2027'),
-        array('20', 'Socken', 'Socken'),
-        array('20', 'Lichterkette', 'Lichterkette'),
-        array('20', 'Schlüsselanhänger', 'Schlüsselanhänger'),
-        array('20', 'Trinkflasche', 'Trinkflasche'),
-        array('20', 'Tee-Adventskalender', 'Tee Adventskalender'),
-        array('20', 'Skyjo', 'Skyjo'),
-        array('20', 'Flip 7', 'Flip 7'),
-        array('20', 'Qwixx', 'Qwixx'),
-        array('20', 'Quizspiel', 'Quiz Spiel'),
-        array('20', 'Witzebuch', 'Witzebuch'),
-        array('20', 'Gesprächskarten', 'DeepTalk'),
-        array('20', 'Puzzle mit 1000 Teilen', 'Puzzle 1000'),
-        array('20', 'Bilderrahmen', 'Bilderrahmen'),
-        array('20', 'Wandkalender 2027', 'Wandkalender 2027'),
-        array('30', 'Tasse', 'Tasse'),
-        array('30', 'Powerbank', 'Powerbank'),
-        array('30', 'Duftkerze', 'Duftkerze'),
-        array('30', 'Hitster', 'Hitster'),
-        array('30', 'Partyspiel', 'Dingsbums'),
-        array('30', 'Escape Dinner', 'Escape Dinner'),
-        array('30', 'Murdoku', 'Murdoku'),
-        array('30', '3D-Puzzle', '3D Puzzle'),
-        array('30', 'Ausmalbuch', 'Ausmalbuch'),
-        array('30', 'Bastelset', 'Bastelset'),
-        array('30', 'Kreativset', 'Kreativset'),
-        array('30', 'LEGO Botanicals', 'LEGO Botanicals'),
-        array('30', 'Scrapbooking-Set', 'Scrapbooking-Set'),
-        array('30', 'LEGO-Adventskalender', 'LEGO Adventskalender'),
-        array('50', 'Thermobecher', 'Thermobecher'),
-        array('50', 'Dorfromantik', 'Dorfromantik'),
-        array('50', 'EXIT-Adventskalender', 'EXIT Adventskalender'),
-        array('50', 'Fotoalbum', 'Fotoalbum'),
-        array('50', 'Kochbuch', 'Kochbuch'),
+        array('10', 'Kugelschreiber', 'Kugelschreiber', 'buero'),
+        array('10', 'Lesezeichen', 'Lesezeichen', 'lesen'),
+        array('10', 'Handcreme', 'Handcreme', 'wellness'),
+        array('10', 'Badebombe', 'Badebombe', 'wellness'),
+        array('20', 'Notizbuch', 'Notizbuch', 'buero'),
+        array('20', 'Leselampe', 'Leselampe', 'lesen'),
+        array('20', 'Tischkalender 2027', 'Tischkalender 2027', 'kalender'),
+        array('20', 'Socken', 'Socken', 'wellness'),
+        array('20', 'Lichterkette', 'Lichterkette', 'wellness'),
+        array('20', 'Schlüsselanhänger', 'Schlüsselanhänger', 'alltag'),
+        array('20', 'Trinkflasche', 'Trinkflasche', 'alltag'),
+        array('20', 'Tee-Adventskalender', 'Tee Adventskalender', 'kalender'),
+        array('20', 'Skyjo', 'Skyjo', 'spiele'),
+        array('20', 'Flip 7', 'Flip 7', 'spiele'),
+        array('20', 'Qwixx', 'Qwixx', 'spiele'),
+        array('20', 'Quizspiel', 'Quiz Spiel', 'spiele'),
+        array('20', 'Witzebuch', 'Witzebuch', 'lesen'),
+        array('20', 'Gesprächskarten', 'DeepTalk', 'spiele'),
+        array('20', 'Puzzle mit 1000 Teilen', 'Puzzle 1000', 'spiele'),
+        array('20', 'Bilderrahmen', 'Bilderrahmen', 'kreativ'),
+        array('20', 'Wandkalender 2027', 'Wandkalender 2027', 'kalender'),
+        array('30', 'Tasse', 'Tasse', 'alltag'),
+        array('30', 'Powerbank', 'Powerbank', 'alltag'),
+        array('30', 'Duftkerze', 'Duftkerze', 'wellness'),
+        array('30', 'Hitster', 'Hitster', 'spiele'),
+        array('30', 'Partyspiel', 'Dingsbums', 'spiele'),
+        array('30', 'Escape Dinner', 'Escape Dinner', 'spiele'),
+        array('30', 'Murdoku', 'Murdoku', 'spiele'),
+        array('30', '3D-Puzzle', '3D Puzzle', 'kreativ'),
+        array('30', 'Ausmalbuch', 'Ausmalbuch', 'kreativ'),
+        array('30', 'Bastelset', 'Bastelset', 'kreativ'),
+        array('30', 'Kreativset', 'Kreativset', 'kreativ'),
+        array('30', 'LEGO Botanicals', 'LEGO Botanicals', 'kreativ'),
+        array('30', 'Scrapbooking-Set', 'Scrapbooking-Set', 'kreativ'),
+        array('30', 'LEGO-Adventskalender', 'LEGO Adventskalender', 'kalender'),
+        array('50', 'Thermobecher', 'Thermobecher', 'alltag'),
+        array('50', 'Dorfromantik', 'Dorfromantik', 'spiele'),
+        array('50', 'EXIT-Adventskalender', 'EXIT Adventskalender', 'kalender'),
+        array('50', 'Fotoalbum', 'Fotoalbum', 'kreativ'),
+        array('50', 'Kochbuch', 'Kochbuch', 'lesen'),
     );
 }
 
@@ -206,6 +206,11 @@ run_test('every card links to an Orell Fuessli search and drops anything the sho
         $pos = strpos($html, $title);
         assert_true($pos !== false, 'missing title ' . $title);
         assert_true($pos > $band_at[$row[0]], $title . ' sits in its budget band');
+        $open_at = strrpos(substr($html, 0, $pos), '<div class="idea-card"');
+        assert_true($open_at !== false, $title . ' has a card');
+        $open = substr($html, $open_at, $pos - $open_at);
+        assert_true(strpos($open, 'data-bereich="' . $row[3] . '"') !== false, $title . ' area ' . $row[3]);
+        assert_true(strpos($open, 'data-preis="' . $row[0] . '"') !== false, $title . ' keeps its budget');
         if ($next[$row[0]] !== '') {
             assert_true($pos < $band_at[$next[$row[0]]], $title . ' does not slip into the next band');
         }
@@ -265,8 +270,16 @@ run_test('every card links to an Orell Fuessli search and drops anything the sho
     }
     assert_true(strpos($kept, 'Tipps für das perfekte Wichtelgeschenk') !== false, 'tips heading');
     assert_true(strpos($kept, 'Wichtelgeschenke für verschiedene Gruppen') !== false, 'group notes heading');
-    foreach (array('Büro', 'Spielspass', 'Gemütlich', 'Kreativ') as $category) {
-        assert_true(strpos($catalog, $category) !== false, 'category ' . $category);
+    foreach (array(
+        'Spiele & Rätsel',
+        'Gemütlich & Wellness',
+        'Büro & Papeterie',
+        'Kreativ & Basteln',
+        'Lesen & Bücher',
+        'Alltag & Gadgets',
+        'Kalender & Adventskalender',
+    ) as $category) {
+        assert_true(strpos($catalog, htmlspecialchars($category, ENT_QUOTES, 'UTF-8')) !== false, 'category ' . $category);
     }
 });
 
@@ -305,4 +318,47 @@ run_test('french and english drafts translate the affiliate copy', function () {
     assert_true(strpos($en, 'Secret Santa gifts for different groups') !== false, 'English group notes');
     assert_true(strpos($en, '<title>Secret Santa gifts by budget | Wichtlä.ch</title>') !== false, 'English title');
     assert_equals(ideas2_awin_hrefs($de), ideas2_awin_hrefs($en), 'English page uses the same shop links');
+});
+
+run_test('idea filters stay in the markup and do not hide ideas without javascript', function () {
+    $root = dirname(__DIR__);
+    $source = file_get_contents($root . '/includes/ideas_page.php');
+    assert_true(strpos($source, 'onclick=') === false, 'filter uses no inline handler');
+    $js = file_get_contents($root . '/public/js/ideas-filter.js');
+    assert_true(strpos($js, "addEventListener('click'") !== false, 'clicks are bound in the script');
+    assert_true(strpos($js, 'eval(') === false, 'filter script does not eval');
+
+    $html = ideas2_test_render('de', false);
+    assert_true(strpos($html, 'src="/js/ideas-filter.js"') !== false, 'external filter script');
+    assert_true(strpos($html, 'role="radiogroup"') !== false, 'chips are a radio group');
+    assert_equals(2, substr_count($html, 'role="radiogroup"'), 'area and price are separate groups');
+    assert_true(strpos($html, '>Bereich</span>') !== false, 'German area label');
+    assert_true(strpos($html, '>Preis</span>') !== false, 'German price label');
+    assert_true(strpos($html, '>bis CHF 10</button>') !== false, 'price chip does not reuse the heading capitalisation');
+    assert_true(strpos($html, '40 Ideen') !== false, 'count shows every idea');
+    assert_true(strpos($html, 'data-ideas-empty hidden') !== false, 'empty message is hidden until a filter matches nothing');
+    assert_true(strpos($html, 'Filter zurücksetzen') !== false, 'reset link');
+    assert_equals(count(ideas2_expected()), substr_count($html, 'class="idea-card"'), 'every idea is in the html');
+    assert_equals(4, substr_count($html, 'class="content-section ideas-band"'), 'budget groups stay in the html');
+
+    $fr = ideas2_test_render('fr', false);
+    assert_true(strpos($fr, '>Catégorie</span>') !== false, 'French area label');
+    assert_true(strpos($fr, '>Prix</span>') !== false, 'French price label');
+    assert_true(strpos($fr, htmlspecialchars("jusqu'à 10 CHF", ENT_QUOTES, 'UTF-8')) !== false, 'French price chip');
+    assert_true(strpos($fr, 'Jeux et énigmes') !== false, 'French games area');
+    assert_true(strpos($fr, 'Calendriers et Avent') !== false, 'French calendar area');
+    assert_true(strpos($fr, '40 idées') !== false, 'French count');
+    assert_true(strpos($fr, 'Aucune idée ne correspond à cette sélection.') !== false, 'French empty message');
+    assert_true(strpos($fr, 'Réinitialiser les filtres') !== false, 'French reset');
+    assert_true(strpos($fr, 'Spiele') === false, 'French page does not show German area names');
+
+    $en = ideas2_test_render('en', false);
+    assert_true(strpos($en, '>Category</span>') !== false, 'English area label');
+    assert_true(strpos($en, '>Price</span>') !== false, 'English price label');
+    assert_true(strpos($en, '>up to CHF 10</button>') !== false, 'English price chip');
+    assert_true(strpos($en, htmlspecialchars('Games & puzzles', ENT_QUOTES, 'UTF-8')) !== false, 'English games area');
+    assert_true(strpos($en, htmlspecialchars('Cosy & wellness', ENT_QUOTES, 'UTF-8')) !== false, 'English wellness area');
+    assert_true(strpos($en, '40 ideas') !== false, 'English count');
+    assert_true(strpos($en, 'Nothing matches this selection.') !== false, 'English empty message');
+    assert_true(strpos($en, 'Reset filters') !== false, 'English reset');
 });
