@@ -90,7 +90,9 @@ run_test('affiliate links stay hidden while the feature is off', function () {
     assert_true(strpos($html, '<aside class="of-draft-banner"') === false, 'no banner');
     assert_true(strpos($html, '<p class="affiliate-note of-draft-note">') === false, 'no advertising note');
     assert_true(strpos($html, 'Bei Orell Füssli ansehen') === false, 'no product link text');
-    assert_true(strpos($html, 'Hochwertige Thermotasse') !== false, 'the ideas themselves stay');
+    assert_true(strpos($html, 'Kugelschreiber') !== false, 'the ideas themselves stay');
+    assert_true(strpos($html, 'Bis CHF 10') !== false, 'budget bands stay without the shop');
+    assert_true(strpos($html, 'Geschenkkarte') === false, 'no gift-card hint while the feature is off');
     assert_true(strpos($html, 'href="/wichtel-ideen"') !== false, 'menu still points at the live page');
     assert_true(strpos($html, 'href="/wichtel-ideen2"') === false, 'nothing links the draft as a normal page');
     assert_true(strpos($html, 'href="/wichtel-ideen2?setlang=de"') !== false, 'language switch stays on the draft');
@@ -98,69 +100,132 @@ run_test('affiliate links stay hidden while the feature is off', function () {
     assert_true(strpos($html, 'href="/en/wichtel-ideen2?setlang=en"') !== false, 'English switch stays on the draft');
 });
 
-run_test('product links use Awin search terms and skip food, diy and experiences', function () {
+function ideas2_expected() {
+    return array(
+        array('10', 'Kugelschreiber', 'Kugelschreiber'),
+        array('10', 'Lesezeichen', 'Lesezeichen'),
+        array('10', 'Handcreme', 'Handcreme'),
+        array('10', 'Badebombe', 'Badebombe'),
+        array('20', 'Notizbuch', 'Notizbuch'),
+        array('20', 'Leselampe', 'Leselampe'),
+        array('20', 'Tischkalender 2027', 'Tischkalender 2027'),
+        array('20', 'Socken', 'Socken'),
+        array('20', 'Lichterkette', 'Lichterkette'),
+        array('20', 'Schlüsselanhänger', 'Schlüsselanhänger'),
+        array('20', 'Trinkflasche', 'Trinkflasche'),
+        array('20', 'Tee-Adventskalender', 'Tee Adventskalender'),
+        array('20', 'Skyjo', 'Skyjo'),
+        array('20', 'Flip 7', 'Flip 7'),
+        array('20', 'Qwixx', 'Qwixx'),
+        array('20', 'Quizspiel', 'Quiz Spiel'),
+        array('20', 'Witzebuch', 'Witzebuch'),
+        array('20', 'Gesprächskarten', 'DeepTalk'),
+        array('20', 'Puzzle mit 1000 Teilen', 'Puzzle 1000'),
+        array('20', 'Bilderrahmen', 'Bilderrahmen'),
+        array('20', 'Wandkalender 2027', 'Wandkalender 2027'),
+        array('30', 'Tasse', 'Tasse'),
+        array('30', 'Powerbank', 'Powerbank'),
+        array('30', 'Duftkerze', 'Duftkerze'),
+        array('30', 'Hitster', 'Hitster'),
+        array('30', 'Partyspiel', 'Dingsbums'),
+        array('30', 'Escape Dinner', 'Escape Dinner'),
+        array('30', 'Murdoku', 'Murdoku'),
+        array('30', '3D-Puzzle', '3D Puzzle'),
+        array('30', 'Ausmalbuch', 'Ausmalbuch'),
+        array('30', 'Bastelset', 'Bastelset'),
+        array('30', 'Kreativset', 'Kreativset'),
+        array('30', 'LEGO Botanicals', 'LEGO Botanicals'),
+        array('30', 'Scrapbooking-Set', 'Scrapbooking-Set'),
+        array('30', 'LEGO-Adventskalender', 'LEGO Adventskalender'),
+        array('50', 'Thermobecher', 'Thermobecher'),
+        array('50', 'Dorfromantik', 'Dorfromantik'),
+        array('50', 'EXIT-Adventskalender', 'EXIT Adventskalender'),
+        array('50', 'Fotoalbum', 'Fotoalbum'),
+        array('50', 'Kochbuch', 'Kochbuch'),
+    );
+}
+
+function ideas2_awin_hrefs($html) {
+    preg_match_all('/href="([^"]*awin1\.com[^"]*)"/', $html, $matches);
+    $hrefs = $matches[1];
+    sort($hrefs);
+    return $hrefs;
+}
+
+function ideas2_article($html) {
+    $start = strpos($html, '<article>');
+    $end = strpos($html, '</article>');
+    assert_true($start !== false && $end !== false && $end > $start, 'article is present');
+    return substr($html, $start, $end - $start);
+}
+
+run_test('every card links to an Orell Fuessli search and drops anything the shop does not sell', function () {
     $html = ideas2_test_render('de', true);
-    $linked = array(
-        'Hochwertige Thermotasse' => 'Thermobecher',
-        'Schönes Notizbuch' => 'Notizbuch',
-        'Lustiges Kartenspiel' => 'Kartenspiel',
-        'Malbuch für Erwachsene' => 'Ausmalbuch',
-        '3D-Puzzle' => '3D Puzzle',
-        'Polaroid-Fotoalbum' => 'Fotoalbum',
-        '„Wie werde ich reich"-Bücher' => 'witziges Buch',
-    );
-    $plain = array(
-        'Lustige Socken',
-        'Duftkerzen-Set',
-        'Schweizer Schokolade',
-        'Mini-Pflanze',
-        'Witzige Büro-Deko',
-        'Witziges T-Shirt',
-        'Powerbank',
-        'Handy-Gadgets',
-        'LED-Lichterkette',
-        'Badebomben-Set',
-        'Handcreme-Set',
-        'Tee-Set Premium',
-        'Gewürz-Set',
-        'Schweizer Honig',
-        'Barista-Kaffee',
-        'Einhorn-Produkte',
-        'Nutzlose Gadgets',
-    );
-    foreach ($linked as $title => $term) {
-        assert_true(ideas2_card_has_link($html, $title), $title . ' links to Orell Füssli');
-        assert_true(strpos($html, ideas2_href(affiliate_of_search_target($term))) !== false, $title . ' searches for ' . $term);
+    $expected = ideas2_expected();
+    $bands = array('10' => 'Bis CHF 10', '20' => 'Bis CHF 20', '30' => 'Bis CHF 30', '50' => 'Bis CHF 50');
+    $band_at = array();
+    foreach ($bands as $group => $label) {
+        $band_at[$group] = strpos($html, $label);
+        assert_true($band_at[$group] !== false, 'missing band ' . $label);
     }
-    foreach ($plain as $title) {
-        assert_true(!ideas2_card_has_link($html, $title), $title . ' stays without a shop link');
+    assert_true($band_at['10'] < $band_at['20'] && $band_at['20'] < $band_at['30'] && $band_at['30'] < $band_at['50'], 'bands stay in order');
+
+    foreach ($expected as $row) {
+        $next = array('10' => '20', '20' => '30', '30' => '50', '50' => '');
+        $title = $row[1];
+        $term = $row[2];
+        $pos = strpos($html, $title);
+        assert_true($pos !== false, 'missing title ' . $title);
+        assert_true($pos > $band_at[$row[0]], $title . ' sits in its budget band');
+        if ($next[$row[0]] !== '') {
+            assert_true($pos < $band_at[$next[$row[0]]], $title . ' does not slip into the next band');
+        }
+        assert_true(ideas2_card_has_link($html, $title), $title . ' links to Orell Füssli');
+        $href = ideas2_href(affiliate_of_search_target($term));
+        $slice_end = strpos($html, 'idea-card', $pos);
+        $slice = ($slice_end === false) ? substr($html, $pos, 900) : substr($html, $pos, $slice_end - $pos);
+        assert_true(strpos($slice, $href) !== false, $title . ' searches for ' . $term);
     }
 
-    assert_true(strpos($html, ideas2_href(affiliate_of_search_target('Kugelschreiber'))) !== false, 'pens search for Kugelschreiber');
-    assert_true(strpos($html, ideas2_href(affiliate_of_search_target('Gesellschaftsspiel'))) !== false, 'board games search for Gesellschaftsspiel');
-    assert_true(strpos($html, ideas2_href(affiliate_of_search_target('Wandkalender'))) !== false, 'calendars search for Wandkalender');
-    assert_true(strpos($html, ideas2_href(affiliate_of_gift_url())) !== false, 'banner uses the gift category');
+    $cards = substr_count($html, 'class="idea-card"');
+    assert_equals(count($expected), $cards, 'one card per checked idea');
+    assert_equals($cards, substr_count($html, 'class="idea-shop"'), 'every card has one shop link');
+    $shop_links = $cards + 2;
+    assert_equals($shop_links, substr_count($html, 'awin1.com'), 'cards, banner and gift card');
+    assert_equals($shop_links, substr_count($html, 'rel="sponsored noopener"'), 'every shop link is sponsored');
+    assert_equals($shop_links, substr_count($html, 'target="_blank"'), 'every shop link opens in a new tab');
+    $hrefs = ideas2_awin_hrefs($html);
+    assert_equals($shop_links, count($hrefs), 'every awin href is found');
+    assert_equals($shop_links, count(array_unique($hrefs)), 'search terms are not reused');
+    assert_true(in_array(ideas2_href(affiliate_of_gift_url()), $hrefs, true), 'banner uses the gift category');
+    assert_true(in_array(ideas2_href(affiliate_of_search_target('Geschenkkarte')), $hrefs, true), 'gift card searches for Geschenkkarte');
     assert_true(strpos($html, 'clickref') === false, 'draft links do not add a clickref');
-    assert_equals(11, substr_count($html, 'awin1.com'), 'banner, seven cards and three list ideas');
-    assert_equals(11, substr_count($html, 'rel="sponsored noopener"'), 'every shop link is sponsored');
-    assert_equals(11, substr_count($html, 'target="_blank"'), 'every shop link opens in a new tab');
     assert_true(strpos($html, 'Passende Geschenke findest du bei Orell Füssli.') !== false, 'banner copy');
     assert_true(strpos($html, 'Geschenkideen bei Orell Füssli') !== false, 'red button label');
     assert_true(strpos($html, 'Bei Orell Füssli ansehen') !== false, 'product link label');
     assert_true(strpos($html, 'Die Links zu Orell Füssli sind Werbelinks.') !== false, 'note under the ideas');
+    assert_true(strpos($html, 'Wenn nichts davon passt, ist eine Geschenkkarte die einfache Notlösung.') !== false, 'gift card fallback');
 
     $note = strpos($html, '<p class="affiliate-note of-draft-note">');
+    $gift = strpos($html, 'class="of-draft-fallback"');
     $grid = strpos($html, 'ideas-grid');
-    assert_true($note !== false && $grid !== false && $note > $grid, 'the note sits below the idea boxes');
     $article_end = strpos($html, '</article>');
-    assert_true($article_end !== false && $note > $article_end, 'the note is outside the article');
+    assert_true($note !== false && $grid !== false && $note > $grid, 'the note sits below the idea boxes');
+    assert_true($article_end !== false && $gift !== false && $gift > $article_end && $note > $gift, 'gift card and note sit outside the article');
 
-    $diy = strpos($html, 'DIY-Wichtelgeschenke');
-    $groups = strpos($html, 'Wichtelgeschenke für verschiedene Gruppen');
-    assert_true(strpos(substr($html, $diy, $groups - $diy), 'awin1.com') === false, 'homemade ideas stay without links');
-    $budget = strpos($html, 'Geschenke nach Budget');
-    assert_true(strpos(substr($html, $budget, $diy - $budget), 'awin1.com') === false, 'mixed budget lines stay without links');
-    assert_true(strpos($html, 'Erlebnis-Gutscheine (Kino, Essen, Events)</li>') !== false, 'experience ideas are not wrapped in a shop link');
+    $article = ideas2_article($html);
+    assert_true(preg_match('/\d+\.\d{2}/', $article) !== 1, 'no exact prices in the ideas');
+    assert_true(strpos($article, 'awin1.com') !== false, 'shop links live with the ideas');
+    foreach (array(
+        'Schokolade', 'Gewürz', 'Honig', 'Kaffee', 'Kuscheldecke', 'DIY', 'Selbstgemacht',
+        'Erlebnis', 'Insider', 'personalisiert', 'Sukkulente', 'Tee-Set', 'Mini-Pflanze',
+        'T-Shirt', 'Einhorn', 'Gutschein',
+    ) as $banned) {
+        assert_true(strpos($article, $banned) === false, 'removed idea stays off the page: ' . $banned);
+    }
+    foreach (array('Büro', 'Spielspass', 'Gemütlich', 'Kreativ') as $category) {
+        assert_true(strpos($article, $category) !== false, 'category ' . $category);
+    }
 });
 
 run_test('french and english drafts translate the affiliate copy', function () {
@@ -169,8 +234,14 @@ run_test('french and english drafts translate the affiliate copy', function () {
     assert_true(strpos($fr, 'Idées cadeaux chez Orell Füssli') !== false, 'French button');
     assert_true(strpos($fr, 'Voir chez Orell Füssli') !== false, 'French product link');
     assert_true(strpos($fr, 'Les liens vers Orell Füssli sont des liens publicitaires.') !== false, 'French note');
-    assert_true(strpos($fr, ideas2_href(affiliate_of_search_target('Kartenspiel'))) !== false, 'French page keeps the German shop search');
-    assert_equals(11, substr_count($fr, 'rel="sponsored noopener"'), 'French page has the same links');
+    assert_true(strpos($fr, ideas2_href(affiliate_of_search_target('Skyjo'))) !== false, 'French page keeps the German shop search');
+    assert_true(strpos($fr, 'Marque-page') !== false, 'French title');
+    assert_true(strpos($fr, 'Bougie parfumée') !== false, 'French candle');
+    assert_true(strpos($fr, 'Si rien ne convient, une carte cadeau est la solution simple.') !== false, 'French gift card');
+    assert_true(strpos($fr, 'Ein Kugelschreiber fürs Büro') === false, 'French page does not show the German copy');
+    assert_equals(substr_count($fr, 'class="idea-card"'), count(ideas2_expected()), 'French page has the same cards');
+    $de = ideas2_test_render('de', true);
+    assert_equals(ideas2_awin_hrefs($de), ideas2_awin_hrefs($fr), 'French page uses the same shop links');
     assert_true(strpos($fr, 'href="/fr/wichtel-ideen"') !== false, 'French menu still points at the live page');
 
     $en = ideas2_test_render('en', true);
@@ -179,5 +250,8 @@ run_test('french and english drafts translate the affiliate copy', function () {
     assert_true(strpos($en, 'View at Orell Füssli') !== false, 'English product link');
     assert_true(strpos($en, 'The links to Orell Füssli are ad links.') !== false, 'English note');
     assert_true(strpos($en, ideas2_href(affiliate_of_search_target('Ausmalbuch'))) !== false, 'English page keeps the German shop search');
+    assert_true(strpos($en, 'Scented candle') !== false, 'English candle');
+    assert_true(strpos($en, 'If nothing fits, a gift card is the easy fallback.') !== false, 'English gift card');
     assert_true(strpos($en, 'name="robots" content="noindex, nofollow"') !== false, 'English draft stays noindex');
+    assert_equals(ideas2_awin_hrefs($de), ideas2_awin_hrefs($en), 'English page uses the same shop links');
 });
