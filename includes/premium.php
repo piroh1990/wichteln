@@ -2165,6 +2165,10 @@ function premium_copy_group_for_next_year(PDO $pdo, $group_id) {
         }
         $link = $pdo->prepare('UPDATE `groups` SET `premium_license_id` = ? WHERE `id` = ?');
         $link->execute(array((int) $license['id'], (int) $new_id));
+        if (function_exists('affiliate_of_column_ready') && affiliate_of_column_ready($pdo) && isset($group['affiliate_of']) && (string) $group['affiliate_of'] === '1') {
+            $flag = $pdo->prepare('UPDATE `groups` SET `affiliate_of` = 1 WHERE `id` = ?');
+            $flag->execute(array((int) $new_id));
+        }
         $map = array();
         foreach ($participants as $person) {
             $email = (isset($person['email']) && trim((string) $person['email']) !== '') ? $person['email'] : null;
@@ -2471,6 +2475,12 @@ function premium_admin_handle(PDO $pdo, array $group, array $post, array $files 
         $empty['notice'] = array('type' => 'error', 'text' => t('premium.claim.need_migration'));
         return $empty;
     }
+    if ($action === 'affiliate_of' && function_exists('affiliate_of_admin_save')) {
+        $saved = affiliate_of_admin_save($pdo, $group, $post);
+        $empty['notice'] = $saved['notice'];
+        $empty['reload'] = !empty($saved['reload']);
+        return $empty;
+    }
     if ($action === 'claim_email') {
         $result = premium_request_email_claim($pdo, $group['id'], isset($post['license_email']) ? $post['license_email'] : '', $ip, $sender);
         $message = premium_public_claim_message($result['status']);
@@ -2736,6 +2746,9 @@ function premium_admin_section_html(PDO $pdo, array $group, $session = null) {
                 $html .= '</div>';
             }
         }
+    }
+    if (function_exists('affiliate_of_admin_toggle_html')) {
+        $html .= affiliate_of_admin_toggle_html($pdo, $group);
     }
     $html .= '</section>';
     return $html;

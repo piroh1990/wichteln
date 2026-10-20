@@ -173,6 +173,9 @@ function create_html_email($data) {
         $body .= mail_details_html($budget, $description, $gift_date);
         $body .= email_calendar_paragraph($ics);
         $body .= mail_area_html(isset($data['participant_link']) ? $data['participant_link'] : '', 'mail.partner');
+        if (!empty($data['affiliate'])) {
+            $body .= affiliate_of_mail_html('mail-draw');
+        }
         $body .= mail_p(mail_esc(t('mail.signoff')));
         return render_email_template(t('mail.partner.title'), t('mail.partner.preview'), $body);
     });
@@ -204,6 +207,13 @@ function create_partner_plain_text($data) {
         if (count($area) > 0) {
             $lines[] = '';
             $lines = array_merge($lines, $area);
+        }
+        if (!empty($data['affiliate'])) {
+            $promo = affiliate_of_mail_plain('mail-draw');
+            if (count($promo) > 0) {
+                $lines[] = '';
+                $lines = array_merge($lines, $promo);
+            }
         }
         $lines[] = '';
         $lines = array_merge($lines, mail_plain_footer());
@@ -553,6 +563,9 @@ function create_gift_reminder_email($data) {
         $body .= mail_p(mail_esc(t('mail.date_line', array('{date}' => $date))));
         $body .= mail_button($link, t('mail.reminder.button'));
         $body .= email_calendar_paragraph($ics);
+        if (!empty($data['affiliate'])) {
+            $body .= affiliate_of_mail_html('mail-reminder');
+        }
         $body .= mail_p(mail_esc(t('mail.signoff')));
         return render_email_template(t('mail.reminder.title'), $sentence, $body);
     });
@@ -572,6 +585,13 @@ function create_gift_reminder_plain_text($data) {
         );
         if (!empty($data['ics_url'])) {
             $lines[] = t('mail.calendar_plain', array('{url}' => $data['ics_url']));
+        }
+        if (!empty($data['affiliate'])) {
+            $promo = affiliate_of_mail_plain('mail-reminder');
+            if (count($promo) > 0) {
+                $lines[] = '';
+                $lines = array_merge($lines, $promo);
+            }
         }
         $lines[] = '';
         $lines = array_merge($lines, mail_plain_footer());
@@ -691,6 +711,7 @@ function send_partner_mail($email, $giver_name, $assigned_name, $wishlist, $grou
         'ics_url' => $fields['ics_url'],
         'participant_link' => mail_participant_link($participant_token),
         'language' => $lang,
+        'affiliate' => affiliate_of_show_for_group(is_array($group) ? $group : array()),
     );
     return send_email(
         $email,

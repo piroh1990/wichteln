@@ -684,5 +684,6 @@ function get_display_url($path = '') {
 require_once __DIR__ . '/mail_messages.php';
 require_once __DIR__ . '/group_tools.php';
 require_once __DIR__ . '/premium.php';
+require_once __DIR__ . '/affiliate.php';
 
 ?>

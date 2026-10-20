@@ -529,6 +529,7 @@ function deliver_gift_reminders($participants, $group, $sender = null, $today = 
             'participant_link' => ($token !== '') ? get_display_url('/participant.php?token=' . rawurlencode($token)) : '',
             'ics_url' => gift_ics_url($group, $lang),
             'language' => $lang,
+            'affiliate' => affiliate_of_show_for_group($group),
         );
 
         $ok = false;

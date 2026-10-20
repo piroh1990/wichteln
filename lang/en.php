@@ -760,4 +760,15 @@ return array(
     'premium.company.overview' => 'You set the logo and colours in the licence overview. Every new group on this licence picks them up.',
     'premium.company.pay' => 'You can pay by card or TWINT, or I send an invoice.',
     'premium.company.cta' => 'See the licence',
+
+    'affiliate.wish' => 'Search at Orell Füssli',
+    'affiliate.gift' => 'Gift ideas at Orell Füssli',
+    'affiliate.note' => 'Ad link: if you order through these links, you support wichtlä.ch. It costs you nothing extra.',
+    'affiliate.mail.lead' => 'No gift yet? At Orell Füssli you will find books, games and gift ideas. Best to order soon so it arrives in time.',
+    'affiliate.mail.link' => 'Gift ideas at Orell Füssli',
+    'affiliate.toggle' => 'Show Orell Füssli ad links in this group',
+    'affiliate.toggle_help' => 'For companies and clubs these links stay off. Turn them on only if you want them.',
+    'affiliate.save' => 'Save',
+    'affiliate.saved' => 'Saved.',
+    'affiliate.migration' => 'The column for the ad links is still missing. The migration in INSTALL.md has not been run.',
 );

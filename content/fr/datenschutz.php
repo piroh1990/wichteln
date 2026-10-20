@@ -323,6 +323,17 @@
             <p>
                 Le logo et les couleurs sont sur la licence et apparaissent sur les pages du groupe et des participant·e·s. Nous réenregistrons le logo en PNG, hors du dossier public. La vue RH montre le nom, l’adresse, si une liste de souhaits est remplie, et l’état du rappel. Elle ne montre pas les attributions. La révélation en direct est une étape séparée, avec confirmation par l’admin.
             </p>
+
+            <h2 id="werbelinks">16. Liens publicitaires</h2>
+            <p>
+                Quand la fonction est activée, la page du participant après le tirage et certains e-mails peuvent contenir des liens vers Orell Füssli. Ce sont des liens d’affiliation via le réseau Awin. Une commande via un tel lien ne te coûte rien en plus. wichtlä.ch peut recevoir une commission.
+            </p>
+            <p>
+                wichtlä.ch n’ajoute pour cela aucun script publicitaire et aucun cookie supplémentaire. Ce n’est qu’en cliquant sur un tel lien que tu passes par Awin, puis chez Orell Füssli. Là, Awin et Orell Füssli peuvent déposer leurs propres cookies pour relier le clic à une commande éventuelle.
+            </p>
+            <p>
+                Plus d’informations dans la <a href="https://www.awin.com/gb/legal/privacy-policy" target="_blank" rel="noopener noreferrer">déclaration de confidentialité d’Awin</a>. Les indications d’Orell Füssli sont sur <a href="https://www.orellfuessli.ch/" target="_blank" rel="noopener noreferrer">orellfuessli.ch</a>.
+            </p>
             
             <hr>
             
