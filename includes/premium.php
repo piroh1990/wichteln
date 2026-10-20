@@ -2811,13 +2811,23 @@ function premium_master_handle(PDO $pdo, array $post, $sender = null) {
     return array('type' => 'error', 'text' => t('premium.master.missing_row'));
 }
 
-function premium_master_section_html(PDO $pdo) {
+function premium_master_pending_count(PDO $pdo) {
+    if (!premium_feature_enabled() || !premium_tables_ready($pdo)) {
+        return 0;
+    }
+    $stmt = $pdo->query("SELECT COUNT(*) FROM `premium_licenses` WHERE `status` = 'pending'");
+    return (int) $stmt->fetchColumn();
+}
+
+function premium_master_section_html(PDO $pdo, $with_diagnostic = true) {
     if (!premium_feature_enabled()) {
         return '';
     }
     $html = '<section class="section-card" id="premium-lizenzen" aria-labelledby="premium-master-heading">';
     $html .= '<div class="section-card-header"><span class="section-icon" aria-hidden="true">✦</span><h2 id="premium-master-heading">' . h(t('premium.master.title')) . '</h2></div>';
-    $html .= premium_master_diagnostic_html();
+    if ($with_diagnostic) {
+        $html .= premium_master_diagnostic_html();
+    }
     if (!premium_tables_ready($pdo)) {
         $html .= '<p>' . h(t('premium.master.missing')) . '</p></section>';
         return $html;

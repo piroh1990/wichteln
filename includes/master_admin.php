@@ -170,6 +170,41 @@ function master_admin_schema_report(PDO $pdo) {
     );
 }
 
+function master_admin_sections() {
+    return array(
+        'uebersicht' => 'Übersicht',
+        'gruppen' => 'Gruppen',
+        'premium' => 'Premium-Lizenzen',
+        'statistik' => 'Statistiken und Export',
+        'system' => 'System',
+    );
+}
+
+function master_admin_section_from_request(array $query) {
+    $raw = isset($query['view']) ? (string) $query['view'] : '';
+    if (isset(master_admin_sections()[$raw])) {
+        return $raw;
+    }
+    if ($raw === 'cards' || $raw === 'table') {
+        return 'gruppen';
+    }
+    if (isset($query['export'])) {
+        $export = (string) $query['export'];
+        if ($export === 'gruppen') {
+            return 'gruppen';
+        }
+        if ($export === 'statistik') {
+            return 'statistik';
+        }
+    }
+    foreach (array('q', 'status', 'sort', 'dir', 'page', 'archive_page', 'layout') as $key) {
+        if (isset($query[$key]) && (string) $query[$key] !== '') {
+            return 'gruppen';
+        }
+    }
+    return 'uebersicht';
+}
+
 function master_admin_filters_from_request(array $query) {
     $statuses = master_admin_status_options();
     $sorts = master_admin_sort_options();
@@ -182,7 +217,10 @@ function master_admin_filters_from_request(array $query) {
         $sort = 'created_at';
     }
     $dir = (isset($query['dir']) && strtolower((string) $query['dir']) === 'asc') ? 'asc' : 'desc';
-    $view = (isset($query['view']) && $query['view'] === 'cards') ? 'cards' : 'table';
+    $view = 'table';
+    if ((isset($query['layout']) && $query['layout'] === 'cards') || (isset($query['view']) && $query['view'] === 'cards')) {
+        $view = 'cards';
+    }
     $q = isset($query['q']) ? trim((string) $query['q']) : '';
     if (function_exists('mb_substr')) {
         $q = mb_substr($q, 0, 100, 'UTF-8');
@@ -203,14 +241,37 @@ function master_admin_filters_from_request(array $query) {
         'sort' => $sort,
         'dir' => $dir,
         'view' => $view,
+        'section' => master_admin_section_from_request($query),
         'page' => $page,
         'archive_page' => $archive_page,
     );
 }
 
 function master_admin_query_params(array $filters, array $override = array()) {
+    $layout = (isset($filters['view']) && $filters['view'] === 'cards') ? 'cards' : 'table';
+    $section = isset($filters['section']) ? (string) $filters['section'] : 'uebersicht';
+    if (isset($override['layout'])) {
+        $layout = ($override['layout'] === 'cards') ? 'cards' : 'table';
+        unset($override['layout']);
+    }
+    if (isset($override['section']) && isset(master_admin_sections()[(string) $override['section']])) {
+        $section = (string) $override['section'];
+        unset($override['section']);
+    }
+    if (isset($override['view'])) {
+        $override_view = (string) $override['view'];
+        if (isset(master_admin_sections()[$override_view])) {
+            $section = $override_view;
+        } elseif ($override_view === 'cards' || $override_view === 'table') {
+            $layout = $override_view;
+        }
+        unset($override['view']);
+    }
     $filters = array_merge($filters, $override);
     $params = array();
+    if ($section !== 'uebersicht' && isset(master_admin_sections()[$section])) {
+        $params['view'] = $section;
+    }
     if (isset($filters['q']) && $filters['q'] !== '') {
         $params['q'] = $filters['q'];
     }
@@ -223,8 +284,8 @@ function master_admin_query_params(array $filters, array $override = array()) {
     if (isset($filters['dir']) && $filters['dir'] !== 'desc') {
         $params['dir'] = $filters['dir'];
     }
-    if (isset($filters['view']) && $filters['view'] !== 'table') {
-        $params['view'] = $filters['view'];
+    if ($layout === 'cards') {
+        $params['layout'] = 'cards';
     }
     if (isset($filters['page']) && (int) $filters['page'] > 1) {
         $params['page'] = (int) $filters['page'];
