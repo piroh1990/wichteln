@@ -73,6 +73,23 @@ token_page_open(t('premium.overview.title'));
             <p class="app-hero-lead"><?php echo h(t('premium.overview.lead')); ?></p>
             <?php echo premium_hero_extras_html($license); ?>
             <p><?php echo h(premium_slots_text($license, $used)); ?></p>
+            <?php
+            $pool = premium_buyer_pool($pdo, isset($license['buyer_email']) ? $license['buyer_email'] : '');
+            if (count($pool['rows']) > 1) {
+                if ($pool['open']) {
+                    echo '<p>' . h(t('premium.admin.pool_open', array('{used}' => (string) $pool['used']))) . '</p>';
+                } else {
+                    echo '<p>' . h(t('premium.admin.pool', array(
+                        '{left}' => (string) $pool['left'],
+                        '{used}' => (string) $pool['used'],
+                        '{limit}' => (string) $pool['limit'],
+                    ))) . '</p>';
+                }
+            }
+            if (premium_credits_exhausted($pdo, $license, $used)) {
+                echo '<p><a href="' . h(premium_purchase_href()) . '">' . h(t('premium.admin.buy_more')) . '</a></p>';
+            }
+            ?>
         </header>
         <?php if (is_array($notice) && $notice['text'] !== ''): ?>
             <div class="notification <?php echo ($notice['type'] === 'success') ? 'success' : 'error'; ?>" role="status"><?php echo h($notice['text']); ?></div>

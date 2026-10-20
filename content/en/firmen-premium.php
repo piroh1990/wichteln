@@ -5,17 +5,17 @@
 
         <header class="page-header">
             <h1 class="page-title">Company Premium</h1>
-            <p class="page-subtitle">Several groups, one licence</p>
+            <p class="page-subtitle">Credit for Premium groups</p>
         </header>
 
         <article>
             <section class="content-section">
                 <h2>Why I added this</h2>
                 <p>
-                    A normal group stays free. Companies can of course also run a normal Secret Santa for free. The extra features are optional. Premium is for clubs and companies that run several groups in one season or want more features: departments, sites, one draw for the apprentices and one for the team.
+                    A normal group stays free. Companies can of course also run a normal Secret Santa for free. The extra features are optional. Premium is for clubs and companies that run several groups or want more features: departments, sites, one draw for the apprentices and one for the team.
                 </p>
                 <p>
-                    One licence covers the current season and as many groups as the plan allows. There is no account. You connect the licence to the group you are creating.
+                    A package is a credit of Premium groups and does not expire. Each run counts as one Premium draw, including the copy for next year. There is no account. You connect the credit to the group you are creating. When it is used up, you can buy another package. A second purchase with the same email adds to the credit.
                 </p>
             </section>
 

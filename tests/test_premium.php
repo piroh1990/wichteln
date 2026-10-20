@@ -173,9 +173,9 @@ run_test('premium stays hidden until it is configured', function () {
 run_test('create form lists premium, prices and both ways to activate', function () {
     $previous = isset($GLOBALS['i18n_lang']) ? $GLOBALS['i18n_lang'] : 'de';
     $expected = array(
-        'de' => array('Zusatzfunktionen für Firmen und Vereine', 'mehr Funktionen wünschen', 'ganz normal und gratis wichteln', 'CSV-Import', 'Eigenes Logo und eigene Farben', 'Gruppe fürs nächste Jahr kopieren', 'HR-Übersicht mit Live-Aufdeckung', 'Eigener Begrüssungstext', 'Domain-Lizenz', 'Lizenzübersicht', 'Dieselben Funktionen', 'CHF 19', 'CHF 49', 'CHF 99', 'Lizenzcode', 'Bestätigung'),
-        'fr' => array('Fonctions supplémentaires pour entreprises et associations', 'plus de fonctions', 'gratuitement', 'Import CSV', 'Texte d’accueil', 'Licence de domaine', 'Les mêmes fonctions', 'CHF 19', 'CHF 49', 'CHF 99', 'code de licence'),
-        'en' => array('Extra features for companies and clubs', 'want more features', 'for free', 'CSV import', 'welcome text', 'Domain licence', 'The same features', 'CHF 19', 'CHF 49', 'CHF 99', 'licence code'),
+        'de' => array('Zusatzfunktionen für Firmen und Vereine', 'mehr Funktionen wünschen', 'ganz normal und gratis wichteln', 'Jede Durchführung zählt', 'CSV-Import', 'Eigenes Logo und eigene Farben', 'Gruppe fürs nächste Jahr kopieren', 'HR-Übersicht mit Live-Aufdeckung', 'Eigener Begrüssungstext', 'Domain-Lizenz', 'Lizenzübersicht', 'Dieselben Funktionen', 'CHF 9', 'CHF 19', 'CHF 29', 'Lizenzcode', 'Bestätigung'),
+        'fr' => array('Fonctions supplémentaires pour entreprises et associations', 'plus de fonctions', 'gratuitement', 'Chaque édition compte', 'Import CSV', 'Texte d’accueil', 'Licence de domaine', 'Les mêmes fonctions', 'CHF 9', 'CHF 19', 'CHF 29', 'code de licence'),
+        'en' => array('Extra features for companies and clubs', 'want more features', 'for free', 'Each run counts', 'CSV import', 'welcome text', 'Domain licence', 'The same features', 'CHF 9', 'CHF 19', 'CHF 29', 'licence code'),
     );
     foreach ($expected as $lang => $needles) {
         $GLOBALS['i18n_lang'] = $lang;
@@ -201,6 +201,9 @@ run_test('create form lists premium, prices and both ways to activate', function
         assert_true(strpos($html, 'Ausschlussregeln') === false, $lang . ' box does not list exclusion rules');
         assert_true(strpos($html, 'Exclusion rules the draw') === false, $lang . ' box does not list exclusion rules');
         assert_true(strpos($html, 'Règles d’exclusion') === false, $lang . ' box does not list exclusion rules');
+        assert_true(stripos($html, 'Saison') === false && stripos($html, 'season') === false && stripos($html, 'saison') === false, $lang . ' box does not sell a season');
+        assert_true(strpos($html, 'Firma Plus') === false && strpos($html, 'Company Plus') === false && strpos($html, 'Entreprise Plus') === false, $lang . ' box drops the old tier names');
+        assert_true(strpos($html, 'CHF 49') === false && strpos($html, 'CHF 99') === false, $lang . ' box drops the old prices');
     }
     $GLOBALS['i18n_lang'] = $previous;
 
@@ -209,6 +212,8 @@ run_test('create form lists premium, prices and both ways to activate', function
     $en = file_get_contents(dirname(__DIR__) . '/content/en/firmen-premium.php');
     assert_true(strpos($de, 'ß') === false, 'German premium page uses ss');
     assert_true(strpos($de, 'oder mehr Funktionen wünschen') !== false, 'German page offers more than several groups');
+    assert_true(strpos($de, 'Jede Durchführung zählt als ein Premium-Wichteln') !== false, 'German page counts each run');
+    assert_true(stripos($de, 'Saison') === false, 'German page does not sell a season');
     assert_true(strpos($de, 'ganz normal und gratis wichteln') !== false, 'German page says companies can use the free draw');
     assert_true(strpos($de, 'Ausschlussregeln') === false, 'German premium page does not sell exclusion rules');
     assert_true(strpos($fr, 'souhaitent plus de fonctions') !== false, 'French page offers more than several groups');
@@ -256,6 +261,87 @@ run_test('license limits and configurable tiers', function () {
     assert_true(!premium_has_room('verein', 1, $custom), 'custom tier stops at its limit');
     assert_equals('info@xn--wichtl-gua.ch', premium_normalize_admin_email('info@wichtlä.ch'));
     assert_equals('info@xn--wichtl-gua.ch', premium_normalize_admin_email(''));
+});
+
+run_test('credits add up and a used-up package offers another purchase', function () {
+    $had_override = array_key_exists('premium_enabled_override', $GLOBALS);
+    $previous_override = $had_override ? $GLOBALS['premium_enabled_override'] : null;
+    $previous_lang = isset($GLOBALS['i18n_lang']) ? $GLOBALS['i18n_lang'] : 'de';
+    $GLOBALS['premium_enabled_override'] = true;
+    $GLOBALS['i18n_lang'] = 'de';
+    set_error_handler(function () {
+        return true;
+    });
+    try {
+        $pdo = premium_test_pdo();
+        $first = premium_test_license($pdo, '1x', 'pool@example.com', 'ABCD2345678P');
+        $group = premium_test_group($pdo, 'Erstes');
+        assert_true(premium_attach_group($pdo, $first, $group)['ok'], 'the first credit is used');
+        $blocked = premium_attach_group($pdo, $first, premium_test_group($pdo, 'Direkt'));
+        assert_equals('limit', $blocked['error'], '1x stops at one group');
+
+        $second = premium_test_license($pdo, '1x', 'pool@example.com', 'ABCD2345678Q');
+        $copied = premium_copy_group_for_next_year($pdo, $group);
+        assert_true($copied['ok'], 'copy uses the next package of the same email');
+        $copy_license = (int) $pdo->query('SELECT `premium_license_id` FROM `groups` WHERE `id` = ' . (int) $copied['group_id'])->fetchColumn();
+        assert_equals($second, $copy_license, 'the copy is not stuck on the full package');
+
+        $sent = array();
+        $third = premium_test_group($pdo, 'Drittes');
+        $claim = premium_request_email_claim($pdo, $third, 'pool@example.com', 'ip-pool-' . bin2hex(random_bytes(3)), premium_test_sender($sent), 1760000000);
+        assert_equals('sent', $claim['status'], 'a known address still gets a confirmation');
+        $confirmed = premium_confirm_token($pdo, $claim['token'], 1760000000);
+        assert_equals('limit', $confirmed['error'], 'two used credits refuse a third group');
+
+        $older = premium_test_license($pdo, '1x', 'reihe@example.com', 'EFGH2345678P');
+        $newer = premium_test_license($pdo, '1x', 'reihe@example.com', 'EFGH2345678Q');
+        $one = premium_test_group($pdo, 'Aelteres Paket');
+        $ask = premium_request_email_claim($pdo, $one, 'reihe@example.com', 'ip-row-' . bin2hex(random_bytes(3)), premium_test_sender($sent), 1760001000);
+        assert_true(premium_confirm_token($pdo, $ask['token'], 1760001000)['ok'], 'the older package is used first');
+        assert_equals($older, (int) $pdo->query('SELECT `premium_license_id` FROM `groups` WHERE `id` = ' . (int) $one)->fetchColumn());
+        $two = premium_test_group($pdo, 'Zweites Paket');
+        $ask2 = premium_request_email_claim($pdo, $two, 'reihe@example.com', 'ip-row2-' . bin2hex(random_bytes(3)), premium_test_sender($sent), 1760002000);
+        assert_true(premium_confirm_token($pdo, $ask2['token'], 1760002000)['ok'], 'the newer package takes the next group');
+        assert_equals($newer, (int) $pdo->query('SELECT `premium_license_id` FROM `groups` WHERE `id` = ' . (int) $two)->fetchColumn());
+
+        $refused = premium_submit_invoice($pdo, array(
+            'tier' => 'verein',
+            'company' => 'Alt AG',
+            'address' => 'Bahnhofstrasse 1, 8000 Zürich',
+            'email' => 'alt@example.com',
+        ), 'ip-old-tier-' . bin2hex(random_bytes(3)), premium_test_sender($sent), 1760003000);
+        assert_equals('invalid', $refused['error'], 'legacy tiers are not for sale');
+        $checkout = premium_stripe_start_checkout('verein', 'buyer@example.com', function () {
+            return array('ok' => true, 'status' => 200, 'body' => '{"url":"https://checkout.stripe.com/c/pay/cs_test_1"}');
+        }, array(
+            'secret' => 'sk_test_secret_key',
+            'webhook' => 'whsec_test_secret_value',
+            'prices' => array('1x' => 'price_1x', '3x' => 'price_3x', '5x' => 'price_5x'),
+        ), 1760004000);
+        assert_equals('config', $checkout['error'], 'checkout refuses a legacy tier');
+
+        $row = $pdo->query('SELECT * FROM `groups` WHERE `id` = ' . (int) $group)->fetch(PDO::FETCH_ASSOC);
+        $html = premium_admin_section_html($pdo, $row);
+        assert_true(strpos($html, '1× Premium-Wichteln') !== false, 'the admin names the package');
+        assert_true(strpos($html, 'noch 0 frei') !== false, 'the admin shows that nothing is left');
+        assert_true(strpos($html, 'Weiteres Paket kaufen') !== false, 'a used-up credit offers another package');
+        assert_true(strpos($html, 'firmen-premium') !== false && strpos($html, '#kaufen') !== false, 'the offer links to the purchase');
+        assert_true(strpos($html, 'Verein') === false && strpos($html, 'Firma Plus') === false, 'the admin drops the old tier names');
+        $master = premium_master_section_html($pdo, false);
+        assert_true(strpos($master, '1× Premium-Wichteln') !== false, 'master admin names the package');
+        assert_true(strpos($master, 'noch 0 frei') !== false, 'master admin shows used and remaining groups');
+        assert_equals('3× Premium-Wichteln', premium_tier_label('verein'), 'an old verein row is shown by its credit count');
+        assert_equals('10× Premium-Wichteln', premium_tier_label('firma'));
+        assert_equals('Premium-Wichteln, ohne Limit', premium_tier_label('firma_plus'));
+    } finally {
+        restore_error_handler();
+        if ($had_override) {
+            $GLOBALS['premium_enabled_override'] = $previous_override;
+        } else {
+            unset($GLOBALS['premium_enabled_override']);
+        }
+        $GLOBALS['i18n_lang'] = $previous_lang;
+    }
 });
 
 run_test('email confirmation is required before a group is premium', function () {
@@ -333,7 +419,7 @@ run_test('stripe webhook checks the signature and creates one license', function
                 'id' => 'cs_test_session_1',
                 'payment_status' => 'paid',
                 'metadata' => array(
-                    'tier' => 'verein',
+                    'tier' => '1x',
                     'price_id' => 'price_verein_test',
                     'buyer_email' => 'stripe@example.com',
                     'language' => 'de',
@@ -360,6 +446,17 @@ run_test('stripe webhook checks the signature and creates one license', function
     $bad = premium_handle_webhook($pdo, $payload, 't=' . $now . ',v1=deadbeef', $secret, premium_test_sender($sent), $now, $config);
     assert_equals('invalid_signature', $bad['status']);
     assert_equals(1, (int) $pdo->query('SELECT COUNT(*) FROM `premium_licenses`')->fetchColumn());
+    assert_equals('1x', $pdo->query('SELECT `tier` FROM `premium_licenses`')->fetchColumn(), 'a new checkout stores the package key');
+
+    $legacy_event = $event;
+    $legacy_event['id'] = 'evt_premium_legacy';
+    $legacy_event['data']['object']['id'] = 'cs_test_session_legacy';
+    $legacy_event['data']['object']['metadata']['tier'] = 'verein';
+    $legacy_event['data']['object']['metadata']['buyer_email'] = 'legacy@example.com';
+    $legacy_payload = json_encode($legacy_event);
+    $legacy = premium_handle_webhook($pdo, $legacy_payload, premium_test_signature($legacy_payload, $secret, $now), $secret, premium_test_sender($sent), $now, $config);
+    assert_equals('created', $legacy['status'], 'an in-flight verein checkout still creates the old quota');
+    assert_equals('verein', $pdo->query("SELECT `tier` FROM `premium_licenses` WHERE `buyer_email` = 'legacy@example.com'")->fetchColumn());
 
     $expired_header = premium_test_signature($payload, $secret, $now - 1000);
     assert_true(!premium_stripe_signature_valid($payload, $expired_header, $secret, $now), 'old signature is rejected');
@@ -369,7 +466,7 @@ run_test('invoice mail reaches the admin and a pending license cannot be claimed
     $pdo = premium_test_pdo();
     $sent = array();
     $result = premium_submit_invoice($pdo, array(
-        'tier' => 'firma',
+        'tier' => '3x',
         'company' => 'Beispiel AG',
         'address' => "Bahnhofstrasse 1\n8000 Zürich",
         'email' => 'rechnung@firma.ch',
@@ -601,14 +698,28 @@ run_test('logo upload rejects svg and php and reencodes png', function () {
 
 run_test('every tier includes the same premium functions', function () {
     $definitions = premium_tier_definitions();
-    foreach (array('verein', 'firma', 'firma_plus') as $key) {
+    foreach (array('1x', '3x', '5x', 'verein', 'firma', 'firma_plus') as $key) {
         assert_true(!empty($definitions[$key]['greeting']), $key . ' includes a greeting');
         assert_true(!empty($definitions[$key]['hide_credit']), $key . ' hides the credit');
     }
+    assert_equals(9, $definitions['1x']['price']);
+    assert_equals(19, $definitions['3x']['price']);
+    assert_equals(29, $definitions['5x']['price']);
+    assert_equals(1, $definitions['1x']['limit']);
+    assert_equals(3, $definitions['3x']['limit']);
+    assert_equals(5, $definitions['5x']['limit']);
+    assert_equals(3, $definitions['verein']['limit']);
+    assert_equals(10, $definitions['firma']['limit']);
+    assert_true($definitions['firma_plus']['limit'] === null, 'an old firma plus row stays unlimited');
     $previous = isset($GLOBALS['i18n_lang']) ? $GLOBALS['i18n_lang'] : 'de';
     $GLOBALS['i18n_lang'] = 'de';
     $cards = premium_pricing_cards_html();
-    assert_true(strpos($cards, 'Dieselben Funktionen in jeder Stufe') !== false, 'cards share one sentence');
+    assert_true(strpos($cards, 'Dieselben Funktionen in jedem Paket') !== false, 'cards share one sentence');
+    assert_true(strpos($cards, 'Jede Durchführung zählt') !== false, 'cards explain that each run counts');
+    assert_true(strpos($cards, '1× Premium-Wichteln') !== false, 'cards name the one-group package');
+    assert_true(strpos($cards, 'CHF 9') !== false && strpos($cards, 'CHF 29') !== false, 'cards use the new prices');
+    assert_true(strpos($cards, 'Verein') === false && strpos($cards, 'Firma Plus') === false, 'cards drop the old tier names');
+    assert_true(stripos($cards, 'Saison') === false, 'cards do not mention a season');
     assert_true(strpos($cards, 'Eigener Begrüssungstext') === false, 'greeting is not a plus-only line');
     assert_true(strpos($cards, 'powered by') === false, 'credit line is not a plus-only line');
     assert_equals(3, substr_count($cards, 'premium-tier-card'), 'three tiers');
@@ -705,7 +816,9 @@ run_test('company page and free claims follow the feature flag', function () {
             $GLOBALS['i18n_lang'] = $lang;
             $html = premium_render_content($spec[0]);
             assert_true(strpos($html, $spec[1]) !== false, $lang . ' company page has the section');
-            assert_true(strpos($html, 'CHF 19') !== false && strpos($html, 'CHF 49') !== false && strpos($html, 'CHF 99') !== false, $lang . ' company page lists the prices');
+            assert_true(strpos($html, 'CHF 9') !== false && strpos($html, 'CHF 19') !== false && strpos($html, 'CHF 29') !== false, $lang . ' company page lists the prices');
+            assert_true(strpos($html, 'CHF 49') === false && strpos($html, 'CHF 99') === false, $lang . ' company page drops the old prices');
+            assert_true(stripos($html, 'Saison') === false && stripos($html, 'season') === false && stripos($html, 'saison') === false, $lang . ' company page does not sell a season');
             assert_true(strpos($html, 'firmen-premium') !== false && strpos($html, '#kaufen') !== false, $lang . ' company page links to the purchase');
             assert_true(strpos($html, 'ß') === false, $lang . ' company section uses ss');
             assert_true(strpos($html, 'id="extra-funktionen"') !== false, $lang . ' section is present');
@@ -738,7 +851,7 @@ run_test('invoice mail uses the configured recipient exactly', function () {
 
     $pdo = premium_test_pdo();
     $post = array(
-        'tier' => 'verein',
+        'tier' => '1x',
         'company' => 'Kontakt AG',
         'address' => 'Seestrasse 2, 8002 Zürich',
         'email' => 'buyer@example.com',
@@ -795,13 +908,13 @@ run_test('stripe detection accepts restricted keys and rejects publishable keys'
     $missing['prices']['firma'] = '29';
     $bad = premium_stripe_status($missing);
     assert_true(!$bad['ready'], 'a franc amount is not a price id');
-    assert_equals('invalid', $bad['prices']['firma']);
-    assert_equals('ok', $bad['prices']['verein']);
+    assert_equals('invalid', $bad['prices']['3x']);
+    assert_equals('ok', $bad['prices']['1x']);
     assert_equals('missing', premium_stripe_status(array(
         'secret' => '',
         'webhook' => 'whsec_test_secret_value',
         'prices' => array('verein' => 'price_verein_test', 'firma' => '', 'firma_plus' => 'price_plus_test'),
-    ))['prices']['firma']);
+    ))['prices']['3x']);
 
     assert_equals('sk_test_secret_key', premium_clean_config_text('  "sk_test_secret_key"  '));
     $diag = premium_diagnostics();
@@ -836,7 +949,7 @@ run_test('master admin can reject pending requests and revoke or delete licences
         $pdo = premium_test_pdo();
         $sent = array();
         $invoice = premium_submit_invoice($pdo, array(
-            'tier' => 'firma',
+            'tier' => '3x',
             'company' => 'Offene Rechnung AG',
             'address' => "Bahnhofstrasse 1\n8000 Zürich",
             'email' => 'offen@firma.ch',
@@ -943,7 +1056,7 @@ run_test('master admin can reject pending requests and revoke or delete licences
         assert_equals(1, (int) $pdo->query('SELECT COUNT(*) FROM `participants` WHERE `group_id` = ' . (int) $hanging)->fetchColumn());
 
         $open = premium_submit_invoice($pdo, array(
-            'tier' => 'verein',
+            'tier' => '1x',
             'company' => 'Noch offen',
             'address' => 'Seestrasse 2, 8002 Zürich',
             'email' => 'noch@firma.ch',

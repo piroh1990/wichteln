@@ -309,10 +309,10 @@
 
             <h2 id="firmen-premium">15. Company Premium</h2>
             <p>
-                Company Premium is an optional licence for several groups in one season. Without that licence, existing groups stay as they are.
+                Company Premium is an optional credit of Premium groups. It does not expire. Each new group and each copy uses one Premium draw. Without that credit, existing groups stay as they are.
             </p>
             <p>
-                For a licence we store the buyer’s email, the chosen plan, the status (pending, active or revoked), a season year and the language. An invoice also stores the organisation, the address and an optional contact name. An optional domain licence stores only the domain we enter in the master admin, for example firma.ch. The licence code is stored only as a hash. The overview link is a random token.
+                For a licence we store the buyer’s email, the chosen package, the status (pending, active or revoked), the year of the purchase and the language. An invoice also stores the organisation, the address and an optional contact name. An optional domain licence stores only the domain we enter in the master admin, for example firma.ch. The licence code is stored only as a hash. The overview link is a random token.
             </p>
             <p>
                 If you pay by card or TWINT, the payment runs through Stripe. wichtlä.ch does not receive card details. Stripe confirms the payment with a signed webhook, and only then do we create the licence. Stripe’s privacy policy is at <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer">stripe.com/privacy</a>.

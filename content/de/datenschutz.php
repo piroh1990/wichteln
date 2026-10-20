@@ -308,10 +308,10 @@
 
             <h2 id="firmen-premium">15. Firmen-Premium</h2>
             <p>
-                Firmen-Premium ist eine optionale Lizenz für mehrere Gruppen in einer Saison. Ohne diese Lizenz ändert sich an den bestehenden Gruppen nichts.
+                Firmen-Premium ist ein optionales Guthaben an Premium-Gruppen. Es läuft nicht ab. Jede neue Gruppe und jede Kopie verbraucht ein Premium-Wichteln. Ohne dieses Guthaben ändert sich an den bestehenden Gruppen nichts.
             </p>
             <p>
-                Für eine Lizenz speichern wir die E-Mail der kaufenden Person, die gewählte Stufe, den Status (offen, aktiv oder widerrufen), ein Saisonjahr und die Sprache. Bei einer Rechnung kommen Firma, Adresse und ein optionaler Kontaktname dazu. Eine optionale Domain-Lizenz speichert nur die Domain, die wir im Master-Admin eintragen, zum Beispiel firma.ch. Den Lizenzcode speichern wir nur als Hash. Der Link zur Lizenzübersicht ist ein zufälliges Token.
+                Für eine Lizenz speichern wir die E-Mail der kaufenden Person, das gewählte Paket, den Status (offen, aktiv oder widerrufen), das Jahr des Kaufs und die Sprache. Bei einer Rechnung kommen Firma, Adresse und ein optionaler Kontaktname dazu. Eine optionale Domain-Lizenz speichert nur die Domain, die wir im Master-Admin eintragen, zum Beispiel firma.ch. Den Lizenzcode speichern wir nur als Hash. Der Link zur Lizenzübersicht ist ein zufälliges Token.
             </p>
             <p>
                 Bezahlst du mit Karte oder TWINT, läuft die Zahlung über Stripe. wichtlä.ch erhält keine Kartendaten. Stripe bestätigt die Zahlung über einen signierten Webhook, und erst dann legen wir die Lizenz an. Die Datenschutzerklärung von Stripe steht unter <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer">stripe.com/privacy</a>.
