@@ -763,7 +763,8 @@ return array(
 
     'affiliate.wish' => 'Chercher chez Orell Füssli',
     'affiliate.gift' => 'Idées cadeaux chez Orell Füssli',
-    'affiliate.note' => 'Lien publicitaire : si tu commandes via ces liens, tu soutiens wichtlä.ch. Pour toi, cela ne coûte rien en plus.',
+    'affiliate.note' => 'Les liens «Chercher chez Orell Füssli» sont des liens publicitaires. Si tu commandes par là, tu soutiens wichtlä.ch. Pour toi, cela ne coûte rien en plus.',
+    'affiliate.note.one' => 'Lien publicitaire : si tu commandes via ce lien, tu soutiens wichtlä.ch. Pour toi, cela ne coûte rien en plus.',
     'affiliate.mail.lead' => 'Pas encore de cadeau ? Chez Orell Füssli, tu trouves des livres, des jeux et des idées cadeaux. Mieux vaut commander tout de suite, pour que cela arrive à temps.',
     'affiliate.mail.link' => 'Idées cadeaux chez Orell Füssli',
     'affiliate.toggle' => 'Afficher les liens publicitaires vers Orell Füssli dans ce groupe',

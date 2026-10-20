@@ -181,8 +181,9 @@ function affiliate_of_anchor($url, $label) {
     return '<a class="affiliate-of-link" href="' . h($url) . '" rel="sponsored noopener" target="_blank">' . h($label) . '</a>';
 }
 
-function affiliate_of_note_html() {
-    return '<p class="affiliate-note">' . h(t('affiliate.note')) . '</p>';
+function affiliate_of_note_html($kind = 'list') {
+    $key = $kind === 'one' ? 'affiliate.note.one' : 'affiliate.note';
+    return '<p class="affiliate-note">' . h(t($key)) . '</p>';
 }
 
 function affiliate_of_participant_html($group, $wishlist) {
@@ -195,7 +196,7 @@ function affiliate_of_participant_html($group, $wishlist) {
         if ($url === '') {
             return '';
         }
-        return '<p class="affiliate-of-gift">' . affiliate_of_anchor($url, t('affiliate.gift')) . '</p>' . affiliate_of_note_html();
+        return '<p class="affiliate-of-gift">' . affiliate_of_anchor($url, t('affiliate.gift')) . '</p>';
     }
     $html = '<ul class="affiliate-wish-list">';
     foreach ($lines as $line) {
@@ -207,22 +208,29 @@ function affiliate_of_participant_html($group, $wishlist) {
         $html .= '</li>';
     }
     $html .= '</ul>';
-    $html .= affiliate_of_note_html();
     return $html;
 }
 
 function affiliate_of_mail_html($clickref) {
-    if (!function_exists('t') || !function_exists('mail_esc')) {
+    if (!function_exists('t') || !function_exists('mail_p') || !function_exists('mail_button')) {
         return '';
     }
     $url = affiliate_of_link(affiliate_of_gift_url(), $clickref);
     if ($url === '') {
         return '';
     }
-    $html = '<p style="margin: 18px 0 8px 0; color: #6c757d; font-size: 14px;">' . mail_esc(t('affiliate.mail.lead')) . '</p>';
-    $html .= '<p style="margin: 0 0 8px 0; font-size: 14px;"><a href="' . mail_esc($url) . '" rel="sponsored noopener" target="_blank">' . mail_esc(t('affiliate.mail.link')) . '</a></p>';
-    $html .= '<p style="margin: 0 0 16px 0; color: #6c757d; font-size: 12px;">' . mail_esc(t('affiliate.note')) . '</p>';
-    return $html;
+    return mail_p(mail_esc(t('affiliate.mail.lead')))
+        . mail_button($url, t('affiliate.mail.link'), array(
+            'rel' => 'sponsored noopener',
+            'target' => '_blank',
+        ));
+}
+
+function affiliate_of_mail_note_html() {
+    if (!function_exists('t') || !function_exists('mail_esc')) {
+        return '';
+    }
+    return '<p style="margin: 8px 0 0 0; color: #6c757d; font-size: 12px; line-height: 1.5;">' . mail_esc(t('affiliate.note.one')) . '</p>';
 }
 
 function affiliate_of_mail_plain($clickref) {
@@ -236,8 +244,14 @@ function affiliate_of_mail_plain($clickref) {
     return array(
         t('affiliate.mail.lead'),
         t('affiliate.mail.link') . ': ' . $url,
-        t('affiliate.note'),
     );
+}
+
+function affiliate_of_mail_note_plain() {
+    if (!function_exists('t')) {
+        return '';
+    }
+    return t('affiliate.note.one');
 }
 
 function affiliate_of_admin_toggle_html(PDO $pdo, array $group) {
