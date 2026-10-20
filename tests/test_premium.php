@@ -422,6 +422,17 @@ run_test('email confirmation is required before a group is premium', function ()
     $stranger_license = $pdo->query('SELECT `premium_license_id` FROM `groups` WHERE `id` = ' . (int) $stranger)->fetchColumn();
     assert_true($stranger_license === null || $stranger_license === '', 'stranger group is not attached');
 
+    $preview = premium_confirmation_preview($pdo, $claim['token'], 1760000000);
+    assert_true(is_array($preview), 'the link can be previewed');
+    assert_equals('Bestätigen', $preview['group_name'], 'preview names the requesting group');
+    $preview_still = $pdo->query('SELECT `premium_license_id` FROM `groups` WHERE `id` = ' . (int) $group)->fetchColumn();
+    assert_true($preview_still === null || $preview_still === '', 'preview does not attach the group');
+    assert_true(strpos($sent[0]['plain'], 'Bestätigen') !== false, 'the mail names the group');
+    $page = file_get_contents(dirname(__DIR__) . '/public/premium-bestaetigen.php');
+    $post_at = strpos($page, "REQUEST_METHOD'] === 'POST'");
+    $confirm_at = strpos($page, 'premium_confirm_token(');
+    assert_true($post_at !== false && $confirm_at !== false && $post_at < $confirm_at, 'the page attaches only after POST');
+
     $confirmed = premium_confirm_token($pdo, $claim['token'], 1760000000);
     assert_true($confirmed['ok'], 'confirmation link attaches the group');
     assert_equals($license, (int) $pdo->query('SELECT `premium_license_id` FROM `groups` WHERE `id` = ' . (int) $group)->fetchColumn());
@@ -436,6 +447,26 @@ run_test('email confirmation is required before a group is premium', function ()
 
     $sub = premium_request_email_claim($pdo, premium_test_group($pdo, 'Sub'), 'sam@sub.firma.ch', 'ip-sub-' . bin2hex(random_bytes(3)), premium_test_sender($sent), 1760000200);
     assert_equals('unknown', $sub['status'], 'a subdomain is not the domain licence');
+});
+
+run_test('public mail domains cannot become a domain licence', function () {
+    $pdo = premium_test_pdo();
+    $license = premium_test_license($pdo, 'firma', 'buyer@firma.ch', 'DOMN23456789', 'firma.ch');
+    assert_true(!premium_set_domain($pdo, $license, 'gmail.com'), 'gmail cannot be a domain licence');
+    assert_true(!premium_set_domain($pdo, $license, 'bluewin.ch'), 'a consumer ISP domain is refused');
+    assert_equals('firma.ch', $pdo->query('SELECT `domain` FROM `premium_licenses` WHERE `id` = ' . (int) $license)->fetchColumn());
+    assert_true(premium_set_domain($pdo, $license, 'firma.ch'));
+    $sent = array();
+    $pending = premium_submit_invoice($pdo, array(
+        'tier' => '1x',
+        'company' => 'Frei AG',
+        'address' => 'Seestrasse 2, 8002 Zürich',
+        'email' => 'frei@gmail.com',
+    ), 'ip-public-domain-' . bin2hex(random_bytes(3)), premium_test_sender($sent), 1760000000);
+    assert_true($pending['ok'], 'a gmail buyer can still request an invoice');
+    $activated = premium_activate_license($pdo, $pending['id'], 'gmail.com', premium_test_sender($sent), 1760000100);
+    assert_equals('domain', $activated['error'], 'activation refuses a public mail domain');
+    assert_equals('pending', $pdo->query('SELECT `status` FROM `premium_licenses` WHERE `id` = ' . (int) $pending['id'])->fetchColumn());
 });
 
 run_test('license code activates and a wrong code does not', function () {
@@ -501,8 +532,10 @@ run_test('stripe webhook checks the signature and creates one license', function
     assert_true(strpos($body['body'], 'created') !== false, 'response only names the status');
     assert_equals(1, count($sent), 'buyer is emailed once');
 
+    $hash_before = $pdo->query("SELECT `code_hash` FROM `premium_licenses` WHERE `stripe_session_id` = 'cs_test_session_1'")->fetchColumn();
     $again = premium_handle_webhook($pdo, $payload, $header, $secret, premium_test_sender($sent), $now, $config);
     assert_equals('duplicate', $again['status'], 'replay does not create a second license');
+    assert_equals($hash_before, $pdo->query("SELECT `code_hash` FROM `premium_licenses` WHERE `stripe_session_id` = 'cs_test_session_1'")->fetchColumn(), 'replay does not rotate the code');
     assert_equals(1, (int) $pdo->query('SELECT COUNT(*) FROM `premium_licenses`')->fetchColumn());
 
     $bad = premium_handle_webhook($pdo, $payload, 't=' . $now . ',v1=deadbeef', $secret, premium_test_sender($sent), $now, $config);

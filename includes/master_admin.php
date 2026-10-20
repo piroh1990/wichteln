@@ -8,6 +8,44 @@ require_once __DIR__ . '/urls.php';
  * Keine Abhängigkeit von config.php, damit die Funktionen mit SQLite testbar sind.
  */
 
+function master_admin_session_limits() {
+    return array(
+        'absolute' => 12 * 3600,
+        'idle' => 8 * 3600,
+    );
+}
+
+function master_admin_session_is_current(array $session, $now = null) {
+    if (empty($session['master_admin_authenticated'])) {
+        return false;
+    }
+    $now = ($now === null) ? time() : (int) $now;
+    $started = isset($session['master_admin_authenticated_at']) ? (int) $session['master_admin_authenticated_at'] : 0;
+    $seen = isset($session['master_admin_last_seen']) ? (int) $session['master_admin_last_seen'] : 0;
+    if ($started < 1 || $seen < 1) {
+        return false;
+    }
+    $limits = master_admin_session_limits();
+    if ($now + 120 < $started || $now + 120 < $seen) {
+        return false;
+    }
+    if (($now - $started) > $limits['absolute']) {
+        return false;
+    }
+    if (($now - $seen) > $limits['idle']) {
+        return false;
+    }
+    return true;
+}
+
+function master_admin_session_mark(array $session, $now = null) {
+    $now = ($now === null) ? time() : (int) $now;
+    $session['master_admin_authenticated'] = true;
+    $session['master_admin_authenticated_at'] = $now;
+    $session['master_admin_last_seen'] = $now;
+    return $session;
+}
+
 function master_admin_status_options() {
     return array(
         'alle' => 'Alle',

@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['master_token']) && em
         $login_error = 'Zu viele Anfragen. Bitte später erneut versuchen.';
     } elseif (master_admin_token_matches($posted_token)) {
         session_regenerate_id(true);
-        $_SESSION['master_admin_authenticated'] = true;
+        $_SESSION = master_admin_session_mark($_SESSION);
         header('Location: index.php');
         exit;
     } else {
@@ -36,13 +36,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['master_token']) && em
     }
 }
 
-if (empty($_SESSION['master_admin_authenticated'])) {
+if (!master_admin_session_is_current($_SESSION)) {
+    unset($_SESSION['master_admin_authenticated'], $_SESSION['master_admin_authenticated_at'], $_SESSION['master_admin_last_seen']);
     if ($login_error !== '') {
         http_response_code(403);
     }
     echo master_admin_login_document(csrf_input(), $login_error);
     exit;
 }
+$_SESSION['master_admin_last_seen'] = time();
 
 function admin_url($params = array()) {
     if (empty($params)) {

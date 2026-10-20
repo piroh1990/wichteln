@@ -39,8 +39,8 @@ $steps = premium_reveal_steps($people->fetchAll(PDO::FETCH_ASSOC));
 $brand = premium_brand_state($license);
 $logo_alt = isset($license['company_name']) ? trim((string) $license['company_name']) : '';
 token_page_open(t('premium.hr.live'));
-$payload = json_encode($steps, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
-if (!is_string($payload)) {
+$payload = json_for_script($steps);
+if ($payload === 'null' || $payload === '') {
     $payload = '[]';
 }
 $fullscreen_label = t('premium.reveal.fullscreen');
@@ -87,11 +87,11 @@ $fullscreen_label = t('premium.reveal.fullscreen');
             var card = document.getElementById('premium-reveal-card');
             var stage = document.getElementById('premium-reveal');
             var full = document.getElementById('premium-reveal-full');
-            var ready = <?php echo json_encode(t('premium.reveal.ready'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
-            var gives = <?php echo json_encode(t('premium.reveal.gives'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
-            var done = <?php echo json_encode(t('premium.reveal.done'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
-            var incomplete = <?php echo json_encode(t('premium.reveal.incomplete'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
-            var progressLabel = <?php echo json_encode(t('premium.reveal.progress'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
+            var ready = <?php echo json_for_script(t('premium.reveal.ready')); ?>;
+            var gives = <?php echo json_for_script(t('premium.reveal.gives')); ?>;
+            var done = <?php echo json_for_script(t('premium.reveal.done')); ?>;
+            var incomplete = <?php echo json_for_script(t('premium.reveal.incomplete')); ?>;
+            var progressLabel = <?php echo json_for_script(t('premium.reveal.progress')); ?>;
             var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
             function clearTimer() {

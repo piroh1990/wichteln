@@ -1,3 +1,14 @@
+# Security-Header. Document Root ist public/, deshalb gelten die Header
+# aus der übergeordneten .htaccess hier nicht. PHP setzt dieselben Header
+# zusätzlich, damit sie auch ohne mod_headers ankommen.
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains" "expr=%{HTTPS} == 'on'"
+</IfModule>
+
 # Saubere URLs für öffentliche Seiten.
 # /faq liefert faq.php aus. faq.php bleibt direkt erreichbar.
 # Document Root ist public/.
