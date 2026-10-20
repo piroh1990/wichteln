@@ -337,14 +337,23 @@ token_page_open(t('meta.participant.title', array('{name}' => $participant['name
                                     <span aria-hidden="true">📋</span> <?php echo h(t('participant.copy')); ?>
                                 </button>
                             </div>
-                            <div class="wishlist-display" id="partner-wishlist">
-                                <p><?php echo nl2br(h($assigned['wishlist'])); ?></p>
+                            <?php
+                            $affiliate_html = affiliate_of_participant_html($group, $assigned['wishlist']);
+                            $affiliate_list = strpos($affiliate_html, 'affiliate-wish-list') !== false;
+                            ?>
+                            <div class="wishlist-display" id="partner-wishlist"<?php echo $affiliate_list ? ' data-url="' . h($assigned['wishlist']) . '"' : ''; ?>>
+                                <?php if ($affiliate_list): ?>
+                                    <?php echo $affiliate_html; ?>
+                                <?php else: ?>
+                                    <p><?php echo nl2br(h($assigned['wishlist'])); ?></p>
+                                <?php endif; ?>
                             </div>
                         </div>
                     <?php else: ?>
                         <div class="empty-wishlist">
                             <span class="empty-wishlist-icon" aria-hidden="true">📋</span>
                             <p><?php echo h(t('participant.no_wishlist', array('{name}' => $assigned['name']))); ?></p>
+                            <?php echo affiliate_of_participant_html($group, ''); ?>
                         </div>
                     <?php endif; ?>
                     </div>

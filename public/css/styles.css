@@ -2778,6 +2778,53 @@ a.button:disabled {
     color: var(--text-color);
 }
 
+.wishlist-display ul.affiliate-wish-list,
+.empty-wishlist ul.affiliate-wish-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.wishlist-display ul.affiliate-wish-list li,
+.empty-wishlist ul.affiliate-wish-list li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.2rem 0.75rem;
+    margin: 0;
+    padding: 0.4rem 0;
+    line-height: 1.4;
+    border-bottom: 1px solid rgba(43, 45, 66, 0.08);
+}
+
+.wishlist-display ul.affiliate-wish-list li::before,
+.empty-wishlist ul.affiliate-wish-list li::before {
+    content: none;
+}
+
+.affiliate-wish-text {
+    flex: 1 1 12rem;
+    min-width: 0;
+}
+
+a.affiliate-of-link {
+    flex: 0 1 auto;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-decoration: underline;
+    text-underline-offset: 0.12em;
+}
+
+.affiliate-note,
+.affiliate-of-gift {
+    margin: 0.75rem 0 0;
+    font-size: 0.8rem;
+    line-height: 1.45;
+    color: var(--text-secondary);
+}
+
 .wishlist-display.locked {
     background: #fff9e6;
     border-left-color: #ffc107;

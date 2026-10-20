@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS `groups` (
   `reveal_sent_at` DATETIME NULL DEFAULT NULL COMMENT 'Zeitpunkt, zu dem die Auflösung an alle Teilnehmer gesendet wurde',
   `reminder_sent_at` DATETIME NULL DEFAULT NULL COMMENT 'Zeitpunkt der Erinnerung an die Geschenkübergabe. NULL = noch nicht gesendet.',
   `premium_license_id` INT NULL DEFAULT NULL COMMENT 'Premium-Lizenz. NULL = normale Gruppe. Kein Fremdschlüssel, bestehende Gruppen bleiben unverändert.',
+  `affiliate_of` TINYINT(1) NOT NULL DEFAULT 0 COMMENT 'Werbelinks zu Orell Füssli. Bei Premium-Gruppen standardmässig aus.',
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Erstellungszeitpunkt',
   
   INDEX idx_admin_token (`admin_token`),

@@ -790,4 +790,15 @@ return array(
     'premium.company.overview' => 'Logo und Farben pflegst du in der Lizenzübersicht. Jede neue Gruppe dieser Lizenz übernimmt sie.',
     'premium.company.pay' => 'Zahlen geht mit Karte oder TWINT, oder ich stelle eine Rechnung.',
     'premium.company.cta' => 'Lizenz ansehen',
+
+    'affiliate.wish' => 'Bei Orell Füssli suchen',
+    'affiliate.gift' => 'Geschenkideen bei Orell Füssli',
+    'affiliate.note' => 'Werbelink: Wenn du über diese Links bestellst, unterstützt du wichtlä.ch. Für dich kostet es nichts extra.',
+    'affiliate.mail.lead' => 'Noch kein Geschenk? Bei Orell Füssli findest du Bücher, Spiele und Geschenkideen. Am besten gleich bestellen, damit es rechtzeitig ankommt.',
+    'affiliate.mail.link' => 'Geschenkideen bei Orell Füssli',
+    'affiliate.toggle' => 'Werbelinks zu Orell Füssli in dieser Gruppe anzeigen',
+    'affiliate.toggle_help' => 'Für Firmen und Vereine bleiben diese Links aus. Schalte sie nur ein, wenn ihr das möchtet.',
+    'affiliate.save' => 'Speichern',
+    'affiliate.saved' => 'Gespeichert.',
+    'affiliate.migration' => 'Die Spalte für die Werbelinks fehlt noch. Die Migration aus INSTALL.md ist nicht ausgeführt.',
 );

@@ -322,6 +322,17 @@
             <p>
                 Logo und Farben liegen auf der Lizenz und erscheinen auf den Gruppen- und Teilnehmerseiten. Das Logo speichern wir neu als PNG, ausserhalb des öffentlichen Verzeichnisses. Die HR-Übersicht zeigt Name, E-Mail, ob eine Wunschliste ausgefüllt ist, und den Erinnerungsstatus. Die Zuordnungen zeigt sie nicht. Die Live-Aufdeckung ist ein eigener Schritt mit Bestätigung durch den Admin.
             </p>
+
+            <h2 id="werbelinks">16. Werbelinks</h2>
+            <p>
+                Ist die Funktion eingeschaltet, können auf der Teilnehmerseite nach der Auslosung und in einzelnen E-Mails Links zu Orell Füssli stehen. Das sind Werbelinks über das Partnernetz Awin. Eine Bestellung über so einen Link kostet dich nichts extra. wichtlä.ch kann dafür eine Vermittlungsprovision erhalten.
+            </p>
+            <p>
+                Auf wichtlä.ch selbst gibt es dafür kein Werbeskript und kein zusätzliches Cookie. Erst der Klick auf einen solchen Link führt zu Awin und danach zu Orell Füssli. Dort können Awin und Orell Füssli eigene Cookies setzen, um den Klick und eine allfällige Bestellung zuzuordnen.
+            </p>
+            <p>
+                Mehr steht in der <a href="https://www.awin.com/gb/legal/privacy-policy" target="_blank" rel="noopener noreferrer">Datenschutzerklärung von Awin</a>. Die Hinweise von Orell Füssli stehen auf <a href="https://www.orellfuessli.ch/" target="_blank" rel="noopener noreferrer">orellfuessli.ch</a>.
+            </p>
             
             <hr>
             

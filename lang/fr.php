@@ -760,4 +760,15 @@ return array(
     'premium.company.overview' => 'Tu règles le logo et les couleurs dans la vue de la licence. Chaque nouveau groupe de cette licence les reprend.',
     'premium.company.pay' => 'Tu paies par carte ou TWINT, ou je t’envoie une facture.',
     'premium.company.cta' => 'Voir la licence',
+
+    'affiliate.wish' => 'Chercher chez Orell Füssli',
+    'affiliate.gift' => 'Idées cadeaux chez Orell Füssli',
+    'affiliate.note' => 'Lien publicitaire : si tu commandes via ces liens, tu soutiens wichtlä.ch. Pour toi, cela ne coûte rien en plus.',
+    'affiliate.mail.lead' => 'Pas encore de cadeau ? Chez Orell Füssli, tu trouves des livres, des jeux et des idées cadeaux. Mieux vaut commander tout de suite, pour que cela arrive à temps.',
+    'affiliate.mail.link' => 'Idées cadeaux chez Orell Füssli',
+    'affiliate.toggle' => 'Afficher les liens publicitaires vers Orell Füssli dans ce groupe',
+    'affiliate.toggle_help' => 'Pour les entreprises et les associations, ces liens restent désactivés. Active-les seulement si vous le voulez.',
+    'affiliate.save' => 'Enregistrer',
+    'affiliate.saved' => 'Enregistré.',
+    'affiliate.migration' => 'La colonne pour les liens publicitaires manque encore. La migration dans INSTALL.md n’a pas été exécutée.',
 );

@@ -323,6 +323,17 @@
             <p>
                 The logo and colours live on the licence and appear on the group and participant pages. We re-save the logo as a PNG, outside the public folder. The HR overview shows the name, the email, whether a wishlist is filled in, and the reminder status. It does not show the assignments. The live reveal is a separate step, with confirmation by the admin.
             </p>
+
+            <h2 id="werbelinks">16. Affiliate links</h2>
+            <p>
+                When the feature is on, the participant page after the draw and some emails can contain links to Orell Füssli. These are affiliate links through the Awin network. Ordering through such a link costs you nothing extra. wichtlä.ch may receive a commission.
+            </p>
+            <p>
+                wichtlä.ch itself does not add an ad script or an extra cookie for this. Only a click on such a link leaves the site for Awin and then Orell Füssli. There, Awin and Orell Füssli may set their own cookies to connect the click with a later order.
+            </p>
+            <p>
+                More is in <a href="https://www.awin.com/gb/legal/privacy-policy" target="_blank" rel="noopener noreferrer">Awin’s privacy policy</a>. Orell Füssli’s notes are on <a href="https://www.orellfuessli.ch/" target="_blank" rel="noopener noreferrer">orellfuessli.ch</a>.
+            </p>
             
             <hr>
             

@@ -92,4 +92,16 @@ define('PREMIUM_STRIPE_PRICE_FIRMA_PLUS', '');
 // define('PREMIUM_LIMIT_FIRMA', 10);
 // define('PREMIUM_LIMIT_FIRMA_PLUS', 'unlimited');
 
+// Werbelinks zu Orell Füssli über Awin. Standard ist aus.
+// '1', 'true', 'yes' und 'on' schalten sie ein. Alles andere lässt sie aus.
+// Es gibt kein Skript und kein Cookie auf wichtlä.ch, nur normale Links.
+// Premium-Gruppen bleiben aus, bis der Admin der Gruppe den Schalter setzt.
+// Dafür die Migration database/migrations/20261020_add_affiliate_of.sql ausführen.
+define('AFFILIATE_OF_ENABLED', '0');
+define('AFFILIATE_OF_AWINMID', '13971');
+define('AFFILIATE_OF_AWINAFFID', '3128240');
+// Suchbegriff wird urlencodiert angehängt. orellfuessli.ch antwortet auf curl mit 403.
+define('AFFILIATE_OF_SEARCH_URL', 'https://www.orellfuessli.ch/suche?sq=');
+define('AFFILIATE_OF_GIFT_URL', 'https://www.orellfuessli.ch/kategorie/geschenke-trends-17794/');
+
 ?>
