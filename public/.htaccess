@@ -29,4 +29,7 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(faq|was-ist-wichteln|impressum|datenschutz|wichtel-ideen|firmenwichteln-tipps|ueber-uns|unterstuetzen|firmen-premium|create_group|admin-link)$ $1.php [L,QSA]
+
+    # Entwurf der Geschenkideen, nicht verlinkt. Sprachprefix läuft über die Regel oben.
+    RewriteRule ^wichtel-ideen2/?$ wichtel-ideen2.php [L,QSA]
 </IfModule>
