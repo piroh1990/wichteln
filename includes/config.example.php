@@ -60,24 +60,34 @@ define('PREMIUM_INVOICE_EMAIL', 'info@xn--wichtl-gua.ch');
 // Ein Publishable Key pk_ wird abgelehnt. Ein eingeschränkter Key rk_ braucht
 // die Berechtigung, Checkout Sessions zu erstellen.
 // PREMIUM_STRIPE_WEBHOOK_SECRET: muss mit whsec_ beginnen.
-// PREMIUM_STRIPE_PRICE_*: Stripe Price-IDs (price_…), nicht der Frankenbetrag.
+// PREMIUM_STRIPE_PRICE_1X/3X/5X: Stripe Price-IDs (price_…), nicht der Frankenbetrag.
+// Fehlt eine neue Konstante oder ist sie leer, gilt der alte Name:
+// 1X -> PREMIUM_STRIPE_PRICE_VEREIN, 3X -> FIRMA, 5X -> FIRMA_PLUS.
+// Die alten Price-IDs berechnen die früheren Beträge, nicht 9/19/29.
 // Anführungszeichen und ein UTF-8-BOM am Anfang werden entfernt.
 // Webhook: https://xn--wichtl-gua.ch/premium-webhook.php
 // Ereignis: checkout.session.completed
 define('PREMIUM_STRIPE_SECRET_KEY', '');
 define('PREMIUM_STRIPE_WEBHOOK_SECRET', '');
+define('PREMIUM_STRIPE_PRICE_1X', '');
+define('PREMIUM_STRIPE_PRICE_3X', '');
+define('PREMIUM_STRIPE_PRICE_5X', '');
 define('PREMIUM_STRIPE_PRICE_VEREIN', '');
 define('PREMIUM_STRIPE_PRICE_FIRMA', '');
 define('PREMIUM_STRIPE_PRICE_FIRMA_PLUS', '');
 
-// Angezeigte Preise (CHF, ganze Franken) und Gruppen-Limits.
-// Das sind nicht die Stripe-Price-IDs. Auskommentiert heisst:
-// Verein 19 / 3, Firma 49 / 10, Firma Plus 99 / unbegrenzt.
-// Alle Stufen enthalten dieselben Funktionen. Der Unterschied ist die Anzahl Gruppen.
-// Limit 0 oder 'unlimited' heisst kein Limit.
-// define('PREMIUM_PRICE_VEREIN', 19);
-// define('PREMIUM_PRICE_FIRMA', 49);
-// define('PREMIUM_PRICE_FIRMA_PLUS', 99);
+// Angezeigte Preise (CHF, ganze Franken). Das sind nicht die Stripe-Price-IDs.
+// Auskommentiert heisst: 1× 9, 3× 19, 5× 29. Die alten PREMIUM_PRICE_VEREIN,
+// PREMIUM_PRICE_FIRMA und PREMIUM_PRICE_FIRMA_PLUS ändern diese Anzeige nicht.
+// Sie gelten nur für bereits gespeicherte Lizenzen mit tier verein/firma/firma_plus.
+// Kontingente der neuen Pakete: 1, 3 und 5. Alte Zeilen bleiben 3, 10 und unbegrenzt.
+// Limit 0 oder 'unlimited' heisst kein Limit und gilt nur für den genannten Schlüssel.
+// define('PREMIUM_PRICE_1X', 9);
+// define('PREMIUM_PRICE_3X', 19);
+// define('PREMIUM_PRICE_5X', 29);
+// define('PREMIUM_LIMIT_1X', 1);
+// define('PREMIUM_LIMIT_3X', 3);
+// define('PREMIUM_LIMIT_5X', 5);
 // define('PREMIUM_LIMIT_VEREIN', 3);
 // define('PREMIUM_LIMIT_FIRMA', 10);
 // define('PREMIUM_LIMIT_FIRMA_PLUS', 'unlimited');

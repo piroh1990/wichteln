@@ -5,17 +5,17 @@
 
         <header class="page-header">
             <h1 class="page-title">Premium pour entreprises</h1>
-            <p class="page-subtitle">Plusieurs groupes, une licence</p>
+            <p class="page-subtitle">Crédit pour des groupes Premium</p>
         </header>
 
         <article>
             <section class="content-section">
                 <h2>Pourquoi je l’ai ajouté</h2>
                 <p>
-                    Le groupe habituel reste gratuit. Une entreprise peut aussi organiser un Secret Santa tout à fait normal, gratuitement. Les fonctions supplémentaires sont facultatives. Premium est prévu pour les associations et les entreprises qui mènent plusieurs groupes dans une saison ou qui souhaitent plus de fonctions : des services, des sites, un moment pour les apprentis et un pour l’équipe.
+                    Le groupe habituel reste gratuit. Une entreprise peut aussi organiser un Secret Santa tout à fait normal, gratuitement. Les fonctions supplémentaires sont facultatives. Premium est prévu pour les associations et les entreprises qui mènent plusieurs groupes ou qui souhaitent plus de fonctions : des services, des sites, un moment pour les apprentis et un pour l’équipe.
                 </p>
                 <p>
-                    Une licence vaut pour la saison en cours et couvre autant de groupes que l’offre le permet. Pas de compte. Tu relies la licence au groupe que tu es en train de créer.
+                    Une offre est un crédit de groupes Premium et n’expire pas. Chaque édition compte pour un tirage Premium, y compris la copie pour l’année suivante. Pas de compte. Tu relies le crédit au groupe que tu es en train de créer. Quand il est épuisé, tu peux acheter une autre offre. Un second achat avec le même e-mail s’ajoute au crédit.
                 </p>
             </section>
 

@@ -5,17 +5,17 @@
 
         <header class="page-header">
             <h1 class="page-title">Premium Firmen-Wichteln</h1>
-            <p class="page-subtitle">Mehrere Gruppen, eine Lizenz</p>
+            <p class="page-subtitle">Guthaben für Premium-Gruppen</p>
         </header>
 
         <article>
             <section class="content-section">
                 <h2>Wofür ich das gebaut habe</h2>
                 <p>
-                    Die normale Gruppe bleibt gratis. Auch Firmen können ganz normal und gratis wichteln. Die Zusatzfunktionen sind optional. Premium ist für Vereine und Firmen, die in einer Saison mehrere Gruppen führen oder mehr Funktionen wünschen: Abteilungen, Standorte, ein Anlass für die Lernenden und einer für das Team.
+                    Die normale Gruppe bleibt gratis. Auch Firmen können ganz normal und gratis wichteln. Die Zusatzfunktionen sind optional. Premium ist für Vereine und Firmen, die mehrere Gruppen führen oder mehr Funktionen wünschen: Abteilungen, Standorte, ein Anlass für die Lernenden und einer für das Team.
                 </p>
                 <p>
-                    Eine Lizenz gilt für die laufende Saison und deckt so viele Gruppen ab, wie das Paket hergibt. Es braucht kein Konto. Du verbindest die Lizenz mit der Gruppe, die du gerade anlegst.
+                    Ein Paket ist ein Guthaben an Premium-Gruppen und läuft nicht ab. Jede Durchführung zählt als ein Premium-Wichteln, auch die Kopie fürs nächste Jahr. Es braucht kein Konto. Du verbindest das Guthaben mit der Gruppe, die du gerade anlegst. Ist es aufgebraucht, kannst du ein weiteres Paket kaufen. Ein zweiter Kauf mit derselben E-Mail kommt zum Guthaben dazu.
                 </p>
             </section>
 

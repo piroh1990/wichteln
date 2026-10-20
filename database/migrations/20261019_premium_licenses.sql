@@ -24,7 +24,7 @@ SET @db := DATABASE();
 
 CREATE TABLE IF NOT EXISTS `premium_licenses` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `tier` VARCHAR(32) NOT NULL COMMENT 'verein, firma oder firma_plus',
+  `tier` VARCHAR(32) NOT NULL COMMENT '1x, 3x, 5x; alte Werte verein, firma, firma_plus',
   `status` VARCHAR(16) NOT NULL DEFAULT 'pending' COMMENT 'pending, active oder revoked',
   `buyer_email` VARCHAR(255) NOT NULL COMMENT 'E-Mail der kaufenden Person',
   `company_name` VARCHAR(255) NULL,
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `premium_licenses` (
   INDEX `idx_premium_domain` (`domain`),
   INDEX `idx_premium_status` (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-COMMENT='Premium-Lizenzen pro Saison';
+COMMENT='Premium-Guthaben ohne Ablauf';
 
 CREATE TABLE IF NOT EXISTS `premium_confirmations` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,

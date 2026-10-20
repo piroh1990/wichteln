@@ -66,7 +66,13 @@ function premium_tier_definitions($override = null) {
         return $override;
     }
     premium_load_config();
+    // 1x/3x/5x sind die kaufbaren Pakete. verein/firma/firma_plus bleiben
+    // für bereits gespeicherte Zeilen und behalten 3/10/unbegrenzt.
+    // PREMIUM_PRICE_VEREIN/FIRMA/FIRMA_PLUS ändern die neuen Anzeigepreise nicht.
     $tiers = array(
+        '1x' => array('price' => 9, 'limit' => 1, 'greeting' => true, 'hide_credit' => true),
+        '3x' => array('price' => 19, 'limit' => 3, 'greeting' => true, 'hide_credit' => true),
+        '5x' => array('price' => 29, 'limit' => 5, 'greeting' => true, 'hide_credit' => true),
         'verein' => array('price' => 19, 'limit' => 3, 'greeting' => true, 'hide_credit' => true),
         'firma' => array('price' => 49, 'limit' => 10, 'greeting' => true, 'hide_credit' => true),
         'firma_plus' => array('price' => 99, 'limit' => null, 'greeting' => true, 'hide_credit' => true),
@@ -90,6 +96,28 @@ function premium_tier_definitions($override = null) {
         }
     }
     return $tiers;
+}
+
+function premium_sale_tier_keys() {
+    return array('1x', '3x', '5x');
+}
+
+function premium_is_sale_tier($key) {
+    return in_array((string) $key, premium_sale_tier_keys(), true);
+}
+
+function premium_sale_definitions($definitions = null) {
+    $definitions = ($definitions === null) ? premium_tier_definitions() : $definitions;
+    $sale = array();
+    foreach (premium_sale_tier_keys() as $key) {
+        if (isset($definitions[$key]) && is_array($definitions[$key])) {
+            $sale[$key] = $definitions[$key];
+        }
+    }
+    if (count($sale) > 0) {
+        return $sale;
+    }
+    return $definitions;
 }
 
 function premium_tier($key, $definitions = null) {
@@ -121,9 +149,24 @@ function premium_price_label($amount) {
 }
 
 function premium_tier_label($key) {
+    $key = (string) $key;
+    $def = premium_tier($key);
+    if (is_array($def)) {
+        if (!isset($def['limit']) || $def['limit'] === null) {
+            return t('premium.tier.open');
+        }
+        $count = (int) $def['limit'];
+        if ($count === 1 || $count === 3 || $count === 5) {
+            $named = t('premium.tier.' . $count . 'x');
+            if ($named !== 'premium.tier.' . $count . 'x') {
+                return $named;
+            }
+        }
+        return t('premium.tier.pack', array('{count}' => (string) $count));
+    }
     $name = t('premium.tier.' . $key);
     if ($name === 'premium.tier.' . $key) {
-        return (string) $key;
+        return $key;
     }
     return $name;
 }
@@ -132,7 +175,11 @@ function premium_limit_label($def) {
     if (!is_array($def) || !isset($def['limit']) || $def['limit'] === null) {
         return t('premium.limit.none');
     }
-    return t('premium.limit.up_to', array('{count}' => (string) (int) $def['limit']));
+    $count = (int) $def['limit'];
+    if ($count === 1) {
+        return t('premium.limit.one');
+    }
+    return t('premium.limit.up_to', array('{count}' => (string) $count));
 }
 
 function premium_feature_keys() {
@@ -463,6 +510,97 @@ function premium_group_count(PDO $pdo, $license_id) {
     return (int) $stmt->fetchColumn();
 }
 
+function premium_license_row_has_room(PDO $pdo, array $license) {
+    if (!isset($license['status']) || $license['status'] !== 'active') {
+        return false;
+    }
+    if (!isset($license['id'], $license['tier'])) {
+        return false;
+    }
+    return premium_has_room($license['tier'], premium_group_count($pdo, $license['id']));
+}
+
+function premium_pick_license_with_room(PDO $pdo, array $rows) {
+    $fallback = null;
+    foreach ($rows as $row) {
+        if (!is_array($row)) {
+            continue;
+        }
+        $fallback = $row;
+        if (premium_license_row_has_room($pdo, $row)) {
+            return $row;
+        }
+    }
+    return $fallback;
+}
+
+function premium_lock_license(PDO $pdo, $license_id) {
+    $lock = $pdo->prepare('UPDATE `premium_licenses` SET `season_year` = `season_year` WHERE `id` = ?');
+    $lock->execute(array((int) $license_id));
+}
+
+function premium_choose_license_with_room(PDO $pdo, array $preferred) {
+    $preferred_id = isset($preferred['id']) ? (int) $preferred['id'] : 0;
+    if ($preferred_id > 0) {
+        premium_lock_license($pdo, $preferred_id);
+        $fresh = premium_fetch_license($pdo, $preferred_id);
+        if ($fresh && premium_license_row_has_room($pdo, $fresh)) {
+            return $fresh;
+        }
+        if ($fresh) {
+            $preferred = $fresh;
+        }
+    }
+    $email = premium_normalize_email(isset($preferred['buyer_email']) ? $preferred['buyer_email'] : '');
+    if ($email === '') {
+        return $preferred;
+    }
+    $stmt = $pdo->prepare('SELECT `id` FROM `premium_licenses` WHERE `status` = ? AND `buyer_email` = ? ORDER BY `id` ASC');
+    $stmt->execute(array('active', $email));
+    $ids = $stmt->fetchAll(PDO::FETCH_COLUMN);
+    foreach ($ids as $id) {
+        if ((int) $id === $preferred_id) {
+            continue;
+        }
+        premium_lock_license($pdo, $id);
+        $row = premium_fetch_license($pdo, $id);
+        if ($row && premium_license_row_has_room($pdo, $row)) {
+            return $row;
+        }
+    }
+    return $preferred;
+}
+
+function premium_buyer_pool(PDO $pdo, $email) {
+    $email = premium_normalize_email($email);
+    $empty = array('rows' => array(), 'used' => 0, 'limit' => 0, 'left' => 0, 'open' => false);
+    if ($email === '') {
+        return $empty;
+    }
+    $stmt = $pdo->prepare('SELECT * FROM `premium_licenses` WHERE `status` = ? AND `buyer_email` = ? ORDER BY `id` ASC');
+    $stmt->execute(array('active', $email));
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $used = 0;
+    $limit = 0;
+    $open = false;
+    foreach ($rows as $row) {
+        $used += premium_group_count($pdo, $row['id']);
+        $def = premium_tier(isset($row['tier']) ? $row['tier'] : '');
+        if ($def && (!isset($def['limit']) || $def['limit'] === null)) {
+            $open = true;
+        } elseif ($def && isset($def['limit'])) {
+            $limit += (int) $def['limit'];
+        }
+    }
+    return array(
+        'rows' => $rows,
+        'used' => $used,
+        'limit' => $limit,
+        'left' => $open ? null : max(0, $limit - $used),
+        'open' => $open,
+    );
+}
+
 function premium_license_for_group(PDO $pdo, array $group) {
     if (!premium_feature_enabled() || empty($group['premium_license_id'])) {
         return null;
@@ -483,7 +621,7 @@ function premium_find_license_for_email(PDO $pdo, $email) {
     if ($email === '') {
         return null;
     }
-    $stmt = $pdo->prepare('SELECT * FROM `premium_licenses` WHERE `status` = ? AND (`buyer_email` = ? OR `domain` = ?) ORDER BY `id` DESC');
+    $stmt = $pdo->prepare('SELECT * FROM `premium_licenses` WHERE `status` = ? AND (`buyer_email` = ? OR `domain` = ?) ORDER BY `id` ASC');
     $stmt->execute(array('active', $email, $domain));
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $exact = array();
@@ -496,10 +634,10 @@ function premium_find_license_for_email(PDO $pdo, $email) {
         }
     }
     if (!empty($exact)) {
-        return $exact[0];
+        return premium_pick_license_with_room($pdo, $exact);
     }
     if (!empty($by_domain)) {
-        return $by_domain[0];
+        return premium_pick_license_with_room($pdo, $by_domain);
     }
     return null;
 }
@@ -899,7 +1037,7 @@ function premium_submit_invoice(PDO $pdo, array $post, $ip, $sender = null, $now
         return array('ok' => false, 'error' => 'rate');
     }
     $tier = isset($post['tier']) ? (string) $post['tier'] : '';
-    if (!premium_known_tier($tier)) {
+    if (!premium_is_sale_tier($tier)) {
         return array('ok' => false, 'error' => 'invalid');
     }
     $company = trim(isset($post['company']) ? (string) $post['company'] : '');
@@ -1140,28 +1278,97 @@ function premium_config_value($name) {
     return premium_clean_config_text(constant($name));
 }
 
+function premium_stripe_legacy_key($sale) {
+    $map = array(
+        '1x' => 'verein',
+        '3x' => 'firma',
+        '5x' => 'firma_plus',
+    );
+    return isset($map[$sale]) ? $map[$sale] : '';
+}
+
+function premium_stripe_prices_from_constants() {
+    $pairs = array(
+        '1x' => array('PREMIUM_STRIPE_PRICE_1X', 'PREMIUM_STRIPE_PRICE_VEREIN'),
+        '3x' => array('PREMIUM_STRIPE_PRICE_3X', 'PREMIUM_STRIPE_PRICE_FIRMA'),
+        '5x' => array('PREMIUM_STRIPE_PRICE_5X', 'PREMIUM_STRIPE_PRICE_FIRMA_PLUS'),
+    );
+    $prices = array();
+    foreach ($pairs as $sale => $names) {
+        $value = '';
+        foreach ($names as $name) {
+            $candidate = premium_config_value($name);
+            if ($candidate !== '') {
+                $value = $candidate;
+                break;
+            }
+        }
+        $prices[$sale] = $value;
+    }
+    return $prices;
+}
+
+function premium_stripe_normalize_prices($prices) {
+    if (!is_array($prices)) {
+        $prices = array();
+    }
+    $out = array();
+    foreach (premium_sale_tier_keys() as $sale) {
+        $legacy = premium_stripe_legacy_key($sale);
+        $value = '';
+        if (array_key_exists($sale, $prices)) {
+            $value = premium_clean_config_text($prices[$sale]);
+        }
+        if ($value === '' && $legacy !== '' && array_key_exists($legacy, $prices)) {
+            $value = premium_clean_config_text($prices[$legacy]);
+        }
+        $out[$sale] = $value;
+    }
+    return $out;
+}
+
 function premium_stripe_config($override = null) {
     if (!is_array($override)) {
         premium_load_config();
         $override = array(
             'secret' => premium_config_value('PREMIUM_STRIPE_SECRET_KEY'),
             'webhook' => premium_config_value('PREMIUM_STRIPE_WEBHOOK_SECRET'),
-            'prices' => array(
-                'verein' => premium_config_value('PREMIUM_STRIPE_PRICE_VEREIN'),
-                'firma' => premium_config_value('PREMIUM_STRIPE_PRICE_FIRMA'),
-                'firma_plus' => premium_config_value('PREMIUM_STRIPE_PRICE_FIRMA_PLUS'),
-            ),
+            'prices' => premium_stripe_prices_from_constants(),
         );
     }
     $prices = (isset($override['prices']) && is_array($override['prices'])) ? $override['prices'] : array();
     return array(
         'secret' => premium_clean_config_text(isset($override['secret']) ? $override['secret'] : ''),
         'webhook' => premium_clean_config_text(isset($override['webhook']) ? $override['webhook'] : ''),
-        'prices' => array(
-            'verein' => premium_clean_config_text(isset($prices['verein']) ? $prices['verein'] : ''),
-            'firma' => premium_clean_config_text(isset($prices['firma']) ? $prices['firma'] : ''),
-            'firma_plus' => premium_clean_config_text(isset($prices['firma_plus']) ? $prices['firma_plus'] : ''),
-        ),
+        'prices' => premium_stripe_normalize_prices($prices),
+    );
+}
+
+function premium_stripe_paid_tier($tier, $price, array $prices) {
+    $tier = (string) $tier;
+    $price = (string) $price;
+    if ($price === '') {
+        return '';
+    }
+    if (premium_is_sale_tier($tier) && isset($prices[$tier]) && (string) $prices[$tier] !== '' && strlen((string) $prices[$tier]) === strlen($price) && hash_equals((string) $prices[$tier], $price)) {
+        return $tier;
+    }
+    $legacy = premium_stripe_legacy_key_reverse();
+    if (isset($legacy[$tier])) {
+        $sale = $legacy[$tier];
+        $expected = isset($prices[$sale]) ? (string) $prices[$sale] : '';
+        if ($expected !== '' && strlen($expected) === strlen($price) && hash_equals($expected, $price) && premium_known_tier($tier)) {
+            return $tier;
+        }
+    }
+    return '';
+}
+
+function premium_stripe_legacy_key_reverse() {
+    return array(
+        'verein' => '1x',
+        'firma' => '3x',
+        'firma_plus' => '5x',
     );
 }
 
@@ -1190,9 +1397,9 @@ function premium_stripe_status($config = null) {
     } else {
         $webhook = 'invalid';
     }
-    $prices_in = (isset($config['prices']) && is_array($config['prices'])) ? $config['prices'] : array();
+    $prices_in = premium_stripe_normalize_prices(isset($config['prices']) ? $config['prices'] : array());
     $prices = array();
-    foreach (array('verein', 'firma', 'firma_plus') as $tier) {
+    foreach (premium_sale_tier_keys() as $tier) {
         $value = premium_clean_config_text(isset($prices_in[$tier]) ? $prices_in[$tier] : '');
         if ($value === '') {
             $prices[$tier] = 'missing';
@@ -1314,7 +1521,7 @@ function premium_stripe_error_note($body) {
 
 function premium_stripe_start_checkout($tier, $email, $transport = null, $config = null, $now = null) {
     $config = premium_stripe_config($config);
-    if (!premium_stripe_is_configured($config) || !premium_known_tier($tier)) {
+    if (!premium_stripe_is_configured($config) || !premium_is_sale_tier($tier) || empty($config['prices'][$tier])) {
         return array('ok' => false, 'url' => '', 'error' => 'config');
     }
     $email = premium_normalize_email($email);
@@ -1338,7 +1545,7 @@ function premium_stripe_start_checkout($tier, $email, $transport = null, $config
         'metadata[price_id]' => $config['prices'][$tier],
         'client_reference_id' => substr(hash('sha256', $tier . '|' . $email), 0, 32),
     );
-    $idem = hash('sha256', $email . '|' . $tier . '|' . date('Y-m-d', premium_now($now)));
+    $idem = hash('sha256', $email . '|' . $tier . '|' . premium_now($now) . '|' . bin2hex(random_bytes(8)));
     $headers = array(
         'Authorization: Bearer ' . $config['secret'],
         'Idempotency-Key: ' . $idem,
@@ -1374,8 +1581,8 @@ function premium_apply_checkout_event(PDO $pdo, array $event, $sender = null, $n
     $metadata = (isset($object['metadata']) && is_array($object['metadata'])) ? $object['metadata'] : array();
     $tier = isset($metadata['tier']) ? (string) $metadata['tier'] : '';
     $price = isset($metadata['price_id']) ? (string) $metadata['price_id'] : '';
-    $expected = (isset($config['prices'][$tier])) ? (string) $config['prices'][$tier] : '';
-    if ($expected === '' || $price === '' || !hash_equals($expected, $price)) {
+    $tier = premium_stripe_paid_tier($tier, $price, isset($config['prices']) ? $config['prices'] : array());
+    if ($tier === '') {
         return array('http' => 200, 'status' => 'ignored', 'code' => '');
     }
     $email = isset($metadata['buyer_email']) ? (string) $metadata['buyer_email'] : '';
@@ -1925,10 +2132,8 @@ function premium_copy_group_for_next_year(PDO $pdo, $group_id) {
 
     $pdo->beginTransaction();
     try {
-        $lock = $pdo->prepare('UPDATE `premium_licenses` SET `season_year` = `season_year` WHERE `id` = ?');
-        $lock->execute(array((int) $license['id']));
-        $used = premium_group_count($pdo, $license['id']);
-        if (!premium_has_room($license['tier'], $used)) {
+        $license = premium_choose_license_with_room($pdo, $license);
+        if (!$license || !premium_license_row_has_room($pdo, $license)) {
             $pdo->rollBack();
             return array('ok' => false, 'error' => 'limit', 'admin_token' => '', 'group_id' => 0);
         }
@@ -2162,7 +2367,7 @@ function premium_create_form_html($enabled = null, $definitions = null, $checked
     if (!premium_feature_enabled($enabled)) {
         return '';
     }
-    $definitions = ($definitions === null) ? premium_tier_definitions() : $definitions;
+    $definitions = premium_sale_definitions($definitions);
     $href = function_exists('i18n_href') ? i18n_href('firmen-premium') : '/firmen-premium';
     $email = isset($values['email']) ? (string) $values['email'] : '';
     $code = isset($values['code']) ? (string) $values['code'] : '';
@@ -2423,12 +2628,39 @@ function premium_admin_context(PDO $pdo, array $group, $session = null) {
 }
 
 function premium_slots_text(array $license, $used) {
-    $def = premium_tier($license['tier']);
+    $def = premium_tier(isset($license['tier']) ? $license['tier'] : '');
+    $used = (int) $used;
     if ($def && (!isset($def['limit']) || $def['limit'] === null)) {
-        return t('premium.overview.slots_open', array('{used}' => (string) (int) $used));
+        return t('premium.overview.slots_open', array('{used}' => (string) $used));
     }
     $limit = ($def && isset($def['limit'])) ? (int) $def['limit'] : 0;
-    return t('premium.overview.slots', array('{used}' => (string) (int) $used, '{limit}' => (string) $limit));
+    $left = max(0, $limit - $used);
+    return t('premium.overview.slots', array(
+        '{used}' => (string) $used,
+        '{limit}' => (string) $limit,
+        '{left}' => (string) $left,
+    ));
+}
+
+function premium_license_is_full(array $license, $used) {
+    $def = premium_tier(isset($license['tier']) ? $license['tier'] : '');
+    if (!$def || !isset($def['limit']) || $def['limit'] === null) {
+        return false;
+    }
+    return (int) $used >= (int) $def['limit'];
+}
+
+function premium_purchase_href() {
+    $href = function_exists('i18n_href') ? i18n_href('firmen-premium') : '/firmen-premium';
+    return $href . '#kaufen';
+}
+
+function premium_credits_exhausted(PDO $pdo, array $license, $used) {
+    $pool = premium_buyer_pool($pdo, isset($license['buyer_email']) ? $license['buyer_email'] : '');
+    if (count($pool['rows']) > 1) {
+        return !$pool['open'] && (int) $pool['left'] < 1;
+    }
+    return premium_license_is_full($license, $used);
 }
 
 function premium_admin_section_html(PDO $pdo, array $group, $session = null, $highlight = false) {
@@ -2447,6 +2679,21 @@ function premium_admin_section_html(PDO $pdo, array $group, $session = null, $hi
     }
     if ($ctx['license']) {
         $html .= '<p>' . h(t('premium.admin.active', array('{tier}' => premium_tier_label($ctx['license']['tier'])))) . ' ' . h(premium_slots_text($ctx['license'], $ctx['used'])) . '</p>';
+        $pool = premium_buyer_pool($pdo, isset($ctx['license']['buyer_email']) ? $ctx['license']['buyer_email'] : '');
+        if (count($pool['rows']) > 1) {
+            if ($pool['open']) {
+                $html .= '<p>' . h(t('premium.admin.pool_open', array('{used}' => (string) $pool['used']))) . '</p>';
+            } else {
+                $html .= '<p>' . h(t('premium.admin.pool', array(
+                    '{left}' => (string) $pool['left'],
+                    '{used}' => (string) $pool['used'],
+                    '{limit}' => (string) $pool['limit'],
+                ))) . '</p>';
+            }
+        }
+        if (premium_credits_exhausted($pdo, $ctx['license'], $ctx['used'])) {
+            $html .= '<p><a href="' . h(premium_purchase_href()) . '">' . h(t('premium.admin.buy_more')) . '</a></p>';
+        }
         $html .= '<p class="section-description">' . h(t('premium.admin.brand_hint')) . '</p>';
         $html .= '<p><a class="button secondary" href="/premium-hr.php?token=' . h(urlencode($group['admin_token'])) . '">' . h(t('premium.hr.open')) . '</a></p>';
         $html .= '<form method="post" class="premium-inline-form">' . csrf_input();
@@ -2489,9 +2736,8 @@ function premium_admin_section_html(PDO $pdo, array $group, $session = null, $hi
             }
         }
     } else {
-        $buy = function_exists('i18n_href') ? i18n_href('firmen-premium') : '/firmen-premium';
         $html .= '<p class="section-description">' . h(t('premium.admin.inactive')) . '</p>';
-        $html .= '<p><a href="' . h($buy) . '#kaufen">' . h(t('premium.create.buy')) . '</a></p>';
+        $html .= '<p><a href="' . h(premium_purchase_href()) . '">' . h(t('premium.create.buy')) . '</a></p>';
         $html .= '<form method="post" class="premium-inline-form">' . csrf_input();
         $html .= '<input type="hidden" name="premium_action" value="claim_email">';
         $html .= '<label for="license_email">' . h(t('premium.claim.email')) . '</label>';
@@ -2513,7 +2759,7 @@ function premium_admin_section_html(PDO $pdo, array $group, $session = null, $hi
 }
 
 function premium_pricing_cards_html($definitions = null) {
-    $definitions = ($definitions === null) ? premium_tier_definitions() : $definitions;
+    $definitions = premium_sale_definitions($definitions);
     $html = '<div class="premium-tier-grid">';
     foreach ($definitions as $key => $def) {
         if (!is_array($def)) {
@@ -2533,7 +2779,7 @@ function premium_pricing_cards_html($definitions = null) {
 function premium_tier_choices_html($name) {
     $html = '<div class="premium-tier-choices">';
     $first = true;
-    foreach (premium_tier_definitions() as $key => $def) {
+    foreach (premium_sale_definitions() as $key => $def) {
         $id = $name . '-' . $key;
         $html .= '<label for="' . h($id) . '"><input type="radio" name="tier" id="' . h($id) . '" value="' . h($key) . '"' . ($first ? ' required' : '') . '> ';
         $html .= h(premium_tier_label($key) . ' · ' . premium_price_label($def['price'])) . '</label>';
@@ -2624,7 +2870,7 @@ function premium_company_extras_html() {
         $html .= '<p>' . h(t($pair[1])) . '</p>';
     }
     $prices = array();
-    foreach (premium_tier_definitions() as $key => $def) {
+    foreach (premium_sale_definitions() as $key => $def) {
         if (!is_array($def) || !isset($def['price'])) {
             continue;
         }
@@ -2743,9 +2989,14 @@ function premium_master_diagnostic_html() {
     $html .= '<ul>';
     $html .= '<li>Secret Key: ' . h(premium_diagnostic_label($stripe['secret'])) . '. Erlaubt sind sk_test_, sk_live_, rk_test_ und rk_live_. Ein pk_ Key kann kein Checkout starten.</li>';
     $html .= '<li>Webhook: ' . h(premium_diagnostic_label($stripe['webhook'])) . '. Der Wert muss mit whsec_ beginnen.</li>';
-    foreach (array('verein' => 'Verein', 'firma' => 'Firma', 'firma_plus' => 'Firma Plus') as $key => $label) {
+    $price_constants = array(
+        '1x' => 'PREMIUM_STRIPE_PRICE_1X, sonst PREMIUM_STRIPE_PRICE_VEREIN',
+        '3x' => 'PREMIUM_STRIPE_PRICE_3X, sonst PREMIUM_STRIPE_PRICE_FIRMA',
+        '5x' => 'PREMIUM_STRIPE_PRICE_5X, sonst PREMIUM_STRIPE_PRICE_FIRMA_PLUS',
+    );
+    foreach ($price_constants as $key => $constant) {
         $state = isset($stripe['prices'][$key]) ? $stripe['prices'][$key] : 'missing';
-        $html .= '<li>Price-ID ' . h($label) . ': ' . h(premium_diagnostic_label($state)) . '. Das ist die Stripe-ID price_…, nicht der Frankenbetrag aus PREMIUM_PRICE_*.</li>';
+        $html .= '<li>Price-ID ' . h(premium_tier_label($key)) . ' (' . h($constant) . '): ' . h(premium_diagnostic_label($state)) . '. Das ist die Stripe-ID price_…, nicht der Frankenbetrag aus PREMIUM_PRICE_*.</li>';
     }
     $html .= '<li>Rechnungsmail: ' . h($diag['invoice_email']) . ' (' . h(premium_diagnostic_label($diag['invoice_source'])) . ').</li>';
     $html .= '<li>PHP mail(): ' . ($diag['mail_function'] ? 'verfügbar' : 'fehlt') . '. Absender ' . h($diag['from'] !== '' ? $diag['from'] : 'fehlt') . '. ';
@@ -2843,7 +3094,7 @@ function premium_master_section_html(PDO $pdo, $with_diagnostic = true) {
     foreach ($pending as $license) {
         $html .= '<form method="post" class="premium-master-row">' . csrf_input();
         $html .= '<input type="hidden" name="license_id" value="' . (int) $license['id'] . '">';
-        $html .= '<p><strong>' . h($license['company_name']) . '</strong> · ' . h(premium_tier_label($license['tier'])) . '<br>' . h($license['buyer_email']) . '</p>';
+        $html .= '<p><strong>' . h($license['company_name']) . '</strong> · ' . h(premium_tier_label($license['tier'])) . ' · ' . h(premium_slots_text($license, premium_group_count($pdo, $license['id']))) . '<br>' . h($license['buyer_email']) . '</p>';
         $html .= '<p>' . nl2br(h($license['company_address'])) . '</p>';
         $html .= '<label>' . h(t('premium.master.domain')) . ' <input type="text" name="domain" placeholder="firma.ch"></label>';
         $html .= '<div class="premium-master-actions">';
@@ -2863,7 +3114,7 @@ function premium_master_section_html(PDO $pdo, $with_diagnostic = true) {
         if (!empty($license['domain'])) {
             $html .= ' · @' . h($license['domain']);
         }
-        $html .= ' · ' . h(t('premium.master.groups', array('{count}' => (string) premium_group_count($pdo, $license['id']))));
+        $html .= ' · ' . h(premium_slots_text($license, premium_group_count($pdo, $license['id'])));
         $html .= '</p>';
         $html .= '<form method="post" class="premium-inline-form">' . csrf_input() . '<input type="hidden" name="premium_action" value="domain"><input type="hidden" name="license_id" value="' . (int) $license['id'] . '">';
         $html .= '<input type="text" name="domain" value="' . h(isset($license['domain']) ? $license['domain'] : '') . '">';
@@ -2882,7 +3133,7 @@ function premium_master_section_html(PDO $pdo, $with_diagnostic = true) {
         if (!empty($license['company_name'])) {
             $html .= '<br>' . h($license['buyer_email']);
         }
-        $html .= ' · ' . h(t('premium.master.groups', array('{count}' => (string) premium_group_count($pdo, $license['id']))));
+        $html .= ' · ' . h(premium_slots_text($license, premium_group_count($pdo, $license['id'])));
         $html .= '</p>';
         $html .= '<form method="post" class="premium-inline-form" onsubmit="' . html_onsubmit_confirm(t('premium.master.delete_confirm')) . '">' . csrf_input();
         $html .= '<input type="hidden" name="premium_action" value="delete_revoked"><input type="hidden" name="license_id" value="' . (int) $license['id'] . '">';
