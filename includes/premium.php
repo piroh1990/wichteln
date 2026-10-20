@@ -213,6 +213,24 @@ function premium_domain_to_ascii($domain) {
     return strtolower($domain);
 }
 
+function premium_public_mail_domain($domain) {
+    $domain = strtolower(trim((string) $domain));
+    if ($domain === '') {
+        return false;
+    }
+    $blocked = array(
+        'gmail.com', 'googlemail.com',
+        'outlook.com', 'outlook.de', 'hotmail.com', 'hotmail.de', 'live.com', 'live.de', 'msn.com',
+        'yahoo.com', 'yahoo.de', 'ymail.com',
+        'gmx.ch', 'gmx.net', 'gmx.de', 'gmx.at',
+        'bluewin.ch', 'hispeed.ch', 'sunrise.ch', 'swissonline.ch',
+        'icloud.com', 'me.com', 'mac.com',
+        'proton.me', 'protonmail.com', 'pm.me',
+        'web.de', 'mail.com', 'aol.com', 'fastmail.com', 'zoho.com',
+    );
+    return in_array($domain, $blocked, true);
+}
+
 function premium_normalize_domain($value) {
     $value = strtolower(trim((string) $value));
     if ($value === '') {
@@ -778,15 +796,17 @@ function premium_send($sender, $to, $subject, $html, $plain) {
     }
 }
 
-function premium_claim_mail($email, $confirm_url, $code, $lang) {
-    return mail_run($lang, function () use ($email, $confirm_url, $code) {
+function premium_claim_mail($email, $confirm_url, $code, $lang, $group_name) {
+    $group_name = str_replace(array("\r", "\n"), ' ', trim((string) $group_name));
+    return mail_run($lang, function () use ($email, $confirm_url, $code, $group_name) {
+        $intro = t('premium.mail.claim.intro', array('{email}' => $email, '{group}' => $group_name));
         $subject = t('premium.mail.claim.subject');
-        $body = mail_p(mail_esc(t('premium.mail.claim.intro', array('{email}' => $email))));
+        $body = mail_p(mail_esc($intro));
         $body .= mail_p('<strong>' . mail_esc(t('premium.mail.claim.code_label')) . '</strong> ' . mail_esc($code));
         $body .= mail_button($confirm_url, t('premium.mail.claim.link'));
         $body .= mail_p(mail_esc(t('premium.mail.claim.expire')));
         $html = render_email_template(t('premium.mail.claim.title'), t('premium.mail.claim.preview'), $body);
-        $plain = t('premium.mail.claim.intro', array('{email}' => $email)) . "\n\n"
+        $plain = $intro . "\n\n"
             . t('premium.mail.claim.code_label') . ' ' . $code . "\n"
             . $confirm_url . "\n\n"
             . t('premium.mail.claim.expire') . "\n";
@@ -867,6 +887,12 @@ function premium_request_email_claim(PDO $pdo, $group_id, $email, $ip, $sender =
     if (!premium_claim_email_allowed($ip, $email)) {
         return array('status' => 'rate');
     }
+    $group_stmt = $pdo->prepare('SELECT `id`, `name` FROM `groups` WHERE `id` = ?');
+    $group_stmt->execute(array((int) $group_id));
+    $group = $group_stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$group) {
+        return array('status' => 'invalid');
+    }
     $license = premium_find_license_for_email($pdo, $email);
     if (!$license) {
         return array('status' => 'unknown');
@@ -889,7 +915,7 @@ function premium_request_email_claim(PDO $pdo, $group_id, $email, $ip, $sender =
         $expires,
         premium_sql_time($now),
     ));
-    $mail = premium_claim_mail($email, premium_confirm_url($raw), $code, $lang);
+    $mail = premium_claim_mail($email, premium_confirm_url($raw), $code, $lang, isset($group['name']) ? $group['name'] : '');
     $sent = premium_send($sender, $email, $mail[0], $mail[1], $mail[2]);
     if (!$sent) {
         return array('status' => 'failed');
@@ -898,8 +924,12 @@ function premium_request_email_claim(PDO $pdo, $group_id, $email, $ip, $sender =
 }
 
 function premium_consume_confirmation(PDO $pdo, array $row, $now = null) {
-    $stmt = $pdo->prepare('UPDATE `premium_confirmations` SET `consumed_at` = ? WHERE `group_id` = ? AND `consumed_at` IS NULL');
-    $stmt->execute(array(premium_sql_time($now), (int) $row['group_id']));
+    if (empty($row['id'])) {
+        return false;
+    }
+    $stmt = $pdo->prepare('UPDATE `premium_confirmations` SET `consumed_at` = ? WHERE `id` = ? AND `consumed_at` IS NULL');
+    $stmt->execute(array(premium_sql_time($now), (int) $row['id']));
+    return $stmt->rowCount() === 1;
 }
 
 function premium_confirmation_is_open(array $row, $now = null) {
@@ -914,6 +944,14 @@ function premium_confirmation_is_open(array $row, $now = null) {
 }
 
 function premium_finish_confirmation(PDO $pdo, array $row, $now = null) {
+    if (!empty($row['id'])) {
+        $fresh_stmt = $pdo->prepare('SELECT * FROM `premium_confirmations` WHERE `id` = ?');
+        $fresh_stmt->execute(array((int) $row['id']));
+        $fresh = $fresh_stmt->fetch(PDO::FETCH_ASSOC);
+        if (is_array($fresh)) {
+            $row = $fresh;
+        }
+    }
     if (!premium_confirmation_is_open($row, $now)) {
         return array('ok' => false, 'error' => 'bad');
     }
@@ -922,22 +960,52 @@ function premium_finish_confirmation(PDO $pdo, array $row, $now = null) {
         return array('ok' => false, 'error' => 'bad');
     }
     $attached = premium_attach_group($pdo, $license['id'], $row['group_id']);
-    if ($attached['ok']) {
+    if (!empty($attached['ok'])) {
         premium_consume_confirmation($pdo, $row, $now);
     }
     return $attached;
 }
 
-function premium_confirm_token(PDO $pdo, $raw_token, $now = null) {
+function premium_confirmation_row(PDO $pdo, $raw_token) {
     $raw = premium_token_format($raw_token);
     if ($raw === '') {
-        return array('ok' => false, 'error' => 'bad');
+        return null;
     }
     $hash = hash('sha256', $raw);
     $stmt = $pdo->prepare('SELECT * FROM `premium_confirmations` WHERE `token_hash` = ?');
     $stmt->execute(array($hash));
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    if (!$row || !isset($row['token_hash']) || !hash_equals($row['token_hash'], $hash)) {
+    if (!$row || !isset($row['token_hash']) || !hash_equals((string) $row['token_hash'], $hash)) {
+        return null;
+    }
+    return $row;
+}
+
+function premium_confirmation_preview(PDO $pdo, $raw_token, $now = null) {
+    $row = premium_confirmation_row($pdo, $raw_token);
+    if (!$row || !premium_confirmation_is_open($row, $now)) {
+        return null;
+    }
+    $license = premium_fetch_license($pdo, $row['license_id']);
+    if (!$license || !premium_email_matches_license($license, $row['email'])) {
+        return null;
+    }
+    $stmt = $pdo->prepare('SELECT `name` FROM `groups` WHERE `id` = ?');
+    $stmt->execute(array((int) $row['group_id']));
+    $name = $stmt->fetchColumn();
+    if (!is_string($name) || trim($name) === '') {
+        return null;
+    }
+    return array(
+        'group_name' => $name,
+        'email' => (string) $row['email'],
+        'group_id' => (int) $row['group_id'],
+    );
+}
+
+function premium_confirm_token(PDO $pdo, $raw_token, $now = null) {
+    $row = premium_confirmation_row($pdo, $raw_token);
+    if (!$row) {
         return array('ok' => false, 'error' => 'bad');
     }
     return premium_finish_confirmation($pdo, $row, $now);
@@ -1099,7 +1167,7 @@ function premium_activate_license(PDO $pdo, $license_id, $domain_raw, $sender = 
         return array('ok' => false, 'error' => 'missing', 'code' => '');
     }
     $domain = premium_normalize_domain($domain_raw);
-    if ($domain === null) {
+    if ($domain === null || premium_public_mail_domain($domain)) {
         return array('ok' => false, 'error' => 'domain', 'code' => '');
     }
     $code = premium_generate_license_code();
@@ -1124,7 +1192,7 @@ function premium_activate_license(PDO $pdo, $license_id, $domain_raw, $sender = 
 
 function premium_set_domain(PDO $pdo, $license_id, $domain_raw) {
     $domain = premium_normalize_domain($domain_raw);
-    if ($domain === null) {
+    if ($domain === null || premium_public_mail_domain($domain)) {
         return false;
     }
     $stmt = $pdo->prepare('UPDATE `premium_licenses` SET `domain` = ? WHERE `id` = ? AND `status` = ?');
@@ -1599,12 +1667,41 @@ function premium_apply_checkout_event(PDO $pdo, array $event, $sender = null, $n
     $lang = isset($metadata['language']) ? i18n_allow($metadata['language']) : 'de';
     $existing = premium_fetch_license_by_session($pdo, $session_id);
     if ($existing) {
-        if (!empty($existing['notified_at'])) {
-            return array('http' => 200, 'status' => 'duplicate', 'code' => '');
+        $started = false;
+        if (!$pdo->inTransaction()) {
+            $pdo->beginTransaction();
+            $started = true;
         }
-        $code = premium_issue_code($pdo, $existing['id']);
-        $existing = premium_fetch_license($pdo, $existing['id']);
-        premium_deliver_license_mail($pdo, $existing, $code, $sender);
+        try {
+            premium_lock_license($pdo, $existing['id']);
+            $existing = premium_fetch_license($pdo, $existing['id']);
+            if (!$existing) {
+                if ($started && $pdo->inTransaction()) {
+                    $pdo->rollBack();
+                }
+                return array('http' => 200, 'status' => 'duplicate', 'code' => '');
+            }
+            if (!empty($existing['notified_at'])) {
+                if ($started && $pdo->inTransaction()) {
+                    $pdo->commit();
+                }
+                return array('http' => 200, 'status' => 'duplicate', 'code' => '');
+            }
+            $code = premium_issue_code($pdo, $existing['id']);
+            $existing = premium_fetch_license($pdo, $existing['id']);
+            if ($existing) {
+                premium_deliver_license_mail($pdo, $existing, $code, $sender);
+            }
+            if ($started && $pdo->inTransaction()) {
+                $pdo->commit();
+            }
+        } catch (Exception $e) {
+            if ($started && $pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            error_log('Premium-Webhook: ' . $e->getMessage());
+            return array('http' => 500, 'status' => 'error', 'code' => '');
+        }
         return array('http' => 200, 'status' => 'duplicate', 'code' => '');
     }
     $code = premium_generate_license_code();
@@ -2163,8 +2260,16 @@ function premium_copy_group_for_next_year(PDO $pdo, $group_id) {
             } catch (Exception $ignored) {
             }
         }
-        $link = $pdo->prepare('UPDATE `groups` SET `premium_license_id` = ? WHERE `id` = ?');
+        if (!premium_license_row_has_room($pdo, $license)) {
+            $pdo->rollBack();
+            return array('ok' => false, 'error' => 'limit', 'admin_token' => '', 'group_id' => 0);
+        }
+        $link = $pdo->prepare('UPDATE `groups` SET `premium_license_id` = ? WHERE `id` = ? AND (`premium_license_id` IS NULL OR `premium_license_id` = 0)');
         $link->execute(array((int) $license['id'], (int) $new_id));
+        if ($link->rowCount() !== 1) {
+            $pdo->rollBack();
+            return array('ok' => false, 'error' => 'fail', 'admin_token' => '', 'group_id' => 0);
+        }
         if (function_exists('affiliate_of_column_ready') && affiliate_of_column_ready($pdo) && isset($group['affiliate_of']) && (string) $group['affiliate_of'] === '1') {
             $flag = $pdo->prepare('UPDATE `groups` SET `affiliate_of` = 1 WHERE `id` = ?');
             $flag->execute(array((int) $new_id));

@@ -142,8 +142,8 @@ if ($csrf_ok && isset($_POST['resend_email'])) {
         } elseif (empty($participant['assigned_to'])) {
             $email_error = t('admin.no_assignment');
         } else {
-            $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `id` = ?");
-            $stmt->execute(array($participant['assigned_to']));
+            $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `id` = ? AND `group_id` = ?");
+            $stmt->execute(array($participant['assigned_to'], $group['id']));
             $assigned = $stmt->fetch(PDO::FETCH_ASSOC);
             if ($assigned) {
                 $lang = mail_recipient_lang($participant);

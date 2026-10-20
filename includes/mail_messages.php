@@ -1,7 +1,7 @@
 <?php
 
 function mail_esc($value) {
-    return htmlspecialchars((string) $value);
+    return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
 }
 
 function mail_run($lang, $callback) {
@@ -73,9 +73,13 @@ function mail_p($html) {
     return '<p style="margin: 0 0 16px 0; color: #2b2d42; font-size: 16px; line-height: 1.6;">' . $html . '</p>';
 }
 
+function mail_href_ok($url) {
+    return is_string($url) && preg_match('#\Ahttps://[^\s<>"\']+\z#', $url) === 1;
+}
+
 function mail_button($url, $label, $attrs = array()) {
     $url = (string) $url;
-    if ($url === '') {
+    if (!mail_href_ok($url)) {
         return '';
     }
     if (!is_array($attrs)) {

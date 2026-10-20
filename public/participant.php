@@ -31,7 +31,7 @@ function save_token_to_cookie($token) {
         'expires' => time() + COOKIE_LIFETIME,
         'path' => '/',
         'domain' => '',
-        'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
+        'secure' => request_is_https(),
         'httponly' => true,
         'samesite' => 'Lax',
     );
@@ -95,7 +95,7 @@ if (!empty($participant_token)) {
                 'expires' => time() - 3600,
                 'path' => '/',
                 'domain' => '',
-                'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
+                'secure' => request_is_https(),
                 'httponly' => true,
                 'samesite' => 'Lax',
             );
@@ -183,8 +183,8 @@ if ($participant) {
     i18n_boot_token(i18n_row_language($participant));
 
     if ($group && $group['is_drawn'] && !empty($participant['assigned_to'])) {
-        $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `id` = ?");
-        $stmt->execute(array($participant['assigned_to']));
+        $stmt = $pdo->prepare("SELECT * FROM `participants` WHERE `id` = ? AND `group_id` = ?");
+        $stmt->execute(array($participant['assigned_to'], $group['id']));
         $assigned = $stmt->fetch(PDO::FETCH_ASSOC);
     }
 

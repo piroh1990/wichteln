@@ -297,7 +297,7 @@ function i18n_requested_choice() {
 
 function i18n_set_choice_cookie($lang) {
     $lang = i18n_allow($lang);
-    $secure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+    $secure = function_exists('request_is_https') ? request_is_https() : (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
     setcookie('lang', $lang, array(
         'expires' => time() + 365 * 24 * 60 * 60,
         'path' => '/',
@@ -354,19 +354,55 @@ function i18n_from_accept() {
     return $ranked[0]['lang'];
 }
 
+function i18n_safe_local_path($path) {
+    $path = (string) $path;
+    if ($path === '' || $path[0] !== '/') {
+        return '/';
+    }
+    $decoded = rawurldecode($path);
+    if ($decoded !== $path) {
+        $path = $decoded;
+    }
+    if (preg_match('/[\x00-\x20\x7F\\\\]/', $path) === 1) {
+        return '/';
+    }
+    if (strpos($path, '//') !== false || strpos($path, ':') !== false || strpos($path, '..') !== false) {
+        return '/';
+    }
+    if (preg_match('#\A/(?:[A-Za-z0-9._~-]+/)*[A-Za-z0-9._~-]*\z#', $path) !== 1) {
+        return '/';
+    }
+    return $path;
+}
+
+function i18n_redirect_location_from_request($uri, array $query) {
+    $path = parse_url((string) $uri, PHP_URL_PATH);
+    if (!is_string($path)) {
+        $path = '/';
+    }
+    $path = i18n_safe_local_path($path);
+    unset($query['setlang'], $query['lang']);
+    $clean = array();
+    foreach ($query as $key => $value) {
+        if (!is_string($key) || preg_match('/\A[A-Za-z0-9_-]{1,40}\z/', $key) !== 1) {
+            continue;
+        }
+        if (is_array($value)) {
+            continue;
+        }
+        $clean[$key] = (string) $value;
+    }
+    $qs = http_build_query($clean);
+    return $path . ($qs !== '' ? '?' . $qs : '');
+}
+
 function i18n_redirect_drop_setlang() {
     if (headers_sent()) {
         return;
     }
     $uri = isset($_SERVER['REQUEST_URI']) ? (string) $_SERVER['REQUEST_URI'] : '/';
-    $path = parse_url($uri, PHP_URL_PATH);
-    if (!is_string($path) || $path === '' || $path[0] !== '/') {
-        $path = '/';
-    }
-    $query = $_GET;
-    unset($query['setlang'], $query['lang']);
-    $qs = http_build_query($query);
-    header('Location: ' . $path . ($qs !== '' ? '?' . $qs : ''));
+    $query = isset($_GET) && is_array($_GET) ? $_GET : array();
+    header('Location: ' . i18n_redirect_location_from_request($uri, $query));
     exit;
 }
 

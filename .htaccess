@@ -17,6 +17,8 @@ AddDefaultCharset UTF-8
     # Control Referrer Information
     Header set Referrer-Policy "strict-origin-when-cross-origin"
 
+    Header set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+
     # HSTS (HTTP Strict Transport Security) - Only sent over HTTPS
     # Enforces HTTPS for 1 year, including subdomains
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains" "expr=%{HTTPS} == 'on'"

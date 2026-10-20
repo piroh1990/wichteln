@@ -168,6 +168,62 @@ run_test('confirm helpers and token pages do not load matomo', function () {
     assert_true(strpos($draw, "'assignments'") === false);
 });
 
+run_test('language redirect stays on this site', function () {
+    assert_equals('/faq?token=abc', i18n_redirect_location_from_request('//evil.example/faq?setlang=de&token=abc', array('setlang' => 'de', 'token' => 'abc')));
+    assert_equals('/', i18n_redirect_location_from_request('/\\evil.example?setlang=de', array('setlang' => 'de')));
+    assert_equals('/', i18n_redirect_location_from_request('//evil.example/?setlang=en', array('setlang' => 'en')));
+    assert_equals('/', i18n_redirect_location_from_request('/%2f%2fevil.example/?setlang=fr', array('setlang' => 'fr')));
+    assert_equals('/admin.php?token=abc', i18n_redirect_location_from_request('/admin.php?token=abc&setlang=de', array('token' => 'abc', 'setlang' => 'de')));
+    assert_equals('/', i18n_safe_local_path("/faq\r\nX-Injected: 1"));
+});
+
+run_test('https detection does not follow a client downgrade', function () {
+    $_SERVER['HTTPS'] = 'on';
+    $_SERVER['HTTP_X_FORWARDED_PROTO'] = 'http';
+    assert_true(request_is_https());
+    $_SERVER['HTTPS'] = 'off';
+    unset($_SERVER['SERVER_PORT']);
+    $_SERVER['HTTP_X_FORWARDED_PROTO'] = 'https';
+    assert_true(request_is_https(), 'Plesk proxy proto is accepted when HTTPS is off');
+    $_SERVER['HTTP_X_FORWARDED_PROTO'] = 'http';
+    assert_true(!request_is_https());
+    unset($_SERVER['HTTPS'], $_SERVER['HTTP_X_FORWARDED_PROTO']);
+});
+
+run_test('script json escapes line separators and tags', function () {
+    $name = "Anna\xE2\x80\xA8<script>";
+    $json = json_for_script(array('giver' => reveal_display_name($name)));
+    assert_true(strpos($json, '<') === false);
+    assert_true(strpos($json, "\xE2\x80\xA8") === false);
+    assert_true(strpos(json_for_script("Zeile\xE2\x80\xA9"), "\xE2\x80\xA9") === false);
+});
+
+run_test('mail recipient and button reject header and script urls', function () {
+    assert_equals('', mail_safe_address("a@b.ch\nBcc: x@y.ch"));
+    assert_equals('', mail_safe_address('a@b.ch,c@d.ch'));
+    assert_equals('a@b.ch', mail_safe_address('a@b.ch'));
+    assert_equals('', mail_button('javascript:alert(1)', 'x'));
+    assert_equals('', mail_button('http://example.com/', 'x'));
+    assert_true(strpos(mail_button('https://www.awin1.com/cread.php?ued=1', 'Shop'), 'https://www.awin1.com/cread.php?ued=1') !== false);
+    $mailer = file_get_contents(dirname(__DIR__) . '/includes/functions.php');
+    $send = strpos($mailer, 'function send_email');
+    $guard = strpos($mailer, 'mail_safe_address($to)');
+    $call = strpos($mailer, 'mail($to, $encoded_subject');
+    assert_true($send !== false && $guard !== false && $call !== false && $send < $guard && $guard < $call);
+});
+
+run_test('master session expires and captcha images are limited', function () {
+    $now = 1760000000;
+    $fresh = master_admin_session_mark(array(), $now);
+    assert_true(master_admin_session_is_current($fresh, $now + 10));
+    assert_true(!master_admin_session_is_current($fresh, $now + (8 * 3600) + 5), 'idle session ends');
+    $fresh['master_admin_last_seen'] = $now + (11 * 3600);
+    assert_true(!master_admin_session_is_current($fresh, $now + (12 * 3600) + 5), 'absolute session ends');
+    assert_true(!master_admin_session_is_current(array('master_admin_authenticated' => true), $now));
+    $captcha = file_get_contents(dirname(__DIR__) . '/public/captcha.php');
+    assert_true(strpos($captcha, "consume_rate_limit('captcha-image'") !== false);
+});
+
 run_test('master login form does not accept the token from the query string', function () {
     $page = file_get_contents(dirname(__DIR__) . '/public/admin/index.php');
     assert_true(strpos($page, 'master_admin_login_document') !== false);

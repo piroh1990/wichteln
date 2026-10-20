@@ -1,8 +1,17 @@
 <?php
 require_once __DIR__ . '/../includes/session.php';
 require_once __DIR__ . '/../includes/captcha_lib.php';
+require_once __DIR__ . '/../includes/group_tools.php';
 
 start_secure_session();
+send_baseline_security_headers();
+if (!consume_rate_limit('captcha-image', request_client_ip(), 60, 300, false)) {
+    http_response_code(429);
+    header('Content-Type: text/plain; charset=UTF-8');
+    header('Cache-Control: no-store');
+    echo '429';
+    exit;
+}
 $captcha_code = generate_captcha_code();
 $_SESSION['captcha_code'] = $captcha_code;
 

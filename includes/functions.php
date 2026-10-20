@@ -234,7 +234,11 @@ function mail_last_error_note() {
 // Der fünfte Parameter setzt den Envelope-Absender (-f). Lehnt der Mailserver
 // das ab, folgt ein zweiter Versuch ohne -f. Jeder Versuch wird protokolliert.
 function send_email($to, $subject, $message, $is_html = false, $plain_text = null) {
-    $to = str_replace(array("\r", "\n"), '', (string) $to);
+    $to = mail_safe_address($to);
+    if ($to === '') {
+        mail_log_attempt('', $subject, false, '', 'bad_recipient');
+        return false;
+    }
     $mail = build_outgoing_mail($message, $is_html, $plain_text);
     $headers = preg_replace("/\r\n|\r|\n/", "\r\n", $mail['headers']);
     $body = preg_replace("/\r\n|\r|\n/", "\r\n", $mail['body']);
@@ -293,8 +297,16 @@ function mysql_column_exists($pdo, $table, $column) {
  * Namen für die Auflösung: Zeilenumbrüche werden zu Leerzeichen.
  */
 function reveal_display_name($name) {
-    $clean = str_replace(array("\r", "\n", "\t"), ' ', (string) $name);
+    $clean = str_replace(array("\r", "\n", "\t", "\xE2\x80\xA8", "\xE2\x80\xA9"), ' ', (string) $name);
     return trim($clean);
+}
+
+function json_for_script($value) {
+    $json = json_encode($value, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+    if (!is_string($json)) {
+        return 'null';
+    }
+    return $json;
 }
 
 /**
@@ -387,10 +399,7 @@ function build_reveal_pairs($participants) {
  * json_encode lässt die umschließenden Anführungszeichen stehen; die werden hier escaped.
  */
 function html_onsubmit_confirm($message) {
-    $script = 'return confirm(' . json_encode(
-        (string) $message,
-        JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
-    ) . ');';
+    $script = 'return confirm(' . json_for_script((string) $message) . ');';
     return htmlspecialchars($script, ENT_QUOTES, 'UTF-8');
 }
 
@@ -685,5 +694,7 @@ require_once __DIR__ . '/mail_messages.php';
 require_once __DIR__ . '/group_tools.php';
 require_once __DIR__ . '/premium.php';
 require_once __DIR__ . '/affiliate.php';
+
+send_baseline_security_headers();
 
 ?>
