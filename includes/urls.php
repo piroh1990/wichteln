@@ -112,6 +112,10 @@ function seo_clean_legacy_php_path($path) {
  * Nur GET und HEAD. POST bleibt auf der aufgerufenen Adresse, damit Formulare
  * nicht die Nutzdaten verlieren. /api/ und Token-Seiten behalten .php.
  * www wird auf den kanonischen Host gezogen, die Query bleibt roh erhalten.
+ *
+ * $request_uri ist der Originalpfad (REQUEST_URI). SCRIPT_NAME und PHP_SELF
+ * zeigen nach einem internen Rewrite oder unter PHP-FPM auf faq.php, auch
+ * wenn der Browser /faq aufgerufen hat. Die hier nicht verwenden.
  */
 function seo_legacy_redirect_target($method, $host, $request_uri) {
     $method = strtoupper(trim((string) $method));
@@ -156,14 +160,23 @@ function seo_legacy_redirect_target($method, $host, $request_uri) {
     return $location;
 }
 
+/**
+ * Liest nur Methode, Host und REQUEST_URI. SCRIPT_NAME und PHP_SELF bleiben
+ * aussen vor, sonst leitet /faq nach dem internen Rewrite auf faq.php wieder
+ * auf /faq um.
+ */
+function seo_legacy_redirect_from_server(array $server) {
+    $method = isset($server['REQUEST_METHOD']) ? (string) $server['REQUEST_METHOD'] : '';
+    $host = isset($server['HTTP_HOST']) ? (string) $server['HTTP_HOST'] : '';
+    $uri = isset($server['REQUEST_URI']) ? (string) $server['REQUEST_URI'] : '';
+    return seo_legacy_redirect_target($method, $host, $uri);
+}
+
 function seo_maybe_redirect_legacy() {
     if (PHP_SAPI === 'cli' || headers_sent()) {
         return;
     }
-    $method = isset($_SERVER['REQUEST_METHOD']) ? (string) $_SERVER['REQUEST_METHOD'] : '';
-    $host = isset($_SERVER['HTTP_HOST']) ? (string) $_SERVER['HTTP_HOST'] : '';
-    $uri = isset($_SERVER['REQUEST_URI']) ? (string) $_SERVER['REQUEST_URI'] : '';
-    $target = seo_legacy_redirect_target($method, $host, $uri);
+    $target = seo_legacy_redirect_from_server($_SERVER);
     if ($target === null || $target === '') {
         return;
     }
