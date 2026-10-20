@@ -465,6 +465,8 @@ if (isset($_SESSION['bulk_import_links']) && is_array($_SESSION['bulk_import_lin
 
 $group_language_editable = i18n_has_language_column($pdo, 'groups');
 $premium_license = premium_license_for_group($pdo, $group);
+$premium_from_create = isset($_GET['premium']) && (string) $_GET['premium'] === '1';
+$premium_claim_retry = $csrf_ok && isset($_POST['premium_action']) && in_array((string) $_POST['premium_action'], array('claim_email', 'confirm_short', 'claim_code'), true);
 $invite_url = get_display_url('/register.php?token=' . urlencode($group['invite_token']));
 $admin_url = get_display_url('/admin.php?token=' . urlencode($admin_token));
 $whatsapp_text = t('admin.whatsapp_intro') . "\n\n"
@@ -513,7 +515,7 @@ token_page_open(t('meta.admin.title', array('{group}' => $group['name'])));
                 <span class="status-pill <?php echo ($checklist['reveal'] === 'sent') ? 'is-done' : 'is-wait'; ?>"><?php echo h($reveal_label); ?></span>
             </div>
             <nav class="app-toc" aria-label="<?php echo h(t('admin.toc')); ?>">
-                <?php if (premium_feature_enabled()): ?>
+                <?php if ($premium_license): ?>
                 <a href="#premium"><?php echo h(t('premium.admin.toc')); ?></a>
                 <?php endif; ?>
                 <a href="#checkliste"><?php echo h(t('admin.toc.checklist')); ?></a>
@@ -580,12 +582,7 @@ token_page_open(t('meta.admin.title', array('{group}' => $group['name'])));
         <?php endif; ?>
 
         <?php
-        echo premium_admin_section_html(
-            $pdo,
-            $group,
-            $_SESSION,
-            isset($_GET['premium']) && (string) $_GET['premium'] === '1'
-        );
+        echo premium_admin_section_html($pdo, $group, $_SESSION);
         ?>
         <section class="section-card" id="checkliste" aria-labelledby="checklist-heading">
             <div class="section-card-header">
@@ -1103,6 +1100,16 @@ token_page_open(t('meta.admin.title', array('{group}' => $group['name'])));
                 </form>
             </div>
         </section>
+
+        <?php
+        echo premium_admin_offer_html(
+            $pdo,
+            $group,
+            $_SESSION,
+            $premium_from_create || $premium_claim_retry,
+            $premium_from_create
+        );
+        ?>
 
         <?php echo support_card_html('admin'); ?>
     </div>

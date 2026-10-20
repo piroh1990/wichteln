@@ -4249,6 +4249,104 @@ ul.premium-price-list li::before {
     content: none;
 }
 
+.premium-admin-offer {
+    margin: 1.25rem 0 0;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: #fbfbfc;
+}
+
+.premium-admin-offer summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 0.7rem 0.95rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--text-secondary);
+}
+
+.premium-admin-offer summary::-webkit-details-marker {
+    display: none;
+}
+
+.premium-admin-offer summary::before {
+    content: '▸';
+    display: inline-block;
+    width: 0.9rem;
+    margin-right: 0.35rem;
+    color: var(--text-secondary);
+}
+
+.premium-admin-offer[open] summary::before {
+    content: '▾';
+}
+
+.premium-admin-offer summary:focus-visible {
+    outline: 2px solid var(--secondary-color);
+    outline-offset: 2px;
+    border-radius: 8px;
+}
+
+.premium-admin-offer-body {
+    padding: 0.15rem 0.95rem 0.9rem;
+    font-size: 0.92rem;
+}
+
+.premium-admin-offer-body p {
+    margin: 0.4rem 0;
+    line-height: 1.45;
+}
+
+.premium-admin-offer-free {
+    color: var(--text-secondary);
+}
+
+.app-page .premium-admin-offer form,
+.app-page .premium-admin-offer form:hover {
+    background: transparent;
+    padding: 0;
+    margin: 0.65rem 0 0;
+    border: 0;
+    box-shadow: none;
+    transform: none;
+}
+
+.premium-admin-offer ul.premium-admin-offer-features,
+.premium-admin-offer ul.premium-price-list {
+    list-style: disc;
+    margin: 0.35rem 0 0.5rem;
+    padding: 0 0 0 1.15rem;
+}
+
+.premium-admin-offer ul.premium-admin-offer-features li,
+.premium-admin-offer ul.premium-price-list li {
+    padding: 0.05rem 0;
+    margin: 0;
+    line-height: 1.35;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.premium-admin-offer ul.premium-price-list li {
+    font-weight: 600;
+}
+
+.premium-admin-offer ul li::before {
+    content: none;
+}
+
+.premium-admin-offer input[type="text"],
+.premium-admin-offer input[type="email"] {
+    width: 100%;
+    max-width: 28rem;
+    box-sizing: border-box;
+}
+
+.premium-admin-offer .button {
+    margin-top: 0.35rem;
+}
+
 .content-section ul.premium-price-list,
 .premium-opt-in-box ul.premium-price-list {
     margin-bottom: 0.5rem;

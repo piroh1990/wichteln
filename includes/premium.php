@@ -2668,20 +2668,16 @@ function premium_credits_exhausted(PDO $pdo, array $license, $used) {
     return premium_license_is_full($license, $used);
 }
 
-function premium_admin_section_html(PDO $pdo, array $group, $session = null, $highlight = false) {
+function premium_admin_section_html(PDO $pdo, array $group, $session = null) {
     if (!premium_feature_enabled()) {
         return '';
     }
     $ctx = premium_admin_context($pdo, $group, $session);
+    if (!$ctx['license']) {
+        return '';
+    }
     $html = '<section class="section-card" id="premium" aria-labelledby="premium-heading">';
     $html .= '<div class="section-card-header"><span class="section-icon" aria-hidden="true">✦</span><h2 id="premium-heading">' . h(t('premium.admin.title')) . '</h2></div>';
-    if (!$ctx['ready']) {
-        $html .= '<p class="section-description">' . h(t('premium.claim.need_migration')) . '</p></section>';
-        return $html;
-    }
-    if ($highlight && !$ctx['license']) {
-        $html .= '<p class="section-description">' . h(t('premium.create.later')) . '</p>';
-    }
     if ($ctx['license']) {
         $html .= '<p>' . h(t('premium.admin.active', array('{tier}' => premium_tier_label($ctx['license']['tier'])))) . ' ' . h(premium_slots_text($ctx['license'], $ctx['used'])) . '</p>';
         $pool = premium_buyer_pool($pdo, isset($ctx['license']['buyer_email']) ? $ctx['license']['buyer_email'] : '');
@@ -2740,26 +2736,54 @@ function premium_admin_section_html(PDO $pdo, array $group, $session = null, $hi
                 $html .= '</div>';
             }
         }
-    } else {
-        $html .= '<p class="section-description">' . h(t('premium.admin.inactive')) . '</p>';
-        $html .= '<p><a href="' . h(premium_purchase_href()) . '">' . h(t('premium.create.buy')) . '</a></p>';
-        $html .= '<form method="post" class="premium-inline-form">' . csrf_input();
-        $html .= '<input type="hidden" name="premium_action" value="claim_email">';
-        $html .= '<label for="license_email">' . h(t('premium.claim.email')) . '</label>';
-        $html .= '<input type="email" id="license_email" name="license_email" required autocomplete="email">';
-        $html .= '<button type="submit" class="button secondary">' . h(t('premium.claim.email_submit')) . '</button></form>';
-        $html .= '<form method="post" class="premium-inline-form">' . csrf_input();
-        $html .= '<input type="hidden" name="premium_action" value="confirm_short">';
-        $html .= '<label for="short_code">' . h(t('premium.claim.short')) . '</label>';
-        $html .= '<input type="text" id="short_code" name="short_code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6">';
-        $html .= '<button type="submit" class="button secondary">' . h(t('premium.claim.short_submit')) . '</button></form>';
-        $html .= '<form method="post" class="premium-inline-form">' . csrf_input();
-        $html .= '<input type="hidden" name="premium_action" value="claim_code">';
-        $html .= '<label for="license_code">' . h(t('premium.claim.code')) . '</label>';
-        $html .= '<input type="text" id="license_code" name="license_code" autocomplete="off" spellcheck="false">';
-        $html .= '<button type="submit" class="button primary">' . h(t('premium.claim.code_submit')) . '</button></form>';
     }
     $html .= '</section>';
+    return $html;
+}
+
+function premium_admin_offer_html(PDO $pdo, array $group, $session = null, $open = false, $highlight = false) {
+    if (!premium_feature_enabled()) {
+        return '';
+    }
+    $ctx = premium_admin_context($pdo, $group, $session);
+    if ($ctx['license']) {
+        return '';
+    }
+    $html = '<details class="premium-admin-offer" id="premium"' . ($open ? ' open' : '') . '>';
+    $html .= '<summary>' . h(t('premium.create.label')) . '</summary>';
+    $html .= '<div class="premium-admin-offer-body">';
+    $html .= '<p class="premium-admin-offer-free">' . h(t('premium.create.free')) . '</p>';
+    if ($highlight) {
+        $html .= '<p>' . h(t('premium.create.later')) . '</p>';
+    }
+    if (!$ctx['ready']) {
+        $html .= '<p>' . h(t('premium.claim.need_migration')) . '</p></div></details>';
+        return $html;
+    }
+    $html .= '<ul class="premium-admin-offer-features">';
+    foreach (premium_feature_keys() as $key) {
+        $html .= '<li>' . h(t($key)) . '</li>';
+    }
+    $html .= '</ul>';
+    $html .= premium_price_list_html(premium_sale_definitions());
+    $html .= '<p>' . h(t('premium.create.activate')) . '</p>';
+    $html .= '<form method="post" class="premium-inline-form">' . csrf_input();
+    $html .= '<input type="hidden" name="premium_action" value="claim_email">';
+    $html .= '<label for="license_email">' . h(t('premium.claim.email')) . '</label>';
+    $html .= '<input type="email" id="license_email" name="license_email" required autocomplete="email">';
+    $html .= '<button type="submit" class="button secondary">' . h(t('premium.claim.email_submit')) . '</button></form>';
+    $html .= '<form method="post" class="premium-inline-form">' . csrf_input();
+    $html .= '<input type="hidden" name="premium_action" value="confirm_short">';
+    $html .= '<label for="short_code">' . h(t('premium.claim.short')) . '</label>';
+    $html .= '<input type="text" id="short_code" name="short_code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6">';
+    $html .= '<button type="submit" class="button secondary">' . h(t('premium.claim.short_submit')) . '</button></form>';
+    $html .= '<form method="post" class="premium-inline-form">' . csrf_input();
+    $html .= '<input type="hidden" name="premium_action" value="claim_code">';
+    $html .= '<label for="license_code">' . h(t('premium.claim.code')) . '</label>';
+    $html .= '<input type="text" id="license_code" name="license_code" autocomplete="off" spellcheck="false">';
+    $html .= '<button type="submit" class="button secondary">' . h(t('premium.claim.code_submit')) . '</button></form>';
+    $html .= '<p class="premium-admin-offer-buy"><a href="' . h(premium_purchase_href()) . '">' . h(t('premium.create.buy')) . '</a></p>';
+    $html .= '</div></details>';
     return $html;
 }
 
