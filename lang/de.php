@@ -668,7 +668,7 @@ return array(
     'premium.buy.heading' => 'Lizenz kaufen',
     'premium.buy.stripe' => 'Mit Karte oder TWINT',
     'premium.buy.stripe_submit' => 'Weiter zur Zahlung',
-    'premium.buy.stripe_note' => 'Die Zahlung läuft bei Stripe. Karte und TWINT. Ich sehe keine Kartendaten.',
+    'premium.buy.stripe_note' => 'Die Zahlung läuft mit Stripe.',
     'premium.buy.invoice' => 'Auf Rechnung',
     'premium.checkout.email' => 'E-Mail für die Lizenz',
     'premium.checkout.missing' => 'Kartenzahlung ist hier noch nicht eingerichtet. Auf Rechnung geht es trotzdem.',
