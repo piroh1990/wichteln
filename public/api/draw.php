@@ -157,22 +157,17 @@ if ($action === 'reset') {
                         $assigned = $participants_by_id[$assigned_to] ?? null;
                         
                         if ($assigned) {
-                            $group_budget = $group['budget'] !== null ? number_format($group['budget'], 2) . " CHF" : "Nicht festgelegt";
-                            $group_description = $group['description'] ?: "Keine Beschreibung.";
-                            $gift_date = $group['gift_exchange_date'] ? date('d.m.Y', strtotime($group['gift_exchange_date'])) : "Nicht festgelegt";
-                            
-                            $subject = 'Dein Wichtelpartner 🎁';
-                            $html_message = create_html_email([
-                                'name' => $participant['name'],
-                                'assigned_name' => $assigned['name'],
-                                'wishlist' => $assigned['wishlist'] ?? '',
-                                'budget' => $group_budget,
-                                'description' => $group_description,
-                                'gift_date' => $gift_date,
-                                'ics_url' => !empty($group['gift_exchange_date']) ? gift_ics_url($group) : ''
-                            ]);
-                            
-                            if (send_email($participant['email'], $subject, $html_message, true)) {
+                            $lang = mail_recipient_lang($participant);
+                            $token = isset($participant['participant_token']) ? $participant['participant_token'] : '';
+                            if (send_partner_mail(
+                                $participant['email'],
+                                $participant['name'],
+                                $assigned['name'],
+                                isset($assigned['wishlist']) ? $assigned['wishlist'] : '',
+                                $group,
+                                $lang,
+                                $token
+                            )) {
                                 $emails_sent++;
                             }
                         }

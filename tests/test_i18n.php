@@ -133,16 +133,21 @@ run_test('partner registration admin wishlist reveal recovery and reminder mails
             'description' => $fields['description'],
             'gift_date' => $fields['gift_date'],
             'ics_url' => $fields['ics_url'],
+            'participant_link' => 'https://wichtlä.ch/participant.php?token=abc',
             'language' => $lang,
         );
+        $partner_html = create_html_email($partner);
+        $partner_plain = create_partner_plain_text($partner);
         assert_localized_mail(
             $lang,
             partner_email_subject($lang),
-            create_html_email($partner),
-            create_partner_plain_text($partner),
+            $partner_html,
+            $partner_plain,
             $expected[$lang]['partner'],
-            array('Anna', 'Noah', 'a red scarf', $fields['budget'])
+            array('Anna', 'Noah', 'a red scarf', $fields['budget'], 'participant.php?token=abc')
         );
+        assert_true(strpos($partner_html, 'participant.php?token=abc') !== false, $lang . ' partner html link');
+        assert_true(strpos($partner_plain, 'participant.php?token=abc') !== false, $lang . ' partner plain link');
         assert_true(strpos($fields['ics_url'], 'lang=' . $lang . '&s=') !== false, $lang . ' ics url');
 
         $registration = array(
@@ -201,16 +206,21 @@ run_test('partner registration admin wishlist reveal recovery and reminder mails
                 array('giver_name' => 'Anna', 'receiver_name' => 'Noah'),
                 array('giver_name' => 'Noah', 'receiver_name' => 'Anna'),
             ),
+            'participant_link' => 'https://wichtlä.ch/participant.php?token=abc',
             'language' => $lang,
         );
+        $reveal_html = create_reveal_email($reveal);
+        $reveal_plain = create_reveal_plain_text($reveal);
         assert_localized_mail(
             $lang,
             reveal_email_subject($lang),
-            create_reveal_email($reveal),
-            create_reveal_plain_text($reveal),
+            $reveal_html,
+            $reveal_plain,
             $expected[$lang]['reveal'],
-            array('Anna', 'Noah', 'Pine')
+            array('Anna', 'Noah', 'Pine', 'participant.php?token=abc')
         );
+        assert_true(strpos($reveal_html, 'participant.php?token=abc') !== false, $lang . ' reveal html link');
+        assert_true(strpos($reveal_plain, 'participant.php?token=abc') !== false, $lang . ' reveal plain link');
 
         $recovery_groups = array(
             array('name' => 'Pine', 'admin_link' => 'https://wichtlä.ch/admin.php?token=adm'),
@@ -309,6 +319,10 @@ run_test('reveal and reminder use the recipient language', function () {
     assert_equals(2, $reveal['sent'], 'Both languages are sent');
     assert_equals('Révélation : qui était le Père Noël secret de qui ?', $sent[0][1]);
     assert_equals('Reveal: who was whose Secret Santa?', $sent[1][1]);
+    assert_true(strpos($sent[0][2], 'participant.php?token=' . str_repeat('a', 32)) !== false, 'French reveal html link');
+    assert_true(strpos($sent[0][3], 'participant.php?token=' . str_repeat('a', 32)) !== false, 'French reveal plain link');
+    assert_true(strpos($sent[1][2], 'participant.php?token=' . str_repeat('b', 32)) !== false, 'English reveal html link');
+    assert_true(strpos($sent[1][3], 'participant.php?token=' . str_repeat('b', 32)) !== false, 'English reveal plain link');
     assert_true(strpos($sent[0][2], 'lang=fr&s=') === false || strpos($sent[0][2], '/fr/') !== false, 'French reveal links home in French');
     assert_no_german_leftovers($sent[0][2], 'fr reveal html');
     assert_no_german_leftovers($sent[1][3], 'en reveal plain');

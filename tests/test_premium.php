@@ -721,6 +721,250 @@ run_test('purchase form sits in the content column and radios are not stretched'
     assert_true(strpos($css, '.premium-tier-choices input[type="radio"]') !== false, 'radios have their own size');
 });
 
+run_test('master admin can reject pending requests and revoke or delete licences', function () {
+    $had_override = array_key_exists('premium_enabled_override', $GLOBALS);
+    $previous_override = $had_override ? $GLOBALS['premium_enabled_override'] : null;
+    $restore_errors = false;
+    $GLOBALS['premium_enabled_override'] = true;
+    $logo_dir = sys_get_temp_dir() . '/premium-logos-' . bin2hex(random_bytes(4));
+    $logo = '';
+    mkdir($logo_dir, 0700, true);
+    premium_logo_directory($logo_dir);
+    try {
+        $pdo = premium_test_pdo();
+        $sent = array();
+        $invoice = premium_submit_invoice($pdo, array(
+            'tier' => 'firma',
+            'company' => 'Offene Rechnung AG',
+            'address' => "Bahnhofstrasse 1\n8000 Zürich",
+            'email' => 'offen@firma.ch',
+            'contact' => 'Ada',
+        ), 'ip-reject-' . bin2hex(random_bytes(3)), premium_test_sender($sent), 1760000000);
+        assert_true($invoice['ok'], 'pending invoice exists');
+        $pending_id = (int) $invoice['id'];
+        $free = premium_test_group($pdo, 'Bleibt frei');
+        $pdo->prepare('INSERT INTO `premium_confirmations`
+            (`license_id`, `group_id`, `email`, `purpose`, `token_hash`, `code_hash`, `language`, `expires_at`, `created_at`)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')->execute(array(
+            $pending_id,
+            $free,
+            'offen@firma.ch',
+            'claim',
+            str_repeat('a', 64),
+            str_repeat('b', 64),
+            'de',
+            '2026-10-20 12:00:00',
+            '2026-10-19 12:00:00',
+        ));
+
+        $rejected = premium_master_handle($pdo, array(
+            'premium_action' => 'reject',
+            'license_id' => $pending_id,
+        ));
+        assert_equals('success', $rejected['type'], 'reject flashes success');
+        assert_true(strpos($rejected['text'], 'abgelehnt') !== false, 'reject message is German');
+        assert_equals(0, (int) $pdo->query('SELECT COUNT(*) FROM `premium_licenses` WHERE `id` = ' . $pending_id)->fetchColumn());
+        assert_equals(0, (int) $pdo->query('SELECT COUNT(*) FROM `premium_confirmations`')->fetchColumn());
+        assert_equals(1, (int) $pdo->query('SELECT COUNT(*) FROM `groups` WHERE `id` = ' . (int) $free)->fetchColumn());
+
+        $code = 'RVK23456789A';
+        $license = premium_test_license($pdo, 'firma', 'aktiv@firma.ch', $code, 'firma.ch');
+        $pdo->prepare('UPDATE `premium_licenses` SET `company_name` = ?, `logo_file` = ? WHERE `id` = ?')->execute(array(
+            'Aktiv AG',
+            '0123456789abcdef0123456789abcdef.png',
+            $license,
+        ));
+        $logo = $logo_dir . '/0123456789abcdef0123456789abcdef.png';
+        file_put_contents($logo, 'png');
+        $group = premium_test_group($pdo, 'Premium Gruppe');
+        $person = premium_test_person($pdo, $group, 'Anna', 'anna@firma.ch');
+        assert_true(premium_attach_group($pdo, $license, $group)['ok'], 'group is linked');
+        $pdo->prepare('INSERT INTO `premium_confirmations`
+            (`license_id`, `group_id`, `email`, `purpose`, `token_hash`, `code_hash`, `language`, `expires_at`, `created_at`)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')->execute(array(
+            $license,
+            $group,
+            'aktiv@firma.ch',
+            'claim',
+            str_repeat('c', 64),
+            str_repeat('d', 64),
+            'de',
+            '2026-10-20 12:00:00',
+            '2026-10-19 12:00:00',
+        ));
+
+        $keep = premium_master_handle($pdo, array('premium_action' => 'reject', 'license_id' => $license));
+        assert_equals('error', $keep['type'], 'an active licence is not rejected');
+        assert_equals('active', $pdo->query('SELECT `status` FROM `premium_licenses` WHERE `id` = ' . (int) $license)->fetchColumn());
+
+        $early_delete = premium_master_handle($pdo, array('premium_action' => 'delete_revoked', 'license_id' => $license));
+        assert_equals('error', $early_delete['type'], 'an active licence is not deleted');
+
+        $revoked = premium_master_handle($pdo, array('premium_action' => 'revoke', 'license_id' => $license));
+        assert_equals('success', $revoked['type'], 'revoke flashes success');
+        assert_equals('revoked', $pdo->query('SELECT `status` FROM `premium_licenses` WHERE `id` = ' . (int) $license)->fetchColumn());
+        assert_equals($license, (int) $pdo->query('SELECT `premium_license_id` FROM `groups` WHERE `id` = ' . (int) $group)->fetchColumn());
+        assert_equals('Anna', $pdo->query('SELECT `name` FROM `participants` WHERE `id` = ' . (int) $person)->fetchColumn());
+        assert_equals('0123456789abcdef0123456789abcdef.png', $pdo->query('SELECT `logo_file` FROM `premium_licenses` WHERE `id` = ' . (int) $license)->fetchColumn());
+        assert_true(is_file($logo), 'revoke leaves the logo file in place');
+        $group_row = $pdo->query('SELECT * FROM `groups` WHERE `id` = ' . (int) $group)->fetch(PDO::FETCH_ASSOC);
+        assert_equals(null, premium_license_for_group($pdo, $group_row));
+        $old_code = premium_claim_with_code($pdo, premium_test_group($pdo, 'Neuer Versuch'), $code, 'ip-revoked-' . bin2hex(random_bytes(3)));
+        assert_true(!$old_code['ok'], 'a revoked code cannot activate another group');
+
+        $replacement = premium_test_license($pdo, 'firma_plus', 'neu@firma.ch', 'NEW23456789B');
+        $moved = premium_attach_group($pdo, $replacement, $group);
+        assert_true($moved['ok'], 'a revoked link can be replaced by another active licence');
+        assert_equals($replacement, (int) $pdo->query('SELECT `premium_license_id` FROM `groups` WHERE `id` = ' . (int) $group)->fetchColumn());
+        assert_equals('Anna', $pdo->query('SELECT `name` FROM `participants` WHERE `id` = ' . (int) $person)->fetchColumn());
+
+        $again = premium_master_handle($pdo, array('premium_action' => 'revoke', 'license_id' => $license));
+        assert_equals('error', $again['type'], 'revoke does not run twice');
+
+        $deleted = premium_master_handle($pdo, array('premium_action' => 'delete_revoked', 'license_id' => $license));
+        assert_equals('success', $deleted['type'], 'delete flashes success');
+        assert_equals(0, (int) $pdo->query('SELECT COUNT(*) FROM `premium_licenses` WHERE `id` = ' . (int) $license)->fetchColumn());
+        assert_equals(0, (int) $pdo->query('SELECT COUNT(*) FROM `premium_confirmations` WHERE `license_id` = ' . (int) $license)->fetchColumn());
+        assert_equals(1, (int) $pdo->query('SELECT COUNT(*) FROM `groups` WHERE `id` = ' . (int) $group)->fetchColumn());
+        assert_equals($replacement, (int) $pdo->query('SELECT `premium_license_id` FROM `groups` WHERE `id` = ' . (int) $group)->fetchColumn());
+        assert_equals('Anna', $pdo->query('SELECT `name` FROM `participants` WHERE `id` = ' . (int) $person)->fetchColumn());
+        assert_true(is_file($logo), 'deleting the licence leaves the logo file in place');
+
+        $linked = premium_test_license($pdo, 'verein', 'haengt@firma.ch', 'HANG2345678C');
+        $hanging = premium_test_group($pdo, 'Haengt noch');
+        premium_test_person($pdo, $hanging, 'Ben', 'ben@firma.ch');
+        assert_true(premium_attach_group($pdo, $linked, $hanging)['ok']);
+        assert_true(premium_revoke_license($pdo, $linked));
+        assert_true(premium_delete_revoked_license($pdo, $linked));
+        $cleared = $pdo->query('SELECT `premium_license_id` FROM `groups` WHERE `id` = ' . (int) $hanging)->fetchColumn();
+        assert_true($cleared === null || $cleared === '', 'delete clears premium_license_id first');
+        assert_equals(1, (int) $pdo->query('SELECT COUNT(*) FROM `participants` WHERE `group_id` = ' . (int) $hanging)->fetchColumn());
+
+        $open = premium_submit_invoice($pdo, array(
+            'tier' => 'verein',
+            'company' => 'Noch offen',
+            'address' => 'Seestrasse 2, 8002 Zürich',
+            'email' => 'noch@firma.ch',
+        ), 'ip-open-' . bin2hex(random_bytes(3)), premium_test_sender($sent), 1760002000);
+        assert_true(premium_revoke_license($pdo, $open['id']) === false, 'a pending request cannot be revoked');
+        set_error_handler(function () {
+            return true;
+        });
+        $restore_errors = true;
+        $html = premium_master_section_html($pdo);
+        assert_true(strpos($html, 'Ablehnen / Löschen') !== false, 'reject button is shown');
+        assert_true(strpos($html, 'name="premium_action" value="reject"') !== false, 'reject is a POST action');
+        assert_true(strpos($html, 'name="premium_action" value="activate"') !== false, 'approve stays next to reject');
+        assert_true(strpos($html, 'return confirm(') !== false, 'reject asks for confirmation');
+        assert_true(strpos($html, 'csrf_token') !== false, 'forms keep the CSRF field');
+        assert_true(strpos($html, 'Noch offen') !== false, 'pending company is listed');
+
+        assert_true(premium_activate_license($pdo, $open['id'], 'firma.ch', premium_test_sender($sent), 1760003000)['ok']);
+        $html_active = premium_master_section_html($pdo);
+        assert_true(strpos($html_active, '>Widerrufen<') !== false, 'revoke button is shown for an active licence');
+        assert_true(strpos($html_active, 'Diese Lizenz widerrufen?') !== false, 'revoke asks for confirmation');
+        assert_true(premium_revoke_license($pdo, $open['id']));
+        $html_revoked = premium_master_section_html($pdo);
+        assert_true(strpos($html_revoked, 'Endgültig löschen') !== false, 'a revoked licence can be deleted');
+        assert_true(strpos($html_revoked, 'value="delete_revoked"') !== false, 'delete is its own POST action');
+
+        $admin = file_get_contents(dirname(__DIR__) . '/public/admin/index.php');
+        $auth = strpos($admin, 'master_admin_authenticated');
+        $post = strpos($admin, "REQUEST_METHOD'] === 'POST'");
+        $guard = strpos($admin, "isset(\$_POST['premium_action'])");
+        $call = strpos($admin, 'premium_master_handle');
+        assert_true($auth !== false && $post !== false && $guard !== false && $call !== false, 'admin page wires the handler');
+        assert_true($auth < $call && $post < $guard && $guard < $call, 'handler runs after login and only for POST');
+    } finally {
+        premium_logo_directory(false);
+        if (is_file($logo)) {
+            unlink($logo);
+        }
+        if (is_dir($logo_dir)) {
+            rmdir($logo_dir);
+        }
+        if ($had_override) {
+            $GLOBALS['premium_enabled_override'] = $previous_override;
+        } else {
+            unset($GLOBALS['premium_enabled_override']);
+        }
+        if ($restore_errors) {
+            restore_error_handler();
+        }
+    }
+});
+
+run_test('brand colours keep a picker beside the hex field', function () {
+    $filled = premium_color_field_html('color_primary', 'Hauptfarbe', '#E63946', '#e63946');
+    assert_true(strpos($filled, 'type="color"') !== false, 'native colour picker is present');
+    assert_true(strpos($filled, 'data-color-for="color_primary"') !== false, 'picker points at the hex field');
+    assert_true(strpos($filled, 'id="color_primary"') !== false, 'hex field keeps its id');
+    assert_true(strpos($filled, 'name="color_primary"') !== false, 'hex field is submitted');
+    assert_true(preg_match('/<input type="color"[^>]*name=/', $filled) !== 1, 'picker does not override the hex field');
+    assert_true(substr_count($filled, 'value="#e63946"') >= 2, 'picker and hex show the stored colour');
+    assert_true(strpos($filled, 'style="background-color:#e63946"') !== false, 'preview uses the stored colour');
+    assert_true(strpos($filled, 'premium-color-preview') !== false, 'a preview swatch is present');
+    assert_true(strpos($filled, 'for="color_primary"') !== false, 'label stays on the hex field');
+
+    $empty = premium_color_field_html('color_accent', 'Akzentfarbe', '', '#2a9d8f');
+    assert_true(strpos($empty, 'name="color_accent"') !== false, 'empty accent still submits the hex field');
+    assert_true(strpos($empty, 'value=""') !== false, 'empty hex stays empty');
+    assert_true(strpos($empty, 'value="#2a9d8f"') !== false, 'picker falls back to the placeholder');
+    assert_true(strpos($empty, 'background-color') === false, 'empty hex does not paint the preview');
+
+    $evil = premium_color_field_html('color_primary', 'Hauptfarbe', '"><script>alert(1)</script>', '#e63946');
+    assert_true(preg_match('/\sonfocus=/', $evil) !== 1, 'a bad value cannot add an attribute');
+    assert_true(strpos($evil, '<script>') === false, 'a bad value is escaped');
+    assert_true(strpos($evil, 'background-color') === false, 'an invalid colour does not become the preview');
+
+    assert_equals('#112233', premium_normalize_color(' #112233 '));
+    assert_equals('', premium_normalize_color(''));
+    assert_equals(null, premium_normalize_color('red'));
+    assert_equals(null, premium_normalize_color('#fff'));
+
+    $script = premium_color_picker_script();
+    assert_true(strpos($script, 'syncFromPicker') !== false, 'picker writes the hex field');
+    assert_true(strpos($script, 'syncFromField') !== false, 'hex writes the picker');
+    assert_true(strpos($script, '#[0-9a-fA-F]{6}') !== false, 'only a full hex moves the picker');
+    assert_true(strpos($script, 'addEventListener("input"') !== false, 'sync listens while typing');
+
+    $page = file_get_contents(dirname(__DIR__) . '/public/premium-lizenz.php');
+    assert_true(strpos($page, 'premium_color_field_html') !== false, 'licence page renders both colour fields');
+    assert_true(substr_count($page, 'premium_color_field_html') === 2, 'primary and accent both use the field');
+    assert_true(strpos($page, 'premium_color_picker_script') !== false, 'licence page loads the sync script');
+    $css = file_get_contents(dirname(__DIR__) . '/public/css/styles.css');
+    assert_true(strpos($css, '.premium-color-picker') !== false, 'picker is styled');
+    assert_true(strpos($css, '.premium-color-preview') !== false, 'preview is styled');
+    assert_true(strpos($css, '#erscheinung .premium-color-controls input[type="text"]') !== false, 'hex field shares the row on small screens');
+});
+
+run_test('live reveal is a quiet fullscreen card', function () {
+    $page = file_get_contents(dirname(__DIR__) . '/public/premium-aufdeckung.php');
+    $css = file_get_contents(dirname(__DIR__) . '/public/css/styles.css');
+    assert_true(strpos($page, 'class="premium-reveal-full"') !== false, 'fullscreen control is the small icon button');
+    assert_true(strpos($page, 'aria-label="<?php echo h($fullscreen_label); ?>"') !== false, 'fullscreen control has an accessible name');
+    assert_true(strpos($page, 'title="<?php echo h($fullscreen_label); ?>"') !== false, 'fullscreen control has a tooltip');
+    assert_true(strpos($page, 'id="premium-reveal-full"') !== false, 'fullscreen control keeps its id');
+    assert_true(strpos($page, 'class="button secondary" id="premium-reveal-full"') === false, 'fullscreen control is no longer a large button');
+    assert_true(strpos($page, 'ArrowLeft') !== false, 'left arrow goes to the previous pair');
+    assert_true(strpos($page, 'ArrowRight') !== false, 'right arrow still advances');
+    assert_true(strpos($page, "event.key === ' '") !== false, 'space still advances');
+    assert_true(strpos($page, 'prefers-reduced-motion: reduce') !== false, 'reduced motion skips the pause');
+    assert_true(strpos($page, 'premium_brand_state') !== false, 'the card can use the group logo');
+    assert_true(strpos($page, 'premium-reveal-logo') !== false, 'logo markup is present');
+    assert_true(strpos($page, 'premium_page_style_attr') !== false, 'brand colours stay on the stage');
+    assert_true(strpos($css, 'button.premium-reveal-full') !== false, 'fullscreen control is styled on its own');
+    assert_true(strpos($css, '.premium-reveal-burst') !== false, 'the reveal has a light burst');
+    assert_true(strpos($css, '.premium-reveal-card.is-open .premium-reveal-receiver') !== false, 'the receiver appears when the card opens');
+    assert_true(strpos($css, 'prefers-reduced-motion: reduce') !== false, 'motion can be turned off');
+    $de = i18n_catalog('de');
+    $fr = i18n_catalog('fr');
+    $en = i18n_catalog('en');
+    assert_true(strpos($de['premium.reveal.key'], 'links') !== false, 'German hint mentions the previous pair');
+    assert_true(strpos($fr['premium.reveal.key'], 'gauche') !== false, 'French hint mentions the previous pair');
+    assert_true(strpos($en['premium.reveal.key'], 'Left arrow') !== false, 'English hint mentions the previous pair');
+});
+
 run_test('mail envelope parameter accepts only a safe sender', function () {
     assert_equals('-f noreply@xn--wichtl-gua.ch', mail_envelope_parameter('noreply@xn--wichtl-gua.ch'));
     assert_equals('', mail_envelope_parameter('noreply@xn--wichtl-gua.ch;rm'));

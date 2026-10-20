@@ -122,6 +122,35 @@ function mail_plain_footer() {
     );
 }
 
+function mail_participant_link($token) {
+    $token = trim((string) $token);
+    if ($token === '') {
+        return '';
+    }
+    return get_display_url('/participant.php?token=' . rawurlencode($token));
+}
+
+function mail_area_html($link, $prefix) {
+    $link = trim((string) $link);
+    if ($link === '') {
+        return '';
+    }
+    return mail_p(mail_esc(t($prefix . '.link_help')))
+        . mail_button($link, t($prefix . '.button'))
+        . '<p style="margin: 0 0 16px 0; text-align: center; word-break: break-all; font-size: 14px; line-height: 1.5;"><a href="' . mail_esc($link) . '" style="color: #2a9d8f;">' . mail_esc($link) . '</a></p>';
+}
+
+function mail_area_plain($link, $prefix) {
+    $link = trim((string) $link);
+    if ($link === '') {
+        return array();
+    }
+    return array(
+        t($prefix . '.link_help'),
+        t($prefix . '.button_plain', array('{url}' => $link)),
+    );
+}
+
 function create_html_email($data) {
     return mail_run(mail_data_lang($data), function () use ($data) {
         $name = isset($data['name']) ? $data['name'] : '';
@@ -143,6 +172,7 @@ function create_html_email($data) {
         }
         $body .= mail_details_html($budget, $description, $gift_date);
         $body .= email_calendar_paragraph($ics);
+        $body .= mail_area_html(isset($data['participant_link']) ? $data['participant_link'] : '', 'mail.partner');
         $body .= mail_p(mail_esc(t('mail.signoff')));
         return render_email_template(t('mail.partner.title'), t('mail.partner.preview'), $body);
     });
@@ -170,6 +200,11 @@ function create_partner_plain_text($data) {
             isset($data['gift_date']) ? $data['gift_date'] : '',
             isset($data['ics_url']) ? $data['ics_url'] : ''
         ));
+        $area = mail_area_plain(isset($data['participant_link']) ? $data['participant_link'] : '', 'mail.partner');
+        if (count($area) > 0) {
+            $lines[] = '';
+            $lines = array_merge($lines, $area);
+        }
         $lines[] = '';
         $lines = array_merge($lines, mail_plain_footer());
         return implode("\n", $lines);
@@ -386,6 +421,7 @@ function create_reveal_email($data) {
             $body .= '</table>';
             $body .= mail_p(h(t('mail.reveal.note')));
         }
+        $body .= mail_area_html(isset($data['participant_link']) ? $data['participant_link'] : '', 'mail.reveal');
         $body .= mail_p(h(t('mail.signoff')));
         return render_email_template(t('mail.reveal.title'), t('mail.reveal.preview'), $body);
     });
@@ -409,6 +445,11 @@ function create_reveal_plain_text($data) {
                 '{giver}' => isset($pair['giver_name']) ? $pair['giver_name'] : '',
                 '{receiver}' => isset($pair['receiver_name']) ? $pair['receiver_name'] : '',
             ));
+        }
+        $area = mail_area_plain(isset($data['participant_link']) ? $data['participant_link'] : '', 'mail.reveal');
+        if (count($area) > 0) {
+            $lines[] = '';
+            $lines = array_merge($lines, $area);
         }
         $lines[] = '';
         $lines = array_merge($lines, mail_plain_footer());
@@ -591,7 +632,7 @@ function send_registration_mail($email, $name, $group, $participant_link, $lang)
     );
 }
 
-function send_partner_mail($email, $giver_name, $assigned_name, $wishlist, $group, $lang) {
+function send_partner_mail($email, $giver_name, $assigned_name, $wishlist, $group, $lang, $participant_token = null) {
     $lang = i18n_allow($lang);
     $fields = mail_present_group($group, $lang);
     $data = array(
@@ -602,6 +643,7 @@ function send_partner_mail($email, $giver_name, $assigned_name, $wishlist, $grou
         'description' => $fields['description'],
         'gift_date' => $fields['gift_date'],
         'ics_url' => $fields['ics_url'],
+        'participant_link' => mail_participant_link($participant_token),
         'language' => $lang,
     );
     return send_email(

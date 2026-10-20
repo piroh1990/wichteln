@@ -4242,6 +4242,89 @@ a.button.support-button:focus-visible,
     background: var(--surface, #fff);
 }
 
+.premium-master-note {
+    margin-top: 0.35rem;
+}
+
+.premium-master-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    margin-top: 0.75rem;
+}
+
+.premium-master-actions .button {
+    margin: 0;
+}
+
+#premium-lizenzen > h3 {
+    margin: 1.1rem 0 0.45rem;
+}
+
+.premium-color-field {
+    margin-top: 0.85rem;
+}
+
+.premium-color-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+#erscheinung .premium-color-controls input[type="text"] {
+    flex: 1 1 8rem;
+    width: auto;
+    min-width: 0;
+    max-width: none;
+    margin: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    letter-spacing: 0.02em;
+}
+
+.premium-color-picker {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 3rem;
+    height: 3rem;
+    padding: 0.25rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--surface);
+    cursor: pointer;
+    flex: 0 0 auto;
+}
+
+.premium-color-picker::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.premium-color-picker::-webkit-color-swatch {
+    border: none;
+    border-radius: 4px;
+}
+
+.premium-color-picker::-moz-color-swatch {
+    border: none;
+    border-radius: 4px;
+}
+
+.premium-color-picker:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.1);
+}
+
+.premium-color-preview {
+    width: 1.35rem;
+    height: 1.35rem;
+    border-radius: 999px;
+    border: 2px solid var(--border-color);
+    background-color: transparent;
+    flex: 0 0 auto;
+}
+
 .premium-tier-price {
     font-size: 1.35rem;
     font-weight: 700;
@@ -4334,6 +4417,16 @@ a.button.support-button:focus-visible,
         width: 100%;
         box-sizing: border-box;
     }
+
+    .premium-color-picker {
+        width: 2.75rem;
+        height: 2.75rem;
+    }
+
+    #erscheinung .premium-color-controls input[type="text"] {
+        flex-basis: 7.5rem;
+        font-size: 1rem;
+    }
 }
 
 .premium-logo {
@@ -4378,31 +4471,336 @@ a.button.support-button:focus-visible,
 }
 
 .premium-reveal-stage {
-    min-height: 70vh;
+    position: relative;
+    min-height: 78vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
     cursor: pointer;
+    padding: 3.25rem 1.25rem 1.75rem;
+    border-radius: 20px;
+    color: #1b1d2a;
+    background-color: #f7f4ef;
+    background-image:
+        radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--premium-primary, #e63946) 22%, transparent), transparent 52%),
+        radial-gradient(ellipse at 50% 100%, color-mix(in srgb, var(--premium-accent, #2a9d8f) 18%, transparent), transparent 48%);
+}
+
+.premium-reveal-stage:fullscreen,
+.premium-reveal-stage:-webkit-full-screen {
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    border-radius: 0;
+    color: #f4efe6;
+    background-color: #16141c;
+    background-image:
+        radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--premium-primary, #e63946) 32%, transparent), transparent 46%),
+        radial-gradient(ellipse at 50% 100%, color-mix(in srgb, var(--premium-accent, #2a9d8f) 24%, transparent), transparent 42%);
+}
+
+.premium-reveal-stage:focus {
+    outline: none;
+}
+
+.premium-reveal-stage:focus-visible {
+    outline: 2px solid var(--premium-accent, #2a9d8f);
+    outline-offset: 4px;
+}
+
+button.premium-reveal-full {
+    position: absolute;
+    top: 0.7rem;
+    right: 0.7rem;
+    z-index: 2;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    box-shadow: none;
+    opacity: 0.38;
+    overflow: visible;
+    line-height: 0;
+}
+
+button.premium-reveal-full::before,
+button.premium-reveal-full:hover::before {
+    content: none;
+    width: 0;
+    height: 0;
+}
+
+button.premium-reveal-full:hover,
+button.premium-reveal-full:focus-visible {
+    opacity: 1;
+    background: color-mix(in srgb, currentColor 8%, transparent);
+    box-shadow: none;
+    transform: none;
+}
+
+button.premium-reveal-full:focus-visible {
+    outline: 2px solid var(--premium-accent, #2a9d8f);
+    outline-offset: 2px;
+}
+
+button.premium-reveal-full:active {
+    transform: none;
+}
+
+button.premium-reveal-full svg {
+    width: 1.05rem;
+    height: 1.05rem;
+    display: block;
+    margin: 0 auto;
+}
+
+.premium-reveal-logo {
+    max-height: 4.25rem;
+    max-width: min(280px, 62vw);
+    object-fit: contain;
+    margin: 0 0 0.85rem;
+}
+
+.premium-reveal-stage:fullscreen .premium-reveal-logo,
+.premium-reveal-stage:-webkit-full-screen .premium-reveal-logo {
+    max-height: 6.5rem;
+}
+
+.premium-reveal-progress,
+.premium-reveal-hint {
+    margin: 0;
+    letter-spacing: 0.04em;
+}
+
+.premium-reveal-progress {
+    min-height: 1.4rem;
+    font-size: clamp(0.95rem, 1.5vw, 1.25rem);
+    text-transform: uppercase;
+    opacity: 0.72;
+}
+
+.premium-reveal-hint {
+    margin-top: 1.15rem;
+    max-width: 40rem;
+    font-size: clamp(0.95rem, 1.4vw, 1.15rem);
+    opacity: 0.68;
 }
 
 .premium-reveal-card {
-    margin: 1rem 0;
+    position: relative;
+    width: min(920px, 94vw);
+    margin: 0.85rem 0 0.25rem;
+    padding: 2.4rem 1.6rem 2rem;
+    background: #fffdf8;
+    color: #1b1d2a;
+    border-radius: 22px;
+    border: 3px solid var(--premium-accent, #c4a35a);
+    box-shadow: 0 18px 48px rgba(20, 22, 31, 0.16);
+    overflow: hidden;
+}
+
+.premium-reveal-stage:fullscreen .premium-reveal-card,
+.premium-reveal-stage:-webkit-full-screen .premium-reveal-card {
+    width: min(1100px, 88vw);
+    padding: 3.4rem 2.4rem 2.8rem;
 }
 
 .premium-reveal-card.is-in {
     animation: premium-reveal-in 0.45s ease;
 }
 
-.premium-reveal-card p {
-    font-size: 1.6rem;
-    margin: 0.3rem 0;
+.premium-reveal-ribbon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 12px;
+    background: linear-gradient(90deg, var(--premium-primary, #e63946), var(--premium-accent, #2a9d8f));
+}
+
+.premium-reveal-giver,
+.premium-reveal-receiver {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 700;
+    font-size: clamp(2.4rem, 6.2vw, 5.4rem);
+    line-height: 1.12;
+    margin: 0.15rem 0;
+    overflow-wrap: anywhere;
+}
+
+.premium-reveal-stage:fullscreen .premium-reveal-giver,
+.premium-reveal-stage:fullscreen .premium-reveal-receiver,
+.premium-reveal-stage:-webkit-full-screen .premium-reveal-giver,
+.premium-reveal-stage:-webkit-full-screen .premium-reveal-receiver {
+    font-size: clamp(3.1rem, 7vw, 6.8rem);
+}
+
+.premium-reveal-card.is-rest .premium-reveal-giver {
+    font-size: clamp(1.8rem, 4vw, 3.2rem);
+}
+
+.premium-reveal-stage:fullscreen .premium-reveal-card.is-rest .premium-reveal-giver,
+.premium-reveal-stage:-webkit-full-screen .premium-reveal-card.is-rest .premium-reveal-giver {
+    font-size: clamp(2.2rem, 4.5vw, 4rem);
+}
+
+.premium-reveal-verb,
+.premium-reveal-receiver {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transform: translateY(12px);
 }
 
 .premium-reveal-verb {
-    font-size: 1rem;
-    opacity: 0.8;
+    margin: 0;
+    font-size: clamp(1rem, 2vw, 1.45rem);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--premium-primary, #e63946);
+}
+
+.premium-reveal-card.is-open .premium-reveal-verb {
+    max-height: 3.4rem;
+    margin: 0.7rem 0 0.25rem;
+    opacity: 1;
+    transform: none;
+    transition: max-height 0.45s ease, margin 0.45s ease, opacity 0.4s ease, transform 0.45s ease;
+}
+
+.premium-reveal-card.is-open .premium-reveal-receiver {
+    max-height: 22rem;
+    margin: 0.15rem 0 0.35rem;
+    opacity: 1;
+    transform: none;
+    transition: max-height 0.7s ease, opacity 0.5s ease 0.12s, transform 0.55s ease 0.12s;
+}
+
+.premium-reveal-gift {
+    position: relative;
+    width: 5.4rem;
+    height: 3.5rem;
+    margin: 1.35rem auto 0.15rem;
+    background: var(--premium-primary, #e63946);
+    border-radius: 0 0 8px 8px;
+    box-shadow: inset 0 -8px 0 rgba(0, 0, 0, 0.12);
+}
+
+.premium-reveal-card.is-rest .premium-reveal-gift,
+.premium-reveal-card.is-rest .premium-reveal-burst {
+    display: none;
+}
+
+.premium-reveal-gift::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: -0.8rem;
+    bottom: 0;
+    width: 0.55rem;
+    transform: translateX(-50%);
+    background: var(--premium-accent, #2a9d8f);
+}
+
+.premium-reveal-lid {
+    position: absolute;
+    left: -0.35rem;
+    right: -0.35rem;
+    top: -0.85rem;
+    height: 1rem;
+    background: var(--premium-primary, #e63946);
+    border-radius: 6px;
+    filter: brightness(1.08);
+    transform-origin: left center;
+}
+
+.premium-reveal-bow {
+    position: absolute;
+    left: 50%;
+    top: -1.45rem;
+    width: 0.7rem;
+    height: 0.7rem;
+    transform: translateX(-50%);
+    background: var(--premium-accent, #2a9d8f);
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.premium-reveal-bow::before,
+.premium-reveal-bow::after {
+    content: '';
+    position: absolute;
+    top: 0.05rem;
+    width: 0.95rem;
+    height: 0.62rem;
+    background: var(--premium-accent, #2a9d8f);
+    border-radius: 50%;
+}
+
+.premium-reveal-bow::before {
+    right: 0.35rem;
+}
+
+.premium-reveal-bow::after {
+    left: 0.35rem;
+}
+
+.premium-reveal-card.is-open .premium-reveal-lid {
+    transform: translateY(-14px) rotate(-12deg);
+    opacity: 0;
+    transition: transform 0.55s ease, opacity 0.4s ease;
+}
+
+.premium-reveal-card.is-open .premium-reveal-gift {
+    height: 0;
+    margin-top: 0.15rem;
+    margin-bottom: 0;
+    opacity: 0;
+    overflow: hidden;
+    transform: scale(0.86);
+    transition: height 0.55s ease, margin 0.55s ease, opacity 0.4s ease, transform 0.55s ease;
+}
+
+.premium-reveal-burst {
+    position: absolute;
+    left: 50%;
+    top: 62%;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+
+.premium-reveal-burst i {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 7px;
+    height: 9px;
+    margin-left: -3px;
+    border-radius: 1px;
+    background: var(--premium-primary, #e63946);
+    opacity: 0;
+}
+
+.premium-reveal-burst i + i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--premium-accent, #2a9d8f);
+}
+
+.premium-reveal-card.is-open .premium-reveal-burst i {
+    animation: premium-reveal-burst 1.15s ease-out forwards;
+}
+
+.premium-reveal-card.is-open .premium-reveal-burst i + i {
+    animation-name: premium-reveal-snow;
 }
 
 @keyframes premium-reveal-in {
@@ -4413,5 +4811,71 @@ a.button.support-button:focus-visible,
     to {
         opacity: 1;
         transform: none;
+    }
+}
+
+@keyframes premium-reveal-burst {
+    0% {
+        opacity: 1;
+        box-shadow:
+            0 0 0 var(--premium-primary, #e63946),
+            0 0 0 var(--premium-accent, #2a9d8f),
+            0 0 0 #f4e1a6,
+            0 0 0 var(--premium-primary, #e63946);
+    }
+    100% {
+        opacity: 0;
+        box-shadow:
+            -130px -78px 0 var(--premium-primary, #e63946),
+            118px -92px 0 var(--premium-accent, #2a9d8f),
+            -46px -120px 0 #f4e1a6,
+            64px -48px 0 var(--premium-primary, #e63946);
+    }
+}
+
+@keyframes premium-reveal-snow {
+    0% {
+        opacity: 0.9;
+        box-shadow:
+            0 0 0 var(--premium-accent, #2a9d8f),
+            0 0 0 #fffdf8,
+            0 0 0 var(--premium-primary, #e63946);
+    }
+    100% {
+        opacity: 0;
+        box-shadow:
+            -88px 36px 0 var(--premium-accent, #2a9d8f),
+            96px 18px 0 #fffdf8,
+            12px 54px 0 var(--premium-primary, #e63946);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .premium-reveal-card.is-in,
+    .premium-reveal-card.is-open .premium-reveal-verb,
+    .premium-reveal-card.is-open .premium-reveal-receiver,
+    .premium-reveal-card.is-open .premium-reveal-lid,
+    .premium-reveal-card.is-open .premium-reveal-gift,
+    .premium-reveal-card.is-open .premium-reveal-burst i {
+        animation: none;
+        transition: none;
+    }
+
+    .premium-reveal-card.is-open .premium-reveal-verb,
+    .premium-reveal-card.is-open .premium-reveal-receiver {
+        max-height: none;
+        opacity: 1;
+        transform: none;
+    }
+
+    .premium-reveal-card.is-open .premium-reveal-burst {
+        display: none;
+    }
+
+    .premium-reveal-card.is-open .premium-reveal-gift {
+        height: 0;
+        margin-top: 0;
+        margin-bottom: 0;
+        opacity: 0;
     }
 }

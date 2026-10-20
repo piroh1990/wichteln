@@ -311,6 +311,97 @@ function premium_normalize_color($value) {
     return $value;
 }
 
+function premium_color_picker_value($value, $fallback) {
+    $normalized = premium_normalize_color($value);
+    if (is_string($normalized) && $normalized !== '') {
+        return $normalized;
+    }
+    $fallback_normalized = premium_normalize_color($fallback);
+    if (is_string($fallback_normalized) && $fallback_normalized !== '') {
+        return $fallback_normalized;
+    }
+    return '#000000';
+}
+
+function premium_color_field_html($id, $label, $value, $placeholder) {
+    $raw = is_string($value) ? $value : '';
+    $normalized = premium_normalize_color($raw);
+    $shown = (is_string($normalized) && $normalized !== '') ? $normalized : $raw;
+    $picker = premium_color_picker_value($raw, $placeholder);
+    $html = '<div class="premium-color-field">';
+    $html .= '<label for="' . h($id) . '">' . h($label) . '</label>';
+    $html .= '<div class="premium-color-controls">';
+    $html .= '<input type="color" class="premium-color-picker" value="' . h($picker) . '" aria-label="' . h($label) . '" data-color-for="' . h($id) . '">';
+    $html .= '<input type="text" id="' . h($id) . '" name="' . h($id) . '" value="' . h($shown) . '" placeholder="' . h($placeholder) . '" maxlength="7" autocomplete="off" spellcheck="false">';
+    $html .= '<span class="premium-color-preview"';
+    if (is_string($normalized) && $normalized !== '') {
+        $html .= ' style="background-color:' . h($normalized) . '"';
+    }
+    $html .= ' aria-hidden="true"></span>';
+    $html .= '</div></div>';
+    return $html;
+}
+
+function premium_color_picker_script() {
+    return '<script>
+(function () {
+    function validHex(value) {
+        return /^#[0-9a-fA-F]{6}$/.test(value);
+    }
+    function previewOf(node) {
+        return node.parentNode ? node.parentNode.querySelector(".premium-color-preview") : null;
+    }
+    function syncFromPicker(picker) {
+        var field = document.getElementById(picker.getAttribute("data-color-for"));
+        var preview = previewOf(picker);
+        if (!field) {
+            return;
+        }
+        field.value = picker.value;
+        if (preview) {
+            preview.style.backgroundColor = picker.value;
+        }
+    }
+    function syncFromField(field) {
+        var picker = field.parentNode ? field.parentNode.querySelector(".premium-color-picker") : null;
+        var preview = previewOf(field);
+        var value = field.value.trim();
+        if (validHex(value)) {
+            var hex = value.toLowerCase();
+            if (picker) {
+                picker.value = hex;
+            }
+            if (preview) {
+                preview.style.backgroundColor = hex;
+            }
+            return;
+        }
+        if (value === "" && preview) {
+            preview.style.backgroundColor = "transparent";
+        }
+    }
+    document.addEventListener("DOMContentLoaded", function () {
+        var pickers = document.querySelectorAll(".premium-color-picker");
+        var i;
+        for (i = 0; i < pickers.length; i++) {
+            pickers[i].addEventListener("input", function () { syncFromPicker(this); });
+            pickers[i].addEventListener("change", function () { syncFromPicker(this); });
+        }
+        var fields = document.querySelectorAll(".premium-color-controls input[type=\\"text\\"]");
+        for (i = 0; i < fields.length; i++) {
+            fields[i].addEventListener("input", function () { syncFromField(this); });
+            fields[i].addEventListener("change", function () {
+                if (validHex(this.value.trim())) {
+                    this.value = this.value.trim().toLowerCase();
+                }
+                syncFromField(this);
+            });
+        }
+    });
+})();
+</script>';
+}
+
 function premium_clean_greeting($text) {
     $text = str_replace(array("\r\n", "\r"), "\n", (string) $text);
     $text = trim(strip_tags($text));
@@ -448,21 +539,26 @@ function premium_attach_group(PDO $pdo, $license_id, $group_id) {
             $pdo->rollBack();
             return array('ok' => false, 'error' => 'missing_group');
         }
-        if ($current !== null && $current !== '' && (int) $current === $license_id) {
-            $pdo->commit();
-            return array('ok' => true, 'error' => '');
-        }
+        $replace_from = 0;
         if ($current !== null && $current !== '' && (int) $current !== 0) {
-            $pdo->rollBack();
-            return array('ok' => false, 'error' => 'already');
+            if ((int) $current === $license_id) {
+                $pdo->commit();
+                return array('ok' => true, 'error' => '');
+            }
+            $current_license = premium_fetch_license($pdo, (int) $current);
+            if ($current_license && isset($current_license['status']) && $current_license['status'] === 'active') {
+                $pdo->rollBack();
+                return array('ok' => false, 'error' => 'already');
+            }
+            $replace_from = (int) $current;
         }
         $used = premium_group_count($pdo, $license_id);
         if (!premium_has_room($license['tier'], $used)) {
             $pdo->rollBack();
             return array('ok' => false, 'error' => 'limit');
         }
-        $upd = $pdo->prepare('UPDATE `groups` SET `premium_license_id` = ? WHERE `id` = ? AND (`premium_license_id` IS NULL OR `premium_license_id` = 0)');
-        $upd->execute(array($license_id, $group_id));
+        $upd = $pdo->prepare('UPDATE `groups` SET `premium_license_id` = ? WHERE `id` = ? AND (`premium_license_id` IS NULL OR `premium_license_id` = 0 OR `premium_license_id` = ?)');
+        $upd->execute(array($license_id, $group_id, $replace_from));
         if ($upd->rowCount() !== 1) {
             $pdo->rollBack();
             return array('ok' => false, 'error' => 'race');
@@ -899,10 +995,108 @@ function premium_set_domain(PDO $pdo, $license_id, $domain_raw) {
     return $stmt->rowCount() === 1;
 }
 
+function premium_master_log($action, $license_id, $ok) {
+    error_log('Master-Admin Premium: ' . $action . ', Lizenz ' . (int) $license_id . ($ok ? ', ok' : ', abgelehnt'));
+}
+
+function premium_unlink_license_groups(PDO $pdo, $license_id) {
+    $stmt = $pdo->prepare('UPDATE `groups` SET `premium_license_id` = NULL WHERE `premium_license_id` = ?');
+    $stmt->execute(array((int) $license_id));
+}
+
+function premium_delete_license_confirmations(PDO $pdo, $license_id) {
+    $stmt = $pdo->prepare('DELETE FROM `premium_confirmations` WHERE `license_id` = ?');
+    $stmt->execute(array((int) $license_id));
+}
+
+function premium_reject_pending_license(PDO $pdo, $license_id) {
+    $license_id = (int) $license_id;
+    if ($license_id < 1) {
+        premium_master_log('Anfrage ablehnen', $license_id, false);
+        return false;
+    }
+    $pdo->beginTransaction();
+    try {
+        $license = premium_fetch_license($pdo, $license_id);
+        if (!$license || !isset($license['status']) || $license['status'] !== 'pending') {
+            $pdo->rollBack();
+            premium_master_log('Anfrage ablehnen', $license_id, false);
+            return false;
+        }
+        premium_unlink_license_groups($pdo, $license_id);
+        premium_delete_license_confirmations($pdo, $license_id);
+        $del = $pdo->prepare('DELETE FROM `premium_licenses` WHERE `id` = ? AND `status` = ?');
+        $del->execute(array($license_id, 'pending'));
+        if ($del->rowCount() !== 1) {
+            $pdo->rollBack();
+            premium_master_log('Anfrage ablehnen', $license_id, false);
+            return false;
+        }
+        $pdo->commit();
+        premium_master_log('Anfrage ablehnen', $license_id, true);
+        return true;
+    } catch (Exception $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        error_log('Premium ablehnen: ' . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * Widerruf setzt nur den Status auf revoked.
+ * Gruppen, Teilnehmer und groups.premium_license_id bleiben.
+ * Premium-Funktionen gelten nur bei status active, deshalb sind sie aus.
+ * Logos bleiben in der Zeile und als Datei auf dem Server.
+ * Eine Gruppe mit widerrufener Lizenz kann später eine andere aktive Lizenz verbinden.
+ */
 function premium_revoke_license(PDO $pdo, $license_id) {
+    $license_id = (int) $license_id;
+    if ($license_id < 1) {
+        premium_master_log('Lizenz widerrufen', $license_id, false);
+        return false;
+    }
     $stmt = $pdo->prepare('UPDATE `premium_licenses` SET `status` = ? WHERE `id` = ? AND `status` = ?');
-    $stmt->execute(array('revoked', (int) $license_id, 'active'));
-    return $stmt->rowCount() === 1;
+    $stmt->execute(array('revoked', $license_id, 'active'));
+    $ok = $stmt->rowCount() === 1;
+    premium_master_log('Lizenz widerrufen', $license_id, $ok);
+    return $ok;
+}
+
+function premium_delete_revoked_license(PDO $pdo, $license_id) {
+    $license_id = (int) $license_id;
+    if ($license_id < 1) {
+        premium_master_log('Widerrufene Lizenz löschen', $license_id, false);
+        return false;
+    }
+    $pdo->beginTransaction();
+    try {
+        $license = premium_fetch_license($pdo, $license_id);
+        if (!$license || !isset($license['status']) || $license['status'] !== 'revoked') {
+            $pdo->rollBack();
+            premium_master_log('Widerrufene Lizenz löschen', $license_id, false);
+            return false;
+        }
+        premium_unlink_license_groups($pdo, $license_id);
+        premium_delete_license_confirmations($pdo, $license_id);
+        $del = $pdo->prepare('DELETE FROM `premium_licenses` WHERE `id` = ? AND `status` = ?');
+        $del->execute(array($license_id, 'revoked'));
+        if ($del->rowCount() !== 1) {
+            $pdo->rollBack();
+            premium_master_log('Widerrufene Lizenz löschen', $license_id, false);
+            return false;
+        }
+        $pdo->commit();
+        premium_master_log('Widerrufene Lizenz löschen', $license_id, true);
+        return true;
+    } catch (Exception $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        error_log('Premium löschen: ' . $e->getMessage());
+        return false;
+    }
 }
 
 function premium_resend_code(PDO $pdo, $license_id, $sender = null) {
@@ -2559,9 +2753,19 @@ function premium_master_handle(PDO $pdo, array $post, $sender = null) {
             ? array('type' => 'success', 'text' => t('premium.master.domain_saved'))
             : array('type' => 'error', 'text' => t('premium.master.domain_bad'));
     }
+    if ($action === 'reject') {
+        return premium_reject_pending_license($pdo, $id)
+            ? array('type' => 'success', 'text' => t('premium.master.rejected'))
+            : array('type' => 'error', 'text' => t('premium.master.missing_row'));
+    }
     if ($action === 'revoke') {
         return premium_revoke_license($pdo, $id)
             ? array('type' => 'success', 'text' => t('premium.master.revoked'))
+            : array('type' => 'error', 'text' => t('premium.master.missing_row'));
+    }
+    if ($action === 'delete_revoked') {
+        return premium_delete_revoked_license($pdo, $id)
+            ? array('type' => 'success', 'text' => t('premium.master.deleted'))
             : array('type' => 'error', 'text' => t('premium.master.missing_row'));
     }
     if ($action === 'resend_code') {
@@ -2583,33 +2787,59 @@ function premium_master_section_html(PDO $pdo) {
         $html .= '<p>' . h(t('premium.master.missing')) . '</p></section>';
         return $html;
     }
+    $html .= '<p class="section-description premium-master-note">' . h(t('premium.master.hint')) . '</p>';
+    $html .= '<h3>' . h(t('premium.master.pending_title')) . '</h3>';
     $pending = premium_master_licenses($pdo, 'pending');
     if (count($pending) === 0) {
         $html .= '<p>' . h(t('premium.master.none')) . '</p>';
     }
     foreach ($pending as $license) {
         $html .= '<form method="post" class="premium-master-row">' . csrf_input();
-        $html .= '<input type="hidden" name="premium_action" value="activate">';
         $html .= '<input type="hidden" name="license_id" value="' . (int) $license['id'] . '">';
         $html .= '<p><strong>' . h($license['company_name']) . '</strong> · ' . h(premium_tier_label($license['tier'])) . '<br>' . h($license['buyer_email']) . '</p>';
         $html .= '<p>' . nl2br(h($license['company_address'])) . '</p>';
         $html .= '<label>' . h(t('premium.master.domain')) . ' <input type="text" name="domain" placeholder="firma.ch"></label>';
-        $html .= '<button type="submit" class="button primary">' . h(t('premium.master.activate')) . '</button></form>';
+        $html .= '<div class="premium-master-actions">';
+        $html .= '<button type="submit" name="premium_action" value="activate" class="button primary">' . h(t('premium.master.activate')) . '</button>';
+        $html .= '<button type="submit" name="premium_action" value="reject" class="button error" onclick="' . html_onsubmit_confirm(t('premium.master.reject_confirm')) . '">' . h(t('premium.master.reject')) . '</button>';
+        $html .= '</div></form>';
     }
     $active = premium_master_licenses($pdo, 'active');
+    if (count($active) > 0) {
+        $html .= '<h3>' . h(t('premium.master.active_title')) . '</h3>';
+    }
     foreach ($active as $license) {
-        $html .= '<div class="premium-master-row"><p><strong>' . h($license['buyer_email']) . '</strong> · ' . h(premium_tier_label($license['tier']));
+        $html .= '<div class="premium-master-row"><p><strong>' . h(!empty($license['company_name']) ? $license['company_name'] : $license['buyer_email']) . '</strong> · ' . h(premium_tier_label($license['tier']));
+        if (!empty($license['company_name'])) {
+            $html .= '<br>' . h($license['buyer_email']);
+        }
         if (!empty($license['domain'])) {
             $html .= ' · @' . h($license['domain']);
         }
+        $html .= ' · ' . h(t('premium.master.groups', array('{count}' => (string) premium_group_count($pdo, $license['id']))));
         $html .= '</p>';
-        $html .= '<form method="post">' . csrf_input() . '<input type="hidden" name="premium_action" value="domain"><input type="hidden" name="license_id" value="' . (int) $license['id'] . '">';
+        $html .= '<form method="post" class="premium-inline-form">' . csrf_input() . '<input type="hidden" name="premium_action" value="domain"><input type="hidden" name="license_id" value="' . (int) $license['id'] . '">';
         $html .= '<input type="text" name="domain" value="' . h(isset($license['domain']) ? $license['domain'] : '') . '">';
         $html .= '<button type="submit" class="button secondary">' . h(t('premium.master.save_domain')) . '</button></form>';
-        $html .= '<form method="post">' . csrf_input() . '<input type="hidden" name="premium_action" value="resend_code"><input type="hidden" name="license_id" value="' . (int) $license['id'] . '">';
+        $html .= '<form method="post" class="premium-inline-form">' . csrf_input() . '<input type="hidden" name="premium_action" value="resend_code"><input type="hidden" name="license_id" value="' . (int) $license['id'] . '">';
         $html .= '<button type="submit" class="button secondary">' . h(t('premium.master.resend_code')) . '</button></form>';
-        $html .= '<form method="post">' . csrf_input() . '<input type="hidden" name="premium_action" value="revoke"><input type="hidden" name="license_id" value="' . (int) $license['id'] . '">';
+        $html .= '<form method="post" class="premium-inline-form" onsubmit="' . html_onsubmit_confirm(t('premium.master.revoke_confirm')) . '">' . csrf_input() . '<input type="hidden" name="premium_action" value="revoke"><input type="hidden" name="license_id" value="' . (int) $license['id'] . '">';
         $html .= '<button type="submit" class="button error small">' . h(t('premium.master.revoke')) . '</button></form></div>';
+    }
+    $revoked = premium_master_licenses($pdo, 'revoked');
+    if (count($revoked) > 0) {
+        $html .= '<h3>' . h(t('premium.master.revoked_title')) . '</h3>';
+    }
+    foreach ($revoked as $license) {
+        $html .= '<div class="premium-master-row"><p><strong>' . h(!empty($license['company_name']) ? $license['company_name'] : $license['buyer_email']) . '</strong> · ' . h(premium_tier_label($license['tier']));
+        if (!empty($license['company_name'])) {
+            $html .= '<br>' . h($license['buyer_email']);
+        }
+        $html .= ' · ' . h(t('premium.master.groups', array('{count}' => (string) premium_group_count($pdo, $license['id']))));
+        $html .= '</p>';
+        $html .= '<form method="post" class="premium-inline-form" onsubmit="' . html_onsubmit_confirm(t('premium.master.delete_confirm')) . '">' . csrf_input();
+        $html .= '<input type="hidden" name="premium_action" value="delete_revoked"><input type="hidden" name="license_id" value="' . (int) $license['id'] . '">';
+        $html .= '<button type="submit" class="button error small">' . h(t('premium.master.delete')) . '</button></form></div>';
     }
     $html .= '</section>';
     return $html;
