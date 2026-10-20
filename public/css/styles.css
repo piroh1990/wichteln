@@ -4250,7 +4250,7 @@ ul.premium-price-list li::before {
 }
 
 .premium-admin-offer {
-    margin: 1.25rem 0 0;
+    margin: 0 0 1.5rem;
     border: 1px solid var(--border-color);
     border-radius: 12px;
     background: #fbfbfc;

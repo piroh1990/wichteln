@@ -350,7 +350,7 @@ run_test('credits add up and a used-up package offers another purchase', functio
     }
 });
 
-run_test('a free group keeps premium as a closed note after the admin tools', function () {
+run_test('a free group keeps premium as a closed note at the top of the admin page', function () {
     $had_override = array_key_exists('premium_enabled_override', $GLOBALS);
     $previous_override = $had_override ? $GLOBALS['premium_enabled_override'] : null;
     $previous_lang = isset($GLOBALS['i18n_lang']) ? $GLOBALS['i18n_lang'] : 'de';
@@ -392,8 +392,8 @@ run_test('a free group keeps premium as a closed note after the admin tools', fu
         $danger_at = strpos($admin, 'id="gefahrenzone"');
         $offer_at = strpos($admin, 'premium_admin_offer_html');
         $support_at = strpos($admin, "support_card_html('admin')");
-        assert_true($section_at !== false && $checklist_at !== false && $section_at < $checklist_at, 'the licensed section stays above the checklist');
-        assert_true($danger_at !== false && $offer_at !== false && $support_at !== false && $danger_at < $offer_at && $offer_at < $support_at, 'the quiet note sits after the admin tools');
+        assert_true($section_at !== false && $offer_at !== false && $checklist_at !== false && $section_at < $checklist_at && $offer_at < $checklist_at, 'the licensed section and the quiet note sit above the checklist');
+        assert_true($danger_at !== false && $support_at !== false && $offer_at < $danger_at && $danger_at < $support_at, 'the quiet note stays above the danger zone');
         assert_true(strpos($admin, 'if ($premium_license)') !== false, 'the premium shortcut is only there for a licensed group');
     } finally {
         restore_error_handler();
