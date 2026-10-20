@@ -456,10 +456,12 @@ function deliver_group_reveal($participants, $group, $sender = null) {
         if ($lang === null) {
             $lang = 'de';
         }
+        $token = isset($participant['participant_token']) ? (string) $participant['participant_token'] : '';
         $payload = array(
             'name' => isset($participant['name']) ? $participant['name'] : '',
             'group_name' => $group_name,
             'pairs' => $pairs,
+            'participant_link' => ($token !== '') ? get_display_url('/participant.php?token=' . rawurlencode($token)) : '',
             'language' => $lang,
         );
         $subject = reveal_email_subject($lang);

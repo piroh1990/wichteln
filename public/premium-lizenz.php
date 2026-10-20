@@ -83,15 +83,14 @@ token_page_open(t('premium.overview.title'));
                 <?php echo csrf_input(); ?>
                 <label for="premium-logo"><?php echo h(t('premium.brand.logo')); ?></label>
                 <input type="file" id="premium-logo" name="logo" accept="image/png,image/jpeg,image/gif,image/webp">
-                <label for="color_primary"><?php echo h(t('premium.brand.primary')); ?></label>
-                <input type="text" id="color_primary" name="color_primary" value="<?php echo h(isset($license['color_primary']) ? $license['color_primary'] : ''); ?>" placeholder="#e63946" maxlength="7">
-                <label for="color_accent"><?php echo h(t('premium.brand.accent')); ?></label>
-                <input type="text" id="color_accent" name="color_accent" value="<?php echo h(isset($license['color_accent']) ? $license['color_accent'] : ''); ?>" placeholder="#2a9d8f" maxlength="7">
+                <?php echo premium_color_field_html('color_primary', t('premium.brand.primary'), isset($license['color_primary']) ? (string) $license['color_primary'] : '', '#e63946'); ?>
+                <?php echo premium_color_field_html('color_accent', t('premium.brand.accent'), isset($license['color_accent']) ? (string) $license['color_accent'] : '', '#2a9d8f'); ?>
                 <?php if ($allow_greeting): ?>
                     <label for="greeting"><?php echo h(t('premium.brand.greeting')); ?></label>
                     <textarea id="greeting" name="greeting" rows="3" maxlength="2000"><?php echo h(isset($license['greeting']) ? $license['greeting'] : ''); ?></textarea>
                 <?php endif; ?>
                 <button type="submit" class="button primary"><?php echo h(t('premium.brand.save')); ?></button>
+                <?php echo premium_color_picker_script(); ?>
             </form>
         </section>
         <section class="section-card" id="gruppen">

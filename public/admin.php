@@ -153,7 +153,8 @@ if ($csrf_ok && isset($_POST['resend_email'])) {
                     $assigned['name'],
                     isset($assigned['wishlist']) ? $assigned['wishlist'] : '',
                     $group,
-                    $lang
+                    $lang,
+                    isset($participant['participant_token']) ? $participant['participant_token'] : ''
                 )) {
                     $email_success = t('admin.mail_sent', array('{name}' => $participant['name']));
                 } else {
@@ -418,7 +419,8 @@ if ($csrf_ok && isset($_POST['draw'])) {
                         $assigned['name'],
                         isset($assigned['wishlist']) ? $assigned['wishlist'] : '',
                         $group,
-                        $lang
+                        $lang,
+                        isset($participant['participant_token']) ? $participant['participant_token'] : ''
                     )) {
                         error_log('E-Mail konnte nicht an ' . mask_email($participant['email']) . ' gesendet werden.');
                     }
