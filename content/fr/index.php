@@ -136,7 +136,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-1" id="faq-question-1" onclick="toggleFAQ(this, true)">
                             <span class="faq-title">Comment fonctionne le tirage ?</span>
-                            <span class="faq-toggle" aria-hidden="true">+</span>
+                            <span class="faq-toggle" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-1" class="faq-answer" role="region" aria-labelledby="faq-question-1">
@@ -148,7 +148,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-2" id="faq-question-2" onclick="toggleFAQ(this, true)">
                             <span class="faq-title">Puis-je définir des exclusions ?</span>
-                            <span class="faq-toggle" aria-hidden="true">+</span>
+                            <span class="faq-toggle" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-2" class="faq-answer" role="region" aria-labelledby="faq-question-2">
@@ -160,7 +160,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-3" id="faq-question-3" onclick="toggleFAQ(this, true)">
                             <span class="faq-title">Que se passe-t-il après le tirage ?</span>
-                            <span class="faq-toggle" aria-hidden="true">+</span>
+                            <span class="faq-toggle" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-3" class="faq-answer" role="region" aria-labelledby="faq-question-3">
@@ -172,7 +172,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-4" id="faq-question-4" onclick="toggleFAQ(this, true)">
                             <span class="faq-title">Faut-il s’inscrire ?</span>
-                            <span class="faq-toggle" aria-hidden="true">+</span>
+                            <span class="faq-toggle" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-4" class="faq-answer" role="region" aria-labelledby="faq-question-4">
@@ -184,7 +184,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-5" id="faq-question-5" onclick="toggleFAQ(this, true)">
                             <span class="faq-title">Puis-je réinitialiser le tirage ?</span>
-                            <span class="faq-toggle" aria-hidden="true">+</span>
+                            <span class="faq-toggle" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-5" class="faq-answer" role="region" aria-labelledby="faq-question-5">
@@ -196,7 +196,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-6" id="faq-question-6" onclick="toggleFAQ(this, true)">
                             <span class="faq-title">Combien de participants sont possibles ?</span>
-                            <span class="faq-toggle" aria-hidden="true">+</span>
+                            <span class="faq-toggle" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-6" class="faq-answer" role="region" aria-labelledby="faq-question-6">
@@ -220,7 +220,7 @@
             </div>
             <div class="feature-card">
                 <h3>Générateur de noms</h3>
-                <p>Le tirage est le générateur aléatoire : il répartit les noms pour que personne ne tire son propre nom, et les exclusions comptent. Ce n’est ni une roue publique ni un générateur de nombres.</p>
+                <p>Le tirage est un générateur Secret Santa pour les noms : il répartit les noms pour que personne ne tire son propre nom, et les exclusions comptent. Ce n’est ni une roue publique ni un générateur de nombres général.</p>
             </div>
             <div class="feature-card">
                 <h3>Tirer au sort sans e-mail</h3>

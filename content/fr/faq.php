@@ -88,7 +88,7 @@
                 "name": "Mes données sont-elles en sécurité ?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Oui. Nous utilisons le chiffrement SSL pour toutes les connexions, le serveur est en Suisse, nous respectons la loi suisse sur la protection des données (LPD) et les groupes sont supprimés automatiquement à l’échéance."
+                    "text": "Oui. J’utilise le chiffrement SSL pour toutes les connexions, le serveur est en Suisse, je respecte la loi suisse sur la protection des données (LPD) et les groupes sont supprimés automatiquement à l’échéance."
                 }
             },
             {
@@ -96,7 +96,7 @@
                 "name": "Quelles données sont enregistrées ?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Nous n’enregistrons que le nécessaire : les noms des participants, les adresses e-mail (pour les notifications), les listes de souhaits (facultatif), les exclusions et les résultats du tirage. Ne sont pas enregistrés : numéros de téléphone, adresses postales, données de paiement ou autres informations personnelles."
+                    "text": "Je n’enregistre que le nécessaire : les noms des participants, les adresses e-mail (pour les notifications), les listes de souhaits (facultatif), les exclusions et les résultats du tirage. Ne sont pas enregistrés : numéros de téléphone, adresses postales, données de paiement ou autres informations personnelles."
                 }
             },
             {
@@ -208,7 +208,7 @@
                 "name": "Y a-t-il un générateur de Secret Santa ?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Le tirage est le générateur aléatoire. Il répartit les noms au hasard, personne ne tire son propre nom, et les exclusions comptent. Ce n’est ni un générateur de nombres ni une roue publique."
+                    "text": "Le tirage est un générateur Secret Santa pour les noms. Il répartit les noms au hasard, personne ne tire son propre nom, et les exclusions comptent. Ce n’est ni un générateur de nombres général ni une roue publique."
                 }
             },
             {
@@ -257,7 +257,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-1" id="faq-question-1" onclick="toggleFaq(this)">
                             <span class="faq-title">C’est quoi, Wichtlä.ch ?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-1" class="faq-answer" role="region" aria-labelledby="faq-question-1">
@@ -285,7 +285,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-2" id="faq-question-2" onclick="toggleFaq(this)">
                             <span class="faq-title">Wichtlä.ch est-il payant ?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-2" class="faq-answer" role="region" aria-labelledby="faq-question-2">
@@ -307,7 +307,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-3" id="faq-question-3" onclick="toggleFaq(this)">
                             <span class="faq-title">Ai-je besoin d’un compte ?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-3" class="faq-answer" role="region" aria-labelledby="faq-question-3">
@@ -324,7 +324,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-4" id="faq-question-4" onclick="toggleFaq(this)">
                             <span class="faq-title">Combien de personnes peuvent participer ?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-4" class="faq-answer" role="region" aria-labelledby="faq-question-4">
@@ -345,7 +345,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-25" id="faq-question-25" onclick="toggleFaq(this)">
                             <span class="faq-title">Puis-je faire un Secret Santa par WhatsApp ?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-25" class="faq-answer" role="region" aria-labelledby="faq-question-25">
@@ -358,11 +358,11 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-26" id="faq-question-26" onclick="toggleFaq(this)">
                             <span class="faq-title">Y a-t-il un générateur de Secret Santa ?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-26" class="faq-answer" role="region" aria-labelledby="faq-question-26">
-                        <p>Le tirage est le générateur aléatoire. Il répartit les noms au hasard, personne ne tire son propre nom, et les exclusions comptent. Ce n’est ni un générateur de nombres ni une roue publique.</p>
+                        <p>Le tirage est un générateur Secret Santa pour les noms. Il répartit les noms au hasard, personne ne tire son propre nom, et les exclusions comptent. Ce n’est ni un générateur de nombres général ni une roue publique.</p>
                     </div>
                 </div>
 
@@ -370,7 +370,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-27" id="faq-question-27" onclick="toggleFaq(this)">
                             <span class="faq-title">Puis-je tirer au sort sans e-mail ?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-27" class="faq-answer" role="region" aria-labelledby="faq-question-27">
@@ -383,7 +383,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-28" id="faq-question-28" onclick="toggleFaq(this)">
                             <span class="faq-title">Faut-il une application Secret Santa ?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-28" class="faq-answer" role="region" aria-labelledby="faq-question-28">
@@ -395,7 +395,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-29" id="faq-question-29" onclick="toggleFaq(this)">
                             <span class="faq-title">Comment créer un groupe Secret Santa ?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-29" class="faq-answer" role="region" aria-labelledby="faq-question-29">
@@ -412,7 +412,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-5" id="faq-question-5" onclick="toggleFaq(this)">
                             <span class="faq-title">Comment fonctionne le tirage ?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-5" class="faq-answer" role="region" aria-labelledby="faq-question-5">
@@ -435,7 +435,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-6" id="faq-question-6" onclick="toggleFaq(this)">
                             <span class="faq-title">Que sont les exclusions et à quoi servent-elles ?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-6" class="faq-answer" role="region" aria-labelledby="faq-question-6">
@@ -458,7 +458,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-7" id="faq-question-7" onclick="toggleFaq(this)">
                             <span class="faq-title">Puis-je ajouter des participants plus tard ?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-7" class="faq-answer" role="region" aria-labelledby="faq-question-7">
@@ -480,7 +480,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-8" id="faq-question-8" onclick="toggleFaq(this)">
                             <span class="faq-title">Puis-je refaire le tirage ?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-8" class="faq-answer" role="region" aria-labelledby="faq-question-8">
@@ -502,7 +502,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-9" id="faq-question-9" onclick="toggleFaq(this)">
                             <span class="faq-title">Que se passe-t-il si quelqu’un perd son attribution ?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-9" class="faq-answer" role="region" aria-labelledby="faq-question-9">
@@ -523,7 +523,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-10" id="faq-question-10" onclick="toggleFaq(this)">
                             <span class="faq-title">Puis-je créer plusieurs groupes Secret Santa ?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-10" class="faq-answer" role="region" aria-labelledby="faq-question-10">
@@ -550,12 +550,12 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-11" id="faq-question-11" onclick="toggleFaq(this)">
                             <span class="faq-title">Mes données sont-elles en sécurité ?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-11" class="faq-answer" role="region" aria-labelledby="faq-question-11">
 <p>
-                            <strong>Oui !</strong> Nous prenons la protection des données très au sérieux :
+                            <strong>Oui !</strong> Je prends la protection des données très au sérieux :
                         </p>
                         <ul>
                             <li>🔐 chiffrement SSL pour toutes les connexions</li>
@@ -565,7 +565,7 @@
                             <li>🚫 aucune transmission à des tiers</li>
                         </ul>
                         <p>
-                            Plus de détails dans notre <a href="<?php echo h(i18n_href('datenschutz')); ?>">politique de confidentialité</a>.
+                            Plus de détails dans ma <a href="<?php echo h(i18n_href('datenschutz')); ?>">politique de confidentialité</a>.
                         </p>
                     </div>
                 </div>
@@ -574,12 +574,12 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-12" id="faq-question-12" onclick="toggleFaq(this)">
                             <span class="faq-title">Quelles données sont enregistrées ?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-12" class="faq-answer" role="region" aria-labelledby="faq-question-12">
 <p>
-                            Nous n’enregistrons que le nécessaire :
+                            Je n’enregistre que le nécessaire :
                         </p>
                         <ul>
                             <li>les noms des participants</li>
@@ -598,7 +598,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-13" id="faq-question-13" onclick="toggleFaq(this)">
                             <span class="faq-title">Combien de temps mes données sont-elles conservées ?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-13" class="faq-answer" role="region" aria-labelledby="faq-question-13">
@@ -615,7 +615,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-14" id="faq-question-14" onclick="toggleFaq(this)">
                             <span class="faq-title">Quelqu’un d’autre peut-il voir mon attribution ?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-14" class="faq-answer" role="region" aria-labelledby="faq-question-14">
@@ -637,7 +637,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-15" id="faq-question-15" onclick="toggleFaq(this)">
                             <span class="faq-title">Je n’ai pas reçu d’e-mail. Que faire ?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-15" class="faq-answer" role="region" aria-labelledby="faq-question-15">
@@ -645,7 +645,7 @@
                             Si tu n’as pas reçu d’e-mail, vérifie ceci :
                         </p>
                         <ul>
-                            <li>📧 <strong>Dossier spam :</strong> nos e-mails s’y retrouvent parfois</li>
+                            <li>📧 <strong>Dossier spam :</strong> mes e-mails s’y retrouvent parfois</li>
                             <li>✉️ <strong>Adresse e-mail :</strong> une faute de frappe est possible</li>
                             <li>⏱️ <strong>Délai :</strong> les e-mails peuvent prendre 1 à 2 minutes</li>
                             <li>🚫 <strong>Filtres :</strong> les messageries d’entreprise bloquent parfois les expéditeurs externes</li>
@@ -660,15 +660,15 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-16" id="faq-question-16" onclick="toggleFaq(this)">
                             <span class="faq-title">J’ai perdu mon lien admin !</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-16" class="faq-answer" role="region" aria-labelledby="faq-question-16">
 <p>
-                            Tu peux redemander le lien : sur <a href="<?php echo h(i18n_href('admin-link')); ?>">Renvoyer le lien admin</a>, indique l’adresse e-mail utilisée lors de la création du groupe. Si un groupe existe pour cette adresse, nous renvoyons le lien admin. Un code de sécurité et une limite du nombre d’essais protègent le formulaire.
+                            Tu peux redemander le lien : sur <a href="<?php echo h(i18n_href('admin-link')); ?>">Renvoyer le lien admin</a>, indique l’adresse e-mail utilisée lors de la création du groupe. Si un groupe existe pour cette adresse, je renvoie le lien admin. Un code de sécurité et une limite du nombre d’essais protègent le formulaire.
                         </p>
                         <p>
-                            La réponse est toujours formulée de la même façon, pour que personne ne puisse vérifier si une adresse est enregistrée chez nous.
+                            La réponse est toujours formulée de la même façon, pour que personne ne puisse vérifier si une adresse est enregistrée chez moi.
                         </p>
                         <div class="highlight-box">
                             <strong>Astuce :</strong> enregistre le lien admin dans les favoris du navigateur.
@@ -680,7 +680,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-24" id="faq-question-24" onclick="toggleFaq(this)">
                             <span class="faq-title">C’est quoi, l’e-mail de révélation ?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-24" class="faq-answer" role="region" aria-labelledby="faq-question-24">
@@ -697,7 +697,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-17" id="faq-question-17" onclick="toggleFaq(this)">
                             <span class="faq-title">Le tirage ne fonctionne pas. Pourquoi ?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-17" class="faq-answer" role="region" aria-labelledby="faq-question-17">
@@ -719,7 +719,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-18" id="faq-question-18" onclick="toggleFaq(this)">
                             <span class="faq-title">Puis-je supprimer un groupe ?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-18" class="faq-answer" role="region" aria-labelledby="faq-question-18">
@@ -736,7 +736,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-19" id="faq-question-19" onclick="toggleFaq(this)">
                             <span class="faq-title">Wichtlä.ch fonctionne-t-il sur smartphone ?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-19" class="faq-answer" role="region" aria-labelledby="faq-question-19">
@@ -763,7 +763,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-20" id="faq-question-20" onclick="toggleFaq(this)">
                             <span class="faq-title">Quel est le meilleur moment pour commencer ?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-20" class="faq-answer" role="region" aria-labelledby="faq-question-20">
@@ -785,7 +785,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-21" id="faq-question-21" onclick="toggleFaq(this)">
                             <span class="faq-title">Quel budget est recommandé ?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-21" class="faq-answer" role="region" aria-labelledby="faq-question-21">
@@ -807,7 +807,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-22" id="faq-question-22" onclick="toggleFaq(this)">
                             <span class="faq-title">Le Secret Santa doit-il rester anonyme ?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-22" class="faq-answer" role="region" aria-labelledby="faq-question-22">
@@ -828,7 +828,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-23" id="faq-question-23" onclick="toggleFaq(this)">
                             <span class="faq-title">Que faire si quelqu’un ne veut pas participer ?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-23" class="faq-answer" role="region" aria-labelledby="faq-question-23">
@@ -844,7 +844,7 @@
             
             <div class="cta-section">
                 <h2>Encore des questions ?</h2>
-                <p>Écris-nous un e-mail, ou lance simplement ton premier Secret Santa : c’est un jeu d’enfant !</p>
+                <p>Écris-moi un e-mail, ou lance simplement ton premier Secret Santa : c’est un jeu d’enfant !</p>
                 <a href="<?php echo h(i18n_href('create_group')); ?>" class="cta-button-white">Créer un groupe maintenant →</a>
             </div>
         </article>

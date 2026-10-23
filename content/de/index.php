@@ -136,7 +136,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-1" id="faq-question-1" onclick="toggleFAQ(this, true)">
                             <span class="faq-title">Wie funktioniert die Auslosung?</span>
-                            <span class="faq-toggle" aria-hidden="true">+</span>
+                            <span class="faq-toggle" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-1" class="faq-answer" role="region" aria-labelledby="faq-question-1">
@@ -148,7 +148,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-2" id="faq-question-2" onclick="toggleFAQ(this, true)">
                             <span class="faq-title">Kann ich Ausschlüsse einstellen?</span>
-                            <span class="faq-toggle" aria-hidden="true">+</span>
+                            <span class="faq-toggle" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-2" class="faq-answer" role="region" aria-labelledby="faq-question-2">
@@ -160,7 +160,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-3" id="faq-question-3" onclick="toggleFAQ(this, true)">
                             <span class="faq-title">Was passiert nach der Auslosung?</span>
-                            <span class="faq-toggle" aria-hidden="true">+</span>
+                            <span class="faq-toggle" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-3" class="faq-answer" role="region" aria-labelledby="faq-question-3">
@@ -172,7 +172,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-4" id="faq-question-4" onclick="toggleFAQ(this, true)">
                             <span class="faq-title">Brauche ich ein Konto?</span>
-                            <span class="faq-toggle" aria-hidden="true">+</span>
+                            <span class="faq-toggle" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-4" class="faq-answer" role="region" aria-labelledby="faq-question-4">
@@ -184,7 +184,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-5" id="faq-question-5" onclick="toggleFAQ(this, true)">
                             <span class="faq-title">Kann ich die Auslosung zurücksetzen?</span>
-                            <span class="faq-toggle" aria-hidden="true">+</span>
+                            <span class="faq-toggle" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-5" class="faq-answer" role="region" aria-labelledby="faq-question-5">
@@ -196,7 +196,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-6" id="faq-question-6" onclick="toggleFAQ(this, true)">
                             <span class="faq-title">Wie viele Teilnehmer sind möglich?</span>
-                            <span class="faq-toggle" aria-hidden="true">+</span>
+                            <span class="faq-toggle" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-6" class="faq-answer" role="region" aria-labelledby="faq-question-6">
@@ -219,7 +219,7 @@
             </div>
             <div class="feature-card">
                 <h3>Wichtel-Generator</h3>
-                <p>Die Auslosung ist der Zufallsgenerator: sie verteilt die Namen so, dass niemand sich selbst zieht und Ausschlüsse gelten. Ein öffentliches Losrad oder ein Zahlengenerator ist es nicht.</p>
+                <p>Die Auslosung ist ein Wichtel-Generator für Namen: sie verteilt die Namen so, dass niemand sich selbst zieht und Ausschlüsse gelten. Ein öffentliches Losrad oder ein allgemeiner Zahlengenerator ist es nicht.</p>
             </div>
             <div class="feature-card">
                 <h3>Ohne E-Mail auslosen</h3>

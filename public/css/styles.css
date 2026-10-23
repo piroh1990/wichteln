@@ -1,5 +1,24 @@
 /* css/styles.css */
 
+@font-face {
+    font-family: 'Playfair Display';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('/fonts/playfair-display-700-latin.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 300 700;
+    font-stretch: 100%;
+    font-display: swap;
+    src: url('/fonts/roboto-latin.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 /* Grundlegende Einstellungen */
 :root {
     --primary-color: #e63946;
@@ -1295,6 +1314,10 @@ a.button:disabled {
     margin-left: 1rem;
 }
 
+.faq-toggle::after {
+    content: "+";
+}
+
 .faq-item.active .faq-toggle {
     transform: rotate(45deg);
     background: var(--primary-color);
@@ -1760,6 +1783,27 @@ a.button:disabled {
     text-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 
+.notfound-page .page-header {
+    margin-bottom: 2rem;
+}
+
+.notfound-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem 1rem;
+}
+
+.notfound-actions a.button {
+    padding: 0.875rem 2rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.2;
+    min-height: 3rem;
+}
+
 .breadcrumb {
     font-size: 0.9rem;
     color: #5f6368;
@@ -2216,6 +2260,10 @@ a.button:disabled {
     color: #e63946;
 }
 
+.faq-icon::after {
+    content: "▼";
+}
+
 .faq-icon {
     font-size: 1.5rem;
     transition: transform 0.3s;
@@ -2332,6 +2380,17 @@ a.button:disabled {
         min-height: 44px;
         padding: 0 0.4rem;
         font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .notfound-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .notfound-actions a.button {
+        width: 100%;
     }
 }
 

@@ -42,12 +42,12 @@
     RewriteCond %{REQUEST_METHOD} ^(GET|HEAD)$
     RewriteCond %{HTTP_HOST} ^(www\.)?(xn--wichtl-gua\.ch|wichtlä\.ch)(?::\d+)?$ [NC]
     RewriteCond %{THE_REQUEST} \s/[^\s?]*\.php[\s?]
-    RewriteRule ^(faq|was-ist-wichteln|impressum|datenschutz|wichtel-ideen|firmenwichteln-tipps|ueber-uns|unterstuetzen|firmen-premium|create_group|admin-link)\.php$ https://xn--wichtl-gua.ch/$1 [R=301,L,QSA]
+    RewriteRule ^(faq|was-ist-wichteln|impressum|datenschutz|wichtel-ideen|firmenwichteln-tipps|ueber-uns|unterstuetzen|wichtel-generator|firmen-premium|create_group|admin-link)\.php$ https://xn--wichtl-gua.ch/$1 [R=301,L,QSA]
 
     RewriteCond %{REQUEST_METHOD} ^(GET|HEAD)$
     RewriteCond %{HTTP_HOST} ^(www\.)?(xn--wichtl-gua\.ch|wichtlä\.ch)(?::\d+)?$ [NC]
     RewriteCond %{THE_REQUEST} \s/[^\s?]*\.php[\s?]
-    RewriteRule ^(en|fr)/(faq|was-ist-wichteln|impressum|datenschutz|wichtel-ideen|firmenwichteln-tipps|ueber-uns|unterstuetzen|firmen-premium|create_group|admin-link)\.php$ https://xn--wichtl-gua.ch/$1/$2 [R=301,L,QSA]
+    RewriteRule ^(en|fr)/(faq|was-ist-wichteln|impressum|datenschutz|wichtel-ideen|firmenwichteln-tipps|ueber-uns|unterstuetzen|wichtel-generator|firmen-premium|create_group|admin-link)\.php$ https://xn--wichtl-gua.ch/$1/$2 [R=301,L,QSA]
 
     RewriteCond %{REQUEST_METHOD} ^(GET|HEAD)$
     RewriteCond %{HTTP_HOST} ^www\.(xn--wichtl-gua\.ch|wichtlä\.ch)(?::\d+)?$ [NC]
@@ -56,16 +56,45 @@
     RewriteRule ^(en|fr)/?$ index.php?lang=$1 [L,QSA]
     RewriteRule ^(en|fr)/admin-link/?$ /admin-link [R=301,L]
     RewriteRule ^(en|fr)/wichtel-ideen2/?$ /$1/wichtel-ideen [R=301,L,QSA]
-    RewriteRule ^(en|fr)/(faq|was-ist-wichteln|impressum|datenschutz|wichtel-ideen|firmenwichteln-tipps|ueber-uns|unterstuetzen|firmen-premium|create_group)/$ /$1/$2 [R=301,L]
+    RewriteRule ^(en|fr)/(faq|was-ist-wichteln|impressum|datenschutz|wichtel-ideen|firmenwichteln-tipps|ueber-uns|unterstuetzen|wichtel-generator|firmen-premium|create_group)/$ /$1/$2 [R=301,L]
 
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^(en|fr)/([a-z0-9_-]+)$ $2?lang=$1 [L,QSA]
 
-    RewriteRule ^(faq|was-ist-wichteln|impressum|datenschutz|wichtel-ideen|firmenwichteln-tipps|ueber-uns|unterstuetzen|firmen-premium|create_group|admin-link)/$ /$1 [R=301,L]
+    RewriteRule ^(faq|was-ist-wichteln|impressum|datenschutz|wichtel-ideen|firmenwichteln-tipps|ueber-uns|unterstuetzen|wichtel-generator|firmen-premium|create_group|admin-link)/$ /$1 [R=301,L]
 
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(faq|was-ist-wichteln|impressum|datenschutz|wichtel-ideen|firmenwichteln-tipps|ueber-uns|unterstuetzen|firmen-premium|create_group|admin-link)$ $1.php [L,QSA]
+    RewriteRule ^(faq|was-ist-wichteln|impressum|datenschutz|wichtel-ideen|firmenwichteln-tipps|ueber-uns|unterstuetzen|wichtel-generator|firmen-premium|create_group|admin-link)$ $1.php [L,QSA]
 
     RewriteRule ^wichtel-ideen2/?$ /wichtel-ideen [R=301,L,QSA]
+</IfModule>
+
+# Eigene 404-Seite im Seitenlayout. nginx vor Apache liest diese
+# Zeile nicht, wenn nginx die 404 selbst beantwortet. Dann in Plesk
+# unter Apache & nginx die zusätzliche nginx-Direktive setzen:
+# error_page 404 /404.php;
+ErrorDocument 404 /404.php
+
+# Statische Dateien 30 Tage cachen. Die Version in ?v= an CSS und JS
+# bricht den Cache, sobald die Datei sich ändert. Wenn nginx statische
+# Dateien direkt ausliefert, gilt diese Datei dort nicht.
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 30 days"
+    ExpiresByType application/javascript "access plus 30 days"
+    ExpiresByType text/javascript "access plus 30 days"
+    ExpiresByType image/png "access plus 30 days"
+    ExpiresByType image/jpeg "access plus 30 days"
+    ExpiresByType image/svg+xml "access plus 30 days"
+    ExpiresByType image/webp "access plus 30 days"
+    ExpiresByType font/woff2 "access plus 30 days"
+    ExpiresByType image/x-icon "access plus 30 days"
+    ExpiresByType image/vnd.microsoft.icon "access plus 30 days"
+</IfModule>
+
+<IfModule mod_headers.c>
+    <FilesMatch "\.(css|js|png|jpe?g|svg|webp|woff2|ico)$">
+        Header set Cache-Control "public, max-age=2592000"
+    </FilesMatch>
 </IfModule>

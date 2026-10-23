@@ -12,7 +12,47 @@
     <priority>1.00</priority>
   </url>
   <url>
+    <loc>https://xn--wichtl-gua.ch/fr/</loc>
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/"/>
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://xn--wichtl-gua.ch/"/>
+    <lastmod>2026-10-20T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.00</priority>
+  </url>
+  <url>
+    <loc>https://xn--wichtl-gua.ch/en/</loc>
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/"/>
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://xn--wichtl-gua.ch/"/>
+    <lastmod>2026-10-20T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.00</priority>
+  </url>
+  <url>
     <loc>https://xn--wichtl-gua.ch/was-ist-wichteln</loc>
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/was-ist-wichteln"/>
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/was-ist-wichteln"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/was-ist-wichteln"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://xn--wichtl-gua.ch/was-ist-wichteln"/>
+    <lastmod>2026-10-20T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.90</priority>
+  </url>
+  <url>
+    <loc>https://xn--wichtl-gua.ch/fr/was-ist-wichteln</loc>
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/was-ist-wichteln"/>
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/was-ist-wichteln"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/was-ist-wichteln"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://xn--wichtl-gua.ch/was-ist-wichteln"/>
+    <lastmod>2026-10-20T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.90</priority>
+  </url>
+  <url>
+    <loc>https://xn--wichtl-gua.ch/en/was-ist-wichteln</loc>
     <xhtml:link rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/was-ist-wichteln"/>
     <xhtml:link rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/was-ist-wichteln"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/was-ist-wichteln"/>
@@ -32,7 +72,47 @@
     <priority>0.90</priority>
   </url>
   <url>
+    <loc>https://xn--wichtl-gua.ch/fr/wichtel-ideen</loc>
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/wichtel-ideen"/>
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/wichtel-ideen"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/wichtel-ideen"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://xn--wichtl-gua.ch/wichtel-ideen"/>
+    <lastmod>2026-10-20T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.90</priority>
+  </url>
+  <url>
+    <loc>https://xn--wichtl-gua.ch/en/wichtel-ideen</loc>
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/wichtel-ideen"/>
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/wichtel-ideen"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/wichtel-ideen"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://xn--wichtl-gua.ch/wichtel-ideen"/>
+    <lastmod>2026-10-20T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.90</priority>
+  </url>
+  <url>
     <loc>https://xn--wichtl-gua.ch/firmenwichteln-tipps</loc>
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/firmenwichteln-tipps"/>
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/firmenwichteln-tipps"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/firmenwichteln-tipps"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://xn--wichtl-gua.ch/firmenwichteln-tipps"/>
+    <lastmod>2026-10-20T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://xn--wichtl-gua.ch/fr/firmenwichteln-tipps</loc>
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/firmenwichteln-tipps"/>
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/firmenwichteln-tipps"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/firmenwichteln-tipps"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://xn--wichtl-gua.ch/firmenwichteln-tipps"/>
+    <lastmod>2026-10-20T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://xn--wichtl-gua.ch/en/firmenwichteln-tipps</loc>
     <xhtml:link rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/firmenwichteln-tipps"/>
     <xhtml:link rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/firmenwichteln-tipps"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/firmenwichteln-tipps"/>
@@ -52,7 +132,47 @@
     <priority>0.85</priority>
   </url>
   <url>
+    <loc>https://xn--wichtl-gua.ch/fr/faq</loc>
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/faq"/>
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/faq"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/faq"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://xn--wichtl-gua.ch/faq"/>
+    <lastmod>2026-10-20T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://xn--wichtl-gua.ch/en/faq</loc>
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/faq"/>
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/faq"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/faq"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://xn--wichtl-gua.ch/faq"/>
+    <lastmod>2026-10-20T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
     <loc>https://xn--wichtl-gua.ch/ueber-uns</loc>
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/ueber-uns"/>
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/ueber-uns"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/ueber-uns"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://xn--wichtl-gua.ch/ueber-uns"/>
+    <lastmod>2026-10-07T00:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.60</priority>
+  </url>
+  <url>
+    <loc>https://xn--wichtl-gua.ch/fr/ueber-uns</loc>
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/ueber-uns"/>
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/ueber-uns"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/ueber-uns"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://xn--wichtl-gua.ch/ueber-uns"/>
+    <lastmod>2026-10-07T00:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.60</priority>
+  </url>
+  <url>
+    <loc>https://xn--wichtl-gua.ch/en/ueber-uns</loc>
     <xhtml:link rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/ueber-uns"/>
     <xhtml:link rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/ueber-uns"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/ueber-uns"/>
@@ -72,7 +192,47 @@
     <priority>0.30</priority>
   </url>
   <url>
+    <loc>https://xn--wichtl-gua.ch/fr/unterstuetzen</loc>
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/unterstuetzen"/>
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/unterstuetzen"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/unterstuetzen"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://xn--wichtl-gua.ch/unterstuetzen"/>
+    <lastmod>2026-10-18T00:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.30</priority>
+  </url>
+  <url>
+    <loc>https://xn--wichtl-gua.ch/en/unterstuetzen</loc>
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/unterstuetzen"/>
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/unterstuetzen"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/unterstuetzen"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://xn--wichtl-gua.ch/unterstuetzen"/>
+    <lastmod>2026-10-18T00:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.30</priority>
+  </url>
+  <url>
     <loc>https://xn--wichtl-gua.ch/firmen-premium</loc>
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/firmen-premium"/>
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/firmen-premium"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/firmen-premium"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://xn--wichtl-gua.ch/firmen-premium"/>
+    <lastmod>2026-10-19T00:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.50</priority>
+  </url>
+  <url>
+    <loc>https://xn--wichtl-gua.ch/fr/firmen-premium</loc>
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/firmen-premium"/>
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/firmen-premium"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/firmen-premium"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://xn--wichtl-gua.ch/firmen-premium"/>
+    <lastmod>2026-10-19T00:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.50</priority>
+  </url>
+  <url>
+    <loc>https://xn--wichtl-gua.ch/en/firmen-premium</loc>
     <xhtml:link rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/firmen-premium"/>
     <xhtml:link rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/firmen-premium"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/firmen-premium"/>
@@ -92,7 +252,47 @@
     <priority>0.80</priority>
   </url>
   <url>
+    <loc>https://xn--wichtl-gua.ch/fr/create_group</loc>
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/create_group"/>
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/create_group"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/create_group"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://xn--wichtl-gua.ch/create_group"/>
+    <lastmod>2026-10-20T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xn--wichtl-gua.ch/en/create_group</loc>
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/create_group"/>
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/create_group"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/create_group"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://xn--wichtl-gua.ch/create_group"/>
+    <lastmod>2026-10-20T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
     <loc>https://xn--wichtl-gua.ch/datenschutz</loc>
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/datenschutz"/>
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/datenschutz"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/datenschutz"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://xn--wichtl-gua.ch/datenschutz"/>
+    <lastmod>2026-10-07T00:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.20</priority>
+  </url>
+  <url>
+    <loc>https://xn--wichtl-gua.ch/fr/datenschutz</loc>
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/datenschutz"/>
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/datenschutz"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/datenschutz"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://xn--wichtl-gua.ch/datenschutz"/>
+    <lastmod>2026-10-07T00:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.20</priority>
+  </url>
+  <url>
+    <loc>https://xn--wichtl-gua.ch/en/datenschutz</loc>
     <xhtml:link rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/datenschutz"/>
     <xhtml:link rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/datenschutz"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/datenschutz"/>
@@ -110,5 +310,55 @@
     <lastmod>2026-10-07T00:00:00+00:00</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.10</priority>
+  </url>
+  <url>
+    <loc>https://xn--wichtl-gua.ch/fr/impressum</loc>
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/impressum"/>
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/impressum"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/impressum"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://xn--wichtl-gua.ch/impressum"/>
+    <lastmod>2026-10-07T00:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.10</priority>
+  </url>
+  <url>
+    <loc>https://xn--wichtl-gua.ch/en/impressum</loc>
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/impressum"/>
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/impressum"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/impressum"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://xn--wichtl-gua.ch/impressum"/>
+    <lastmod>2026-10-07T00:00:00+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.10</priority>
+  </url>
+  <url>
+    <loc>https://xn--wichtl-gua.ch/wichtel-generator</loc>
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/wichtel-generator"/>
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/wichtel-generator"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/wichtel-generator"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://xn--wichtl-gua.ch/wichtel-generator"/>
+    <lastmod>2026-10-23T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xn--wichtl-gua.ch/fr/wichtel-generator</loc>
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/wichtel-generator"/>
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/wichtel-generator"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/wichtel-generator"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://xn--wichtl-gua.ch/wichtel-generator"/>
+    <lastmod>2026-10-23T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://xn--wichtl-gua.ch/en/wichtel-generator</loc>
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://xn--wichtl-gua.ch/wichtel-generator"/>
+    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/wichtel-generator"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/wichtel-generator"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://xn--wichtl-gua.ch/wichtel-generator"/>
+    <lastmod>2026-10-23T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
   </url>
 </urlset>

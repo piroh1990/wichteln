@@ -18,6 +18,7 @@ require_once dirname(__DIR__) . '/premium.php';
                     <li><a href="<?php echo h(i18n_href('wichtel-ideen')); ?>"><?php echo h(t('nav.ideas')); ?></a></li>
                     <li><a href="<?php echo h(i18n_href('firmenwichteln-tipps')); ?>"><?php echo h(t('nav.company')); ?></a></li>
                     <li><a href="<?php echo h(i18n_href('faq')); ?>"><?php echo h(t('nav.faq')); ?></a></li>
+                    <li><a href="<?php echo h(i18n_href('wichtel-generator')); ?>"><?php echo h(t('footer.generator')); ?></a></li>
                 </ul>
             </div>
 

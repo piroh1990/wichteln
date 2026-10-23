@@ -747,6 +747,7 @@ function public_clean_slugs() {
         'impressum',
         'datenschutz',
         'wichtel-ideen',
+        'wichtel-generator',
         'firmenwichteln-tipps',
         'ueber-uns',
         'unterstuetzen',

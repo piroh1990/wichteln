@@ -27,6 +27,7 @@ function seo_legacy_php_slugs() {
         'impressum',
         'datenschutz',
         'wichtel-ideen',
+        'wichtel-generator',
         'firmenwichteln-tipps',
         'ueber-uns',
         'unterstuetzen',
@@ -158,6 +159,26 @@ function seo_legacy_redirect_target($method, $host, $request_uri) {
         return canonical_base_url() . $location;
     }
     return $location;
+}
+
+/**
+ * Öffentliche Datei mit Versionsquery, damit ein neues CSS oder JS
+ * den langen Cache-Control-Header aus public/.htaccess bricht.
+ */
+function public_asset_href($web_path) {
+    $web_path = '/' . ltrim((string) $web_path, '/');
+    if (strpos($web_path, '..') !== false || strpos($web_path, '?') !== false) {
+        return $web_path;
+    }
+    $full = dirname(__DIR__) . '/public' . $web_path;
+    if (!is_file($full)) {
+        return $web_path;
+    }
+    $mtime = filemtime($full);
+    if ($mtime === false) {
+        return $web_path;
+    }
+    return $web_path . '?v=' . $mtime;
 }
 
 /**
