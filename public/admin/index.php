@@ -410,8 +410,7 @@ function master_dashboard_nav_url($target, array $filters) {
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
     <meta name="theme-color" content="#ffffff">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="<?php echo htmlspecialchars(public_asset_href('/css/styles.css'), ENT_QUOTES, 'UTF-8'); ?>">
     <link rel="stylesheet" href="/admin/admin-styles.css">
 </head>
 <body>

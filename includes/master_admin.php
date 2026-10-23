@@ -1362,7 +1362,7 @@ function master_admin_login_document($csrf_html, $error) {
         . '<meta name="viewport" content="width=device-width, initial-scale=1.0">'
         . '<meta name="robots" content="noindex, nofollow">'
         . '<title>Master-Admin</title>'
-        . '<link rel="stylesheet" href="/css/styles.css">'
+        . '<link rel="stylesheet" href="' . htmlspecialchars(public_asset_href('/css/styles.css'), ENT_QUOTES, 'UTF-8') . '">'
         . '</head><body><div class="container"><h1>Master-Admin</h1>'
         . '<p>Melde dich mit dem Master-Token an. Der Token gehört ins Formular, nicht in die Adresszeile.</p>'
         . $error_html

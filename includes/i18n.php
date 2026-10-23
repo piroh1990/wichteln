@@ -210,6 +210,7 @@ function i18n_public_slugs() {
         'impressum',
         'datenschutz',
         'wichtel-ideen',
+        'wichtel-generator',
         'firmenwichteln-tipps',
         'ueber-uns',
         'unterstuetzen',

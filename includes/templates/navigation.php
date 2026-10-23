@@ -2,7 +2,10 @@
 <nav class="main-nav">
     <div class="nav-container">
         <a href="<?php echo h(i18n_href('index')); ?>" class="nav-logo">
-            <img src="/images/logo.png" alt="Wichtlä.ch Logo" height="40" width="50">
+            <picture>
+                <source srcset="/images/logo.webp" type="image/webp">
+                <img src="/images/logo.png" alt="Wichtlä.ch Logo" height="40" width="50">
+            </picture>
         </a>
 
         <?php

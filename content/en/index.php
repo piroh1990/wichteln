@@ -136,7 +136,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-1" id="faq-question-1" onclick="toggleFAQ(this, true)">
                             <span class="faq-title">How does the draw work?</span>
-                            <span class="faq-toggle" aria-hidden="true">+</span>
+                            <span class="faq-toggle" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-1" class="faq-answer" role="region" aria-labelledby="faq-question-1">
@@ -148,7 +148,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-2" id="faq-question-2" onclick="toggleFAQ(this, true)">
                             <span class="faq-title">Can I set exclusions?</span>
-                            <span class="faq-toggle" aria-hidden="true">+</span>
+                            <span class="faq-toggle" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-2" class="faq-answer" role="region" aria-labelledby="faq-question-2">
@@ -160,7 +160,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-3" id="faq-question-3" onclick="toggleFAQ(this, true)">
                             <span class="faq-title">What happens after the draw?</span>
-                            <span class="faq-toggle" aria-hidden="true">+</span>
+                            <span class="faq-toggle" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-3" class="faq-answer" role="region" aria-labelledby="faq-question-3">
@@ -172,7 +172,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-4" id="faq-question-4" onclick="toggleFAQ(this, true)">
                             <span class="faq-title">Do I need an account?</span>
-                            <span class="faq-toggle" aria-hidden="true">+</span>
+                            <span class="faq-toggle" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-4" class="faq-answer" role="region" aria-labelledby="faq-question-4">
@@ -184,7 +184,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-5" id="faq-question-5" onclick="toggleFAQ(this, true)">
                             <span class="faq-title">Can I reset the draw?</span>
-                            <span class="faq-toggle" aria-hidden="true">+</span>
+                            <span class="faq-toggle" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-5" class="faq-answer" role="region" aria-labelledby="faq-question-5">
@@ -196,7 +196,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-6" id="faq-question-6" onclick="toggleFAQ(this, true)">
                             <span class="faq-title">How many participants are possible?</span>
-                            <span class="faq-toggle" aria-hidden="true">+</span>
+                            <span class="faq-toggle" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-6" class="faq-answer" role="region" aria-labelledby="faq-question-6">
@@ -220,7 +220,7 @@
             </div>
             <div class="feature-card">
                 <h3>Name generator</h3>
-                <p>The draw is the random generator: it assigns names so that nobody draws themselves, and exclusions are kept. It is not a public wheel and not a number generator.</p>
+                <p>The draw is a Secret Santa name generator: it assigns names so that nobody draws themselves, and exclusions are kept. It is not a public wheel and not a general number generator.</p>
             </div>
             <div class="feature-card">
                 <h3>Draw without email</h3>

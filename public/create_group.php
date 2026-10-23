@@ -86,7 +86,10 @@ public_page_open('create_group', 'meta.create.title', 'meta.create.description')
 ?>
     <header>
         <a href="<?php echo h(i18n_href('index')); ?>" title="<?php echo h(t('nav.home')); ?>">
-            <img src="/images/logo.png" alt="<?php echo h(t('create.logo_alt')); ?>">
+            <picture>
+                <source srcset="/images/logo.webp" type="image/webp">
+                <img src="/images/logo.png" alt="<?php echo h(t('create.logo_alt')); ?>">
+            </picture>
         </a>
     </header>
     <div class="container">

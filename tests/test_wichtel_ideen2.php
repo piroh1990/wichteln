@@ -111,7 +111,7 @@ run_test('affiliate links stay hidden while the feature is off', function () {
     assert_true(strpos($html, 'rel="alternate" hreflang="fr-CH" href="https://xn--wichtl-gua.ch/fr/wichtel-ideen"') !== false, 'French alternate');
     assert_true(strpos($html, 'rel="alternate" hreflang="en" href="https://xn--wichtl-gua.ch/en/wichtel-ideen"') !== false, 'English alternate');
     assert_true(strpos($html, 'rel="alternate" hreflang="x-default" href="https://xn--wichtl-gua.ch/wichtel-ideen"') !== false, 'default alternate');
-    assert_true(strpos($html, '<title>Wichtelgeschenke: Ideen nach Budget | wichtlä.ch</title>') !== false, 'title matches the page');
+    assert_true(strpos($html, '<title>Wichtelgeschenk-Ideen nach Budget (bis CHF 50) | wichtlä.ch</title>') !== false, 'title matches the page');
     assert_true(strpos($html, 'content="Wichtelgeschenk-Ideen für die Schweiz, grob nach Budget sortiert. Kurze Tipps für Familie, Freunde und Teams, ohne dass du ein Konto brauchst."') !== false, 'description matches the page');
     assert_true(strpos($html, '"url":"https://xn--wichtl-gua.ch/wichtel-ideen"') !== false, 'structured data uses the live URL');
     assert_true(strpos($html, 'wichtel-ideen2') === false, 'rendered page does not mention the draft');
@@ -318,7 +318,7 @@ run_test('french and english drafts translate the affiliate copy', function () {
     assert_true(strpos($en, 'rel="canonical" href="https://xn--wichtl-gua.ch/en/wichtel-ideen"') !== false, 'English canonical');
     assert_true(strpos($en, 'Tips for the perfect Secret Santa gift') !== false, 'English tips');
     assert_true(strpos($en, 'Secret Santa gifts for different groups') !== false, 'English group notes');
-    assert_true(strpos($en, '<title>Secret Santa gift ideas by budget | wichtlä.ch</title>') !== false, 'English title');
+    assert_true(strpos($en, '<title>Secret Santa gift ideas by budget (CHF 10–50) | wichtlä.ch</title>') !== false, 'English title');
     assert_equals(ideas2_awin_hrefs($de), ideas2_awin_hrefs($en), 'English page uses the same shop links');
 });
 

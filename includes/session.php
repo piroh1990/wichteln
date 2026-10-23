@@ -69,8 +69,8 @@ function baseline_content_security_policy() {
         . "frame-ancestors 'self'; "
         . "form-action 'self'; "
         . "script-src 'self' 'unsafe-inline'" . $matomo . "; "
-        . "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
-        . "font-src 'self' https://fonts.gstatic.com data:; "
+        . "style-src 'self' 'unsafe-inline'; "
+        . "font-src 'self' data:; "
         . "img-src 'self' data: https:; "
         . "connect-src 'self'" . $matomo;
 }

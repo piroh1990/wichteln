@@ -184,7 +184,7 @@ run_test('support page is routed like the other public pages', function () {
     assert_true(strpos($about_de, 'Ich freue mich über jede Nachricht.') !== false, 'about contact is first person');
     assert_true(strpos($about_de, 'Er hat') === false && strpos($about_de, 'unser ') === false && strpos($about_de, 'Wir ') === false, 'about page drops the old third person');
     assert_true(strpos($about_de, 'Nebenjob') === false && strpos($about_de, 'Werdegang') === false && stripos($about_de, 'Öffnungszeit') === false, 'about page skips biography and hours');
-    assert_equals('Über uns - Warum ich wichtlä.ch gebaut habe', t('meta.about.title'), 'about title is first person');
+    assert_equals('Über uns: Warum ich wichtlä.ch gebaut habe | wichtlä.ch', t('meta.about.title'), 'about title is first person');
     assert_true(strpos(t('meta.about.description'), 'Ich habe wichtlä.ch gebaut') === 0, 'about description is first person');
 });
 

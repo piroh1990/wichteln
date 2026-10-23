@@ -88,7 +88,7 @@
                 "name": "Sind meine Daten sicher?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Ja! Wir verwenden SSL-Verschlüsselung für alle Verbindungen, der Server-Standort ist in der Schweiz, wir halten das Schweizer Datenschutzgesetz (DSG) ein und Gruppen werden automatisch nach Ablauf gelöscht."
+                    "text": "Ja! Ich verwende SSL-Verschlüsselung für alle Verbindungen, der Server steht in der Schweiz, ich halte das Schweizer Datenschutzgesetz (DSG) ein und Gruppen werden automatisch nach Ablauf gelöscht."
                 }
             },
             {
@@ -96,7 +96,7 @@
                 "name": "Welche Daten werden gespeichert?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Wir speichern nur das Nötigste: Namen der Teilnehmer, E-Mail-Adressen (für Benachrichtigungen), Wunschlisten (optional), Ausschlüsse und Ziehungsergebnisse. Nicht gespeichert werden: Telefonnummern, Adressen, Zahlungsdaten oder sonstige persönliche Informationen."
+                    "text": "Ich speichere nur das Nötigste: Namen der Teilnehmer, E-Mail-Adressen (für Benachrichtigungen), Wunschlisten (optional), Ausschlüsse und Ziehungsergebnisse. Nicht gespeichert werden: Telefonnummern, Adressen, Zahlungsdaten oder sonstige persönliche Informationen."
                 }
             },
             {
@@ -208,7 +208,7 @@
                 "name": "Gibt es einen Wichtel-Generator oder Zufallsgenerator?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Die Auslosung ist der Zufallsgenerator. Sie verteilt die Namen zufällig, sodass niemand sich selbst zieht und Ausschlüsse gelten. Es ist kein allgemeiner Zahlengenerator und kein öffentliches Losrad."
+                    "text": "Die Auslosung ist ein Wichtel-Generator für Namen. Sie verteilt die Namen zufällig, sodass niemand sich selbst zieht und Ausschlüsse gelten. Es ist kein allgemeiner Zahlengenerator und kein öffentliches Losrad."
                 }
             },
             {
@@ -244,7 +244,7 @@
         </div>
         
         <header class="page-header">
-            <h1 class="page-title">Häufig gestellte Fragen ?</h1>
+            <h1 class="page-title">Häufig gestellte Fragen</h1>
             <p class="page-subtitle">Alle Antworten zu Wichtlä.ch, Funktionen, Datenschutz und Tipps für erfolgreiches Wichteln</p>
         </header>
         
@@ -257,7 +257,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-1" id="faq-question-1" onclick="toggleFaq(this)">
                             <span class="faq-title">Was ist Wichtlä.ch?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-1" class="faq-answer" role="region" aria-labelledby="faq-question-1">
@@ -285,7 +285,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-2" id="faq-question-2" onclick="toggleFaq(this)">
                             <span class="faq-title">Kostet Wichtlä.ch etwas?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-2" class="faq-answer" role="region" aria-labelledby="faq-question-2">
@@ -307,7 +307,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-3" id="faq-question-3" onclick="toggleFaq(this)">
                             <span class="faq-title">Brauche ich ein Konto?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-3" class="faq-answer" role="region" aria-labelledby="faq-question-3">
@@ -324,7 +324,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-4" id="faq-question-4" onclick="toggleFaq(this)">
                             <span class="faq-title">Wie viele Personen können mitmachen?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-4" class="faq-answer" role="region" aria-labelledby="faq-question-4">
@@ -345,7 +345,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-25" id="faq-question-25" onclick="toggleFaq(this)">
                             <span class="faq-title">Kann ich per WhatsApp wichteln?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-25" class="faq-answer" role="region" aria-labelledby="faq-question-25">
@@ -358,11 +358,11 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-26" id="faq-question-26" onclick="toggleFaq(this)">
                             <span class="faq-title">Gibt es einen Wichtel-Generator oder Zufallsgenerator?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-26" class="faq-answer" role="region" aria-labelledby="faq-question-26">
-                        <p>Die Auslosung ist der Zufallsgenerator. Sie verteilt die Namen zufällig, sodass niemand sich selbst zieht und Ausschlüsse gelten. Es ist kein allgemeiner Zahlengenerator und kein öffentliches Losrad.</p>
+                        <p>Die Auslosung ist ein Wichtel-Generator für Namen. Sie verteilt die Namen zufällig, sodass niemand sich selbst zieht und Ausschlüsse gelten. Es ist kein allgemeiner Zahlengenerator und kein öffentliches Losrad.</p>
                     </div>
                 </div>
 
@@ -370,7 +370,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-27" id="faq-question-27" onclick="toggleFaq(this)">
                             <span class="faq-title">Kann ich ohne E-Mail auslosen?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-27" class="faq-answer" role="region" aria-labelledby="faq-question-27">
@@ -383,7 +383,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-28" id="faq-question-28" onclick="toggleFaq(this)">
                             <span class="faq-title">Brauche ich eine Wichtel-App?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-28" class="faq-answer" role="region" aria-labelledby="faq-question-28">
@@ -395,7 +395,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-29" id="faq-question-29" onclick="toggleFaq(this)">
                             <span class="faq-title">Wie erstelle ich eine Wichtelgruppe?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-29" class="faq-answer" role="region" aria-labelledby="faq-question-29">
@@ -412,7 +412,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-5" id="faq-question-5" onclick="toggleFaq(this)">
                             <span class="faq-title">Wie funktioniert das Losziehen?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-5" class="faq-answer" role="region" aria-labelledby="faq-question-5">
@@ -435,7 +435,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-6" id="faq-question-6" onclick="toggleFaq(this)">
                             <span class="faq-title">Was sind Ausschlüsse und wofür brauche ich sie?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-6" class="faq-answer" role="region" aria-labelledby="faq-question-6">
@@ -458,7 +458,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-7" id="faq-question-7" onclick="toggleFaq(this)">
                             <span class="faq-title">Kann ich später noch Teilnehmer hinzufügen?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-7" class="faq-answer" role="region" aria-labelledby="faq-question-7">
@@ -480,7 +480,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-8" id="faq-question-8" onclick="toggleFaq(this)">
                             <span class="faq-title">Kann ich die Ziehung wiederholen?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-8" class="faq-answer" role="region" aria-labelledby="faq-question-8">
@@ -502,7 +502,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-9" id="faq-question-9" onclick="toggleFaq(this)">
                             <span class="faq-title">Was passiert, wenn jemand sein Los verliert?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-9" class="faq-answer" role="region" aria-labelledby="faq-question-9">
@@ -523,7 +523,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-10" id="faq-question-10" onclick="toggleFaq(this)">
                             <span class="faq-title">Kann ich mehrere Wichtel-Gruppen erstellen?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-10" class="faq-answer" role="region" aria-labelledby="faq-question-10">
@@ -550,12 +550,12 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-11" id="faq-question-11" onclick="toggleFaq(this)">
                             <span class="faq-title">Sind meine Daten sicher?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-11" class="faq-answer" role="region" aria-labelledby="faq-question-11">
 <p>
-                            <strong>Ja!</strong> Wir nehmen Datenschutz sehr ernst:
+                            <strong>Ja!</strong> Ich nehme Datenschutz sehr ernst:
                         </p>
                         <ul>
                             <li>🔐 SSL-Verschlüsselung für alle Verbindungen</li>
@@ -565,7 +565,7 @@
                             <li>🚫 Keine Weitergabe an Dritte</li>
                         </ul>
                         <p>
-                            Mehr Details in unserer <a href="<?php echo h(i18n_href('datenschutz')); ?>">Datenschutzerklärung</a>.
+                            Mehr Details in meiner <a href="<?php echo h(i18n_href('datenschutz')); ?>">Datenschutzerklärung</a>.
                         </p>
                     </div>
                 </div>
@@ -574,12 +574,12 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-12" id="faq-question-12" onclick="toggleFaq(this)">
                             <span class="faq-title">Welche Daten werden gespeichert?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-12" class="faq-answer" role="region" aria-labelledby="faq-question-12">
 <p>
-                            Wir speichern nur das Nötigste:
+                            Ich speichere nur das Nötigste:
                         </p>
                         <ul>
                             <li>Namen der Teilnehmer</li>
@@ -598,7 +598,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-13" id="faq-question-13" onclick="toggleFaq(this)">
                             <span class="faq-title">Wie lange werden meine Daten aufbewahrt?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-13" class="faq-answer" role="region" aria-labelledby="faq-question-13">
@@ -615,7 +615,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-14" id="faq-question-14" onclick="toggleFaq(this)">
                             <span class="faq-title">Kann jemand anders mein Los sehen?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-14" class="faq-answer" role="region" aria-labelledby="faq-question-14">
@@ -637,7 +637,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-15" id="faq-question-15" onclick="toggleFaq(this)">
                             <span class="faq-title">Ich habe keine E-Mail erhalten – was tun?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-15" class="faq-answer" role="region" aria-labelledby="faq-question-15">
@@ -645,7 +645,7 @@
                             Wenn du keine E-Mail erhalten hast, prüfe bitte:
                         </p>
                         <ul>
-                            <li>📧 <strong>Spam-Ordner:</strong> Manchmal landen unsere E-Mails im Spam</li>
+                            <li>📧 <strong>Spam-Ordner:</strong> Manchmal landen die E-Mails im Spam</li>
                             <li>✉️ <strong>E-Mail-Adresse:</strong> Hast du dich vielleicht vertippt?</li>
                             <li>⏱️ <strong>Wartezeit:</strong> E-Mails können 1-2 Minuten dauern</li>
                             <li>🚫 <strong>E-Mail-Filter:</strong> Firmen-E-Mails blockieren manchmal externe Absender</li>
@@ -660,15 +660,15 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-16" id="faq-question-16" onclick="toggleFaq(this)">
                             <span class="faq-title">Ich habe meinen Admin-Link verloren!</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-16" class="faq-answer" role="region" aria-labelledby="faq-question-16">
 <p>
-                            Den Link kannst du erneut anfordern: Auf <a href="<?php echo h(i18n_href('admin-link')); ?>">Admin-Link erneut senden</a> die E-Mail-Adresse eintragen, die beim Erstellen der Gruppe verwendet wurde. Wenn dazu eine Gruppe existiert, schicken wir den Admin-Link noch einmal. Ein Sicherheitscode und eine Begrenzung der Versuche schützen das Formular.
+                            Den Link kannst du erneut anfordern: Auf <a href="<?php echo h(i18n_href('admin-link')); ?>">Admin-Link erneut senden</a> die E-Mail-Adresse eintragen, die beim Erstellen der Gruppe verwendet wurde. Wenn dazu eine Gruppe existiert, schicke ich den Admin-Link noch einmal. Ein Sicherheitscode und eine Begrenzung der Versuche schützen das Formular.
                         </p>
                         <p>
-                            Die Antwort ist immer gleich formuliert, damit niemand prüfen kann, ob eine Adresse bei uns gespeichert ist.
+                            Die Antwort ist immer gleich formuliert, damit niemand prüfen kann, ob eine Adresse bei mir gespeichert ist.
                         </p>
                         <div class="highlight-box">
                             <strong>Tipp:</strong> Speichere den Admin-Link als Lesezeichen im Browser.
@@ -680,7 +680,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-24" id="faq-question-24" onclick="toggleFaq(this)">
                             <span class="faq-title">Was ist die Auflösungs-Mail?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-24" class="faq-answer" role="region" aria-labelledby="faq-question-24">
@@ -697,7 +697,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-17" id="faq-question-17" onclick="toggleFaq(this)">
                             <span class="faq-title">Die Ziehung funktioniert nicht – warum?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-17" class="faq-answer" role="region" aria-labelledby="faq-question-17">
@@ -719,7 +719,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-18" id="faq-question-18" onclick="toggleFaq(this)">
                             <span class="faq-title">Kann ich eine Gruppe löschen?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-18" class="faq-answer" role="region" aria-labelledby="faq-question-18">
@@ -736,7 +736,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-19" id="faq-question-19" onclick="toggleFaq(this)">
                             <span class="faq-title">Funktioniert Wichtlä.ch auf dem Smartphone?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-19" class="faq-answer" role="region" aria-labelledby="faq-question-19">
@@ -763,7 +763,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-20" id="faq-question-20" onclick="toggleFaq(this)">
                             <span class="faq-title">Wann ist der beste Zeitpunkt, um zu starten?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-20" class="faq-answer" role="region" aria-labelledby="faq-question-20">
@@ -785,7 +785,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-21" id="faq-question-21" onclick="toggleFaq(this)">
                             <span class="faq-title">Welches Budget empfehlt ihr?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-21" class="faq-answer" role="region" aria-labelledby="faq-question-21">
@@ -807,7 +807,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-22" id="faq-question-22" onclick="toggleFaq(this)">
                             <span class="faq-title">Soll das Wichteln anonym bleiben?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-22" class="faq-answer" role="region" aria-labelledby="faq-question-22">
@@ -828,7 +828,7 @@
                     <h3>
                         <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-23" id="faq-question-23" onclick="toggleFaq(this)">
                             <span class="faq-title">Was tun, wenn jemand nicht mitmachen will?</span>
-                            <span class="faq-icon" aria-hidden="true">▼</span>
+                            <span class="faq-icon" aria-hidden="true"></span>
                         </button>
                     </h3>
                     <div id="faq-answer-23" class="faq-answer" role="region" aria-labelledby="faq-question-23">
@@ -844,7 +844,7 @@
             
             <div class="cta-section">
                 <h2>Noch Fragen?</h2>
-                <p>Schreib uns eine E-Mail oder starte einfach dein erstes Wichteln – es ist kinderleicht!</p>
+                <p>Schreib mir eine E-Mail oder starte einfach dein erstes Wichteln – es ist kinderleicht!</p>
                 <a href="<?php echo h(i18n_href('create_group')); ?>" class="cta-button-white">Jetzt Gruppe erstellen →</a>
             </div>
         </article>

@@ -17,6 +17,7 @@ function seo_breadcrumb_ld($slug) {
         'impressum' => 'footer.imprint',
         'datenschutz' => 'footer.privacy',
         'wichtel-ideen' => 'nav.ideas',
+        'wichtel-generator' => 'footer.generator',
         'firmenwichteln-tipps' => 'nav.company',
         'ueber-uns' => 'nav.about',
         'unterstuetzen' => 'footer.support',
@@ -107,6 +108,21 @@ function render_head($options = array()) {
     <meta property="og:description" content="<?php echo h($description); ?>">
     <?php endif; ?>
     <meta property="og:locale" content="<?php echo h($og_locale); ?>">
+    <meta property="og:site_name" content="wichtlä.ch">
+    <?php
+    $og_image = canonical_base_url() . '/img/og-image.png';
+    $og_alt = (function_exists('t') && t('meta.og.alt') !== 'meta.og.alt') ? t('meta.og.alt') : 'wichtlä.ch – Wichteln online auslosen';
+    ?>
+    <meta property="og:image" content="<?php echo h($og_image); ?>">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="<?php echo h($og_alt); ?>">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<?php echo h($title); ?>">
+    <?php if ($description !== ''): ?>
+    <meta name="twitter:description" content="<?php echo h($description); ?>">
+    <?php endif; ?>
+    <meta name="twitter:image" content="<?php echo h($og_image); ?>">
     <?php
     if (function_exists('i18n_languages')) {
         foreach (i18n_languages() as $lang) {
@@ -135,13 +151,13 @@ function render_head($options = array()) {
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png">
+    <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="manifest" href="/images/favicon/manifest.json">
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="/images/favicon/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/styles.css">
-    <script src="/js/main.js"></script>
+    <link rel="stylesheet" href="<?php echo h(public_asset_href('/css/styles.css')); ?>">
+    <script src="<?php echo h(public_asset_href('/js/main.js')); ?>" defer></script>
     <?php
     if (function_exists('i18n_script_tag')) {
         echo i18n_script_tag();

@@ -873,13 +873,14 @@ run_test('company page and free claims follow the feature flag', function () {
             assert_equals($tagline, t('footer.tagline'), $lang . ' footer keeps only the first sentence');
         }
         foreach (array(
-            'de' => 'Extra-Funktionen für Firmen und Vereine',
-            'fr' => 'fonctions en plus pour entreprises et associations',
-            'en' => 'Extra features for companies and clubs',
+            'de' => 'Extra-Funktionen für Firmen und Vereine sind optional',
+            'fr' => 'Des fonctions en plus pour entreprises et associations sont en option',
+            'en' => 'Extra features for companies and clubs are optional',
         ) as $lang => $label) {
             $GLOBALS['i18n_lang'] = $lang;
             $description = t('meta.index.description');
-            assert_true(strpos($description, $label) !== false, $lang . ' meta names the extra functions');
+            assert_true(strpos($description, $label) === false, $lang . ' meta drops the repeated optional-features line');
+            assert_true(mb_strlen($description, 'UTF-8') >= 140 && mb_strlen($description, 'UTF-8') <= 155, $lang . ' meta description stays in range');
             assert_true(stripos($description, '100%') === false && strpos($description, '100 %') === false, $lang . ' meta drops the absolute free claim');
         }
 
@@ -1297,7 +1298,8 @@ run_test('live reveal is a quiet fullscreen card', function () {
     assert_true(strpos($page, 'fullscreenchange') !== false, 'the icon follows fullscreen changes');
     assert_true(strpos($page, 'token_page_open(') !== false, 'the page uses the shared document head');
     $head = file_get_contents(dirname(__DIR__) . '/includes/templates/head.php');
-    assert_true(strpos($head, 'href="/css/styles.css"') !== false, 'the stylesheet is linked');
+    assert_true(strpos($head, '/css/styles.css') !== false, 'the stylesheet is linked');
+    assert_true(strpos($head, 'defer') !== false, 'the shared script can defer');
     assert_true(strpos($css, 'button.premium-reveal-full') !== false, 'fullscreen control is styled on its own');
     assert_true(strpos($css, 'bottom: 0.85rem') !== false, 'the button is anchored to the bottom');
     assert_true(strpos($css, 'right: 0.85rem') !== false, 'the button is anchored to the right');
