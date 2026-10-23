@@ -238,4 +238,7 @@ run_test('social image, fonts, cache and the custom 404 stay in place', function
     assert_true(strpos($html, 'href="/faq"') !== false, '404 links faq');
     assert_true(strpos($html, 'href="/"') !== false, '404 links home');
     assert_true(strpos($html, 'Seite nicht gefunden') !== false, '404 heading');
+    assert_true(strpos($html, 'class="button primary"') !== false, '404 primary button');
+    assert_true(substr_count($html, 'class="button secondary"') === 2, '404 secondary buttons');
+    assert_true(strpos($html, 'notfound-actions') !== false, '404 button row');
 });

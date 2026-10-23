@@ -1783,6 +1783,27 @@ a.button:disabled {
     text-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 
+.notfound-page .page-header {
+    margin-bottom: 2rem;
+}
+
+.notfound-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem 1rem;
+}
+
+.notfound-actions a.button {
+    padding: 0.875rem 2rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.2;
+    min-height: 3rem;
+}
+
 .breadcrumb {
     font-size: 0.9rem;
     color: #5f6368;
@@ -2359,6 +2380,17 @@ a.button:disabled {
         min-height: 44px;
         padding: 0 0.4rem;
         font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .notfound-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .notfound-actions a.button {
+        width: 100%;
     }
 }
 
